@@ -3,13 +3,13 @@ Automate creation of IBM IT architecture diagrams.
 
 ## Overview
 
-Draw IT accepts input as either diagram-as-code (user-created YAML) or diagram-from-account (RIAS and tool-generated YAML) and transforms the input into diagrams.net diagrams as follows:
+Draw IT accepts input as either diagram-as-code (user-created YAML) or diagram-as-account (RIAS and tool-generated YAML) and transforms the input into diagrams.net diagrams as follows:
 
-![DrawIT Flow](/images/drawitFlow.png)
+![DrawIT Flow](/images/drawitFlow.png "DrawIT Flow")
 
 ## DrawIT GUI
 
-![DrawIT GUI](/images/drawitGUI.png)
+![DrawIT GUI](/images/drawitGUI.png "DrawIT GUI")
 
 ## RIAS Steps
 
