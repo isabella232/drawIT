@@ -49,14 +49,14 @@ Icons:
 | User | Actor | Implemented |
 | Instance | Collapsed Node | Implemented |
 | Instance | Expanded Node | Implemented |
-| Public ALB | Collapsed Node | Implemented |
-| Public Gateway | Collapsed Node | Implemented |
+| Public ALB | Collapsed Node | Disabled |
+| Public Gateway | Collapsed Node | Disabled |
 | VPN Gateway | Collapsed Node | Disabled |
 
 Arrows:
 | Arrow | Type | Status | 
 | --- | --- | -- |
 | Floating IP | Double Arrow | Implemented |
-| Public ALB | Double Arrow | Implemented |
+| Public ALB | Double Arrow | Disabled |
 | Public Gateway | Single Arrow | Implemented |
 
