@@ -3,11 +3,11 @@ Automate creation of IBM IT architecture diagrams.
 
 ## Overview
 
-drawIT accepts input as either diagram-as-code (user-created JSON/) or diagram-as-account (RIAS API and accountl JSON/YAML) and transforms the input into diagrams.net diagrams:
+drawIT accepts input as either JSON, YAML, or RIAS, and transforms the input into diagrams that can be viewed in diagrams.net.
 
+<!--
 ![drawIT Flow](/images/drawitFlow.png "DrawIT Flow")
 
-<!---
 ## RIAS Steps
 
 1. Create API Key if not already created:
@@ -38,15 +38,22 @@ Groups:
 - Cloud
 - Region
 - Availability Zone
-- VPC Group
-- Subnet Group
+- VPC
+- Subnet
 - Public Network
 - Enterprise Network
 
-Icons:
+Regular Icons:
 - User
+- Internet
 - Instance
 - Public Gateway
+- Implicit Router
+
+Item Icons:
+- Unix
+- Profile
+- Storage
 
 Connectors:
 - Floating IP (Ingress and Egress)
