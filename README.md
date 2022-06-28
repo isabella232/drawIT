@@ -1,12 +1,13 @@
-# Draw IT
+# drawIT
 Automate creation of IBM IT architecture diagrams.
 
 ## Overview
 
-Draw IT accepts input as either diagram-as-code (user-created YAML) or diagram-as-account (RIAS API and tool YAML) and transforms the input into diagrams.net diagrams:
+drawIT accepts input as either diagram-as-code (user-created JSON/) or diagram-as-account (RIAS API and accountl JSON/YAML) and transforms the input into diagrams.net diagrams:
 
-![DrawIT Flow](/images/drawitFlow.png "DrawIT Flow")
+![drawIT Flow](/images/drawitFlow.png "DrawIT Flow")
 
+<!---
 ## RIAS Steps
 
 1. Create API Key if not already created:
@@ -29,34 +30,24 @@ Draw IT accepts input as either diagram-as-code (user-created YAML) or diagram-a
 - Install and start [diagrams.net application]
 (https://github.com/IBM/it-architecture-diagrams/releases).
 - Click **Open Existing Diagram** and select a diagrams.net file.
+-->
 
-## Features
+## Features Supported
 
 Groups:
-| Group | Status | 
-| --- | --- |
-| Cloud | Implemented |
-| Region | Implemented |
-| Availability Zone | Implemented |
-| VPC | Implemented |
-| Subnet | Implemented |
-| Public Network | Implemented |
-| Enterprise Network | Implemented |
+- Cloud
+- Region
+- Availability Zone
+- VPC Group
+- Subnet Group
+- Public Network
+- Enterprise Network
 
 Icons:
-| Icon | Type | Status | 
-| --- | --- | -- |
-| User | Actor | Implemented |
-| Instance | Collapsed Node | Implemented |
-| Instance | Expanded Node | Implemented |
-| Public ALB | Collapsed Node | Disabled |
-| Public Gateway | Collapsed Node | Disabled |
-| VPN Gateway | Collapsed Node | Disabled |
+- User
+- Instance
+- Public Gateway
 
-Arrows:
-| Arrow | Type | Status | 
-| --- | --- | -- |
-| Floating IP | Double Arrow | Implemented |
-| Public ALB | Double Arrow | Disabled |
-| Public Gateway | Single Arrow | Implemented |
-
+Connectors:
+- Floating IP (Ingress and Egress)
+- Public Gateway (Egress only)
