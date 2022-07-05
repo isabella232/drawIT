@@ -1,5 +1,5 @@
 # drawIT
-Automate creation of IBM IT architecture diagrams.
+Automate IBM IT architecture diagrams.
 
 ## Overview
 
