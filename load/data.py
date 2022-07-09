@@ -33,18 +33,19 @@ class Data:
          self.inputdata = self.rias.loadRIAS()
          if self.inputdata != None:
             self.normalizeddata = self.rias.normalizeData(self.inputdata)
-            userdata['inputdata'] = self.normalizeddata
+            self.inputdata = self.normalizeddata
       elif self.inputtype == 'json':
          self.inputdata = self.file.loadJSON()
          if self.inputdata != None:
             self.normalizeddata = self.file.normalizeData(self.inputdata)
-            userdata['inputdata'] = self.normalizeddata
+            self.inputdata = self.normalizeddata
       else:
          self.inputdata = self.file.loadYAML()
          if self.inputdata != None:
             self.normalizeddata = self.file.normalizeData(self.inputdata)
-            userdata['inputdata'] = self.normalizeddata
+            self.inputdata = self.normalizeddata
    
       if self.normalizeddata != None:
+         userdata['inputdata'] = self.inputdata
          self.setupdata = self.analyze.analyzeData() 
          userdata['setupdata'] = self.setupdata

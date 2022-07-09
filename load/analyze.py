@@ -18,6 +18,8 @@ from common.utils import *
 class Analyze:
    def __init__(self, user):
       self.inputtype = user['inputtype']
+      self.inputdata = user['inputdata']
+      self.setupdata = user['setupdata']
 
    def analyzeData(self):
       nicstable = {}
@@ -25,11 +27,11 @@ class Analyze:
       vpcstable = {}
       zonestable = {}
 
-      inputdata = userdata['inputdata']
-      setupdata = userdata['setupdata']
+      self.inputdata = userdata['inputdata']
+      self.setupdata = userdata['setupdata']
 
       # For each NIC add nicstable[subnetid] = nicframe.
-      nics = inputdata['networkInterfaces']
+      nics = self.inputdata['networkInterfaces']
       if not nics.empty:
          for nicindex, nicframe in nics.iterrows():
             nicname = nicframe['name']
@@ -47,7 +49,7 @@ class Analyze:
                nicstable[nicsubnetid] = [nicframe]
 
       # Include empty subnets.
-      subnetdf = inputdata['subnets']
+      subnetdf = self.inputdata['subnets']
       for subnetindex, subnetframe in subnetdf.iterrows():
          subnetname = subnetframe['name']
          subnetid = subnetframe['id']
@@ -78,8 +80,14 @@ class Analyze:
       # add regionstable[regionname] = vpcid
 
       for subnetid in nicstable:
-         subnetframe = findrow(userdata, inputdata['subnets'], 'id', subnetid)
+         print("subnetid")
+         print(subnetid)
+         subnetframe = findrow(userdata, self.inputdata['subnets'], 'id', subnetid)
+         print("subnetframe")
+         print(subnetframe)
          subnetname = subnetframe['name']
+         print("subnetname")
+         print(subnetname)
          subnetid = subnetframe['id']
 
          subnetzonename = subnetframe['zone.name']
@@ -94,7 +102,7 @@ class Analyze:
 
          # Add subnets to zonetable.
          zonekey = subnetvpcid + ':' + subnetzonename
-         zonestable = setupdata['zones']
+         zonestable = self.setupdata['zones']
          if zonekey in zonestable:
             if subnetid not in zonestable[zonekey]:
                zonestable[zonekey].append(subnetid)
@@ -103,7 +111,7 @@ class Analyze:
 
          # Add zones to vpctable.
          zonekey = subnetvpcid + ':' + subnetzonename
-         vpcstable = setupdata['vpcs']
+         vpcstable = self.setupdata['vpcs']
          if subnetvpcid in vpcstable:
             if zonekey not in vpcstable[subnetvpcid]:
                vpcstable[subnetvpcid].append(zonekey)
@@ -111,16 +119,16 @@ class Analyze:
             vpcstable[subnetvpcid] = [zonekey]
 
          # Add vpcs to regiontable.
-         regionstable = setupdata['regions']
+         regionstable = self.setupdata['regions']
          if subnetregion in regionstable:
             if subnetvpcid not in regionstable[subnetregion]:
                regionstable[subnetregion].append(subnetvpcid)
          else:
             regionstable[subnetregion] = [subnetvpcid]
 
-      setupdata['nics'] = nicstable
-      setupdata['regions'] = regionstable
-      setupdata['vpcs'] = vpcstable
-      setupdata['zones'] = zonestable
+      self.setupdata['nics'] = nicstable
+      self.setupdata['regions'] = regionstable
+      self.setupdata['vpcs'] = vpcstable
+      self.setupdata['zones'] = zonestable
 
-      return setupdata
+      return self.setupdata

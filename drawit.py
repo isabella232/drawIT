@@ -117,10 +117,11 @@ class Config:
 
 class drawit():
    def __init(self):
+      title = COPYRIGHT.split(' - ')
       self.diagrams = None
+      top = None
+      statusText = None
 
-   top = None
-   statusText = None
    #SAVE top = tkinter.Tk()
    #top.title(TOOLNAME + ' ' + COPYRIGHT.split(' ')[2])
    #SAVE title = COPYRIGHT.split(' - ')
@@ -142,7 +143,7 @@ class drawit():
 
         parser.add_argument('-key', dest='apikey',  default=userdata['apikey'], help='API Key')
         parser.add_argument('-account', dest='accountid',  default=userdata['accountid'], help='Account ID')
-        parser.add_argument('-input', dest='inputfile',  default=userdata['inputfile'], help='JSON or YAML file')
+        parser.add_argument('-input', dest='inputfile',  default=userdata['inputfile'], help='JSON/YAML')
         parser.add_argument('-region', dest='region', default=userdata['region'], help='au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
         parser.add_argument('-output', dest='outputfolder', default=os.path.join(self.outputDirectory, userdata['outputfolder']), help='output directory')
         #parser.add_argument('-type', dest='outputtype', default=userdata['outputtype'], help='drawio or puml type')
@@ -151,7 +152,6 @@ class drawit():
         parser.add_argument('-split', dest='outputsplit', default=userdata['outputsplit'], help='none, region, or vpc')
         parser.add_argument('-shapes', dest='outputshapes', default=userdata['outputshapes'], help='logical or prescribed')
 
-        #parser.add_argument('-nogui', dest='nogui', action='store_true', default=userdata['nogui'], help="No gui (batch mode)")
         parser.add_argument('-mode', dest='runmode', default=userdata['runmode'], help="batch, gui, or web")
         parser.add_argument('--version', action='version', version='drawIT ' + COPYRIGHT.split(' ')[1])
         
@@ -253,10 +253,10 @@ class drawit():
             from tkinter import IntVar
             from tkinter import messagebox
         
-            top = tkinter.Tk()
-            title = COPYRIGHT.split(' - ')
-            top.title(title[0])
-            statusText = tkinter.StringVar()
+            self.top = tkinter.Tk()
+            self.title = COPYRIGHT.split(' - ')
+            self.top.title(self.title[0])
+            self.statusText = tkinter.StringVar()
 
             frame = tkinter.Frame(self.top)
             frame.pack(fill=tkinter.X, side=tkinter.TOP)
@@ -293,7 +293,7 @@ class drawit():
 
             #tkinter.Label(frame, text="Yaml").grid(row=row)
             #lInputFile = tkinter.Label(frame, text=inputfile)
-            tkinter.Label(frame, text="YAML File").grid(row=row)
+            tkinter.Label(frame, text="JSON/YAML").grid(row=row)
             lInputFile = tkinter.Entry(frame, bd=5)
             lInputFile.insert(0, inputfile)
             lInputFile.grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
@@ -306,7 +306,7 @@ class drawit():
                 config.write()
 
             def onClickSelectInputFile():
-                file_selected = filedialog.askopenfilename(initialdir = self.inputFile,title = "Select YAML")
+                file_selected = filedialog.askopenfilename(initialdir = self.inputFile,title = "Select JSON/YAML")
                 if file_selected != None and len(file_selected) > 0:
                     self.inputFile = file_selected
                     lAPIKey.delete(0, 'end')
@@ -321,7 +321,7 @@ class drawit():
                     config.write()
                     
             inputbutton = tkinter.Frame(frame)
-            eSelectInputFile = tkinter.Button(inputbutton, text="Select YAML", fg="blue", command=lambda: onClickSelectInputFile())
+            eSelectInputFile = tkinter.Button(inputbutton, text="Select JSON/YAML", fg="blue", command=lambda: onClickSelectInputFile())
             inputbutton.grid(row=row, columnspan=2, sticky=tkinter.E)
             eSelectInputFile.pack(side=tkinter.RIGHT)
             row = row + 1
@@ -580,13 +580,13 @@ class drawit():
             eGenerate.pack(side=tkinter.RIGHT)
 
             #SAVE self.statusText.set("Ready")    
-            statusText.set("Ready")    
+            self.statusText.set("Ready")    
     
             statusLabel = tkinter.Label(self.top, textvariable=self.statusText)
             statusLabel.pack(side=tkinter.RIGHT)
     
             #SAVE self.top.mainloop()
-            top.mainloop()
+            self.top.mainloop()
 
         elif args.runmode == 'web':
             userdata['inputtype'] = 'web'

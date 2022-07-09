@@ -3,7 +3,11 @@ Automate IBM IT architecture diagrams.
 
 ## Overview
 
-drawIT accepts input from JSON, YAML, or RIAS, and transforms the input into diagrams that can be viewed in diagrams.net.
+drawIT accepts input from JSON, YAML, or RIAS, and generates diagrams that can be viewed in diagrams.net.
+
+## Running drawIT
+
+1. test/run.py <key>
 
 <!--
 ![drawIT Flow](/images/drawitFlow.png "DrawIT Flow")

@@ -27,8 +27,12 @@ from common.utils import *
 class RIAS:
    def __init__(self, user):
       self.riasdatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      self.outputfolder = user['outputfolder']
+      self.region = user['region']
+      self.apikey = user['apikey']
+      self.accountid = user['accountid']
 
-   def gettoken(accountID, apiKey):
+   def gettoken(self, accountID, apiKey):
       endpoint = 'https://iam.cloud.ibm.com'
       if len(accountID) > 0:
          headers = {
@@ -54,11 +58,10 @@ class RIAS:
       token = token_dict["token_type"] + " " + token_dict["access_token"]
       return token
 
-   def getriasdata(userdata, token, accountID, group):
-      region = userdata['region']
+   def getriasdata(self, token, accountID, group):
       #version = '2022-03-15'
-      version = '2022-06-14'
-      endpoint = 'https://' + region + '.iaas.cloud.ibm.com'
+      version = '2022-07-05'
+      endpoint = 'https://' + self.region + '.iaas.cloud.ibm.com'
       if len(accountID) > 0:
          if group == 'vpn_gateways' or group == 'load_balancers':
             # Exit for now as causing error with other accounts:
@@ -81,10 +84,6 @@ class RIAS:
          'generation': '2'
       }
       request = endpoint + "/v1/" + group
-      print("request/headers/params:")
-      print(request)
-      print(headers)
-      print(params)
       response = requests.get(url=request, headers=headers, params=params, verify=False)
       rawdata = json.loads(response.text)
       if 'errors' in rawdata:
@@ -99,16 +98,15 @@ class RIAS:
          printerror(invalidmessage % ("No Subnets were found", 'href=' + request)) 
          sys.exit()
       data = rawdata[group]
-      if group == "vpcs":
-         for vpc in data:
-            print(vpc["name"])
+      #if group == "vpcs":
+      #   for vpc in data:
+      #      print(vpc["name"])
       return data
 
-   def getriassubdata(userdata, token, accountID, id, group, subgroup):
-      region = userdata['region']
+   def getriassubdata(self, token, accountID, id, group, subgroup):
       #version = '2022-05-31'
-      version = '2022-06-14'
-      endpoint = 'https://' + region + '.iaas.cloud.ibm.com'
+      version = '2022-07-05'
+      endpoint = 'https://' + self.region + '.iaas.cloud.ibm.com'
       if len(accountID) > 0:
          headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -134,15 +132,14 @@ class RIAS:
          error = errors[0]
          printerror(invalidmessage % (error['code'], error['message'] + ' href=' + request)) 
          sys.exit()
-      #data = rawdata[group]
-      #return data
-      return rawdata
+      data = rawdata[group]
+      return data
+      #return rawdata
 
-   def getriassubdata2(userdata, token, accountID, id, group, subgroup, id2, subgroup2):
-      region = userdata['region']
+   def getriassubdata2(self, token, accountID, id, group, subgroup, id2, subgroup2):
       #version = '2022-05-31'
-      version = '2022-06-14'
-      endpoint = 'https://' + region + '.iaas.cloud.ibm.com'
+      version = '2022-07-05'
+      endpoint = 'https://' + self.region + '.iaas.cloud.ibm.com'
       if len(accountID) > 0:
          headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -168,32 +165,30 @@ class RIAS:
          error = errors[0]
          printerror(invalidmessage % (error['code'], error['message'] + ' href=' + request)) 
          sys.exit()
-      #data = rawdata[group]
-      #return data
-      return rawdata
+      data = rawdata[group]
+      return data
+      #return rawdata
 
-   def loadRIAS(userdata):
+   def loadRIAS(self):
       data = {}
       listenerdata = []
       pooldata = []
       memberdata = []
       nicdata = []
       vpndata = []
-      apikey = userdata['apikey']
-      accountid = userdata['accountid']
-      token = gettoken(accountid, apikey)
+      token = self.gettoken(self.accountid, self.apikey)
       #rawdata = getriasdata(userdata, token, accountid, 'vpcs')
       #data[datatype] = rawdata
       #return data
  
-      for datatype in riasdatatypes:
-         rawdata = getriasdata(userdata, token, accountid, datatype)
+      for datatype in self.riasdatatypes:
+         rawdata = self.getriasdata(token, self.accountid, datatype)
          data[datatype] = rawdata
          if datatype == 'instances':
             instancedata = rawdata
             for instance in instancedata:
                id = instance['id']
-               rawdata = getriassubdata(userdata, token, accountid, id, datatype, 'network_interfaces')
+               rawdata = self.getriassubdata(token, self.accountid, id, datatype, 'network_interfaces')
                nics = rawdata['network_interfaces']
                extended = {}
                for nic in nics:
@@ -205,7 +200,7 @@ class RIAS:
             lbdata = rawdata
             for lb in lbdata:
                id = lb['id']
-               rawdata = getriassubdata(userdata, token, accountid, id, datatype, 'listeners')
+               rawdata = self.getriassubdata(token, self.accountid, id, datatype, 'listeners')
                listeners = rawdata['listeners']
                listenerdict = {} 
                lblistenerdata = []
@@ -220,7 +215,7 @@ class RIAS:
                listenerdict = {'id': id, 'listeners': lblistenerdata}
                listenerdata.append(listenerdict)
 
-               rawdata = getriassubdata(userdata, token, accountid, id, datatype, 'pools')
+               rawdata = self.getriassubdata(token, self.accountid, id, datatype, 'pools')
                pools = rawdata['pools']
                pooldict = {} 
                memberdict = {} 
@@ -234,7 +229,7 @@ class RIAS:
                   extended['lbid'] = id
                   pooldata.append(extended)
 
-                  rawdata = getriassubdata2(userdata, token, accountid, id, datatype, 'pools', poolid, 'members')
+                  rawdata = self.getriassubdata2(token, self.accountid, id, datatype, 'pools', poolid, 'members')
                   members = rawdata['members']
                   lbmemberdata.append(members)
 
@@ -262,7 +257,7 @@ class RIAS:
   
       return data
 
-   def normalizeData(userdata, data):
+   def normalizeData(self, data):
       vpcs = pd.json_normalize(data['vpcs'] if ('vpcs' in data) else pd.json_normalize({}))
       subnets = pd.json_normalize(data['subnets'] if ('subnets' in data) else pd.json_normalize({}))
       instances = pd.json_normalize(data['instances'] if ('instances' in data) else pd.json_normalize({}))
@@ -279,6 +274,10 @@ class RIAS:
       networkACLs = pd.json_normalize({})
       securityGroups = pd.json_normalize({})
       keys = pd.json_normalize({})
+
+      print("begin subnets:")
+      print(subnets)
+      print("end subnets")
 
       normalizeddata = {
          'vpcs': vpcs,

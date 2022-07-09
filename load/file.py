@@ -26,9 +26,9 @@ from common.utils import *
 
 class File:
    def __init__(self, user):
+      self.yamldatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
       self.inputfile = user['inputfile']
       self.outputfolder = user['outputfolder']
-      self.yamldatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
 
    def loadJSON(self):
       stream = open(self.inputfile, 'r', encoding='utf-8-sig')

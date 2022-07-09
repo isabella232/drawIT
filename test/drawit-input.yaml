@@ -1,0 +1,106 @@
+vpcs:
+  - name: drawit-vpc
+    id: drawit-vpc-id
+    type: VPC
+    region: us-south
+    networkACLId: drawit-network-acl-id
+    securityGroupId: drawit-security-group-id
+    resourceGroupId: drawit-resource-group-id
+subnets:
+  - name: drawit-subnet1
+    id: drawit-subnet1-id
+    type: Network
+    region: us-south
+    availabilityZone: us-south-1
+    bandwidthMb: 1000
+    subnet: 10.240.0.0/24
+    vpcId: drawit-vpc-id
+    networkACL: drawit-acl-id
+    publicGateway:
+      name: drawit-pg
+      id: drawit-pg-id
+instances:
+  - name: drawit-instance1
+    id: drawit-instance1-id
+    type: Instance
+    region: us-south
+    availabilityZone: us-south-1
+    vpcName: drawit-vpc
+    vpcId: drawit-vpc-id
+    osName: ubuntu-20-04-amd64
+    osVendor: Canonical
+    osVersion: 20.04 LTS Focal Fossa Minimal Install
+    bandwidthMb: 8000
+    gpuModel: null
+    hostIP: null
+    memoryMiB: 16384
+    cpuCount: 4
+    gpuCount: 0
+    cpuSpeedMhz: 2095
+    memoryGb: 16
+    ipAddresses:
+      - 172.21.0.4
+    profile: bx2-4x16
+    volumeAttachments:
+      - drawit-volume1-id
+    networkInterfaces:
+      - name: drawit-nic1
+        id: drawit-nic1-id
+        networkId: drawit-subnet1-id
+        instanceId: drawit-instance1-id
+        region: us-south
+        ip: 172.21.0.4
+        floatingIPReference:
+          id: drawit-fip1-id
+          ip: 52.118.146.156
+        maxMbps: 3000
+        securityGroupIds: []
+        type: NetworkInterface
+floatingIPs:
+  - name: drawit-fip1
+    id: drawit-fip1-id
+    type: FloatingIP
+    region: us-south
+    address: 52.118.146.156
+    resourceGroupId: drawit-rg-id
+    target:
+      name: drawit-nic1
+      id: drawit-nic1-id
+      resourceType: network_interface
+      ipv4Address: 172.21.0.4
+  - name: drawit-fip2
+    id: drawit-fip2-id
+    type: FloatingIP
+    region: us-south
+    address: 52.116.135.9
+    resourceGroupId: drawit-rg-id
+    target:
+      name: drawit-pg
+      id: drawit-pg-id
+      resourceType: public_gateway
+      ipv4Address: null
+publicGateways:
+  - name: drawit-pg
+    id: drawit-pg-id
+    type: PublicGateway
+    region: us-south
+    vpcId: drawit-vpc-id
+    floatingIP: 52.116.135.9
+    floatingIPReference:
+      id: drawit-fip2-id
+      ip: 52.116.135.9
+      name: null
+    resourceGroupId: drawit-rg-id
+networkInterfaces:
+  - name: drawit-nic1
+    id: drawit-nic1-id
+    networkId: drawit-subnet1-id
+    instanceId: drawit-instance1-id
+    region: us-south
+    ip: 172.21.0.4
+    floatingIPReference:
+      id: drawit-fip1-id
+      ip: 52.118.146.156
+    maxMbps: 3000
+    securityGroupIds: []
+    type: NetworkInterface
