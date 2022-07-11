@@ -8,17 +8,17 @@ drawIT accepts input from JSON, YAML, or RIAS, and generates diagrams that can b
 ## Running drawIT
 
 1. Using GUI:
-- test/run.py  (Use for JSON/YAML/RIAS) 
-- test/run.py <key>  (Pass IBM Cloud API Key for RIAS)
+- test/run.py  (use for JSON/YAML/RIAS passing no parameters) 
+- test/run.py <api-key\>  (use for RIAS passing IBM Cloud API Key)
 - GUI outputs drawio xml (plus errors/warnings) to user's Documents/drawIT folder by default.
 2. Using NodeJS: 
 - npm start 
-- curl -X POST --data-binary @test/drawit-input.json.zip -H "Content-Type: application/zip" http://localhost:8080/drawit/<identifier>
+- curl -X POST --data-binary @test/drawit-input.json.zip -H "Content-Type: application/zip" http://localhost:8080/drawit/<identifier\>
 - curl returns drawio xml directly (plus errors/warnings).
 3. Using Podman (or Docker):
 - podman build . -t drawit
 - podman run -p 41920:8080 -d drawit
-- curl -X POST --data-binary @test/drawit-input.json.zip -H "Content-Type: application/zip" http://localhost:41920/drawit/<identifier>
+- curl -X POST --data-binary @test/drawit-input.json.zip -H "Content-Type: application/zip" http://localhost:41920/drawit/<identifier\>
 - curl returns drawio xml directly (plus errors/warnings).
 
 <!--
