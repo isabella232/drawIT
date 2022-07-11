@@ -40,19 +40,22 @@ router.post('/drawit/:id', function(request, response, next) {
           if (error)
             console.log("drawIT unable to read directory " + accountpath);
           else {
+	    console.log(files);
 	    for (let index = 0; index < files.length; index++) {
 	      let file = files[index];
 	      let segments = file.split(".");
 	      let type = segments.pop();
+	      console.log("HERE:");
+	      console.log(file);
+	      console.log(type);
 	      if (type == 'json' || type === 'yaml' || type === 'yml') {
 	        inputname = accountpath + file;
 	        outputname = accountpath + segments[0] + '.xml';
+                drawIT(request, response, accountpath, inputname, outputname, logname, combinedname);
                 break;
 	      }
 	    }
           }
-
-          drawIT(request, response, accountpath, inputname, outputname, logname, combinedname);
         });
       });
   })

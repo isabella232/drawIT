@@ -80,14 +80,8 @@ class Analyze:
       # add regionstable[regionname] = vpcid
 
       for subnetid in nicstable:
-         print("subnetid")
-         print(subnetid)
          subnetframe = findrow(userdata, self.inputdata['subnets'], 'id', subnetid)
-         print("subnetframe")
-         print(subnetframe)
          subnetname = subnetframe['name']
-         print("subnetname")
-         print(subnetname)
          subnetid = subnetframe['id']
 
          subnetzonename = subnetframe['zone.name']
