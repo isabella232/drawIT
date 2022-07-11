@@ -57,7 +57,7 @@
         "drawit-volume1-id"
       ],
       "networkInterfaces": [
-	{
+        {
           "name": "drawit-nic1",
           "id": "drawit-nic1-id",
           "networkId": "drawit-subnet1-id",
@@ -71,7 +71,7 @@
           "maxMbps": 3000,
           "securityGroupIds": [],
           "type": "NetworkInterface"
-	}
+        }
       ]
     }
   ],

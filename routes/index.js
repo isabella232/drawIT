@@ -35,7 +35,8 @@ router.post('/drawit/:id', function(request, response, next) {
 
     fs.createReadStream(inputzip)
       .pipe(unzipper.Extract({ path: accountpath } ))
-      .on('finish', function() { 
+      //.on('finish', function() { 
+      .on('close', function() { 
         fs.readdir(accountpath, function(error, files) {
           if (error)
             console.log("drawIT unable to read directory " + accountpath);
@@ -45,9 +46,6 @@ router.post('/drawit/:id', function(request, response, next) {
 	      let file = files[index];
 	      let segments = file.split(".");
 	      let type = segments.pop();
-	      console.log("HERE:");
-	      console.log(file);
-	      console.log(type);
 	      if (type == 'json' || type === 'yaml' || type === 'yml') {
 	        inputname = accountpath + file;
 	        outputname = accountpath + segments[0] + '.xml';
