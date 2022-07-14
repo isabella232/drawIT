@@ -57,7 +57,7 @@ class File:
       vpcs = pd.json_normalize(data['vpcs'] if ('vpcs' in data) else pd.json_normalize({}))
       subnets = pd.json_normalize(data['subnets'] if ('subnets' in data) else pd.json_normalize({}))
       instances = pd.json_normalize(data['instances'] if ('instances' in data) else pd.json_normalize({}))
-      networkInterfaces = pd.json_normalize(data['networkInterfaces'] if ('networkInterfaces' in data) else pd.json_normalize({}))
+      #networkInterfaces = pd.json_normalize(data['networkInterfaces'] if ('networkInterfaces' in data) else pd.json_normalize({}))
       publicGateways = pd.json_normalize(data['publicGateways'] if ('publicGateways' in data) else pd.json_normalize({}))
       floatingIPs = pd.json_normalize(data['floatingIPs'] if ('floatingIPs' in data) else pd.json_normalize({}))
       vpnGateways = pd.json_normalize(data['vpnGateways'] if ('vpnGateways' in data) else pd.json_normalize({}))
@@ -179,12 +179,22 @@ class File:
                      'profile': 'profile.name',
                      'osVersion': 'image.name'}, inplace=True)
 
-      if not networkInterfaces.empty:
-         networkInterfaces.rename(
-            #columns={'ip': 'primary_ipv4_address',
-            columns={'ip': 'primary_ip.address',
-                     'networkId': 'subnet.id',
-                     'instanceId': 'instance.id'}, inplace=True)
+
+      #networkInterfaces = instances['networkInterfaces']
+      #nicframe = pd.DataFrame.from_dict(networkInterfaces)
+      #if not nicframe.empty:
+      #   nicframe.rename(
+      #      columns={'ip': 'primary_ip.address',
+      #               'networkId': 'subnet.id',
+      #               'instanceId': 'instance.id'}, inplace=True)
+      #instances['networkInterfaces'] = nicframe
+
+      #if not networkInterfaces.empty:
+      #   networkInterfaces.rename(
+      #      #columns={'ip': 'primary_ipv4_address',
+      #      columns={'ip': 'primary_ip.address',
+      #               'networkId': 'subnet.id',
+      #               'instanceId': 'instance.id'}, inplace=True)
 
       if not vpnGateways.empty:
          vpnGateways.rename(
@@ -194,7 +204,7 @@ class File:
          'vpcs': vpcs,
          'subnets': subnets,
          'instances': instances,
-         'networkInterfaces': networkInterfaces,
+         #'networkInterfaces': networkInterfaces,
          'publicGateways': publicGateways,
          'floatingIPs': floatingIPs,
          'vpnGateways': vpnGateways,

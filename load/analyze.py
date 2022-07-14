@@ -22,65 +22,50 @@ class Analyze:
       self.setupdata = user['setupdata']
 
    def analyzeData(self):
-      nicstable = {}
-      regionstable = {}
-      vpcstable = {}
-      zonestable = {}
+      instancestable = {}
+      subnetstable = {}
+      zonestable = {} # subnetids
+      vpcstable = {} # zoneids
+      regionstable = {} # vpcids
 
       self.inputdata = userdata['inputdata']
       self.setupdata = userdata['setupdata']
 
-      # For each NIC add nicstable[subnetid] = nicframe.
-      nics = self.inputdata['networkInterfaces']
-      if not nics.empty:
-         for nicindex, nicframe in nics.iterrows():
-            nicname = nicframe['name']
-            nicid = nicframe['id']
-            nicip = nicframe['primary_ip.address']
-            nicsubnetid = nicframe['subnet.id']
-            nicinstance = nicframe['instance.id']
-            # TODO: Region not in nicframe
-            # nicregion = nicframe['region']
-
-            # Create nicstable[subnetid] = nicframe
-            if nicsubnetid in nicstable:
-               nicstable[nicsubnetid].append(nicframe)
-            else:
-               nicstable[nicsubnetid] = [nicframe]
-
-      # Include empty subnets.
-      subnetdf = self.inputdata['subnets']
-      for subnetindex, subnetframe in subnetdf.iterrows():
-         subnetname = subnetframe['name']
+      # Add subnets to subnetstable including empty subnets.
+      subnets = self.inputdata['subnets']
+      for subnetindex, subnetframe in subnets.iterrows():
          subnetid = subnetframe['id']
+         subnetstable[subnetid] = []
 
-         subnetzonename = subnetframe['zone.name']
-         if subnetzonename == None:
-            printerror(invalidzonereferencemessage % subnetname)
-            continue
+      # Add instances to instancestable, add instances to subnetstable based on subnet in each nic.
+      instances = self.inputdata['instances']
+      if not instances.empty:
+         for instanceindex, instanceframe in instances.iterrows():
+            instancename = instanceframe['name']
+            instanceid = instanceframe['id']
+            vpcname = instanceframe['vpcName']
+            vpcid = instanceframe['vpcId']
+            regionname = instanceframe['region']
+            zonename = instanceframe['availabilityZone']
 
-         lastindex = subnetzonename.rfind('-')
-         subnetregion = subnetzonename[0:lastindex]
-         subnetvpcid = subnetframe['vpc.id']
-         subnetvpcname = subnetframe['vpc.name']
+            nics = instanceframe['networkInterfaces']
+            if nics:
+               for nicframe in nics:
+                  nicname = nicframe['name']
+                  nicid = nicframe['id']
+                  nicip = 0
+                  nicsubnetid = 0
+                  nicinstance = 0
+             
+                  nicsubnetid = 0
+                  if self.inputtype == 'rias':
+                     nicsubnetid = nicframe['subnet.id']
+                  else: # yaml
+                     nicsubnetid = nicframe['networkId']
+                  subnetstable[nicsubnetid].append(instanceframe)
 
-         # Create nicstable[subnetid] = empty nicframe
-         nicframe = pd.DataFrame()
-         if not subnetid in nicstable:
-            nicstable[subnetid] = [nicframe]
-         #if subnetid in nicstable:
-         #   nicstable[subnetid].append(nicframe)
-         #else:
-         #   nicstable[subnetid] = [nicframe]
-
-      # For each nic in nicstable, 
-      # get subnetframe, get zone.name from subnet, get regionname from zone.name, 
-      # add zonestable[vpcid:zonename] = subnetid
-      # add vpcstable[vpcid:zonename] = zonekey
-      # add regionstable[regionname] = vpcid
-
-      for subnetid in nicstable:
-         subnetframe = findrow(userdata, self.inputdata['subnets'], 'id', subnetid)
+      # Add subnets to zonestable, zones to vpcstable, and vpcs to regionstable.
+      for subnetindex, subnetframe in subnets.iterrows():
          subnetname = subnetframe['name']
          subnetid = subnetframe['id']
 
@@ -103,7 +88,7 @@ class Analyze:
          else:
             zonestable[zonekey] = [subnetid]
 
-         # Add zones to vpctable.
+         # Add zones to vpcstable.
          zonekey = subnetvpcid + ':' + subnetzonename
          vpcstable = self.setupdata['vpcs']
          if subnetvpcid in vpcstable:
@@ -112,7 +97,7 @@ class Analyze:
          else:
             vpcstable[subnetvpcid] = [zonekey]
 
-         # Add vpcs to regiontable.
+         # Add vpcs to regionstable.
          regionstable = self.setupdata['regions']
          if subnetregion in regionstable:
             if subnetvpcid not in regionstable[subnetregion]:
@@ -120,9 +105,10 @@ class Analyze:
          else:
             regionstable[subnetregion] = [subnetvpcid]
 
-      self.setupdata['nics'] = nicstable
-      self.setupdata['regions'] = regionstable
-      self.setupdata['vpcs'] = vpcstable
+      self.setupdata['instances'] = instancestable
+      self.setupdata['subnets'] = subnetstable
       self.setupdata['zones'] = zonestable
+      self.setupdata['vpcs'] = vpcstable
+      self.setupdata['regions'] = regionstable
 
       return self.setupdata

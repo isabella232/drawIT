@@ -123,23 +123,5 @@
       },
       "resourceGroupId": "drawit-rg-id"
     }
-  ],
-
-  "networkInterfaces": [
-    {
-      "name": "drawit-nic1",
-      "id": "drawit-nic1-id",
-      "networkId": "drawit-subnet1-id",
-      "instanceId": "drawit-instance1-id",
-      "region": "us-south",
-      "ip": "172.21.0.4",
-      "floatingIPReference": {
-        "id": "drawit-fip1-id",
-         "ip": "52.118.146.156"
-      },
-      "maxMbps": 3000,
-      "securityGroupIds": [],
-      "type": "NetworkInterface"
-    }
   ]
 }  
