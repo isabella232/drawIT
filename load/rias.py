@@ -26,7 +26,8 @@ from common.utils import *
 
 class RIAS:
    def __init__(self, user):
-      self.riasdatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      #self.riasdatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      self.riasdatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways']
       self.outputfolder = user['outputfolder']
       self.region = user['region']
       self.apikey = user['apikey']
@@ -174,7 +175,7 @@ class RIAS:
       listenerdata = []
       pooldata = []
       memberdata = []
-      nicdata = []
+      #nicdata = []
       vpndata = []
       token = self.gettoken(self.accountid, self.apikey)
       #rawdata = getriasdata(userdata, token, accountid, 'vpcs')
@@ -184,19 +185,19 @@ class RIAS:
       for datatype in self.riasdatatypes:
          rawdata = self.getriasdata(token, self.accountid, datatype)
          data[datatype] = rawdata
-         if datatype == 'instances':
-            instancedata = rawdata
-            for instance in instancedata:
-               id = instance['id']
-               rawdata = self.getriassubdata(token, self.accountid, id, datatype, 'network_interfaces')
-               nics = rawdata['network_interfaces']
-               extended = {}
-               for nic in nics:
-                  extended = nic
-                  extended['instance.id'] = id
-                  nicdata.append(extended)
+         #if datatype == 'instances':
+         #   instancedata = rawdata
+         #   for instance in instancedata:
+         #      id = instance['id']
+         #      rawdata = self.getriassubdata(token, self.accountid, id, datatype, 'network_interfaces')
+         #      nics = rawdata['network_interfaces']
+         #      extended = {}
+         #      for nic in nics:
+         #         extended = nic
+         #         extended['instance.id'] = id
+         #         nicdata.append(extended)
 
-         elif datatype == 'load_balancers':
+         if datatype == 'load_balancers':
             lbdata = rawdata
             for lb in lbdata:
                id = lb['id']
@@ -248,7 +249,7 @@ class RIAS:
          #         #extended['subnetId'] = id
          #         vpndata.append(extended)
          
-      data['network_interfaces'] = nicdata
+      #data['network_interfaces'] = nicdata
       data['load_balancer_listeners'] = listenerdata
       data['load_balancer_pools'] = pooldata
       data['load_balancer_members'] = memberdata
@@ -261,7 +262,7 @@ class RIAS:
       vpcs = pd.json_normalize(data['vpcs'] if ('vpcs' in data) else pd.json_normalize({}))
       subnets = pd.json_normalize(data['subnets'] if ('subnets' in data) else pd.json_normalize({}))
       instances = pd.json_normalize(data['instances'] if ('instances' in data) else pd.json_normalize({}))
-      networkInterfaces = pd.json_normalize(data['network_interfaces'] if ('network_interfaces' in data) else pd.json_normalize({}))
+      #networkInterfaces = pd.json_normalize(data['network_interfaces'] if ('network_interfaces' in data) else pd.json_normalize({}))
       publicGateways = pd.json_normalize(data['public_gateways'] if ('public_gateways' in data) else pd.json_normalize({}))
       floatingIPs = pd.json_normalize(data['floating_ips'] if ('floating_ips' in data) else pd.json_normalize({}))
       vpnGateways = pd.json_normalize(data['vpn_gateways'] if ('vpn_gateways' in data) else pd.json_normalize({}))
@@ -275,15 +276,11 @@ class RIAS:
       securityGroups = pd.json_normalize({})
       keys = pd.json_normalize({})
 
-      print("begin subnets:")
-      print(subnets)
-      print("end subnets")
-
       normalizeddata = {
          'vpcs': vpcs,
          'subnets': subnets,
          'instances': instances,
-         'networkInterfaces': networkInterfaces,
+         #'networkInterfaces': networkInterfaces,
          'publicGateways': publicGateways,
          'floatingIPs': floatingIPs,
          'vpnGateways': vpnGateways,

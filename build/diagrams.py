@@ -396,7 +396,8 @@ class Diagrams:
 
       #for nicframe in nicstable[subnetid]:
       for instanceframe in subnets[subnetid]:
-         for nicframe in instanceframe['networkInterfaces']:
+         nics = instanceframe['network_interfaces'] if self.inputtype == 'rias' else instanceframe['networkInterfaces']
+         for nicframe in nics:
             #if nicframe.empty:
             #   continue
 
@@ -404,22 +405,14 @@ class Diagrams:
 
             nicname = nicframe['name']
             #nicinstanceid = nicframe['instance.id']
-            nicinstanceid = 0
-            if self.inputtype == 'rias': 
-                nicinstanceid = nicframe['instance.id']
-            else: # yaml
-                nicinstanceid = nicframe['instanceId']
+            nicinstanceid = instanceframe['id'] if self.inputtype == 'rias' else nicframe['instanceId']
 
             nicfipid = None
             nicfipip = None
             nicfipname = None
  
             #nicip = nicframe['primary_ip.address']
-            nicip = 0
-            if self.inputtype == 'rias': 
-                nicip = nicframe['primary_ip.address']
-            else: # yaml
-                nicip = nicframe['ip']
+            nicip = nicframe['primary_ip']['address'] if self.inputtype == 'rias' else nicframe['ip']
             nicid = nicframe['id']
             fipframe = findrow(userdata, self.inputdata['floatingIPs'], 'target.id', nicid)
             if len(fipframe) > 0:

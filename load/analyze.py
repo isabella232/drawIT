@@ -43,26 +43,28 @@ class Analyze:
          for instanceindex, instanceframe in instances.iterrows():
             instancename = instanceframe['name']
             instanceid = instanceframe['id']
-            vpcname = instanceframe['vpcName']
-            vpcid = instanceframe['vpcId']
-            regionname = instanceframe['region']
-            zonename = instanceframe['availabilityZone']
+            #vpcname = instanceframe['vpcName']
+            #vpcid = instanceframe['vpcId']
+            vpcname = instanceframe['vpc.name'] if self.inputtype == 'rias' else instanceframe['vpcName']
+            vpcid = instanceframe['vpc.id'] if self.inputtype == 'rias' else instanceframe['vpcId']
+            #regionname = instanceframe['region']
+            #zonename = instanceframe['availabilityZone']
+            zonename = instanceframe['zone.name'] if self.inputtype == 'rias' else instanceframe['availabilityZone']
+            regionname = zonename[:len(zonename) - 2] if self.inputtype == 'rias' else instanceframe['availabilityZone']
 
-            nics = instanceframe['networkInterfaces']
+            #nics = instanceframe['networkInterfaces']
+            nics = instanceframe['network_interfaces'] if self.inputtype == 'rias' else instanceframe['networkInterfaces']
             if nics:
                for nicframe in nics:
                   nicname = nicframe['name']
                   nicid = nicframe['id']
-                  nicip = 0
-                  nicsubnetid = 0
-                  nicinstance = 0
              
-                  nicsubnetid = 0
-                  if self.inputtype == 'rias':
-                     nicsubnetid = nicframe['subnet.id']
-                  else: # yaml
-                     nicsubnetid = nicframe['networkId']
-                  subnetstable[nicsubnetid].append(instanceframe)
+                  nicsubnetid = nicframe['subnet']['id'] if self.inputtype == 'rias' else nicframe['networkId']
+                  if nicsubnetid in subnetstable:
+                     subnetstable[nicsubnetid].append(instanceframe)
+                  else:
+                     printerror(invalidsubnetreferencemessage % nicsubnetid)
+                     continue
 
       # Add subnets to zonestable, zones to vpcstable, and vpcs to regionstable.
       for subnetindex, subnetframe in subnets.iterrows():

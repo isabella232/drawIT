@@ -33,7 +33,7 @@ from load.rias import *
 # Constants
 
 TOOLNAME = 'drawIT'
-TOOLVERSION = '0.5.1'
+TOOLVERSION = '0.5.2'
 
 #ACCOUNT_PLACEHOLDER = '(Account-ID)'
 #KEY_PLACEHOLDER = '(API-Key)'
