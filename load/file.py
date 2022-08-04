@@ -22,7 +22,6 @@ import urllib3
 #import logging
 from zipfile import ZipFile
 
-from load.analyze import Analyze
 from common.options import Options
 from common.utils import *
 
@@ -45,12 +44,10 @@ class File:
    vpnConnections = {}
    data = {}
    types = []
-   analyze = None
    options = None
 
    def __init__(self, options):
       self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
-      self.analyze = Analyze(options)
       self.options = options
       return
 

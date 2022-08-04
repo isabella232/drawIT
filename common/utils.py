@@ -293,28 +293,28 @@ def backupdirectory(user):
 
 # Search functions
 
-def finddictionary(user, dictionarylist, columnname, columnvalue):
-   if len(dictionarylist) > 0:
-      for dictionaryindex, dictionary in dictionarylist.iterrows():
-         if dictionary[columnname] == columnvalue:
-            return dictionary
-   return {}
+#def finddictionary(user, dictionarylist, columnname, columnvalue):
+#   if len(dictionarylist) > 0:
+#      for dictionaryindex, dictionary in dictionarylist.iterrows():
+#         if dictionary[columnname] == columnvalue:
+#            return dictionary
+#   return {}
 
-def findrow(user, dictionarylist, columnname, columnvalue):
-   return finddictionary(user, dictionarylist, columnname, columnvalue)
+#def findrow(user, dictionarylist, columnname, columnvalue):
+#   return finddictionary(user, dictionarylist, columnname, columnvalue)
 
-def findlb(user, dictionarylist, columnname, columnvalue):
-   if dictionarylist:
-      for dictionary in dictionarylist:
-         print(dictionary)
-         column = dictionary[columnname]
-         # TODO: Remove 0 in first column
-         column = column[0]
-         #print(column)
-         #if dictionary[columnname] == columnvalue:
-         if column == columnvalue:
-            return dictionary
-   return {}
+#def findlb(user, dictionarylist, columnname, columnvalue):
+#   if dictionarylist:
+#      for dictionary in dictionarylist:
+#         print(dictionary)
+#         column = dictionary[columnname]
+#         # TODO: Remove 0 in first column
+#         column = column[0]
+#         #print(column)
+#         #if dictionary[columnname] == columnvalue:
+#         if column == columnvalue:
+#            return dictionary
+#   return {}
 
 #def findfip(user, dictionarylist, columnname, columnvalue):
 #   if len(dictionarylist) > 0:
@@ -341,10 +341,10 @@ def findlb(user, dictionarylist, columnname, columnvalue):
 
 # Other functions
 
-def getnormalized(data):
-   normalized = pd.json_normalize(data)
-   df = normalized.T.unstack()[0]
-   return df
+#def getnormalized(data):
+#   normalized = pd.json_normalize(data)
+#   df = normalized.T.unstack()[0]
+#   return df
 
 def compress(string):
    hash = hashlib.md5(string.encode())

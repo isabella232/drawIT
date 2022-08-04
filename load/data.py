@@ -13,14 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from load.analyze import Analyze
 from load.file import File
 from load.rias import RIAS
 from common.options import Options
 from common.utils import *
 
 class Data:
-   analyze = None
+   instancesTable = {}
+   subnetsTable = {}
+   vpcsTable = {} # vpcids
+   regionsTable = {} # vpcids
+   zonesTable = {} # subnetids
    data = None
    options = None
 
@@ -30,7 +33,6 @@ class Data:
          self.data = RIAS(options)
       else:
          self.data = File(options)
-      self.analyze = Analyze(options)
       return
 
    def loadData(self):
@@ -41,23 +43,106 @@ class Data:
          self.data.loadJSON()
       else:
          self.data.loadYAML()
-      self.analyze.analyzeData(self.data)
+      self.analyzeData()
       return
 
+   def analyzeData(self):
+      # Add subnets to subnetsTable including empty subnets.
+      subnets = self.data.getSubnets()
+      for subnetindex, subnetframe in subnets.iterrows():
+         subnetid = subnetframe['id']
+         self.subnetsTable[subnetid] = []
+
+      # Add instances to subnetsTable in each nic.
+      instances = self.data.getInstances()
+      if not instances.empty:
+         for instanceindex, instanceframe in instances.iterrows():
+            instancename = instanceframe['name']
+            instanceid = instanceframe['id']
+            #vpcname = instanceframe['vpcName']
+            #vpcid = instanceframe['vpcId']
+            vpcname = instanceframe['vpc.name'] if self.options.isInputRIAS() else instanceframe['vpcName']
+            vpcid = instanceframe['vpc.id'] if self.options.isInputRIAS() else instanceframe['vpcId']
+            #regionname = instanceframe['region']
+            #zonename = instanceframe['availabilityZone']
+            zonename = instanceframe['zone.name'] if self.options.isInputRIAS() else instanceframe['availabilityZone']
+            regionname = zonename[:len(zonename) - 2] if self.options.isInputRIAS() else instanceframe['availabilityZone']
+
+            #nics = instanceframe['networkInterfaces']
+            nics = instanceframe['network_interfaces'] if self.options.isInputRIAS() else instanceframe['networkInterfaces']
+            if nics:
+               for nicframe in nics:
+                  nicname = nicframe['name']
+                  nicid = nicframe['id']
+
+                  nicsubnetid = nicframe['subnet']['id'] if self.options.isInputRIAS() else nicframe['networkId']
+                  if nicsubnetid in self.subnetsTable:
+                     self.subnetsTable[nicsubnetid].append(instanceframe)
+                  else:
+                     printerror(invalidsubnetreferencemessage % nicsubnetid)
+                     continue
+
+      # Add subnets to zonesTable, zones to vpcsTable, and vpcs to regionsTable.
+      for subnetindex, subnetframe in subnets.iterrows():
+         subnetname = subnetframe['name']
+         subnetid = subnetframe['id']
+
+         subnetzonename = subnetframe['zone.name']
+         if subnetzonename == None:
+            printerror(invalidzonereferencemessage % subnetname)
+            continue
+
+         lastindex = subnetzonename.rfind('-')
+         subnetregion = subnetzonename[0:lastindex]
+         subnetvpcid = subnetframe['vpc.id']
+         subnetvpcname = subnetframe['vpc.name']
+
+         # Add subnets to zones.
+         zonekey = subnetvpcid + ':' + subnetzonename
+         if zonekey in self.zonesTable:
+            if subnetid not in self.zonesTable[zonekey]:
+               self.zonesTable[zonekey].append(subnetid)
+         else:
+            self.zonesTable[zonekey] = [subnetid]
+
+         # Add zones to vpcsTable.
+         zonekey = subnetvpcid + ':' + subnetzonename
+         if subnetvpcid in self.vpcsTable:
+            if zonekey not in self.vpcsTable[subnetvpcid]:
+               self.vpcsTable[subnetvpcid].append(zonekey)
+         else:
+            self.vpcsTable[subnetvpcid] = [zonekey]
+
+         # Add vpcs to regionsTable.
+         if subnetregion in self.regionsTable:
+            if subnetvpcid not in self.regionsTable[subnetregion]:
+               self.regionsTable[subnetregion].append(subnetvpcid)
+         else:
+            self.regionsTable[subnetregion] = [subnetvpcid]
+
+      return
+
+   def findRow(self, user, dictionarylist, columnname, columnvalue):
+      if len(dictionarylist) > 0:
+         for dictionaryindex, dictionary in dictionarylist.iterrows():
+            if dictionary[columnname] == columnvalue:
+               return dictionary
+      return {}
+
    def getInstancesTable(self):
-      return self.analyze.getInstancesTable()
+      return self.instancesTable
 
    def getSubnetsTable(self):
-      return self.analyze.getSubnetsTable()
+      return self.subnetsTable
 
    def getVPCsTable(self):
-      return self.analyze.getVPCsTable()
+      return self.vpcsTable
 
    def getRegionsTable(self):
-      return self.analyze.getRegionsTable()
+      return self.regionsTable
 
    def getZonesTable(self):
-      return self.analyze.getZonesTable()
+      return self.zonesTable
 
    def getFloatingIPs(self):
       return self.data.getFloatingIPs()
@@ -108,22 +193,22 @@ class Data:
       return self.data.getVPNConnections()
 
    def getInstance(self, id):
-      return findrow(self.options, self.data.getInstances(), 'id', id)
+      return self.findRow(self.options, self.data.getInstances(), 'id', id)
 
    def getSubnet(self, id):
-      return findrow(self.options, self.data.getSubnets(), 'id', id)
+      return self.findRow(self.options, self.data.getSubnets(), 'id', id)
 
    def getVPC(self, id):
-      return findrow(self.options, self.data.getVPCs(), 'id', id)
+      return self.findRow(self.options, self.data.getVPCs(), 'id', id)
 
    def getFloatingIP(self, id):
-      return findrow(self.options, self.data.getFloatingIPs(), 'target.id', id)
+      return self.findRow(self.options, self.data.getFloatingIPs(), 'target.id', id)
 
    def getPublicGateway(self, id):
-      return findrow(self.options, self.data.getPublicGateways(), 'id', id)
+      return self.findRow(self.options, self.data.getPublicGateways(), 'id', id)
 
    def getVPNGateway(self, id):
       if self.options.isInputRIAS():
-         return findrow(self.options, self.data.getVPNGateways(), 'subnet.id', id)
+         return self.findRow(self.options, self.data.getVPNGateways(), 'subnet.id', id)
       else:
-         return findrow(self.options, self.data.getVPNGateways(), 'networkId', id)
+         return self.findRow(self.options, self.data.getVPNGateways(), 'networkId', id)
