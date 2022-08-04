@@ -16,36 +16,114 @@
 from load.analyze import Analyze
 from load.file import File
 from load.rias import RIAS
+from common.options import Options
 from common.utils import *
 
 class Data:
-   def __init__(self, user):
-      self.inputtype = user['inputtype']
-      self.inputdata = None
-      self.normalizeddata = None
-      self.setupdata = None
-      self.file = File(user)
-      self.rias = RIAS(user)
-      self.analyze = Analyze(user)
+   analyze = None
+   data = None
+   options = None
+
+   def __init__(self, options):
+      self.options = options
+      if self.options.isInputRIAS():
+         self.data = RIAS(options)
+      else:
+         self.data = File(options)
+      self.analyze = Analyze(options)
+      return
 
    def loadData(self):
-      if self.inputtype == 'rias':
-         self.inputdata = self.rias.loadRIAS()
-         if self.inputdata != None:
-            self.normalizeddata = self.rias.normalizeData(self.inputdata)
-            self.inputdata = self.normalizeddata
-      elif self.inputtype == 'json':
-         self.inputdata = self.file.loadJSON()
-         if self.inputdata != None:
-            self.normalizeddata = self.file.normalizeData(self.inputdata)
-            self.inputdata = self.normalizeddata
+      normalizeddata = None
+      if self.options.isInputRIAS():
+         self.data.loadRIAS()
+      elif self.options.isInputJSON():
+         self.data.loadJSON()
       else:
-         self.inputdata = self.file.loadYAML()
-         if self.inputdata != None:
-            self.normalizeddata = self.file.normalizeData(self.inputdata)
-            self.inputdata = self.normalizeddata
-   
-      if self.normalizeddata != None:
-         userdata['inputdata'] = self.inputdata
-         self.setupdata = self.analyze.analyzeData() 
-         userdata['setupdata'] = self.setupdata
+         self.data.loadYAML()
+      self.analyze.analyzeData(self.data)
+      return
+
+   def getInstancesTable(self):
+      return self.analyze.getInstancesTable()
+
+   def getSubnetsTable(self):
+      return self.analyze.getSubnetsTable()
+
+   def getVPCsTable(self):
+      return self.analyze.getVPCsTable()
+
+   def getRegionsTable(self):
+      return self.analyze.getRegionsTable()
+
+   def getZonesTable(self):
+      return self.analyze.getZonesTable()
+
+   def getFloatingIPs(self):
+      return self.data.getFloatingIPs()
+
+   def getInstances(self):
+      return self.data.getInstances()
+
+   def getKeys(self):
+      return self.data.getKeys()
+
+   def getNetworkInterfaces(self):
+      return self.data.getNetworkInterfaces()
+
+   def getLoadBalancers(self):
+      return self.data.getLoadBalancers()
+
+   def getLoadBalancerListeners(self):
+      return self.data.getLoadBalancerListeners()
+
+   def getLoadBalancerPools(self):
+      return self.data.getLoadBalancerPools()
+
+   def getLoadBalancerMembers(self):
+      return self.data.getLoadBalancerMembers()
+
+   def getNetworkACLs(self):
+      return self.data.getNetworkACLs()
+
+   def getPublicGateways(self):
+      return self.data.getPublicGateways()
+
+   def getSecurityGroups(self):
+      return self.data.getSecurityGroups()
+
+   def getSubnets(self):
+      return self.data.getSubnets()
+
+   def getVolumes(self):
+      return self.data.getVolumes()
+
+   def getVPCs(self):
+      return self.data.getVPCs()
+
+   def getVPNGateways(self):
+      return self.data.getVPNGateways()
+
+   def getVPNConnections(self):
+      return self.data.getVPNConnections()
+
+   def getInstance(self, id):
+      return findrow(self.options, self.data.getInstances(), 'id', id)
+
+   def getSubnet(self, id):
+      return findrow(self.options, self.data.getSubnets(), 'id', id)
+
+   def getVPC(self, id):
+      return findrow(self.options, self.data.getVPCs(), 'id', id)
+
+   def getFloatingIP(self, id):
+      return findrow(self.options, self.data.getFloatingIPs(), 'target.id', id)
+
+   def getPublicGateway(self, id):
+      return findrow(self.options, self.data.getPublicGateways(), 'id', id)
+
+   def getVPNGateway(self, id):
+      if self.options.isInputRIAS():
+         return findrow(self.options, self.data.getVPNGateways(), 'subnet.id', id)
+      else:
+         return findrow(self.options, self.data.getVPNGateways(), 'networkId', id)

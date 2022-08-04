@@ -13,57 +13,58 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Hierarchy:
+#   diagrams.py - iterate diagram objects, invokes shapes.py
+#   shapes.py - build ibm types, invokes types.py
+#   types.py - build drawio types, invokes xml.py with tables.py
+#   xml.py - build drawio objects  
+#   tables.py - collections of drawio properties
+
 import math 
 
 from build.shapes import Shapes
 from load.data import Data
+from common.options import Options
 from common.utils import *
 
 class Diagrams:
-   def __init__(self, user):
-      self.inputdata = user['inputdata']
-      self.setupdata = user['setupdata']
-      self.inputtype = user['inputtype']
-      self.outputdetail = user['outputdetail']
-      self.outputfolder = user['outputfolder']
-      self.outputfile = user['outputfile']
-      self.outputshapes = user['outputshapes']
-      self.outputsplit = user['outputsplit']
-      self.userregion = user['region']
-      self.runmode = user['runmode']
-      self.saveinstances = []
-      self.data = Data(user)
-      self.shapes = Shapes(user)
+   data = None
+   options = None
+   shapes = None
+   saveinstances = []
+
+   def __init__(self, options, data):
+      self.options = options
+      self.data = data
+      self.shapes = Shapes(options)
 
    def buildDiagrams(self):
-      self.data.loadData()
-      self.inputdata = userdata['inputdata']
-      self.setupdata = userdata['setupdata']
-
-      if self.outputfolder[-1] != '/':
-         self.outputfolder = self.outputfolder + '/'
+      outputFolder = self.options.getOutputFolder()
+      if outputFolder[-1] != '/':
+         self.options.setOutputFolder(outputFolder + '/')
 
       regiondata = {}
 
-      for regionname, regionvalues in self.setupdata['regions'].items():
+      for regionname, regionvalues in self.data.getRegionsTable().items():
          vpcdata = self.buildVPCs(regionname, regionvalues)
          regiondata[regionname] = vpcdata
 
       for regionname, regionvalues in regiondata.items():
-         if self.userregion != "all" and self.userregion != regionname:
+         #if self.userregion != "all" and self.userregion != regionname:
+         if self.options.getRegion().value != "all" and self.options.getRegion().value != regionname:
             # Covers the case for Yaml data which includes all regions whereas RIAS data can include single or all regions.
             continue
          for vpcname, vpcvalues in regionvalues.items():
             self.shapes.buildXML(vpcvalues, regionname + ':' + vpcname)
-            if self.outputsplit == 'vpc':
-               self.shapes.dumpXML(regionname + "_" + vpcname + "_" + self.outputfile, self.outputfolder)
+            if self.options.isVPCSplit():
+               self.shapes.dumpXML(regionname + "_" + vpcname + "_" + self.options.getOutputFile(), self.options.getOutputFolder())
                self.shapes.resetXML()
-         if self.outputsplit == 'region':
-            self.shapes.dumpXML(regionname + "_" + self.outputfile, self.outputfolder)
+         if self.options.isRegionSplit():
+            self.shapes.dumpXML(regionname + "_" + self.options.getOutputFile(), self.options.getOutputFolder())
             self.shapes.resetXML()
 
-         if self.outputsplit == 'none':
-            self.shapes.dumpXML(self.outputfile, self.outputfolder)
+         if self.options.isSingleSplit():
+            self.shapes.dumpXML(self.options.getOutputFile(), self.options.getOutputFolder())
 
    def buildVPCs(self, regionname, regionvalues):
       data = {}
@@ -79,13 +80,14 @@ class Diagrams:
       enterprisenode = self.shapes.buildEnterpriseNetwork(enterprisenetworkname, '', enterprisenetworkname, '', enterprisex, enterprisey, enterprisenetworkwidth, enterprisenetworkheight)
       enterpriseusernode = self.shapes.buildUser(enterpriseusername, enterprisenetworkname, enterpriseusername, '', firsticonx, firsticony, iconwidth, iconheight)
 
-      if self.outputshapes == "logical":
+      if self.options.isLogicalShapes():
          cloudname = "Cloud"
       else:
          cloudname = "IBM Cloud"
 
       for vpcid in regionvalues:
-         vpcframe = findrow(userdata, self.inputdata['vpcs'], 'id', vpcid)
+         #vpcframe = findrow(user, self.inputdata['vpcs'], 'id', vpcid)
+         vpcframe = self.data.getVPC(vpcid)
          if len(vpcframe) == 0:
             printerror(invalidvpcreferencemessage % vpcid)
          else:
@@ -97,7 +99,7 @@ class Diagrams:
             nodes.append(publicusernode)
             nodes.append(publicinternetnode)
 
-            #SAVE publiclink = genlink(userdata, publicname, publicname, internetname)
+            #SAVE publiclink = genlink(user, publicname, publicname, internetname)
             #SAVE links.append(publiclink)
 
             publicuserlink = self.shapes.buildDoubleArrow('', internetname, publicusername)
@@ -156,7 +158,7 @@ class Diagrams:
             regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height)
             nodes.append(regionnode)
          
-            #SAVE lbnodes, lblinks = genloadbalancers(userdata, vpcname, vpcid)
+            #SAVE lbnodes, lblinks = genloadbalancers(user, vpcname, vpcid)
             #SAVE if len(lbnodes) > 0:
             #SAVE    nodes = nodes + lbnodes
             #SAVE    links = links + lblinks
@@ -184,9 +186,9 @@ class Diagrams:
 
       saveheight = 0
 
-      vpcstable = self.setupdata['vpcs'] 
+      vpcsTable = self.data.getVPCsTable() 
       count = 0
-      for regionzonename in vpcstable[vpcid]:
+      for regionzonename in vpcsTable[vpcid]:
          count = count + 1
 
          zonelink = self.shapes.buildLink(regionzonename + ':' + vpcname, regionzonename, vpcname)
@@ -235,18 +237,19 @@ class Diagrams:
 
       saveheight = 0
 
-      zonestable = self.setupdata['zones']
+      zonesTable = self.data.getZonesTable()
       count = 0
       save_subnetpubgateid = None
 
-      for subnetid in zonestable[zonename]:
+      for subnetid in zonesTable[zonename]:
          count = count + 1
          pubgateid = None
 
          width = 0
          height = 0
 
-         subnetframe = findrow(userdata, self.inputdata['subnets'], 'id', subnetid)
+         #subnetframe = findrow(user, self.inputdata['subnets'], 'id', subnetid)
+         subnetframe = self.data.getSubnet(subnetid)
          subnetname = subnetframe['name']
          subnetid = subnetframe['id']
 
@@ -256,7 +259,8 @@ class Diagrams:
          subnetvpcname = subnetframe['vpc.name']
          subnetcidr = subnetframe['ipv4_cidr_block']
 
-         vpcframe = findrow(userdata, self.inputdata['vpcs'], 'id', subnetvpcid)
+         #vpcframe = findrow(user, self.inputdata['vpcs'], 'id', subnetvpcid)
+         vpcframe = self.data.getVPC(subnetvpcid)
          subnetvpcname = subnetframe['name']
 
          regionname = zonename.split(':')[0]
@@ -273,9 +277,10 @@ class Diagrams:
          pubgatefipip = None
          pubgatename = None
          if subnetpubgateid != None:
-            pubgateframe = findrow(userdata, self.inputdata['publicGateways'], 'id', subnetpubgateid)
+            #pubgateframe = findrow(user, self.inputdata['publicGateways'], 'id', subnetpubgateid)
+            pubgateframe = self.data.getPublicGateway(subnetpubgateid)
             if len(pubgateframe) > 0:
-               if self.inputtype == 'rias': 
+               if self.options.isInputRIAS(): 
                   pubgatefipip = pubgateframe['floating_ip.address']
                else: # yaml
                   pubgatefipip = pubgateframe['floatingIP']
@@ -283,12 +288,13 @@ class Diagrams:
 
          vpngateip = None
          vpngatename = None
-         vpngateways = self.inputdata['vpnGateways']
+         vpngateways = self.data.getVPNGateways()
          if not vpngateways.empty:
-            if self.inputtype == 'rias': 
-               vpngateframe = findrow(userdata, self.inputdata['vpnGateways'], 'subnet.id', subnetid)
-            else:
-               vpngateframe = findrow(userdata, self.inputdata['vpnGateways'], 'networkId', subnetid)
+            vpngateframe = self.data.getVPNGateway(subnetid)
+            #if self.inputtype == 'rias': 
+            #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'subnet.id', subnetid)
+            #else:
+            #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'networkId', subnetid)
             if len(vpngateframe) > 0:
                vpngateid = vpngateframe['id']
                # TODO Retrieve VPNGatewayMember[], 
@@ -368,17 +374,17 @@ class Diagrams:
                 
             routername = vpcname + '-router'
             # This link can be assumed since everything inside zone is accesible by the VPN.
-            #vpnlink1 = gensolidlink_doublearrow(userdata, '', subnetname, vpngatename)
+            #vpnlink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
             #links.append(vpnlink1)
             vpnlink2 = self.shapes.buildDoubleArrow('', vpngatename, routername)
             links.append(vpnlink2)
 
             # label, source, target 
-            #vpngatelink1 = gensolidlink_doublearrow(userdata, '', subnetname, vpngatename)
+            #vpngatelink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
             #links.append(vpngatelink1)
 
             # label, source, target 
-            #vpngatelink2 = gensolidlink_doublearrow(userdata, '', vpngatename, username)
+            #vpngatelink2 = gensolidlink_doublearrow(user, '', vpngatename, username)
             #links.append(vpngatelink2)
 
       return nodes, links, values, sizes
@@ -390,13 +396,13 @@ class Diagrams:
       sizes = []
 
       #nicstable = self.setupdata['nics']
-      subnets = self.setupdata['subnets']
+      subnetsTable = self.data.getSubnetsTable()
 
       count = 0
 
       #for nicframe in nicstable[subnetid]:
-      for instanceframe in subnets[subnetid]:
-         nics = instanceframe['network_interfaces'] if self.inputtype == 'rias' else instanceframe['networkInterfaces']
+      for instanceframe in subnetsTable[subnetid]:
+         nics = instanceframe['network_interfaces'] if self.options.isInputRIAS() else instanceframe['networkInterfaces']
          for nicframe in nics:
             #if nicframe.empty:
             #   continue
@@ -405,22 +411,24 @@ class Diagrams:
 
             nicname = nicframe['name']
             #nicinstanceid = nicframe['instance.id']
-            nicinstanceid = instanceframe['id'] if self.inputtype == 'rias' else nicframe['instanceId']
+            nicinstanceid = instanceframe['id'] if self.options.isInputRIAS() else nicframe['instanceId']
 
             nicfipid = None
             nicfipip = None
             nicfipname = None
  
             #nicip = nicframe['primary_ip.address']
-            nicip = nicframe['primary_ip']['address'] if self.inputtype == 'rias' else nicframe['ip']
+            nicip = nicframe['primary_ip']['address'] if self.options.isInputRIAS() else nicframe['ip']
             nicid = nicframe['id']
-            fipframe = findrow(userdata, self.inputdata['floatingIPs'], 'target.id', nicid)
+            #fipframe = findrow(user, self.inputdata['floatingIPs'], 'target.id', nicid)
+            fipframe = self.data.getFloatingIP(nicid)
             if len(fipframe) > 0:
                nicfipid = fipframe['id']
                nicfipip = fipframe['address']
                nicfipname = fipframe['name']
 
-            instanceframe = findrow(userdata, self.inputdata['instances'], 'id', nicinstanceid)
+            #instanceframe = findrow(user, self.inputdata['instances'], 'id', nicinstanceid)
+            instanceframe = self.data.getInstance(nicinstanceid)
             if len(instanceframe) == 0:
                printerror(invalidinstancereferencemessage % nicinstanceid)
                continue
@@ -452,7 +460,7 @@ class Diagrams:
             profiledetails = instanceprofile
             storagedetails = '100GB/3000IOPS'
 
-            if self.outputdetail == "low": 
+            if self.options.isLowDetail(): 
                width = iconwidth
                height = iconheight
                extrawidth = width * 3
@@ -468,13 +476,13 @@ class Diagrams:
             #SAVE x = (width * (count - 1)) + (groupspace * count) 
             #SAVE y = topspace
 
-            #SAVE instancenode = geninstance(userdata, instancename, subnetname, nicip, instancedetails, width, height, x, y)
+            #SAVE instancenode = geninstance(user, instancename, subnetname, nicip, instancedetails, width, height, x, y)
 
-            #SAVE osnode = geninstanceexpandedstack(userdata, instancename, subnetname, nicip, width, height, x, y)
+            #SAVE osnode = geninstanceexpandedstack(user, instancename, subnetname, nicip, width, height, x, y)
 
             bastion = False
 
-            if self.outputdetail == "low": 
+            if self.options.isLowDetail(): 
                if instancename.lower().find("bastion") != -1:
                   bastion = True
                   instancenode = self.shapes.buildInstanceBastion(instanceid, subnetid, instancename, nicip, x, y, width, height)
@@ -491,7 +499,7 @@ class Diagrams:
 
             nodes.append(instancenode)
 
-            if self.outputdetail != "low": 
+            if not self.options.isLowDetail(): 
                textwidth = width - (textgroupspace * 2)
                textheight = height - (texttopspace + textgroupspace)
 
@@ -521,12 +529,12 @@ class Diagrams:
 
             if nicfipip != None:
                # Save for option to show FIP icon.
-               #SAVE fipnode = genfloatingip(userdata, nicfipname, nicfipip)
+               #SAVE fipnode = genfloatingip(user, nicfipname, nicfipip)
                #SAVE nodes.append(fipnode)
-               #SAVE fiplink1 = gensolidlink_doublearrow(userdata, '', instancename, nicfipname)
+               #SAVE fiplink1 = gensolidlink_doublearrow(user, '', instancename, nicfipname)
                #SAVE links.append(fiplink1)
                #SAVE internetname = 'Internet'
-               #SAVE fiplink2 = gensolidlink_doublearrow(userdata, '', nicfipname, internetname)
+               #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
                #SAVE links.append(fiplink2)
 
                routername = vpcname + '-router'
@@ -579,7 +587,7 @@ class Diagrams:
 
          lbgenerated = False
                 
-         memberdata = findrow(userdata, self.inputdata['loadBalancerMembers'], 'id', lbid)
+         memberdata = findrow(user, self.inputdata['loadBalancerMembers'], 'id', lbid)
          if len(memberdata) > 0:
             membersall = memberdata['members']
          else:
@@ -592,17 +600,17 @@ class Diagrams:
                   address = target['address']
                else:
                   instanceid = member['instanceId']
-                  instance = findrow(userdata, self.inputdata['instances'], 'id', instanceid)
+                  instance = findrow(user, self.inputdata['instances'], 'id', instanceid)
                   if len(instance) > 0:
                      addressarray = instance['ipAddresses']
                      address = addressarray[0]
                   else:
                      address = "0.0.0.0"
 
-               nicdata = findrow(userdata, self.inputdata['networkInterfaces'], 'primary_ip.address', address)
+               nicdata = findrow(user, self.inputdata['networkInterfaces'], 'primary_ip.address', address)
                if len(nicdata) != 0:
                   nicinstanceid = nicdata['instance.id']
-                  instanceframe = findrow(userdata, self.inputdata['instances'], 'id', nicinstanceid)
+                  instanceframe = findrow(user, self.inputdata['instances'], 'id', nicinstanceid)
                   instancename = instanceframe['name']
                   instancevpcid = instanceframe['vpc.id']
 

@@ -13,60 +13,58 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from common.options import Options
 from common.utils import *
 
 class Analyze:
-   def __init__(self, user):
-      self.inputtype = user['inputtype']
-      self.inputdata = user['inputdata']
-      self.setupdata = user['setupdata']
+   instancesTable = {}
+   subnetsTable = {}
+   vpcsTable = {} # vpcids
+   regionsTable = {} # vpcids
+   zonesTable = {} # subnetids
+   options = None
 
-   def analyzeData(self):
-      instancestable = {}
-      subnetstable = {}
-      zonestable = {} # subnetids
-      vpcstable = {} # zoneids
-      regionstable = {} # vpcids
+   def __init__(self, options):
+      self.options = options
+      return
 
-      self.inputdata = userdata['inputdata']
-      self.setupdata = userdata['setupdata']
-
-      # Add subnets to subnetstable including empty subnets.
-      subnets = self.inputdata['subnets']
+   def analyzeData(self, data):
+      # Add subnets to subnetsTable including empty subnets.
+      subnets = data.getSubnets()
       for subnetindex, subnetframe in subnets.iterrows():
          subnetid = subnetframe['id']
-         subnetstable[subnetid] = []
+         self.subnetsTable[subnetid] = []
 
-      # Add instances to instancestable, add instances to subnetstable based on subnet in each nic.
-      instances = self.inputdata['instances']
+      # Add instances to subnetsTable in each nic.
+      instances = data.getInstances()
       if not instances.empty:
          for instanceindex, instanceframe in instances.iterrows():
             instancename = instanceframe['name']
             instanceid = instanceframe['id']
             #vpcname = instanceframe['vpcName']
             #vpcid = instanceframe['vpcId']
-            vpcname = instanceframe['vpc.name'] if self.inputtype == 'rias' else instanceframe['vpcName']
-            vpcid = instanceframe['vpc.id'] if self.inputtype == 'rias' else instanceframe['vpcId']
+            vpcname = instanceframe['vpc.name'] if self.options.isInputRIAS() else instanceframe['vpcName']
+            vpcid = instanceframe['vpc.id'] if self.options.isInputRIAS() else instanceframe['vpcId']
             #regionname = instanceframe['region']
             #zonename = instanceframe['availabilityZone']
-            zonename = instanceframe['zone.name'] if self.inputtype == 'rias' else instanceframe['availabilityZone']
-            regionname = zonename[:len(zonename) - 2] if self.inputtype == 'rias' else instanceframe['availabilityZone']
+            zonename = instanceframe['zone.name'] if self.options.isInputRIAS() else instanceframe['availabilityZone']
+            regionname = zonename[:len(zonename) - 2] if self.options.isInputRIAS() else instanceframe['availabilityZone']
 
             #nics = instanceframe['networkInterfaces']
-            nics = instanceframe['network_interfaces'] if self.inputtype == 'rias' else instanceframe['networkInterfaces']
+            nics = instanceframe['network_interfaces'] if self.options.isInputRIAS() else instanceframe['networkInterfaces']
             if nics:
                for nicframe in nics:
                   nicname = nicframe['name']
                   nicid = nicframe['id']
              
-                  nicsubnetid = nicframe['subnet']['id'] if self.inputtype == 'rias' else nicframe['networkId']
-                  if nicsubnetid in subnetstable:
-                     subnetstable[nicsubnetid].append(instanceframe)
+                  nicsubnetid = nicframe['subnet']['id'] if self.options.isInputRIAS() else nicframe['networkId']
+                  if nicsubnetid in self.subnetsTable:
+                     self.subnetsTable[nicsubnetid].append(instanceframe)
                   else:
                      printerror(invalidsubnetreferencemessage % nicsubnetid)
                      continue
 
-      # Add subnets to zonestable, zones to vpcstable, and vpcs to regionstable.
+      # Add subnets to zonesTable, zones to vpcsTable, and vpcs to regionsTable.
       for subnetindex, subnetframe in subnets.iterrows():
          subnetname = subnetframe['name']
          subnetid = subnetframe['id']
@@ -81,36 +79,42 @@ class Analyze:
          subnetvpcid = subnetframe['vpc.id']
          subnetvpcname = subnetframe['vpc.name']
 
-         # Add subnets to zonetable.
+         # Add subnets to zones.
          zonekey = subnetvpcid + ':' + subnetzonename
-         zonestable = self.setupdata['zones']
-         if zonekey in zonestable:
-            if subnetid not in zonestable[zonekey]:
-               zonestable[zonekey].append(subnetid)
+         if zonekey in self.zonesTable:
+            if subnetid not in self.zonesTable[zonekey]:
+               self.zonesTable[zonekey].append(subnetid)
          else:
-            zonestable[zonekey] = [subnetid]
+            self.zonesTable[zonekey] = [subnetid]
 
-         # Add zones to vpcstable.
+         # Add zones to vpcsTable.
          zonekey = subnetvpcid + ':' + subnetzonename
-         vpcstable = self.setupdata['vpcs']
-         if subnetvpcid in vpcstable:
-            if zonekey not in vpcstable[subnetvpcid]:
-               vpcstable[subnetvpcid].append(zonekey)
+         if subnetvpcid in self.vpcsTable:
+            if zonekey not in self.vpcsTable[subnetvpcid]:
+               self.vpcsTable[subnetvpcid].append(zonekey)
          else:
-            vpcstable[subnetvpcid] = [zonekey]
+            self.vpcsTable[subnetvpcid] = [zonekey]
 
-         # Add vpcs to regionstable.
-         regionstable = self.setupdata['regions']
-         if subnetregion in regionstable:
-            if subnetvpcid not in regionstable[subnetregion]:
-               regionstable[subnetregion].append(subnetvpcid)
+         # Add vpcs to regionsTable.
+         if subnetregion in self.regionsTable:
+            if subnetvpcid not in self.regionsTable[subnetregion]:
+               self.regionsTable[subnetregion].append(subnetvpcid)
          else:
-            regionstable[subnetregion] = [subnetvpcid]
+            self.regionsTable[subnetregion] = [subnetvpcid]
 
-      self.setupdata['instances'] = instancestable
-      self.setupdata['subnets'] = subnetstable
-      self.setupdata['zones'] = zonestable
-      self.setupdata['vpcs'] = vpcstable
-      self.setupdata['regions'] = regionstable
+      return
 
-      return self.setupdata
+   def getInstancesTable(self):
+      return self.instancesTable
+
+   def getSubnetsTable(self):
+      return self.subnetsTable
+
+   def getVPCsTable(self):
+      return self.vpcsTable
+
+   def getRegionsTable(self):
+      return self.regionsTable
+
+   def getZonesTable(self):
+      return self.zonesTable

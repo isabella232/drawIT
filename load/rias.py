@@ -22,16 +22,35 @@ import urllib3
 #import logging
 from zipfile import ZipFile
 
+from common.options import Options
 from common.utils import *
 
 class RIAS:
-   def __init__(self, user):
-      #self.riasdatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
-      self.riasdatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways']
-      self.outputfolder = user['outputfolder']
-      self.region = user['region']
-      self.apikey = user['apikey']
-      self.accountid = user['accountid']
+   floatingIPs = {}
+   instances = {}
+   keys = {}
+   networkInterfaces = {}
+   loadBalancers = {}
+   loadBalancerListeners = {}
+   loadBalancerPools = {}
+   loadBalancerMembers = {}
+   networkACLs = {}
+   publicGateways = {}
+   securityGroups = {}
+   subnets = {}
+   volumes = {}
+   vpcs = {}
+   vpnGateways = {}
+   vpnConnections = {}
+   data = {}
+   types = []
+   options = None
+
+   def __init__(self, options):
+      #self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways']
+      self.options = options
+      return
 
    def gettoken(self, accountID, apiKey):
       endpoint = 'https://iam.cloud.ibm.com'
@@ -62,7 +81,7 @@ class RIAS:
    def getriasdata(self, token, accountID, group):
       #version = '2022-03-15'
       version = '2022-07-05'
-      endpoint = 'https://' + self.region + '.iaas.cloud.ibm.com'
+      endpoint = 'https://' + self.options.getRegion().value + '.iaas.cloud.ibm.com'
       if len(accountID) > 0:
          if group == 'vpn_gateways' or group == 'load_balancers':
             # Exit for now as causing error with other accounts:
@@ -171,20 +190,19 @@ class RIAS:
       #return rawdata
 
    def loadRIAS(self):
-      data = {}
       listenerdata = []
       pooldata = []
       memberdata = []
       #nicdata = []
       vpndata = []
-      token = self.gettoken(self.accountid, self.apikey)
-      #rawdata = getriasdata(userdata, token, accountid, 'vpcs')
+      token = self.gettoken(self.options.getAccountID(), self.options.getAPIKey())
+      #rawdata = getriasdata(self.options, token, accountid, 'vpcs')
       #data[datatype] = rawdata
       #return data
  
-      for datatype in self.riasdatatypes:
-         rawdata = self.getriasdata(token, self.accountid, datatype)
-         data[datatype] = rawdata
+      for datatype in self.types:
+         rawdata = self.getriasdata(token, self.options.getAccountID(), datatype)
+         self.data[datatype] = rawdata
          #if datatype == 'instances':
          #   instancedata = rawdata
          #   for instance in instancedata:
@@ -201,7 +219,7 @@ class RIAS:
             lbdata = rawdata
             for lb in lbdata:
                id = lb['id']
-               rawdata = self.getriassubdata(token, self.accountid, id, datatype, 'listeners')
+               rawdata = self.getriassubdata(token, self.options.getAccountID(), id, datatype, 'listeners')
                listeners = rawdata['listeners']
                listenerdict = {} 
                lblistenerdata = []
@@ -216,7 +234,7 @@ class RIAS:
                listenerdict = {'id': id, 'listeners': lblistenerdata}
                listenerdata.append(listenerdict)
 
-               rawdata = self.getriassubdata(token, self.accountid, id, datatype, 'pools')
+               rawdata = self.getriassubdata(token, self.options.getAccountID(), id, datatype, 'pools')
                pools = rawdata['pools']
                pooldict = {} 
                memberdict = {} 
@@ -230,7 +248,7 @@ class RIAS:
                   extended['lbid'] = id
                   pooldata.append(extended)
 
-                  rawdata = self.getriassubdata2(token, self.accountid, id, datatype, 'pools', poolid, 'members')
+                  rawdata = self.getriassubdata2(token, self.options.getAccountID(), id, datatype, 'pools', poolid, 'members')
                   members = rawdata['members']
                   lbmemberdata.append(members)
 
@@ -250,49 +268,101 @@ class RIAS:
          #         vpndata.append(extended)
          
       #data['network_interfaces'] = nicdata
-      data['load_balancer_listeners'] = listenerdata
-      data['load_balancer_pools'] = pooldata
-      data['load_balancer_members'] = memberdata
+      self.data['load_balancer_listeners'] = listenerdata
+      self.data['load_balancer_pools'] = pooldata
+      self.data['load_balancer_members'] = memberdata
 
       #data['vpnConnections'] = vpndata
+
+      self.normalizeData(self.data)
   
-      return data
+      return
 
    def normalizeData(self, data):
-      vpcs = pd.json_normalize(data['vpcs'] if ('vpcs' in data) else pd.json_normalize({}))
-      subnets = pd.json_normalize(data['subnets'] if ('subnets' in data) else pd.json_normalize({}))
-      instances = pd.json_normalize(data['instances'] if ('instances' in data) else pd.json_normalize({}))
-      #networkInterfaces = pd.json_normalize(data['network_interfaces'] if ('network_interfaces' in data) else pd.json_normalize({}))
-      publicGateways = pd.json_normalize(data['public_gateways'] if ('public_gateways' in data) else pd.json_normalize({}))
-      floatingIPs = pd.json_normalize(data['floating_ips'] if ('floating_ips' in data) else pd.json_normalize({}))
-      vpnGateways = pd.json_normalize(data['vpn_gateways'] if ('vpn_gateways' in data) else pd.json_normalize({}))
-      vpnConnections = pd.json_normalize({})
-      loadBalancers = pd.json_normalize(data['load_balancers'] if ('load_balancers' in data) else pd.json_normalize({}))
-      loadBalancerListeners = pd.json_normalize(data['load_balancer_listeners'] if ('load_balancer_listeners' in data) else pd.json_normalize({}))
-      loadBalancerPools = pd.json_normalize(data['load_balancer_pools'] if ('load_balancer_pools' in data) else pd.json_normalize({}))
-      loadBalancerMembers = pd.json_normalize(data['load_balancer_members'] if ('load_balancer_members' in data) else pd.json_normalize({}))
-      volumes = pd.json_normalize({})
-      networkACLs = pd.json_normalize({})
-      securityGroups = pd.json_normalize({})
-      keys = pd.json_normalize({})
+      self.vpcs = pd.json_normalize(data['vpcs'] if ('vpcs' in data) else pd.json_normalize({}))
+      self.subnets = pd.json_normalize(data['subnets'] if ('subnets' in data) else pd.json_normalize({}))
+      self.instances = pd.json_normalize(data['instances'] if ('instances' in data) else pd.json_normalize({}))
+      #self.networkInterfaces = pd.json_normalize(data['network_interfaces'] if ('network_interfaces' in data) else pd.json_normalize({}))
+      self.publicGateways = pd.json_normalize(data['public_gateways'] if ('public_gateways' in data) else pd.json_normalize({}))
+      self.floatingIPs = pd.json_normalize(data['floating_ips'] if ('floating_ips' in data) else pd.json_normalize({}))
+      self.vpnGateways = pd.json_normalize(data['vpn_gateways'] if ('vpn_gateways' in data) else pd.json_normalize({}))
+      self.vpnConnections = pd.json_normalize({})
+      self.loadBalancers = pd.json_normalize(data['load_balancers'] if ('load_balancers' in data) else pd.json_normalize({}))
+      self.loadBalancerListeners = pd.json_normalize(data['load_balancer_listeners'] if ('load_balancer_listeners' in data) else pd.json_normalize({}))
+      self.loadBalancerPools = pd.json_normalize(data['load_balancer_pools'] if ('load_balancer_pools' in data) else pd.json_normalize({}))
+      self.loadBalancerMembers = pd.json_normalize(data['load_balancer_members'] if ('load_balancer_members' in data) else pd.json_normalize({}))
+      self.volumes = pd.json_normalize({})
+      self.networkACLs = pd.json_normalize({})
+      self.securityGroups = pd.json_normalize({})
+      self.keys = pd.json_normalize({})
 
-      normalizeddata = {
-         'vpcs': vpcs,
-         'subnets': subnets,
-         'instances': instances,
-         #'networkInterfaces': networkInterfaces,
-         'publicGateways': publicGateways,
-         'floatingIPs': floatingIPs,
-         'vpnGateways': vpnGateways,
-         'vpnConnections': vpnConnections,
-         'loadBalancers': loadBalancers,
-         'loadBalancerListeners': loadBalancerListeners,
-         'loadBalancerPools': loadBalancerPools,
-         'loadBalancerMembers': loadBalancerMembers,
-         'volumes': volumes,
-         'networkACLs': networkACLs,
-         'securityGroups': securityGroups,
-         'keys': keys
-      }
+      return
 
-      return normalizeddata
+   def getFloatingIPs(self):
+      return self.floatingIPs
+
+   def getInstances(self):
+      return self.instances
+
+   def getKeys(self):
+      return self.keys
+
+   def getNetworkInterfaces(self):
+      return self.networkInterfaces
+
+   def getLoadBalancers(self):
+      return self.loadBalancers
+
+   def getLoadBalancerListeners(self):
+      return self.loadBalancerListeners
+
+   def getLoadBalancerPools(self):
+      return self.loadBalancerPools
+
+   def getLoadBalancerMembers(self):
+      return self.loadBalancerMembers
+
+   def getNetworkACLs(self):
+      return self.networkACLs
+
+   def getPublicGateways(self):
+      return self.publicGateways
+
+   def getSecurityGroups(self):
+      return self.securityGroups
+
+   def getSubnets(self):
+      return self.subnets
+
+   def getVolumes(self):
+      return self.volumes
+
+   def getVPCs(self):
+      return self.vpcs
+
+   def getVPNGateways(self):
+      return self.vpnGateways
+
+   def getVPNConnections(self):
+      return self.vpnConnections
+
+   def getInstance(self, id):
+      return findrow(self.options, self.inputInstances, 'id', id)
+
+   def getSubnet(self, id):
+      return findrow(self.options, self.inputSubnets, 'id', id)
+
+   def getVPC(self, id):
+      return findrow(self.options, self.inputVPCs, 'id', id)
+
+   def getFloatingIP(self, id):
+      return findrow(self.options, self.inputFloatingIPs, 'target.id', id)
+
+   def getPublicGateway(self, id):
+      return findrow(self.options, self.InputPublicGateways(), 'id', id)
+
+   def getVPNGateway(self, id):
+      if self.user.isInputRIAS() == 'rias':
+         return findrow(self.options, self.inputVPNGateways, 'subnet.id', id)
+      else:
+         return findrow(self.options, self.inputVPNGateways, 'networkId', id)

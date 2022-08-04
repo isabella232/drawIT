@@ -73,7 +73,7 @@ class Shapes:
 
     # Icons
 
-   def buildInstance(self, id, parentd, name, subname, x, y, width, height):
+   def buildInstance(self, id, parentid, name, subname, x, y, width, height):
       node = self.types.buildNode('instance', compress(id), compress(parentid), name, subname, '', x, y, width, height)
       return node
 

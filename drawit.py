@@ -23,6 +23,8 @@ import configparser
 #SAVE from tkinter import messagebox
 
 from build.diagrams import Diagrams
+from load.data import Data
+from common.options import Options, InputType, OutputDetail, OutputShapes, OutputSplit, Regions, RunMode
 from common.utils import *
 
 class Config:
@@ -91,11 +93,41 @@ class Config:
     def setInputFile(self,inputFile):
         self.set("inputFile",inputFile)
 
+    def getOutputFile(self):
+        return self.get("outputFile")
+    
+    def setOutputFile(self,outputFile):
+        self.set("outputFile",outputFile)
+
     def getOutputDirectory(self):
         return self.get("outputDirectory")
     
     def setOutputDirectory(self,outputDirectory):
         self.set("outputDirectory",outputDirectory)
+
+    def getOutputFolder(self):
+        return self.get("outputFolder")
+    
+    def setOutputFolder(self,outputFolder):
+        self.set("outputFolder",outputFolder)
+
+    def getOutputDetail(self):
+        return self.get("outputDetail")
+    
+    def setOutputDetail(self,outputDetail):
+        self.set("outputFolder",outputDetail)
+
+    def getOutputSplit(self):
+        return self.get("outputSplit")
+    
+    def setOutputSplit(self,outputSplit):
+        self.set("outputSplit",outputSplit)
+
+    def getOutputShapes(self):
+        return self.get("outputShapes")
+    
+    def setOutputShapes(self,outputShapes):
+        self.set("outputShapes",outputShapes)
 
     def getRegion(self):
         return self.get("region")
@@ -115,12 +147,20 @@ class Config:
     def setSplit(self,region):
         self.set("split",split)
 
-class drawit():
-   def __init(self):
+    def getRunMode(self):
+        return self.get("runmode")
+    
+    def setRunMode(self,runmode):
+        self.set("runmode",runmode)
+
+class drawit:
+   def __init__(self):
       title = COPYRIGHT.split(' - ')
-      self.diagrams = None
       top = None
       statusText = None
+      self.data = None
+      self.diagrams = None
+      self.options = Options()
 
    #SAVE top = tkinter.Tk()
    #top.title(TOOLNAME + ' ' + COPYRIGHT.split(' ')[2])
@@ -134,59 +174,111 @@ class drawit():
    def main(self): 
 
         config = Config("drawIT")  
-        self.apiKey = config.getAPIKey()
-        self.accountID = config.getAccountID()
-        self.inputFile = config.getInputFile()
-        self.outputDirectory = config.getOutputDirectory()
+        apikey = config.getAPIKey()
+        accountid = config.getAccountID()
+        inputfile = config.getInputFile()
+        outputfile = config.getOutputFile()
+        outputfolder = config.getOutputFolder()
+        outputdirectory = config.getOutputDirectory()
+        outputdetail = config.getOutputDetail()
+        outputsplit = config.getOutputSplit()
+        outputshapes = config.getOutputShapes()
+        runmode = config.getRunMode()
+        region = config.getRegion()
       
         parser = argparse.ArgumentParser(description='Draw IT')
 
-        parser.add_argument('-key', dest='apikey',  default=userdata['apikey'], help='API Key')
-        parser.add_argument('-account', dest='accountid',  default=userdata['accountid'], help='Account ID')
-        parser.add_argument('-input', dest='inputfile',  default=userdata['inputfile'], help='JSON/YAML')
-        parser.add_argument('-region', dest='region', default=userdata['region'], help='au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
-        parser.add_argument('-output', dest='outputfolder', default=os.path.join(self.outputDirectory, userdata['outputfolder']), help='output directory')
-        #parser.add_argument('-type', dest='outputtype', default=userdata['outputtype'], help='drawio or puml type')
-        #parser.add_argument('-layout', dest='outputlayout', default=userdata['outputlayout'], help='layout method')
-        parser.add_argument('-detail', dest='outputdetail', default=userdata['outputdetail'], help='low, medium, or high')
-        parser.add_argument('-split', dest='outputsplit', default=userdata['outputsplit'], help='none, region, or vpc')
-        parser.add_argument('-shapes', dest='outputshapes', default=userdata['outputshapes'], help='logical or prescribed')
+        parser.add_argument('-key', dest='apikey', default=self.options.getAPIKey(), help='API Key')
+        parser.add_argument('-account', dest='accountid', default=self.options.getAccountID(), help='Account ID')
+        parser.add_argument('-input', dest='inputfile', default=self.options.getInputFile(), help='JSON/YAML')
+        parser.add_argument('-region', dest='region', default=self.options.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
+        parser.add_argument('-output', dest='outputfolder', default=os.path.join(outputdirectory, self.options.getOutputFolder()), help='output directory')
+        parser.add_argument('-detail', dest='outputdetail', default=self.options.getOutputDetail().value, help='low, medium, or high')
+        parser.add_argument('-split', dest='outputsplit', default=self.options.getOutputSplit().value, help='single, region, or vpc')
+        parser.add_argument('-shapes', dest='outputshapes', default=self.options.getOutputShapes().value, help='logical or prescribed')
 
-        parser.add_argument('-mode', dest='runmode', default=userdata['runmode'], help="batch, gui, or web")
+        parser.add_argument('-mode', dest='runmode', default=self.options.getRunMode().value, help="batch, gui, or web")
         parser.add_argument('--version', action='version', version='drawIT ' + COPYRIGHT.split(' ')[1])
         
         args = parser.parse_args()
 
-        apikey = args.apikey.replace(' ', '')
-        accountid = args.accountid.replace(' ', '')
-        region = args.region.replace(' ', '')
-        inputfile = args.inputfile.replace(' ', '')
-        outputfolder = args.outputfolder.replace(' ', '')
-        outputtype = "xml"
-        #outputtype = args.outputtype.replace(' ', '').lower()
-        #outputlayout = args.outputlayout.replace(' ', '').lower()
-        outputdetail = args.outputdetail.replace(' ', '').lower()
-        outputsplit = args.outputsplit.replace(' ', '').lower()
-        outputshapes = args.outputshapes.replace(' ', '').lower()
-        runmode = args.runmode.replace(' ', '').lower()
+        #apikey = args.apikey.replace(' ', '')
+        #accountid = args.accountid.replace(' ', '')
+        #region = args.region.replace(' ', '')
+        #inputfile = args.inputfile.replace(' ', '')
+        #outputfolder = args.outputfolder.replace(' ', '')
+        #outputtype = "xml"
+        #outputdetail = args.outputdetail.replace(' ', '').lower()
+        #outputsplit = args.outputsplit.replace(' ', '').lower()
+        #outputshapes = args.outputshapes.replace(' ', '').lower()
+        #runmode = args.runmode.replace(' ', '').lower()
 
-        userdata['apikey'] = apikey
-        userdata['accountid'] = accountid
-        userdata['region'] = region
-        userdata['inputfile'] = inputfile
-        userdata['outputfolder'] = outputfolder
-        userdata['outputtype'] = outputtype
-        #userdata['outputlayout'] = outputlayout
-        userdata['outputdetail'] = outputdetail
-        userdata['outputsplit'] = outputsplit
-        userdata['outputshapes'] = outputshapes
-        userdata['runmode'] = runmode
+        apikey = args.apikey
+        accountid = args.accountid
+        region = args.region.lower()
+        inputfile = args.inputfile
+        outputfolder = args.outputfolder
+        outputtype = "xml"
+        outputdetail = args.outputdetail.lower()
+        outputsplit = args.outputsplit.lower()
+        outputshapes = args.outputshapes.lower()
+        runmode = args.runmode.lower()
+
+        self.options.setAPIKey(apikey)
+        self.options.setAccountID(accountid)
+        self.options.setRegion(region)
+        self.options.setInputFile(inputfile)
+        self.options.setOutputFolder(outputfolder)
+
+        if outputdetail == "low":
+            outputdetail = OutputDetail.LOW
+        elif outputdetail== "medium":
+            outputdetail = OutputDetail.MEDIUM
+        elif outputdetail == "high":
+            outputdetail = OutputDetail.HIGH
+        self.options.setOutputDetail(outputdetail)
+
+        if outputshapes == "logical":
+            outputshapes = OutputShapes.LOGICAL
+        elif outputshapes == "prescribed":
+            outputshapes = OutputShapes.PRESCRIBED
+        self.options.setOutputShapes(outputshapes)
+
+        if outputsplit == "single":
+            outputsplit = OutputSplit.SINGLE
+        elif outputsplit == "region":
+            outputsplit = OutputSplit.REGION
+        elif outputsplit == "vpc":
+            outputsplit = OutputSplit.VPC
+        self.options.setOutputSplit(outputsplit)
+
+        if region == "eu-de":
+            region = Regions.GERMANY
+        elif region == "jp-osa":
+            region = Regions.OSAKA
+        elif region == "br-sao":
+            region = Regions.SAOPAULO
+        elif region == "au-syd":
+            region = Regions.SYDNEY
+        elif region == "jp-tok":
+            region = Regions.TOKYO
+        elif region == "ca-tor":
+            region = Regions.TORONTO
+        elif region == "eu-gb":
+            region = Regions.UNITEDKINGDOM
+        elif region == "us-east":
+            region = Regions.USEAST
+        elif region == "us-south":
+            region = Regions.USSOUTH
+        else:
+            region = Regions.ALL
+        self.options.setRegion(region)
 
         self.minInfo = False
 
         done = False
 
-        if args.runmode == 'batch':
+        if args.runmode == RunMode.BATCH.value:
             #try: 
                 #printmessage(COPYRIGHT)
                 #print(toolheader)
@@ -196,19 +288,20 @@ class drawit():
                 #    print(invalidinputfilemessage % inputfile)
                 #    return
 
-                apiKey = userdata['apikey']
-                accountID = userdata['accountid']
-                region = userdata['region']
-                inputfile = userdata['inputfile']
+                apikey = self.options.getAPIKey()
+                accountid = self.options.getAccountID()
+                region = self.options.getRegion().value
+                inputfile = self.options.getInputFile()
+                outputtype = 'xml'
 
-                #backupdirectory(userdata)
+                #backupdirectory(options)
 
-                if len(apiKey) > 0:
-                    userdata['inputtype'] = 'rias'
+                if len(apikey) > 0:
+                    self.options.setInputType(InputType.RIAS)
                     inputbase = apikey
                     outputfile = inputbase + '.' + outputtype
-                    userdata['outputfile'] = outputfile
-                    if len(accountID) > 0:
+                    self.options.setOutputFile(outputfile)
+                    if len(accountid) > 0:
                         printmessage(starttoolmessage % ('RIAS for API Key ' + apikey + ' and Account ID ' + accountid + ' in region ' + region))
                     else:
                         printmessage(starttoolmessage % 'RIAS for API Key ' + apikey + ' in region ' + region)
@@ -217,37 +310,30 @@ class drawit():
                     inputbase = os.path.splitext(basename)[0]
                     inputtype = os.path.splitext(basename)[1][1:]
                     if inputtype == 'yaml' or inputtype == 'yml':
-                        userdata['inputtype'] = 'yaml'
+                        self.options.setInputType(InputType.YAML)
                     elif inputtype == 'json':
-                        userdata['inputtype'] = 'json'
+                        self.options.setInputType(InputType.JSON)
                     else:
                         printerror(invalidinputfilemessage % args.inputfile)
                         return
                     outputfile = inputbase + '.' + outputtype
-                    userdata['outputfile'] = outputfile
+                    self.options.setOutputFile(outputfile)
                     printmessage(starttoolmessage % inputfile)
                 else:
-                    printerror(invalidmodemessage % args.runmode)
+                    #printerror(invalidmodemessage % args.runmode)
+                    printmessage(errormessage % 'No RIAS, JSON, or YAML')
                     return
 
-                self.diagrams = Diagrams(userdata)
+                self.data = Data(self.options)
+                self.data.loadData()
+                self.diagrams = Diagrams(self.options, self.data)
                 self.diagrams.buildDiagrams()
-
-                #self.diagrams = Diagrams(userdata)
-                #inputdata = load(userdata)
-                #if inputdata != None:
-                #    userdata['inputdata'] = inputdata
-
-                #    setupdata = loadAnalyze(userdata)
-                #    userdata['setupdata'] = setupdata
-
-                #    self.diagrams.buildDiagrams()
 
                 printmessage(donetoolmessage % outputfolder)
 
                 done = True
 
-        elif args.runmode == 'gui':
+        elif args.runmode == RunMode.GUI.value:
             import tkinter
             from tkinter import filedialog
             from tkinter import IntVar
@@ -302,11 +388,11 @@ class drawit():
             if len(apikey) > 0:
                 lInputFile.delete(0, 'end')
                 self.inputFile = ''
-                config.set("inputFile", self.inputFile)
+                config.set("inputFile", inputfile)
                 config.write()
 
             def onClickSelectInputFile():
-                file_selected = filedialog.askopenfilename(initialdir = self.inputFile,title = "Select JSON/YAML")
+                file_selected = filedialog.askopenfilename(initialdir = inputfile,title = "Select JSON/YAML")
                 if file_selected != None and len(file_selected) > 0:
                     self.inputFile = file_selected
                     lAPIKey.delete(0, 'end')
@@ -326,22 +412,12 @@ class drawit():
             eSelectInputFile.pack(side=tkinter.RIGHT)
             row = row + 1
 
-            #inputfile = userdata['inputfile']
-            #basename = os.path.basename(inputfile)
-            #inputbase = os.path.splitext(basename)[0]
-            #inputtype = os.path.splitext(basename)[1][1:]
-            #outputfile = inputbase + '.' + outputtype
-            #userdata['outputfile'] = outputfile
-
             tkinter.Label(frame, text="").grid(row=row, columnspan=2)
             row = row + 1
 
-            #tkinter.Label(frame, text="Output").grid(row=row)
-            #lOutputDirectory = tkinter.Label(frame, text=outputfolder)
             tkinter.Label(frame, text="Directory").grid(row=row)
             lOutputDirectory = tkinter.Entry(frame, bd=5)
             lOutputDirectory.insert(0, outputfolder)
-            #lOutputDirectory.grid(row=row,column=1)
             lOutputDirectory.grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
             row = row + 1
 
@@ -354,7 +430,7 @@ class drawit():
                     lOutputDirectory.configure(text=self.outputDirectory)
                     config.set("outputDirectory",self.outputDirectory)
                     config.write()
-                    userdata['outputfolder'] = self.outputDirectory
+                    self.options.setOutputFolder(self.outputDirectory)
                     
             outputbutton = tkinter.Frame(frame)
             eSelectOutputDirectory = tkinter.Button(outputbutton, text="Select Directory", fg="blue", command=lambda: onClickSelectOutputDirectory())
@@ -393,6 +469,7 @@ class drawit():
             #typemenu.pack()
 
             regionoptions = [
+                "All",
                 "Germany",
                 "Osaka",
                 "Sao Paulo",
@@ -451,86 +528,79 @@ class drawit():
 
             def onClickGenerate():
                 try:
-                    #self.statusText.set("       Generating IBM2 for " + str(self.inputFile) + "...")
                     self.statusText.set("Starting")
                     frame.after_idle(onClickGenerate)                   
 
-                    #outputtype = str(eOutputType.get())
-                    #if outputtype == "Generate Drawio": 
-                    #    outputtype = "drawio"
-                    #elif outputtype == "Generate PlantUML":
-                    #    outputtype = "puml"
-                    #userdata['outputtype'] = outputtype
-
                     outputdetail = str(eOutputDetail.get())
                     if outputdetail == "Low":
-                        outputdetail = "low"
+                        outputdetail = OutputDetail.LOW
                     elif outputdetail == "Medium":
-                        outputdetail = "medium"
+                        outputdetail = OutputDetail.MEDIUM
                     elif outputdetail == "High":
-                        outputdetail = "high"
-                    userdata['outputdetail'] = outputdetail
+                        outputdetail = OutputDetail.HIGH
+                    self.options.setOutputDetail(outputdetail)
 
                     outputshapes = str(eOutputShape.get())
                     if outputshapes == "Logical":
-                        outputshapes = "logical"
+                        outputshapes = OutputShapes.LOGICAL
                     elif outputshapes == "Prescribed":
-                        outputshapes = "prescribed"
-                    userdata['outputshapes'] = outputshapes
+                        outputshapes = OutputShapes.PRESCRIBED
+                    self.options.setOutputShapes(outputshapes)
 
                     outputsplit = str(eOutputSplit.get())
-                    if outputsplit == "None":
-                        outputsplit = "none"
+                    if outputsplit == "Single":
+                        outputsplit = OutputSplit.SINGLE
                     elif outputsplit == "Region":
-                        outputsplit = "region"
+                        outputsplit = OutputSplit.REGION
                     elif outputsplit == "VPC":
-                        outputsplit = "vpc"
-                    userdata['outputsplit'] = outputsplit
+                        outputsplit = OutputSplit.VPC
+                    self.options.setOutputSplit(outputsplit)
 
                     region = str(eRegion.get())
                     if region == "Germany":
-                        region = "eu-de"
+                        region = Regions.GERMANY
                     elif region == "Osaka":
-                        region = "jp-osa"
+                        region = Regions.OSAKA
                     elif region == "Sao Paulo":
-                        region = "br-sao"
+                        region = Regions.SAOPAULO
                     elif region == "Sydney":
-                        region = "au-syd"
+                        region = Regions.SYDNEY
                     elif region == "Tokyo":
-                        region = "jp-tok"
+                        region = Regions.TOKYO
                     elif region == "Toronto":
-                        region = "ca-tor"
+                        region = Regions.TORONTO
                     elif region == "United Kingdom":
-                        region = "eu-gb"
+                        region = Regions.UNITEDKINGDOM
                     elif region == "US East":
-                        region = "us-east"
+                        region = Regions.USEAST
                     elif region == "US South":
-                        region = "us-south"
-                    userdata['region'] = region
+                        region = Regions.USSOUTH
+                    self.options.setRegion(region)
 
                     accountid = str(lAccountID.get())
-                    userdata['accountid'] = accountid
+                    self.options.setAccountID(accountid)
 
-                    #apikey = self.apiKey
                     apikey = str(lAPIKey.get())
-                    userdata['apikey'] = apikey 
+                    self.options.setAPIKey(apikey)
 
                     #inputfile = self.inputFile
                     inputfile = str(lInputFile.get())
-                    userdata['inputfile'] = inputfile
+                    self.options.setInputFile(inputfile)
 
                     #outputfolder = self.outputDirectory
                     outputfolder = str(lOutputDirectory.get())
-                    userdata['outputfolder'] = outputfolder
+                    self.options.setOutputFolder(outputfolder)
+
+                    outputtype = 'xml'
 
                     self.statusText.set("Starting")
                     #print(starttoolmessage % self.inputFile)
 
                     if len(apikey) > 0:
-                        userdata['inputtype'] = 'rias'
+                        self.options.setInputType(InputType.RIAS)
                         inputbase = apikey
                         outputfile = str(inputbase) + '.' + outputtype
-                        userdata['outputfile'] = outputfile
+                        self.options.setOutputFile(outputfile)
                         if len(accountid) > 0:
                             printmessage(starttoolmessage % ('RIAS for API Key ' + apikey + ' and Account ID ' + accountid + ' in region ' + region))
                         else:
@@ -540,33 +610,26 @@ class drawit():
                         inputbase = os.path.splitext(basename)[0]
                         inputtype = os.path.splitext(basename)[1][1:]
                         if inputtype == 'yaml' or inputtype == 'yml':
-                            userdata['inputtype'] = 'yaml'
+                            self.options.setInputType(InputType.YAML)
                         elif inputtype == 'json':
-                            userdata['inputtype'] = 'json'
+                            self.options.setInputType(InputType.JSON)
                         else:
                            printerror(invalidinputfilemessage % args.inputfile)
                            return
                         outputfile = inputbase + '.' + outputtype
-                        userdata['outputfile'] = outputfile
+                        self.options.setOutputFile(outputfile)
                         printmessage(starttoolmessage % inputtype + ' File: ' + inputfile)
                     else:
-                        printerror(invalidmodemessage % args.runmode)
+                        #printerror(invalidmodemessage % args.runmode)
+                        printmessage(errormessage % 'No RIAS, JSON, or YAML')
                         sys.exit()
 
-                    self.diagrams = Diagrams(userdata)
+                    self.data = Data(self.options)
+                    self.data.loadData()
+                    self.diagrams = Diagrams(self.options, self.data)
                     self.diagrams.buildDiagrams()
 
-                    #self.diagrams = Diagrams(userdata)
-                    #inputdata = load(userdata)
-                    #if inputdata != None:
-                    #    userdata['inputdata'] = inputdata
-
-                    #    setupdata = loadAnalyze(userdata)
-                    #    userdata['setupdata'] = setupdata
-
-                    #    self.diagrams.buildDiagrams()
-
-                    printmessage(donetoolmessage % self.outputDirectory)
+                    printmessage(donetoolmessage % outputfolder)
                     self.statusText.set("Completed")
 
                     sys.exit()
@@ -588,30 +651,25 @@ class drawit():
             #SAVE self.top.mainloop()
             self.top.mainloop()
 
-        elif args.runmode == 'web':
-            userdata['inputtype'] = 'web'
+        elif args.runmode == RunMode.WEB.value:
             basename = os.path.basename(inputfile)
             inputbase = os.path.splitext(basename)[0]
             inputtype = os.path.splitext(basename)[1][1:]
+            if inputtype == 'yaml' or inputtype == 'yml':
+                self.options.setInputType(InputType.YAML)
+            elif inputtype == 'json':
+                self.options.setInputType(InputType.JSON)
+            else:
+                printerror(invalidinputfilemessage % inputfile)
+                return
+            outputtype = 'xml'
             outputfile = inputbase + '.' + outputtype
-            userdata['outputfile'] = outputfile
+            self.options.setOutputFile(outputfile)
 
-            self.diagrams = Diagrams(userdata)
+            self.data = Data(self.options)
+            self.data.loadData()
+            self.diagrams = Diagrams(self.options, self.data)
             self.diagrams.buildDiagrams()
-
-            #self.diagrams = Diagrams(userdata)
-            #inputdata = load(userdata)
-            #if inputdata != None:
-            #    userdata['inputdata'] = inputdata
-
-            #   setupdata = loadAnalyze(userdata)
-            #    userdata['setupdata'] = setupdata
-
-            #    self.diagrams.buildDiagrams()
-
-            #    #print("XML begin")
-            #    #print('<mxfile type="device" compressed="false"></mxfile>');
-            #    #print("XML end")
             
         else:
             printerror(invalidmodemessage % args.runmode)

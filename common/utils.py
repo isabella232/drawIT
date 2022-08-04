@@ -25,15 +25,12 @@ import zlib
 #SAVE import numpy as np
 import pandas as pd
 
-from load.file import *
-from load.rias import *
-
 #from flatten_json import flatten
 
 # Constants
 
 TOOLNAME = 'drawIT'
-TOOLVERSION = '0.5.2'
+TOOLVERSION = '0.5.3'
 
 #ACCOUNT_PLACEHOLDER = '(Account-ID)'
 #KEY_PLACEHOLDER = '(API-Key)'
@@ -51,6 +48,7 @@ donetoolmessage = 'Completed with output to %s'
 startprovidermessage = 'Generating Resource for provider'
 backupdirectorymessage = 'Backed up existing output directory %s to %s'
 warningmessage = '(Warning) %s'
+errormessage = '(Error) %s'
 invalidmessage = '(Error) %s: %s'
 invalidmodemessage = '(Error) Invalid run mode: %s'
 invalidinputdirectorymessage = '(Error) Invalid input directory: %s'
@@ -79,52 +77,6 @@ missingvaluemessage = '(Error) Required value missing on column %s, row %s'
 processingsheetmessage = 'Processing %s'
 
 # Global data
-
-userdata = {
-    'runmode': 'batch',
-    'inputtype': 'json',
-    #'apikey': 'rW7EOXWZbYXbxxhD3HkIPvpVbDfGiKvauniVIEEuzvdY',
-    #'accountid': ACCOUNT_PLACEHOLDER,
-    #'apikey': KEY_PLACEHOLDER,
-    #'inputfile': INPUT_PLACEHOLDER,
-    'accountid': '',
-    'apikey': '',
-    'inputfile': '',
-    #'nogui': True,
-    'region': 'us-south',
-    'outputfile': 'output',
-    'outputfolder': os.path.join(os.path.expanduser('~'), 'Documents', TOOLNAME),
-    'outputtype': 'xml',
-    'outputlayout': 'kk',
-    'outputsplit': 'none',
-    'outputdetail': 'medium',
-    'outputshapes': 'prescribed',
-    'inputdata': {
-        'vpcs': {},
-        'subnets': {},
-        'instances': {},
-        'networkInterfaces': {},
-        'publicGateways': {},
-        'floatingIPs': {},
-        'vpnGateways': {},
-        'vpnConnections': {},
-        'loadBalancers': {},
-        'loadBalancerListeners': {},
-        'loadBalancerPools': {},
-        'loadBalancerMembers': {},
-        'volumes': {},
-        'networkACLs': {},
-        'securityGroups': {},
-        'keys': {}
-    },
-    'setupdata': {
-        'nics': {},
-        'regions': {},
-        'vpcs': {},
-        'zones': {}
-    },
-    'outputdata': {}
-}
 
 zonecidrs = {
         'au-syd-1': '10.245.0.0/18', 
@@ -279,23 +231,8 @@ def truncateText(text, size, linebreak):
        else:
           return text
 
-def load(userdata):
-    inputtype = userdata['inputtype']
-
-    if inputtype == 'rias':
-        inputdata = loadRIAS(userdata)
-        normalizeddata = normalizeRIAS(userdata, inputdata)
-    elif inputtype == 'json':
-        inputdata = loadJSON(userdata)
-        normalizeddata = normalizeYAML(userdata, inputdata)
-    else:
-        inputdata = loadYAML(userdata)
-        normalizeddata = normalizeYAML(userdata, inputdata)
-
-    return normalizeddata
-
-def printline(userdata, name, line):
-   genpath = userdata['outputfolder']
+def printline(user, name, line):
+   genpath = user['outputfolder']
 
    pathname = os.path.join(genpath, name)
    filepath, filename = os.path.split(pathname)
@@ -331,9 +268,9 @@ def printxml(*args):
     #sys.stdout.write(deflate(*args))
 
 # Backup output directory
-def backupdirectory(userdata):
+def backupdirectory(user):
    genbackup = None
-   genpath = userdata['outputfolder']
+   genpath = user['outputfolder']
    # Check for existing output directory and backup if exists.
    if os.path.exists(genpath):
       backup = 1
@@ -356,17 +293,17 @@ def backupdirectory(userdata):
 
 # Search functions
 
-def finddictionary(userdata, dictionarylist, columnname, columnvalue):
+def finddictionary(user, dictionarylist, columnname, columnvalue):
    if len(dictionarylist) > 0:
       for dictionaryindex, dictionary in dictionarylist.iterrows():
          if dictionary[columnname] == columnvalue:
             return dictionary
    return {}
 
-def findrow(userdata, dictionarylist, columnname, columnvalue):
-   return finddictionary(userdata, dictionarylist, columnname, columnvalue)
+def findrow(user, dictionarylist, columnname, columnvalue):
+   return finddictionary(user, dictionarylist, columnname, columnvalue)
 
-def findlb(userdata, dictionarylist, columnname, columnvalue):
+def findlb(user, dictionarylist, columnname, columnvalue):
    if dictionarylist:
       for dictionary in dictionarylist:
          print(dictionary)
@@ -379,7 +316,7 @@ def findlb(userdata, dictionarylist, columnname, columnvalue):
             return dictionary
    return {}
 
-#def findfip(userdata, dictionarylist, columnname, columnvalue):
+#def findfip(user, dictionarylist, columnname, columnvalue):
 #   if len(dictionarylist) > 0:
 #      for dictionaryindex, dictionary in dictionarylist.iterrows():
 #         if dictionary[columnname]  == columnvalue:
@@ -390,7 +327,7 @@ def findlb(userdata, dictionarylist, columnname, columnvalue):
 #         #      return dictionary
 #   return {}
 
-#def findvpn(userdata, dictionarylist, columnname, columnvalue):
+#def findvpn(user, dictionarylist, columnname, columnvalue):
 #   if len(dictionarylist) > 0:
 #      for dictionaryindex, dictionary in dictionarylist.iterrows():
 #         if dictionary[columnname]  == columnvalue:
@@ -401,24 +338,6 @@ def findlb(userdata, dictionarylist, columnname, columnvalue):
 #      #         return dictionary
 #   return {}
 
-# Calculate functions
-
-def printcounts(userdata):
-   inputdata = userdata['inputdata']
-   setupdata = userdata['setupdata']
-
-   vpcstable = setupdata['vpcs']
-   for vpc in vpcstable:
-      print("**************")
-      print(vpc)
-
-   subnetstable = setupdata['subnets']
-   for keys, values in subnetstable.items():
-      print("**************")
-      print("**************")
-      print(keys)
-      print("--------------")
-      print(len(values))
 
 # Other functions
 
@@ -426,13 +345,6 @@ def getnormalized(data):
    normalized = pd.json_normalize(data)
    df = normalized.T.unstack()[0]
    return df
-
-#def compress(string):
-#   return letter + str(length := len(list(group))) if length > 1 else ''
-#def compress(string):
-#   return ''.join(
-#           letter + str(len(list(group)))
-#           for letter, group in itertools.groupby(string))
 
 def compress(string):
    hash = hashlib.md5(string.encode())

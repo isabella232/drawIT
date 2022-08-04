@@ -22,61 +22,92 @@ import urllib3
 #import logging
 from zipfile import ZipFile
 
+from load.analyze import Analyze
+from common.options import Options
 from common.utils import *
 
 class File:
-   def __init__(self, user):
-      self.yamldatatypes = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
-      self.inputfile = user['inputfile']
-      self.outputfolder = user['outputfolder']
+   floatingIPs = {}
+   instances = {}
+   keys = {}
+   networkInterfaces = {}
+   loadBalancers = {}
+   loadBalancerListeners = {}
+   loadBalancerPools = {}
+   loadBalancerMembers = {}
+   networkACLs = {}
+   publicGateways = {}
+   securityGroups = {}
+   subnets = {}
+   volumes = {}
+   vpcs = {}
+   vpnGateways = {}
+   vpnConnections = {}
+   data = {}
+   types = []
+   analyze = None
+   options = None
+
+   def __init__(self, options):
+      self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      self.analyze = Analyze(options)
+      self.options = options
+      return
 
    def loadJSON(self):
-      stream = open(self.inputfile, 'r', encoding='utf-8-sig')
-      data = json.loads(stream.read())
-      if not 'vpcs' in data:
-         printerror(invalidmessage % ("No VPCs were found", self.inputfile))
+      stream = open(self.options.getInputFile(), 'r', encoding='utf-8-sig')
+      self.data = json.loads(stream.read())
+      if not 'vpcs' in self.data:
+         printerror(invalidmessage % ("No VPCs were found", self.options.getInputFile()))
          sys.exit()
-      elif not 'subnets' in data:
-         printerror(invalidmessage % ("No Subnets were found", self.inputfile))
+      elif not 'subnets' in self.data:
+         printerror(invalidmessage % ("No Subnets were found", self.options.getInputFile()))
          sys.exit()
 
-      return data
+      if self.data != None:
+         self.normalizeData()
+
+      return
 
    def loadYAML(self):
-      stream = open(self.inputfile, 'r')
-      data = yaml.load(stream, Loader=yaml.FullLoader)
-      if not 'vpcs' in data:
-         printerror(invalidmessage % ("No VPCs were found", inputfile))
+      stream = open(self.options.getInputFile(), 'r')
+      self.data = yaml.load(stream, Loader=yaml.FullLoader)
+      if not 'vpcs' in self.data:
+         printerror(invalidmessage % ("No VPCs were found", self.options.getInputFile()))
          sys.exit()
-      elif not 'subnets' in data:
-         printerror(invalidmessage % ("No Subnets were found", inputfile))
+      elif not 'subnets' in self.data:
+         printerror(invalidmessage % ("No Subnets were found", self.options.getInputFile()))
          sys.exit()
-      return data
 
-   def normalizeData(self, data):
-      vpcs = pd.json_normalize(data['vpcs'] if ('vpcs' in data) else pd.json_normalize({}))
-      subnets = pd.json_normalize(data['subnets'] if ('subnets' in data) else pd.json_normalize({}))
-      instances = pd.json_normalize(data['instances'] if ('instances' in data) else pd.json_normalize({}))
-      #networkInterfaces = pd.json_normalize(data['networkInterfaces'] if ('networkInterfaces' in data) else pd.json_normalize({}))
-      publicGateways = pd.json_normalize(data['publicGateways'] if ('publicGateways' in data) else pd.json_normalize({}))
-      floatingIPs = pd.json_normalize(data['floatingIPs'] if ('floatingIPs' in data) else pd.json_normalize({}))
-      vpnGateways = pd.json_normalize(data['vpnGateways'] if ('vpnGateways' in data) else pd.json_normalize({}))
-      vpnConnections = pd.json_normalize(data['vpnConnections'] if ('vpnConnections' in data) else pd.json_normalize({}))
-      loadBalancers = pd.json_normalize(data['loadBalancers'] if ('loadBalancers' in data) else pd.json_normalize({}))
-      loadBalancerListeners = pd.json_normalize(data['loadBalancerListeners'] if ('loadBalancerListeners' in data) else pd.json_normalize({}))
-      loadBalancerPools = pd.json_normalize(data['loadBalancerPools'] if ('loadBalancerPools' in data) else pd.json_normalize({}))
-      loadBalancerMembers = pd.json_normalize(data['loadBalancerMembers'] if ('loadBalancerMembers' in data) else pd.json_normalize({}))
-      volumes = pd.json_normalize(data['volumes'] if ('volumes' in data) else pd.json_normalize({}))
-      networkACLs = pd.json_normalize(data['networkACLs'] if ('networkACLs' in data) else pd.json_normalize({}))
-      securityGroups = pd.json_normalize(data['securityGroups'] if ('securityGroups' in data) else pd.json_normalize({}))
-      keys = pd.json_normalize(data['keys'] if ('keys' in data) else pd.json_normalize({}))
+      if self.data != None:
+         self.normalizeData()
+
+      return
+
+   def normalizeData(self):
+      self.vpcs = pd.json_normalize(self.data['vpcs'] if ('vpcs' in self.data) else pd.json_normalize({}))
+      self.subnets = pd.json_normalize(self.data['subnets'] if ('subnets' in self.data) else pd.json_normalize({}))
+      self.instances = pd.json_normalize(self.data['instances'] if ('instances' in self.data) else pd.json_normalize({}))
+      #self.networkInterfaces = pd.json_normalize(self.data['networkInterfaces'] if ('networkInterfaces' in self.data) else pd.json_normalize({}))
+      self.publicGateways = pd.json_normalize(self.data['publicGateways'] if ('publicGateways' in self.data) else pd.json_normalize({}))
+      self.floatingIPs = pd.json_normalize(self.data['floatingIPs'] if ('floatingIPs' in self.data) else pd.json_normalize({}))
+      self.vpnGateways = pd.json_normalize(self.data['vpnGateways'] if ('vpnGateways' in self.data) else pd.json_normalize({}))
+      self.vpnConnections = pd.json_normalize(self.data['vpnConnections'] if ('vpnConnections' in self.data) else pd.json_normalize({}))
+      self.loadBalancers = pd.json_normalize(self.data['loadBalancers'] if ('loadBalancers' in self.data) else pd.json_normalize({}))
+      self.loadBalancerListeners = pd.json_normalize(self.data['loadBalancerListeners'] if ('loadBalancerListeners' in self.data) else pd.json_normalize({}))
+      self.loadBalancerPools = pd.json_normalize(self.data['loadBalancerPools'] if ('loadBalancerPools' in self.data) else pd.json_normalize({}))
+      self.loadBalancerMembers = pd.json_normalize(self.data['loadBalancerMembers'] if ('loadBalancerMembers' in self.data) else pd.json_normalize({}))
+      self.volumes = pd.json_normalize(self.data['volumes'] if ('volumes' in self.data) else pd.json_normalize({}))
+      self.networkACLs = pd.json_normalize(self.data['networkACLs'] if ('networkACLs' in self.data) else pd.json_normalize({}))
+      self.securityGroups = pd.json_normalize(self.data['securityGroups'] if ('securityGroups' in self.data) else pd.json_normalize({}))
+      self.keys = pd.json_normalize(self.data['keys'] if ('keys' in self.data) else pd.json_normalize({}))
 
       listenerdata = []
       pooldata = []
       memberdata = []
 
-      if not loadBalancers.empty:
-         lbdata = loadBalancers
+      if not self.loadBalancers.empty:
+         lbdata = self.loadBalancers
          for lbindex, lb in lbdata.iterrows():
             lbid = lb['id']
             lbname = lb['name']
@@ -158,21 +189,21 @@ class File:
       loadBalancerPools =  pd.json_normalize(pooldata)
       loadBalancerMembers =  pd.json_normalize(memberdata)
 
-      if not vpcs.empty:
-         vpcs.rename(
+      if not self.vpcs.empty:
+         self.vpcs.rename(
             columns={'availabilityZone': 'zone.name'}, inplace=True)
 
-      if not subnets.empty:
-         subnets.rename(
+      if not self.subnets.empty:
+         self.subnets.rename(
             columns={'availabilityZone': 'zone.name',
                      'subnet': 'ipv4_cidr_block',
                      'publicGateway.id': 'public_gateway.id',
                      'vpcId': 'vpc.id'}, inplace=True)
 
-         subnets['vpc.name'] = subnets['vpc.id'] 
+         self.subnets['vpc.name'] = self.subnets['vpc.id'] 
 
-      if not instances.empty:
-         instances.rename(
+      if not self.instances.empty:
+         self.instances.rename(
             columns={'memoryGb': 'memory',
                      'bandwidthMb': 'bandwidth',
                      'cpuCount': 'vcpu.count',
@@ -196,27 +227,77 @@ class File:
       #               'networkId': 'subnet.id',
       #               'instanceId': 'instance.id'}, inplace=True)
 
-      if not vpnGateways.empty:
-         vpnGateways.rename(
+      if not self.vpnGateways.empty:
+         self.vpnGateways.rename(
             columns={'floatingIP': 'floating_ip.address'}, inplace=True)
 
-      normalizeddata = {
-         'vpcs': vpcs,
-         'subnets': subnets,
-         'instances': instances,
-         #'networkInterfaces': networkInterfaces,
-         'publicGateways': publicGateways,
-         'floatingIPs': floatingIPs,
-         'vpnGateways': vpnGateways,
-         'vpnConnections': vpnConnections,
-         'loadBalancers': loadBalancers,
-         'loadBalancerListeners': loadBalancerListeners,
-         'loadBalancerPools': loadBalancerPools,
-         'loadBalancerMembers': loadBalancerMembers,
-         'volumes': volumes,
-         'networkACLs': networkACLs,
-         'securityGroups': securityGroups,
-         'keys': keys
-      }
+      return
 
-      return normalizeddata
+   def getFloatingIPs(self):
+      return self.floatingIPs
+
+   def getInstances(self):
+      return self.instances
+
+   def getKeys(self):
+      return self.keys
+
+   def getNetworkInterfaces(self):
+      return self.networkInterfaces
+
+   def getLoadBalancers(self):
+      return self.loadBalancers
+
+   def getLoadBalancerListeners(self):
+      return self.loadBalancerListeners
+
+   def getLoadBalancerPools(self):
+      return self.loadBalancerPools
+
+   def getLoadBalancerMembers(self):
+      return self.loadBalancerMembers
+
+   def getNetworkACLs(self):
+      return self.networkACLs
+
+   def getPublicGateways(self):
+      return self.publicGateways
+
+   def getSecurityGroups(self):
+      return self.securityGroups
+
+   def getSubnets(self):
+      return self.subnets
+
+   def getVolumes(self):
+      return self.volumes
+
+   def getVPCs(self):
+      return self.vpcs
+
+   def getVPNGateways(self):
+      return self.vpnGateways
+
+   def getVPNConnections(self):
+      return self.vpnConnections
+
+   def getInstance(self, id):
+      return findrow(self.options, self.inputInstances, 'id', id)
+
+   def getSubnet(self, id):
+      return findrow(self.options, self.inputSubnets, 'id', id)
+
+   def getVPC(self, id):
+      return findrow(self.options, self.inputVPCs, 'id', id)
+
+   def getFloatingIP(self, id):
+      return findrow(self.options, self.inputFloatingIPs, 'target.id', id)
+
+   def getPublicGateway(self, id):
+      return findrow(self.options, self.InputPublicGateways(), 'id', id)
+
+   def getVPNGateway(self, id):
+      if self.user.isInputRIAS() == 'rias':
+         return findrow(self.options, self.inputVPNGateways, 'subnet.id', id)
+      else:
+         return findrow(self.options, self.inputVPNGateways, 'networkId', id)
