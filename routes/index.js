@@ -1,6 +1,7 @@
 var express = require('express');
 var fs = require('fs');
-var unzipper = require('unzipper');
+//var unzipper = require('unzipper');
+var unzip = require('unzip');
 var { execFile } = require("node:child_process");
 var router = express.Router();
 
@@ -34,14 +35,13 @@ router.post('/drawit/:id', function(request, response, next) {
     });
 
     fs.createReadStream(inputzip)
-      .pipe(unzipper.Extract({ path: accountpath } ))
+      .pipe(unzip.Extract({ path: accountpath } ))
       //.on('finish', function() { 
       .on('close', function() { 
         fs.readdir(accountpath, function(error, files) {
           if (error)
             console.log("drawIT unable to read directory " + accountpath);
           else {
-	    console.log(files);
 	    for (let index = 0; index < files.length; index++) {
 	      let file = files[index];
 	      let segments = file.split(".");
@@ -56,6 +56,7 @@ router.post('/drawit/:id', function(request, response, next) {
           }
         });
       });
+
   })
 });
 
