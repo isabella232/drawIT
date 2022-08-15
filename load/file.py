@@ -47,7 +47,8 @@ class File:
    options = None
 
    def __init__(self, options):
-      self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      #self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips']
       self.options = options
       return
 

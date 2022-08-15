@@ -3,14 +3,16 @@ Automate IBM IT architecture diagrams.
 
 ## Overview
 
-drawIT accepts input from JSON, YAML, or RIAS, and generates diagrams that can be viewed in diagrams.net.
+drawIT accepts input from JSON, YAML, or RIAS, and generates diagrams that can be viewed in IBM2 at diagrams.net.
 
 ## Running drawIT
 
-1. Using GUI:
+Using GUI:
 - test/run.py  (use for JSON/YAML/RIAS passing no parameters) 
 - test/run.py <api-key\>  (use for RIAS passing IBM Cloud API Key)
 - GUI outputs drawio xml (plus errors/warnings) to user's Documents/drawIT folder by default.
+
+<!--
 2. Using NodeJS: 
 - npm start 
 - curl -X POST --data-binary @test/drawit.json.zip -H "Content-Type: application/zip" http://localhost:8080/drawit/<identifier\>
@@ -20,6 +22,7 @@ drawIT accepts input from JSON, YAML, or RIAS, and generates diagrams that can b
 - podman run -p 41920:8080 -d drawit
 - curl -X POST --data-binary @test/drawit.json.zip -H "Content-Type: application/zip" http://localhost:41920/drawit/<identifier\>
 - curl returns drawio xml directly (plus errors/warnings).
+-->
 
 <!--
 ![drawIT Flow](/images/drawitFlow.png "DrawIT Flow")

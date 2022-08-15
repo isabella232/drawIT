@@ -369,7 +369,7 @@ class Diagrams:
                links.append(publiclink1)
 
          if vpngateip != None:
-            vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, regionzonename, vpngateip, secondiconx, secondicony, iconwidth, iconheight)
+            vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, secondiconx, secondicony, iconwidth, iconheight)
             nodes.append(vpngatenode)
                 
             routername = vpcname + '-router'
