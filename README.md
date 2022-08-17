@@ -3,7 +3,7 @@ Automate IBM IT architecture diagrams.
 
 ## Overview
 
-drawIT accepts input from JSON, YAML, or RIAS, and generates diagrams that can be viewed in IBM2 at diagrams.net.
+drawIT accepts input from JSON, YAML, or RIAS, and generates diagrams that can be viewed in IBM2 on diagrams.net.
 
 ## Running drawIT
 
@@ -53,12 +53,14 @@ Using GUI:
 
 ## Features Supported
 
-Groups:
+Locations:
 - Cloud
 - Region
 - Availability Zone
 - VPC
 - Subnet
+- Instances
+- NICs (primary & secondary)
 - Public Network
 - Enterprise Network
 
