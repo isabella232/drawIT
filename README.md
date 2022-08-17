@@ -60,7 +60,7 @@ Locations:
 - VPC
 - Subnet
 - Instances
-- NICs (primary & secondary)
+- NICs (Primary & Secondary)
 - Public Network
 - Enterprise Network
 
@@ -75,7 +75,7 @@ Icons:
 - Storage
 
 Connectors:
-- Floating IP (Ingress and Egress)
+- Floating IP (Ingress & Egress)
 - Public Gateway (Egress only)
 
 ## License
