@@ -31,7 +31,6 @@ class Diagrams:
    data = None
    options = None
    shapes = None
-   saveinstances = []
 
    def __init__(self, options, data):
       self.options = options
@@ -396,29 +395,41 @@ class Diagrams:
       sizes = []
 
       #nicstable = self.setupdata['nics']
-      subnetsTable = self.data.getSubnetsTable()
+      instances = self.data.getInstancesTable(subnetid)
 
       count = 0
 
       #for nicframe in nicstable[subnetid]:
-      for instanceframe in subnetsTable[subnetid]:
-         nics = instanceframe['network_interfaces'] if self.options.isInputRIAS() else instanceframe['networkInterfaces']
+      for instanceframe in instances:
+         count = count + 1
+
+         instancename = instanceframe['name']
+         instanceid = instanceframe['id']
+         nics = self.data.getNICsTable(subnetid, instanceid)
+
+         nicips = ''
+         nicid = ''
+         nicfipid = None
+         nicfipip = None
+         nicfipname = None
+
+         #nics = instanceframe['network_interfaces'] if self.options.isInputRIAS() else instanceframe['networkInterfaces']
+
+         #for nicframe in nics:
          for nicframe in nics:
             #if nicframe.empty:
             #   continue
-
-            count = count + 1
 
             nicname = nicframe['name']
             #nicinstanceid = nicframe['instance.id']
             nicinstanceid = instanceframe['id'] if self.options.isInputRIAS() else nicframe['instanceId']
 
-            nicfipid = None
-            nicfipip = None
-            nicfipname = None
- 
             #nicip = nicframe['primary_ip.address']
             nicip = nicframe['primary_ip']['address'] if self.options.isInputRIAS() else nicframe['ip']
+            if nicips == '':
+               nicips = nicip
+            else:
+              nicips = nicips + ', ' + nicip
             nicid = nicframe['id']
             #fipframe = findrow(user, self.inputdata['floatingIPs'], 'target.id', nicid)
             fipframe = self.data.getFloatingIP(nicid)
@@ -427,120 +438,116 @@ class Diagrams:
                nicfipip = fipframe['address']
                nicfipname = fipframe['name']
 
-            #instanceframe = findrow(user, self.inputdata['instances'], 'id', nicinstanceid)
-            instanceframe = self.data.getInstance(nicinstanceid)
-            if len(instanceframe) == 0:
-               printerror(invalidinstancereferencemessage % nicinstanceid)
-               continue
+         #old instanceframe = findrow(user, self.inputdata['instances'], 'id', nicinstanceid)
+         #instanceframe = self.data.getInstance(nicinstanceid)
+         #if len(instanceframe) == 0:
+         #   printerror(invalidinstancereferencemessage % nicinstanceid)
+         #   continue
 
-            instancename = instanceframe['name']
-            instanceid = instanceframe['id']
+         instancename = instanceframe['name']
+         instanceid = instanceframe['id']
 
-            # Ensure only one NIC initially.
-            if compress(instanceid) in self.saveinstances:
-               continue
+         instanceOS = instanceframe['image.name']
+         if instanceOS == None:
+            instanceOS = 'Unknown OS'
+         instanceprofile = instanceframe['profile.name'] 
+         instancememory = instanceframe['memory']
+
+         bandwidth = instanceframe['bandwidth']
+         if bandwidth == '' or (isinstance(bandwidth, float) and math.isnan(bandwidth)):
+            instancecpuspeed = 0
+         else:
+            instancecpuspeed = int(instanceframe['bandwidth'] / 1000)
+
+         instancecpucount = instanceframe['vcpu.count']
+
+         osdetails = instanceOS
+         profiledetails = instanceprofile
+         storagedetails = '100GB/3000IOPS'
+
+         if self.options.isLowDetail(): 
+            width = iconwidth
+            height = iconheight
+            extrawidth = width * 3
+            extraheight = height * 2
+            x = width + (extrawidth * (count - 1)) + (groupspace * count)
+            y = topspace
+         else:
+            width = 240
+            height = 152
+            x = (width * (count - 1)) + (groupspace * count) 
+            y = topspace
+
+         #SAVE x = (width * (count - 1)) + (groupspace * count) 
+         #SAVE y = topspace
+
+         #SAVE instancenode = geninstance(user, instancename, subnetname, nicip, instancedetails, width, height, x, y)
+
+         #SAVE osnode = geninstanceexpandedstack(user, instancename, subnetname, nicip, width, height, x, y)
+
+         bastion = False
+
+         if self.options.isLowDetail(): 
+            if instancename.lower().find("bastion") != -1:
+               bastion = True
+               instancenode = self.shapes.buildInstanceBastion(nicid, subnetid, instancename, nicips, x, y, width, height)
             else:
-               self.saveinstances.append(compress(instanceid))
-
-            instanceOS = instanceframe['image.name']
-            if instanceOS == None:
-               instanceOS = 'Unknown OS'
-            instanceprofile = instanceframe['profile.name'] 
-            instancememory = instanceframe['memory']
-
-            bandwidth = instanceframe['bandwidth']
-            if bandwidth == '' or (isinstance(bandwidth, float) and math.isnan(bandwidth)):
-               instancecpuspeed = 0
+               instancenode = self.shapes.buildInstance(nicid, subnetid, instancename, nicips, x, y, width, height)
+            sizes.append([extrawidth, extraheight])
+         else:
+            if instancename.lower().find("bastion") != -1:
+               bastion = True
+               instancenode = self.shapes.buildInstanceBastionExpandedStack(nicid, subnetid, instancename, nicips, x, y, width, height)
             else:
-               instancecpuspeed = int(instanceframe['bandwidth'] / 1000)
+               instancenode = self.shapes.buildInstanceExpandedStack(nicid, subnetid, instancename, nicips, x, y, width, height)
+            sizes.append([width, height])
 
-            instancecpucount = instanceframe['vcpu.count']
+         nodes.append(instancenode)
 
-            osdetails = instanceOS
-            profiledetails = instanceprofile
-            storagedetails = '100GB/3000IOPS'
+         if not self.options.isLowDetail(): 
+            textwidth = width - (textgroupspace * 2)
+            textheight = height - (texttopspace + textgroupspace)
 
-            if self.options.isLowDetail(): 
-               width = iconwidth
-               height = iconheight
-               extrawidth = width * 3
-               extraheight = height * 2
-               x = width + (extrawidth * (count - 1)) + (groupspace * count)
-               y = topspace
-            else:
-               width = 240
-               height = 152
-               x = (width * (count - 1)) + (groupspace * count) 
-               y = topspace
+            textx = textgroupspace
+            texty = texttopspace
 
-            #SAVE x = (width * (count - 1)) + (groupspace * count) 
-            #SAVE y = topspace
+            #textid = nicid + ':details'
+            textid = instanceid + ':details'
+            textname = instancename + ':details'
 
-            #SAVE instancenode = geninstance(user, instancename, subnetname, nicip, instancedetails, width, height, x, y)
+            stackwidth = 252
+            stackheight = 16
+            stackx = 16
+            stacky = 64
+            osnode = self.shapes.buildItemOS(nicid + ':' + osdetails, nicid, osdetails, '', stackx, stacky, stackwidth, stackheight)
+            profilenode = ''
+            if profiledetails[0] == 'b':
+               profilenode = self.shapes.buildItemProfileBalanced(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
+            elif profiledetails[0] == 'c' or profiledetails[0] == 'g':
+               profilenode = self.shapes.buildItemProfileCompute(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
+            elif profiledetails[0] == 'm' or profiledetails[0] == 'u' or profiledetails[1] == 'v':
+               profilenode = self.shapes.buildItemProfileMemory(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
+            storagenode = self.shapes.buildItemBlockStorage(nicid + ':' + storagedetails, nicid, storagedetails, '', stackx, stacky + 48, stackwidth, stackheight)
 
-            #SAVE osnode = geninstanceexpandedstack(user, instancename, subnetname, nicip, width, height, x, y)
+            nodes.append(osnode)
+            nodes.append(profilenode)
+            nodes.append(storagenode)
 
-            bastion = False
+         if nicfipip != None:
+            # Save for option to show FIP icon.
+            #SAVE fipnode = genfloatingip(user, nicfipname, nicfipip)
+            #SAVE nodes.append(fipnode)
+            #SAVE fiplink1 = gensolidlink_doublearrow(user, '', instancename, nicfipname)
+            #SAVE links.append(fiplink1)
+            #SAVE internetname = 'Internet'
+            #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
+            #SAVE links.append(fiplink2)
 
-            if self.options.isLowDetail(): 
-               if instancename.lower().find("bastion") != -1:
-                  bastion = True
-                  instancenode = self.shapes.buildInstanceBastion(instanceid, subnetid, instancename, nicip, x, y, width, height)
-               else:
-                  instancenode = self.shapes.buildInstance(instanceid, subnetid, instancename, nicip, x, y, width, height)
-               sizes.append([extrawidth, extraheight])
-            else:
-               if instancename.lower().find("bastion") != -1:
-                  bastion = True
-                  instancenode = self.shapes.buildInstanceBastionExpandedStack(instanceid, subnetid, instancename, nicip, x, y, width, height)
-               else:
-                  instancenode = self.shapes.buildInstanceExpandedStack(instanceid, subnetid, instancename, nicip, x, y, width, height)
-               sizes.append([width, height])
-
-            nodes.append(instancenode)
-
-            if not self.options.isLowDetail(): 
-               textwidth = width - (textgroupspace * 2)
-               textheight = height - (texttopspace + textgroupspace)
-
-               textx = textgroupspace
-               texty = texttopspace
-
-               textid = nicid + ':details'
-               textname = instancename + ':details'
-
-               stackwidth = 252
-               stackheight = 16
-               stackx = 16
-               stacky = 64
-               osnode = self.shapes.buildItemOS(nicid + ':' + osdetails, instanceid, osdetails, '', stackx, stacky, stackwidth, stackheight)
-               profilenode = ''
-               if profiledetails[0] == 'b':
-                  profilenode = self.shapes.buildItemProfileBalanced(nicid + ':' + profiledetails, instanceid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
-               elif profiledetails[0] == 'c' or profiledetails[0] == 'g':
-                  profilenode = self.shapes.buildItemProfileCompute(nicid + ':' + profiledetails, instanceid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
-               elif profiledetails[0] == 'm' or profiledetails[0] == 'u' or profiledetails[1] == 'v':
-                  profilenode = self.shapes.buildItemProfileMemory(nicid + ':' + profiledetails, instanceid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
-               storagenode = self.shapes.buildItemBlockStorage(nicid + ':' + storagedetails, instanceid, storagedetails, '', stackx, stacky + 48, stackwidth, stackheight)
-
-               nodes.append(osnode)
-               nodes.append(profilenode)
-               nodes.append(storagenode)
-
-            if nicfipip != None:
-               # Save for option to show FIP icon.
-               #SAVE fipnode = genfloatingip(user, nicfipname, nicfipip)
-               #SAVE nodes.append(fipnode)
-               #SAVE fiplink1 = gensolidlink_doublearrow(user, '', instancename, nicfipname)
-               #SAVE links.append(fiplink1)
-               #SAVE internetname = 'Internet'
-               #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
-               #SAVE links.append(fiplink2)
-
-               routername = vpcname + '-router'
-               iplabel =  "fip:" + nicfipip
-               fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
-               links.append(fiplink)
+            routername = vpcname + '-router'
+            iplabel =  "fip:" + nicfipip
+            #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
+            fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername)
+            links.append(fiplink)
 
       return nodes, links, values, sizes
 

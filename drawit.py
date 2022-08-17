@@ -618,7 +618,7 @@ class drawit:
                            return
                         outputfile = inputbase + '.' + outputtype
                         self.options.setOutputFile(outputfile)
-                        printmessage(starttoolmessage % inputtype + ' File: ' + inputfile)
+                        printmessage(starttoolmessage % inputfile)
                     else:
                         #printerror(invalidmodemessage % args.runmode)
                         printmessage(errormessage % 'No RIAS, JSON, or YAML')

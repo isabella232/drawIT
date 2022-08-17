@@ -30,7 +30,7 @@ import pandas as pd
 # Constants
 
 TOOLNAME = 'drawIT'
-TOOLVERSION = '0.5.5'
+TOOLVERSION = '0.5.6'
 
 #ACCOUNT_PLACEHOLDER = '(Account-ID)'
 #KEY_PLACEHOLDER = '(API-Key)'
