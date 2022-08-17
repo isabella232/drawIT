@@ -64,14 +64,12 @@ Locations:
 - Public Network
 - Enterprise Network
 
-Regular Icons:
+Icons:
 - User
 - Internet
 - Instance
 - Public Gateway
 - Implicit Router
-
-Item Icons:
 - Unix
 - Profile
 - Storage
