@@ -17,9 +17,11 @@ from build.types import Types
 from common.utils import *
 
 class Shapes:
-   def __init__(self, user):
-      self.user = user
-      self.types = Types(user)
+   common = None
+   types = None
+
+   def __init__(self, common):
+      self.types = Types(common)
 
    # Groups
 

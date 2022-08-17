@@ -17,8 +17,7 @@ import os
 import xml.etree.ElementTree as ET
 
 class XML:
-   def __init__(self, user, data):
-      self.user = user
+   def __init__(self, data):
       self.xml = ET.Element("mxfile", data['header'])
       self.root = None
 

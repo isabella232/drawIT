@@ -22,7 +22,7 @@ import urllib3
 #import logging
 from zipfile import ZipFile
 
-from common.options import Options
+from common.common import Common
 from common.utils import *
 
 class File:
@@ -44,22 +44,22 @@ class File:
    vpnConnections = {}
    data = {}
    types = []
-   options = None
+   common = None
 
-   def __init__(self, options):
+   def __init__(self, common):
       #self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
       self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips']
-      self.options = options
+      self.common = common
       return
 
    def loadJSON(self):
-      stream = open(self.options.getInputFile(), 'r', encoding='utf-8-sig')
+      stream = open(self.common.getInputFile(), 'r', encoding='utf-8-sig')
       self.data = json.loads(stream.read())
       if not 'vpcs' in self.data:
-         printerror(invalidmessage % ("No VPCs were found", self.options.getInputFile()))
+         self.common.printMissingVPCs(self.common.getInputFile())
          sys.exit()
       elif not 'subnets' in self.data:
-         printerror(invalidmessage % ("No Subnets were found", self.options.getInputFile()))
+         self.common.printMissingSubnets(self.common.getInputFile())
          sys.exit()
 
       if self.data != None:
@@ -68,13 +68,13 @@ class File:
       return
 
    def loadYAML(self):
-      stream = open(self.options.getInputFile(), 'r')
+      stream = open(self.common.getInputFile(), 'r')
       self.data = yaml.load(stream, Loader=yaml.FullLoader)
       if not 'vpcs' in self.data:
-         printerror(invalidmessage % ("No VPCs were found", self.options.getInputFile()))
+         self.common.printMissingVPCs(self.common.getInputFile())
          sys.exit()
       elif not 'subnets' in self.data:
-         printerror(invalidmessage % ("No Subnets were found", self.options.getInputFile()))
+         self.common.printMissingSubnets(self.common.getInputFile())
          sys.exit()
 
       if self.data != None:
@@ -280,22 +280,22 @@ class File:
       return self.vpnConnections
 
    def getInstance(self, id):
-      return findrow(self.options, self.inputInstances, 'id', id)
+      return findrow(self.common, self.inputInstances, 'id', id)
 
    def getSubnet(self, id):
-      return findrow(self.options, self.inputSubnets, 'id', id)
+      return findrow(self.common, self.inputSubnets, 'id', id)
 
    def getVPC(self, id):
-      return findrow(self.options, self.inputVPCs, 'id', id)
+      return findrow(self.common, self.inputVPCs, 'id', id)
 
    def getFloatingIP(self, id):
-      return findrow(self.options, self.inputFloatingIPs, 'target.id', id)
+      return findrow(self.common, self.inputFloatingIPs, 'target.id', id)
 
    def getPublicGateway(self, id):
-      return findrow(self.options, self.InputPublicGateways(), 'id', id)
+      return findrow(self.common, self.InputPublicGateways(), 'id', id)
 
    def getVPNGateway(self, id):
       if self.user.isInputRIAS() == 'rias':
-         return findrow(self.options, self.inputVPNGateways, 'subnet.id', id)
+         return findrow(self.common, self.inputVPNGateways, 'subnet.id', id)
       else:
-         return findrow(self.options, self.inputVPNGateways, 'networkId', id)
+         return findrow(self.common, self.inputVPNGateways, 'networkId', id)

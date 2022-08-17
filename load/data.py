@@ -15,7 +15,7 @@
 
 from load.file import File
 from load.rias import RIAS
-from common.options import Options
+from common.common import Common
 from common.utils import *
 
 class Data:
@@ -28,19 +28,19 @@ class Data:
    data = None
    options = None
 
-   def __init__(self, options):
-      self.options = options
-      if self.options.isInputRIAS():
-         self.data = RIAS(options)
+   def __init__(self, common):
+      self.common = common
+      if self.common.isInputRIAS():
+         self.data = RIAS(common)
       else:
-         self.data = File(options)
+         self.data = File(common)
       return
 
    def loadData(self):
       normalizeddata = None
-      if self.options.isInputRIAS():
+      if self.common.isInputRIAS():
          self.data.loadRIAS()
-      elif self.options.isInputJSON():
+      elif self.common.isInputJSON():
          self.data.loadJSON()
       else:
          self.data.loadYAML()
@@ -61,18 +61,18 @@ class Data:
          for instanceindex, instanceframe in instances.iterrows():
             instanceid = instanceframe['id']
             #instancename = instanceframe['name']
-            #vpcname = instanceframe['vpc.name'] if self.options.isInputRIAS() else instanceframe['vpcName']
-            #vpcid = instanceframe['vpc.id'] if self.options.isInputRIAS() else instanceframe['vpcId']
-            #zonename = instanceframe['zone.name'] if self.options.isInputRIAS() else instanceframe['availabilityZone']
-            #regionname = zonename[:len(zonename) - 2] if self.options.isInputRIAS() else instanceframe['availabilityZone']
+            #vpcname = instanceframe['vpc.name'] if self.common.isInputRIAS() else instanceframe['vpcName']
+            #vpcid = instanceframe['vpc.id'] if self.common.isInputRIAS() else instanceframe['vpcId']
+            #zonename = instanceframe['zone.name'] if self.common.isInputRIAS() else instanceframe['availabilityZone']
+            #regionname = zonename[:len(zonename) - 2] if self.common.isInputRIAS() else instanceframe['availabilityZone']
 
             addedInstance = False
-            nics = instanceframe['network_interfaces'] if self.options.isInputRIAS() else instanceframe['networkInterfaces']
+            nics = instanceframe['network_interfaces'] if self.common.isInputRIAS() else instanceframe['networkInterfaces']
             if nics:
                for nicframe in nics:
                   #nicname = nicframe['name']
                   #nicid = nicframe['id']
-                  nicsubnetid = nicframe['subnet']['id'] if self.options.isInputRIAS() else nicframe['networkId']
+                  nicsubnetid = nicframe['subnet']['id'] if self.common.isInputRIAS() else nicframe['networkId']
 
                   if nicsubnetid in self.instancesTable:
                      if addedInstance == False:
@@ -199,22 +199,22 @@ class Data:
       return self.data.getVPNConnections()
 
    def getInstance(self, id):
-      return self.findRow(self.options, self.data.getInstances(), 'id', id)
+      return self.findRow(self.common, self.data.getInstances(), 'id', id)
 
    def getSubnet(self, id):
-      return self.findRow(self.options, self.data.getSubnets(), 'id', id)
+      return self.findRow(self.common, self.data.getSubnets(), 'id', id)
 
    def getVPC(self, id):
-      return self.findRow(self.options, self.data.getVPCs(), 'id', id)
+      return self.findRow(self.common, self.data.getVPCs(), 'id', id)
 
    def getFloatingIP(self, id):
-      return self.findRow(self.options, self.data.getFloatingIPs(), 'target.id', id)
+      return self.findRow(self.common, self.data.getFloatingIPs(), 'target.id', id)
 
    def getPublicGateway(self, id):
-      return self.findRow(self.options, self.data.getPublicGateways(), 'id', id)
+      return self.findRow(self.common, self.data.getPublicGateways(), 'id', id)
 
    def getVPNGateway(self, id):
-      if self.options.isInputRIAS():
-         return self.findRow(self.options, self.data.getVPNGateways(), 'subnet.id', id)
+      if self.common.isInputRIAS():
+         return self.findRow(self.common, self.data.getVPNGateways(), 'subnet.id', id)
       else:
-         return self.findRow(self.options, self.data.getVPNGateways(), 'networkId', id)
+         return self.findRow(self.common, self.data.getVPNGateways(), 'networkId', id)

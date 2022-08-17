@@ -30,7 +30,7 @@ import pandas as pd
 # Constants
 
 TOOLNAME = 'drawIT'
-TOOLVERSION = '0.5.6'
+TOOLVERSION = '0.5.7'
 
 #ACCOUNT_PLACEHOLDER = '(Account-ID)'
 #KEY_PLACEHOLDER = '(API-Key)'
@@ -43,8 +43,8 @@ COPYRIGHT = TOOLNAME + ' ' + TOOLVERSION + ' - Copyright 2022 IBM Corporation'
 # Messages
 
 toolheader = TOOLNAME + '\n'
-starttoolmessage = 'Starting with input from %s'
-donetoolmessage = 'Completed with output to %s'
+#starttoolmessage = 'Starting with input from %s'
+#donetoolmessage = 'Completed with output to %s'
 startprovidermessage = 'Generating Resource for provider'
 backupdirectorymessage = 'Backed up existing output directory %s to %s'
 warningmessage = '(Warning) %s'

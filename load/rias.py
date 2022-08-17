@@ -22,7 +22,7 @@ import urllib3
 #import logging
 from zipfile import ZipFile
 
-from common.options import Options
+from common.common import Common
 from common.utils import *
 
 class RIAS:
@@ -44,12 +44,12 @@ class RIAS:
    vpnConnections = {}
    data = {}
    types = []
-   options = None
+   common = None
 
-   def __init__(self, options):
+   def __init__(self, common):
       #self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
       self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips']
-      self.options = options
+      self.common = common
       return
 
    def gettoken(self, accountID, apiKey):
@@ -81,7 +81,7 @@ class RIAS:
    def getriasdata(self, token, accountID, group):
       #version = '2022-03-15'
       version = '2022-07-05'
-      endpoint = 'https://' + self.options.getRegion().value + '.iaas.cloud.ibm.com'
+      endpoint = 'https://' + self.common.getRegion().value + '.iaas.cloud.ibm.com'
       if len(accountID) > 0:
          if group == 'vpn_gateways' or group == 'load_balancers':
             # Exit for now as causing error with other accounts:
@@ -112,10 +112,10 @@ class RIAS:
          printerror(invalidmessage % (error['code'], error['message'] + ' href=' + request)) 
          sys.exit()
       elif group == "vpcs" and rawdata['total_count'] == 0:
-         printerror(invalidmessage % ("No VPCs were found", 'href=' + request)) 
+         self.common.printMissingVPCs('href=' + request)
          sys.exit()
       elif group == "subnets" and rawdata['total_count'] == 0:
-         printerror(invalidmessage % ("No Subnets were found", 'href=' + request)) 
+         self.commonprintMissingSubnets('href=' + request)
          sys.exit()
       data = rawdata[group]
       #if group == "vpcs":
@@ -195,13 +195,13 @@ class RIAS:
       memberdata = []
       #nicdata = []
       vpndata = []
-      token = self.gettoken(self.options.getAccountID(), self.options.getAPIKey())
-      #rawdata = getriasdata(self.options, token, accountid, 'vpcs')
+      token = self.gettoken(self.common.getAccountID(), self.common.getAPIKey())
+      #rawdata = getriasdata(self.common, token, accountid, 'vpcs')
       #data[datatype] = rawdata
       #return data
  
       for datatype in self.types:
-         rawdata = self.getriasdata(token, self.options.getAccountID(), datatype)
+         rawdata = self.getriasdata(token, self.common.getAccountID(), datatype)
          self.data[datatype] = rawdata
          #if datatype == 'instances':
          #   instancedata = rawdata
@@ -219,7 +219,7 @@ class RIAS:
             lbdata = rawdata
             for lb in lbdata:
                id = lb['id']
-               rawdata = self.getriassubdata(token, self.options.getAccountID(), id, datatype, 'listeners')
+               rawdata = self.getriassubdata(token, self.common.getAccountID(), id, datatype, 'listeners')
                listeners = rawdata['listeners']
                listenerdict = {} 
                lblistenerdata = []
@@ -234,7 +234,7 @@ class RIAS:
                listenerdict = {'id': id, 'listeners': lblistenerdata}
                listenerdata.append(listenerdict)
 
-               rawdata = self.getriassubdata(token, self.options.getAccountID(), id, datatype, 'pools')
+               rawdata = self.getriassubdata(token, self.common.getAccountID(), id, datatype, 'pools')
                pools = rawdata['pools']
                pooldict = {} 
                memberdict = {} 
@@ -248,7 +248,7 @@ class RIAS:
                   extended['lbid'] = id
                   pooldata.append(extended)
 
-                  rawdata = self.getriassubdata2(token, self.options.getAccountID(), id, datatype, 'pools', poolid, 'members')
+                  rawdata = self.getriassubdata2(token, self.common.getAccountID(), id, datatype, 'pools', poolid, 'members')
                   members = rawdata['members']
                   lbmemberdata.append(members)
 
@@ -347,22 +347,22 @@ class RIAS:
       return self.vpnConnections
 
    def getInstance(self, id):
-      return findrow(self.options, self.inputInstances, 'id', id)
+      return findrow(self.common, self.inputInstances, 'id', id)
 
    def getSubnet(self, id):
-      return findrow(self.options, self.inputSubnets, 'id', id)
+      return findrow(self.common, self.inputSubnets, 'id', id)
 
    def getVPC(self, id):
-      return findrow(self.options, self.inputVPCs, 'id', id)
+      return findrow(self.common, self.inputVPCs, 'id', id)
 
    def getFloatingIP(self, id):
-      return findrow(self.options, self.inputFloatingIPs, 'target.id', id)
+      return findrow(self.common, self.inputFloatingIPs, 'target.id', id)
 
    def getPublicGateway(self, id):
-      return findrow(self.options, self.InputPublicGateways(), 'id', id)
+      return findrow(self.common, self.InputPublicGateways(), 'id', id)
 
    def getVPNGateway(self, id):
       if self.user.isInputRIAS() == 'rias':
-         return findrow(self.options, self.inputVPNGateways, 'subnet.id', id)
+         return findrow(self.common, self.inputVPNGateways, 'subnet.id', id)
       else:
-         return findrow(self.options, self.inputVPNGateways, 'networkId', id)
+         return findrow(self.common, self.inputVPNGateways, 'networkId', id)

@@ -24,7 +24,9 @@ import configparser
 
 from build.diagrams import Diagrams
 from load.data import Data
-from common.options import Options, InputType, OutputDetail, OutputShapes, OutputSplit, Regions, RunMode
+from common.common import Common
+from common.options import Options, OutputDetail, OutputShapes, OutputSplit, Regions, RunMode
+from common.messages  import Messages
 from common.utils import *
 
 class Config:
@@ -154,13 +156,15 @@ class Config:
         self.set("runmode",runmode)
 
 class drawit:
+   title = COPYRIGHT.split(' - ')
+   top = None
+   statusText = None
+   data = None
+   diagrams = None 
+   common = None
+
    def __init__(self):
-      title = COPYRIGHT.split(' - ')
-      top = None
-      statusText = None
-      self.data = None
-      self.diagrams = None
-      self.options = Options()
+      self.common = Common()
 
    #SAVE top = tkinter.Tk()
    #top.title(TOOLNAME + ' ' + COPYRIGHT.split(' ')[2])
@@ -188,16 +192,16 @@ class drawit:
       
         parser = argparse.ArgumentParser(description='Draw IT')
 
-        parser.add_argument('-key', dest='apikey', default=self.options.getAPIKey(), help='API Key')
-        parser.add_argument('-account', dest='accountid', default=self.options.getAccountID(), help='Account ID')
-        parser.add_argument('-input', dest='inputfile', default=self.options.getInputFile(), help='JSON/YAML')
-        parser.add_argument('-region', dest='region', default=self.options.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
-        parser.add_argument('-output', dest='outputfolder', default=os.path.join(outputdirectory, self.options.getOutputFolder()), help='output directory')
-        parser.add_argument('-detail', dest='outputdetail', default=self.options.getOutputDetail().value, help='low, medium, or high')
-        parser.add_argument('-split', dest='outputsplit', default=self.options.getOutputSplit().value, help='single, region, or vpc')
-        parser.add_argument('-shapes', dest='outputshapes', default=self.options.getOutputShapes().value, help='logical or prescribed')
+        parser.add_argument('-key', dest='apikey', default=self.common.getAPIKey(), help='API Key')
+        parser.add_argument('-account', dest='accountid', default=self.common.getAccountID(), help='Account ID')
+        parser.add_argument('-input', dest='inputfile', default=self.common.getInputFile(), help='JSON/YAML')
+        parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
+        parser.add_argument('-output', dest='outputfolder', default=os.path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
+        parser.add_argument('-detail', dest='outputdetail', default=self.common.getOutputDetail().value, help='low, medium, or high')
+        parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, region, or vpc')
+        parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
 
-        parser.add_argument('-mode', dest='runmode', default=self.options.getRunMode().value, help="batch, gui, or web")
+        parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, or web")
         parser.add_argument('--version', action='version', version='drawIT ' + COPYRIGHT.split(' ')[1])
         
         args = parser.parse_args()
@@ -224,11 +228,11 @@ class drawit:
         outputshapes = args.outputshapes.lower()
         runmode = args.runmode.lower()
 
-        self.options.setAPIKey(apikey)
-        self.options.setAccountID(accountid)
-        self.options.setRegion(region)
-        self.options.setInputFile(inputfile)
-        self.options.setOutputFolder(outputfolder)
+        self.common.setAPIKey(apikey)
+        self.common.setAccountID(accountid)
+        self.common.setRegion(region)
+        self.common.setInputFile(inputfile)
+        self.common.setOutputFolder(outputfolder)
 
         if outputdetail == "low":
             outputdetail = OutputDetail.LOW
@@ -236,13 +240,13 @@ class drawit:
             outputdetail = OutputDetail.MEDIUM
         elif outputdetail == "high":
             outputdetail = OutputDetail.HIGH
-        self.options.setOutputDetail(outputdetail)
+        self.common.setOutputDetail(outputdetail)
 
         if outputshapes == "logical":
             outputshapes = OutputShapes.LOGICAL
         elif outputshapes == "prescribed":
             outputshapes = OutputShapes.PRESCRIBED
-        self.options.setOutputShapes(outputshapes)
+        self.common.setOutputShapes(outputshapes)
 
         if outputsplit == "single":
             outputsplit = OutputSplit.SINGLE
@@ -250,7 +254,7 @@ class drawit:
             outputsplit = OutputSplit.REGION
         elif outputsplit == "vpc":
             outputsplit = OutputSplit.VPC
-        self.options.setOutputSplit(outputsplit)
+        self.common.setOutputSplit(outputsplit)
 
         if region == "eu-de":
             region = Regions.GERMANY
@@ -272,7 +276,7 @@ class drawit:
             region = Regions.USSOUTH
         else:
             region = Regions.ALL
-        self.options.setRegion(region)
+        self.common.setRegion(region)
 
         self.minInfo = False
 
@@ -288,48 +292,48 @@ class drawit:
                 #    print(invalidinputfilemessage % inputfile)
                 #    return
 
-                apikey = self.options.getAPIKey()
-                accountid = self.options.getAccountID()
-                region = self.options.getRegion().value
-                inputfile = self.options.getInputFile()
+                apikey = self.common.getAPIKey()
+                accountid = self.common.getAccountID()
+                region = self.common.getRegion().value
+                inputfile = self.common.getInputFile()
                 outputtype = 'xml'
 
                 #backupdirectory(options)
 
                 if len(apikey) > 0:
-                    self.options.setInputType(InputType.RIAS)
+                    self.common.setInputRIAS()
                     inputbase = apikey
                     outputfile = inputbase + '.' + outputtype
-                    self.options.setOutputFile(outputfile)
+                    self.common.setOutputFile(outputfile)
                     if len(accountid) > 0:
-                        printmessage(starttoolmessage % ('RIAS for API Key ' + apikey + ' and Account ID ' + accountid + ' in region ' + region))
+                        self.common.printStartRIASwithAccount(apikey, accountid, region)
                     else:
-                        printmessage(starttoolmessage % 'RIAS for API Key ' + apikey + ' in region ' + region)
+                        self.common.printStartRIASwithKey(apikey, region)
                 elif len(inputfile) > 0:
                     basename = os.path.basename(inputfile)
                     inputbase = os.path.splitext(basename)[0]
                     inputtype = os.path.splitext(basename)[1][1:]
                     if inputtype == 'yaml' or inputtype == 'yml':
-                        self.options.setInputType(InputType.YAML)
+                        self.common.setInputYAML()
                     elif inputtype == 'json':
-                        self.options.setInputType(InputType.JSON)
+                        self.common.setInputJSON()
                     else:
                         printerror(invalidinputfilemessage % args.inputfile)
                         return
                     outputfile = inputbase + '.' + outputtype
-                    self.options.setOutputFile(outputfile)
-                    printmessage(starttoolmessage % inputfile)
+                    self.common.setOutputFile(outputfile)
+                    self.common.printStartFile(inputfile)
                 else:
                     #printerror(invalidmodemessage % args.runmode)
                     printmessage(errormessage % 'No RIAS, JSON, or YAML')
                     return
 
-                self.data = Data(self.options)
+                self.data = Data(self.common)
                 self.data.loadData()
-                self.diagrams = Diagrams(self.options, self.data)
+                self.diagrams = Diagrams(self.common, self.data)
                 self.diagrams.buildDiagrams()
 
-                printmessage(donetoolmessage % outputfolder)
+                self.common.printDone(outputfolder)
 
                 done = True
 
@@ -430,7 +434,7 @@ class drawit:
                     lOutputDirectory.configure(text=self.outputDirectory)
                     config.set("outputDirectory",self.outputDirectory)
                     config.write()
-                    self.options.setOutputFolder(self.outputDirectory)
+                    self.common.setOutputFolder(self.outputDirectory)
                     
             outputbutton = tkinter.Frame(frame)
             eSelectOutputDirectory = tkinter.Button(outputbutton, text="Select Directory", fg="blue", command=lambda: onClickSelectOutputDirectory())
@@ -538,14 +542,14 @@ class drawit:
                         outputdetail = OutputDetail.MEDIUM
                     elif outputdetail == "High":
                         outputdetail = OutputDetail.HIGH
-                    self.options.setOutputDetail(outputdetail)
+                    self.common.setOutputDetail(outputdetail)
 
                     outputshapes = str(eOutputShape.get())
                     if outputshapes == "Logical":
                         outputshapes = OutputShapes.LOGICAL
                     elif outputshapes == "Prescribed":
                         outputshapes = OutputShapes.PRESCRIBED
-                    self.options.setOutputShapes(outputshapes)
+                    self.common.setOutputShapes(outputshapes)
 
                     outputsplit = str(eOutputSplit.get())
                     if outputsplit == "Single":
@@ -554,7 +558,7 @@ class drawit:
                         outputsplit = OutputSplit.REGION
                     elif outputsplit == "VPC":
                         outputsplit = OutputSplit.VPC
-                    self.options.setOutputSplit(outputsplit)
+                    self.common.setOutputSplit(outputsplit)
 
                     region = str(eRegion.get())
                     if region == "Germany":
@@ -575,61 +579,61 @@ class drawit:
                         region = Regions.USEAST
                     elif region == "US South":
                         region = Regions.USSOUTH
-                    self.options.setRegion(region)
+                    self.common.setRegion(region)
 
                     accountid = str(lAccountID.get())
-                    self.options.setAccountID(accountid)
+                    self.common.setAccountID(accountid)
 
                     apikey = str(lAPIKey.get())
-                    self.options.setAPIKey(apikey)
+                    self.common.setAPIKey(apikey)
 
                     #inputfile = self.inputFile
                     inputfile = str(lInputFile.get())
-                    self.options.setInputFile(inputfile)
+                    self.common.setInputFile(inputfile)
 
                     #outputfolder = self.outputDirectory
                     outputfolder = str(lOutputDirectory.get())
-                    self.options.setOutputFolder(outputfolder)
+                    self.common.setOutputFolder(outputfolder)
 
                     outputtype = 'xml'
 
                     self.statusText.set("Starting")
-                    #print(starttoolmessage % self.inputFile)
 
                     if len(apikey) > 0:
-                        self.options.setInputType(InputType.RIAS)
+                        self.common.setInputRIAS()
                         inputbase = apikey
                         outputfile = str(inputbase) + '.' + outputtype
-                        self.options.setOutputFile(outputfile)
+                        self.common.setOutputFile(outputfile)
                         if len(accountid) > 0:
-                            printmessage(starttoolmessage % ('RIAS for API Key ' + apikey + ' and Account ID ' + accountid + ' in region ' + region))
+                           self.common.printStartRIASwithAccount(apikey, accountid, region)
                         else:
-                            printmessage(starttoolmessage % 'RIAS for API Key ' + apikey + ' in region ' + region)
+                           self.common.printStartRIASwithKey(apikey, region)
                     elif len(inputfile) > 0:
                         basename = os.path.basename(self.inputFile)
                         inputbase = os.path.splitext(basename)[0]
                         inputtype = os.path.splitext(basename)[1][1:]
                         if inputtype == 'yaml' or inputtype == 'yml':
-                            self.options.setInputType(InputType.YAML)
+                            self.common.setInputYAML()
                         elif inputtype == 'json':
-                            self.options.setInputType(InputType.JSON)
+                            self.common.setInputJSON()
                         else:
                            printerror(invalidinputfilemessage % args.inputfile)
                            return
                         outputfile = inputbase + '.' + outputtype
-                        self.options.setOutputFile(outputfile)
-                        printmessage(starttoolmessage % inputfile)
+                        self.common.setOutputFile(outputfile)
+                        self.common.printStartFile(inputfile)
                     else:
                         #printerror(invalidmodemessage % args.runmode)
                         printmessage(errormessage % 'No RIAS, JSON, or YAML')
                         sys.exit()
 
-                    self.data = Data(self.options)
+                    self.data = Data(self.common)
                     self.data.loadData()
-                    self.diagrams = Diagrams(self.options, self.data)
+                    self.diagrams = Diagrams(self.common, self.data)
                     self.diagrams.buildDiagrams()
 
-                    printmessage(donetoolmessage % outputfolder)
+                    self.common.printDone(outputfolder)
+
                     self.statusText.set("Completed")
 
                     sys.exit()
@@ -656,19 +660,19 @@ class drawit:
             inputbase = os.path.splitext(basename)[0]
             inputtype = os.path.splitext(basename)[1][1:]
             if inputtype == 'yaml' or inputtype == 'yml':
-                self.options.setInputType(InputType.YAML)
+                self.common.setInputYAML()
             elif inputtype == 'json':
-                self.options.setInputType(InputType.JSON)
+                self.common.setInputJSON()
             else:
                 printerror(invalidinputfilemessage % inputfile)
                 return
             outputtype = 'xml'
             outputfile = inputbase + '.' + outputtype
-            self.options.setOutputFile(outputfile)
+            self.common.setOutputFile(outputfile)
 
-            self.data = Data(self.options)
+            self.data = Data(self.common)
             self.data.loadData()
-            self.diagrams = Diagrams(self.options, self.data)
+            self.diagrams = Diagrams(self.common, self.data)
             self.diagrams.buildDiagrams()
             
         else:

@@ -18,19 +18,18 @@ import time
 
 from build.xml import XML
 from build.tables import *
-from common.options import Options
+from common.common import Common
 from common.utils import *
 
 class Types:
    data = None
-   options = None
    xml = None
 
-   def __init__(self, options):
-      self.options = options
+   def __init__(self, common):
+      self.common = common
       self.data = {'header': {'type': 'device',
                               'compressed': 'false'}}
-      self.xml = XML(self.options, self.data)
+      self.xml = XML(self.data)
       random.seed(time.time())
 
    def buildLink(self, label, source, target):
@@ -82,7 +81,7 @@ class Types:
       return data
 
    def buildNode(self, shapename, id, parentid, name, subname, badgetext, x, y, width, height):
-      outputshapes = self.options.getOutputShapes().value
+      outputshapes = self.common.getOutputShapes().value
       shape = shapes[shapename]
       shapetype = shape['format']
       style = shapetype[outputshapes] + shape['layout'] + shape['color'] + shape['style']  

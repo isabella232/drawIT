@@ -107,9 +107,6 @@ class Options:
    def setOutputFile(self, value):
       self.outputFile = value
 
-   def setOutputFile(self, value):
-      self.outputFile = value
-
    def getOutputFolder(self):
       return self.outputFolder
 
@@ -140,11 +137,20 @@ class Options:
    def isInputYAML(self):
       return self.inputType == InputType.YAML
 
-   def getInputType(self):
-      return self.inputType
+   def setInputRIAS(self):
+      self.inputType = InputType.RIAS
 
-   def setInputType(self, value):
-      self.inputType = value
+   def setInputJSON(self):
+      self.inputType = InputType.JSON
+
+   def setInputYAML(self):
+      self.inputType = InputType.YAML
+
+   #def getInputType(self):
+   #   return self.inputType
+
+   #def setInputType(self, value):
+   #   self.inputType = value
 
    def isSingleSplit(self):
       return self.outputSplit == OutputSplit.SINGLE

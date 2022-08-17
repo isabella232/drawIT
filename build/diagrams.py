@@ -24,23 +24,23 @@ import math
 
 from build.shapes import Shapes
 from load.data import Data
-from common.options import Options
+from common.common import Common
 from common.utils import *
 
 class Diagrams:
    data = None
-   options = None
+   common = None
    shapes = None
 
-   def __init__(self, options, data):
-      self.options = options
+   def __init__(self, common, data):
+      self.common = common
       self.data = data
-      self.shapes = Shapes(options)
+      self.shapes = Shapes(common)
 
    def buildDiagrams(self):
-      outputFolder = self.options.getOutputFolder()
+      outputFolder = self.common.getOutputFolder()
       if outputFolder[-1] != '/':
-         self.options.setOutputFolder(outputFolder + '/')
+         self.common.setOutputFolder(outputFolder + '/')
 
       regiondata = {}
 
@@ -50,20 +50,20 @@ class Diagrams:
 
       for regionname, regionvalues in regiondata.items():
          #if self.userregion != "all" and self.userregion != regionname:
-         if self.options.getRegion().value != "all" and self.options.getRegion().value != regionname:
+         if self.common.getRegion().value != "all" and self.common.getRegion().value != regionname:
             # Covers the case for Yaml data which includes all regions whereas RIAS data can include single or all regions.
             continue
          for vpcname, vpcvalues in regionvalues.items():
             self.shapes.buildXML(vpcvalues, regionname + ':' + vpcname)
-            if self.options.isVPCSplit():
-               self.shapes.dumpXML(regionname + "_" + vpcname + "_" + self.options.getOutputFile(), self.options.getOutputFolder())
+            if self.common.isVPCSplit():
+               self.shapes.dumpXML(regionname + "_" + vpcname + "_" + self.common.getOutputFile(), self.common.getOutputFolder())
                self.shapes.resetXML()
-         if self.options.isRegionSplit():
-            self.shapes.dumpXML(regionname + "_" + self.options.getOutputFile(), self.options.getOutputFolder())
+         if self.common.isRegionSplit():
+            self.shapes.dumpXML(regionname + "_" + self.common.getOutputFile(), self.common.getOutputFolder())
             self.shapes.resetXML()
 
-         if self.options.isSingleSplit():
-            self.shapes.dumpXML(self.options.getOutputFile(), self.options.getOutputFolder())
+         if self.common.isSingleSplit():
+            self.shapes.dumpXML(self.common.getOutputFile(), self.common.getOutputFolder())
 
    def buildVPCs(self, regionname, regionvalues):
       data = {}
@@ -79,7 +79,7 @@ class Diagrams:
       enterprisenode = self.shapes.buildEnterpriseNetwork(enterprisenetworkname, '', enterprisenetworkname, '', enterprisex, enterprisey, enterprisenetworkwidth, enterprisenetworkheight)
       enterpriseusernode = self.shapes.buildUser(enterpriseusername, enterprisenetworkname, enterpriseusername, '', firsticonx, firsticony, iconwidth, iconheight)
 
-      if self.options.isLogicalShapes():
+      if self.common.isLogicalShapes():
          cloudname = "Cloud"
       else:
          cloudname = "IBM Cloud"
@@ -279,7 +279,7 @@ class Diagrams:
             #pubgateframe = findrow(user, self.inputdata['publicGateways'], 'id', subnetpubgateid)
             pubgateframe = self.data.getPublicGateway(subnetpubgateid)
             if len(pubgateframe) > 0:
-               if self.options.isInputRIAS(): 
+               if self.common.isInputRIAS(): 
                   pubgatefipip = pubgateframe['floating_ip.address']
                else: # yaml
                   pubgatefipip = pubgateframe['floatingIP']
@@ -413,7 +413,7 @@ class Diagrams:
          nicfipip = None
          nicfipname = None
 
-         #nics = instanceframe['network_interfaces'] if self.options.isInputRIAS() else instanceframe['networkInterfaces']
+         #nics = instanceframe['network_interfaces'] if self.common.isInputRIAS() else instanceframe['networkInterfaces']
 
          #for nicframe in nics:
          for nicframe in nics:
@@ -422,10 +422,10 @@ class Diagrams:
 
             nicname = nicframe['name']
             #nicinstanceid = nicframe['instance.id']
-            nicinstanceid = instanceframe['id'] if self.options.isInputRIAS() else nicframe['instanceId']
+            nicinstanceid = instanceframe['id'] if self.common.isInputRIAS() else nicframe['instanceId']
 
             #nicip = nicframe['primary_ip.address']
-            nicip = nicframe['primary_ip']['address'] if self.options.isInputRIAS() else nicframe['ip']
+            nicip = nicframe['primary_ip']['address'] if self.common.isInputRIAS() else nicframe['ip']
             if nicips == '':
                nicips = nicip
             else:
@@ -465,7 +465,7 @@ class Diagrams:
          profiledetails = instanceprofile
          storagedetails = '100GB/3000IOPS'
 
-         if self.options.isLowDetail(): 
+         if self.common.isLowDetail(): 
             width = iconwidth
             height = iconheight
             extrawidth = width * 3
@@ -487,7 +487,7 @@ class Diagrams:
 
          bastion = False
 
-         if self.options.isLowDetail(): 
+         if self.common.isLowDetail(): 
             if instancename.lower().find("bastion") != -1:
                bastion = True
                instancenode = self.shapes.buildInstanceBastion(nicid, subnetid, instancename, nicips, x, y, width, height)
@@ -504,7 +504,7 @@ class Diagrams:
 
          nodes.append(instancenode)
 
-         if not self.options.isLowDetail(): 
+         if not self.common.isLowDetail(): 
             textwidth = width - (textgroupspace * 2)
             textheight = height - (texttopspace + textgroupspace)
 
