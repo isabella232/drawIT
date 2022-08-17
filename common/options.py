@@ -54,6 +54,8 @@ class Regions(Enum):
    USSOUTH = 'us-south'
 
 class Options:
+   constants = None
+
    runMode = None
    inputType = None
    accountID = ''
@@ -66,15 +68,18 @@ class Options:
    outputDetail = None
    outputShapes = None
 
-   def __init__(self):
+   def __init__(self, constants):
+      self.constants = constants
+
       self.runMode = RunMode.BATCH
       self.inputType = InputType.JSON
       self.region = Regions.USSOUTH
       self.outputFile = 'output'
-      self.outputFolder = os.path.join(os.path.expanduser('~'), 'Documents', TOOLNAME)
+      self.outputFolder = os.path.join(os.path.expanduser('~'), 'Documents', self.constants.getToolName())
       self.outputSplit = OutputSplit.SINGLE
       self.outputDetail = OutputDetail.MEDIUM
       self.outputShapes = OutputShapes.PRESCRIBED
+
       return
 
    def getAccountID(self):

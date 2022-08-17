@@ -17,7 +17,6 @@ from common.options import Options
 from common.utils import *
 
 class Messages:
-   toolHeader = TOOLNAME + '\n'
    startFileMessage = 'Starting with input from %s'
    startRIASKeyMessage = 'Starting with input from RIAS for API Key %s in %s'
    startRIASAccountMessage = 'Starting with input from RIAS for API Key %s and Account ID %s in %s'

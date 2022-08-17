@@ -70,14 +70,14 @@ class Diagrams:
 
       publicx = 0
       publicy = 0
-      publicnode = self.shapes.buildPublicNetwork(publicnetworkname, '', publicnetworkname, '', publicx, publicy, publicnetworkwidth, publicnetworkheight)
-      publicusernode = self.shapes.buildUser(publicusername, publicnetworkname, publicusername, '', firsticonx, firsticony, iconwidth, iconheight)
-      publicinternetnode = self.shapes.buildInternet(internetname, publicnetworkname, internetname, '', secondiconx, secondicony, iconwidth, iconheight)
+      publicnode = self.shapes.buildPublicNetwork(self.common.getPublicNetworkName(), '', self.common.getPublicNetworkName(), '', publicx, publicy, self.common.getPublicNetworkWidth(), self.common.getPublicNetworkHeight())
+      publicusernode = self.shapes.buildUser(self.common.getPublicUserName(), self.common.getPublicNetworkName(), self.common.getPublicUserName(), '', self.common.getFirstIconX, self.common.getFirstIconY, self.common.getIconWidth(), self.common.getIconHeight())
+      publicinternetnode = self.shapes.buildInternet(self.common.getInternetName(), self.common.getPublicNetworkName(), self.common.getInternetName(), '', self.common.getSecondIconX(), self.common.getSecondIconY(), self.common.getIconWidth(), self.common.getIconHeight())
 
       enterprisex = 0
-      enterprisey = publicnetworkheight + groupspace
-      enterprisenode = self.shapes.buildEnterpriseNetwork(enterprisenetworkname, '', enterprisenetworkname, '', enterprisex, enterprisey, enterprisenetworkwidth, enterprisenetworkheight)
-      enterpriseusernode = self.shapes.buildUser(enterpriseusername, enterprisenetworkname, enterpriseusername, '', firsticonx, firsticony, iconwidth, iconheight)
+      enterprisey = self.common.getPublicNetworkHeight() + self.common.getGroupSpace()
+      enterprisenode = self.shapes.buildEnterpriseNetwork(self.common.getEnterpriseNetworkName(), '', self.common.getEnterpriseNetworkName(), '', enterprisex, enterprisey, self.common.getEnterpriseNetworkWidth(), self.common.getEnterpriseNetworkHeight())
+      enterpriseusernode = self.shapes.buildUser(self.common.getEnterpriseUserName(), self.common.getEnterpriseNetworkName(), self.common.getEnterpriseUserName(), '', self.common.getFirstIconX(), self.common.getFirstIconY(), self.common.getIconWidth(), self.common.getIconHeight())
 
       if self.common.isLogicalShapes():
          cloudname = "Cloud"
@@ -101,13 +101,13 @@ class Diagrams:
             #SAVE publiclink = genlink(user, publicname, publicname, internetname)
             #SAVE links.append(publiclink)
 
-            publicuserlink = self.shapes.buildDoubleArrow('', internetname, publicusername)
+            publicuserlink = self.shapes.buildDoubleArrow('', self.common.getInternetName(), self.common.getPublicUserName())
             links.append(publicuserlink)
 
             nodes.append(enterprisenode)
             nodes.append(enterpriseusernode)
 
-            enterpriseuserlink = self.shapes.buildDoubleArrow('', internetname, enterpriseusername)
+            enterpriseuserlink = self.shapes.buildDoubleArrow('', self.common.getInternetName(), self.common.getEnterpriseUserName())
             links.append(enterpriseuserlink)
 
             vpcname = vpcframe['name']
@@ -120,14 +120,14 @@ class Diagrams:
             links = links + zonelinks
             values = values + zonevalues
 
-            width = iconwidth
-            height = iconheight
+            width = self.common.getIconWidth()
+            height = self.common.getIconHeight()
 
             routername = vpcname + '-router'
-            routernode = self.shapes.buildRouter(routername, vpcname, routername, '', firsticonx, firsticony, width, height)
+            routernode = self.shapes.buildRouter(routername, vpcname, routername, '', self.common.getFirstIconX(), self.common.getFirstIconY(), width, height)
             nodes.append(routernode)
 
-            routerlink = self.shapes.buildDoubleArrow('', routername, internetname)
+            routerlink = self.shapes.buildDoubleArrow('', routername, self.common.getInternetName())
             links.append(routerlink)
 
             width = 0
@@ -136,14 +136,14 @@ class Diagrams:
                if size[0] > width:
                   width = size[0]
 
-               height = height + size[1] + groupspace
+               height = height + size[1] + self.common.getGroupSpace()
 
-            width = leftspace + width + groupspace  # space after inner groups
-            height = height + topspace # space at top of outer group to top inner group
-            height  = height - groupspace  # TODO Remove extra groupspace.
+            width = self.common.getLeftSpace() + width + self.common.getGroupSpace()  # space after inner groups
+            height = height + self.common.getTopSpace() # space at top of outer group to top inner group
+            height  = height - self.common.getGroupSpace()  # TODO Remove extra groupspace.
 
-            x = groupspace
-            y = topspace
+            x = self.common.getGroupSpace()
+            y = self.common.getTopSpace()
 
             vpcnode = self.shapes.buildVPC(vpcname, regionname, vpcname, '', x, y, width, height) 
             nodes.append(vpcnode)
@@ -151,8 +151,8 @@ class Diagrams:
             x = 30
             y = 70
 
-            width = width + (groupspace * 2)
-            height = height + (topspace + groupspace)
+            width = width + (self.common.getGroupSpace() * 2)
+            height = height + (self.common.getTopSpace() + self.common.getGroupSpace())
 
             regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height)
             nodes.append(regionnode)
@@ -164,11 +164,11 @@ class Diagrams:
 
             #publicwidth = (groupspace * 2) + (48 * 3)
             #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-            x = publicnetworkwidth + groupspace  # Allow space for public network.
+            x = self.common.getPublicNetworkWidth() + self.common.getGroupSpace()  # Allow space for public network.
             y = 0
 
-            width = width + (groupspace * 2)
-            height = height + (topspace + groupspace)
+            width = width + (self.common.getGroupSpace() * 2)
+            height = height + (self.common.getTopSpace() + self.common.getGroupSpace())
 
             cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height)
             nodes.append(cloudnode)
@@ -205,26 +205,26 @@ class Diagrams:
             if size[0] > width:
                width = size[0]
 
-            height = height + size[1] + groupspace
+            height = height + size[1] + self.common.getGroupSpace()
 
-         width = leftspace + width + groupspace
-         height = height + topspace  # space at top of outer group to top inner group
-         height = height - groupspace
+         width = self.common.getLeftSpace() + width + self.common.getGroupSpace()
+         height = height + self.common.getTopSpace()  # space at top of outer group to top inner group
+         height = height - self.common.getGroupSpace()
 
-         x = (iconspace * 2) + iconwidth
-         y = topspace + saveheight + (groupspace * (count - 1))
+         x = (self.common.getIconSpace() * 2) + self.common.getIconWidth()
+         y = self.common.getTopSpace() + saveheight + (self.common.getGroupSpace() * (count - 1))
 
          saveheight += height
 
          zonename = regionzonename.split(':')[1]
-         zonecidr = zonecidrs[zonename]
+         zonecidr = self.common.getZoneCIDR(zonename)
 
          zonenode = self.shapes.buildZone(regionzonename, vpcname, regionzonename, zonecidr, x, y, width, height)
          nodes.append(zonenode)
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([leftspace - groupspace, 0])
+            sizes.append([self.common.getLeftSpace() - self.common.getGroupSpace(), 0])
 
       return nodes, links, values, sizes
 
@@ -313,27 +313,27 @@ class Diagrams:
             bastion = True
 
          if (len(instancesizes) == 0):
-            width = mingroupwidth
-            height = mingroupheight
+            width = self.common.getMinGroupWidth()
+            height = self.common.getMinGroupHeight()
          else:
-            width = groupspace
+            width = self.common.getGroupSpace()
             height = 0
 
          for size in instancesizes:
-            width = width + size[0] + groupspace
+            width = width + size[0] + self.common.getGroupSpace()
 
             if size[1] > height:
                height = size[1]
 
          # Leave height as groupheight if no instances.
          if (len(instancesizes) != 0):
-            height = height + topspace + groupspace  # space at top and bottom of group
+            height = height + self.common.getTopSpace() + self.common.getGroupSpace()  # space at top and bottom of group
 
          #SAVE x = (iconspace * 2) + iconwidth
          #SAVE y = topspace + (height * (count - 1)) + (groupspace * (count - 1))
 
-         x = (iconspace * 2) + iconwidth
-         y = topspace + saveheight + (groupspace * (count - 1))
+         x = (self.common.getIconSpace() * 2) + self.common.getIconWidth()
+         y = self.common.getTopSpace() + saveheight + (self.common.getGroupSpace() * (count - 1))
 
          saveheight += height
 
@@ -342,7 +342,7 @@ class Diagrams:
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([leftspace - groupspace, 0])
+            sizes.append([self.common.getLeftSpace() - self.common.getGroupSpace(), 0])
 
          internetname = 'Internet'
 
@@ -351,7 +351,7 @@ class Diagrams:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, firsticonx, firsticony, iconwidth, iconheight)
+               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, self.common.getFirstIconX(), self.common.getFirstIconY(), self.common.getIconWidth(), self.common.getIconHeight())
                nodes.append(publicnode)
 
                routername = vpcname + '-router'
@@ -368,7 +368,7 @@ class Diagrams:
                links.append(publiclink1)
 
          if vpngateip != None:
-            vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, secondiconx, secondicony, iconwidth, iconheight)
+            vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, self.common.getSecondIconX(), self.common.getSecondIconY(), self.common.getIconWidth(), self.common.getIconHeight())
             nodes.append(vpngatenode)
                 
             routername = vpcname + '-router'
@@ -466,17 +466,17 @@ class Diagrams:
          storagedetails = '100GB/3000IOPS'
 
          if self.common.isLowDetail(): 
-            width = iconwidth
-            height = iconheight
+            width = self.common.getIconWidth()
+            height = self.common.getIconHeight()
             extrawidth = width * 3
             extraheight = height * 2
-            x = width + (extrawidth * (count - 1)) + (groupspace * count)
-            y = topspace
+            x = width + (extrawidth * (count - 1)) + (self.common.getGroupSpace() * count)
+            y = self.common.getTopSpace()
          else:
             width = 240
             height = 152
-            x = (width * (count - 1)) + (groupspace * count) 
-            y = topspace
+            x = (width * (count - 1)) + (self.common.getGroupSpace() * count) 
+            y = self.common.getTopSpace()
 
          #SAVE x = (width * (count - 1)) + (groupspace * count) 
          #SAVE y = topspace
@@ -505,11 +505,11 @@ class Diagrams:
          nodes.append(instancenode)
 
          if not self.common.isLowDetail(): 
-            textwidth = width - (textgroupspace * 2)
-            textheight = height - (texttopspace + textgroupspace)
+            textwidth = width - (self.common.getTextGroupSpace() * 2)
+            textheight = height - (self.common.getTextTopSpace() + self.common.getTextGroupSpace())
 
-            textx = textgroupspace
-            texty = texttopspace
+            textx = self.common.getTextGroupSpace()
+            texty = self.common.getTextTopSpace()
 
             #textid = nicid + ':details'
             textid = instanceid + ':details'
@@ -625,7 +625,7 @@ class Diagrams:
                      if not lbgenerated:
                         lbgenerated = True
                         # TODO Handle spacing for > 1 LBs.
-                        lbnode = self.shapes.buildLoadBalancer(lbname, vpcname, lbpubliciplist, secondiconx, secondicony, iconwidth, iconheight)
+                        lbnode = self.shapes.buildLoadBalancer(lbname, vpcname, lbpubliciplist, self.common.getSecondIconX(), self.common.getSecondIconY(), self.common.getIconWidth(), self.common.getIconHeight())
                         nodes.append(lbnode)
                         routername = vpcname + '-router'
                         lblink = self.shapes.buildDoubleArrow('', lbname, routername)

@@ -156,7 +156,7 @@ class Config:
         self.set("runmode",runmode)
 
 class drawit:
-   title = COPYRIGHT.split(' - ')
+   title = None
    top = None
    statusText = None
    data = None
@@ -165,6 +165,7 @@ class drawit:
 
    def __init__(self):
       self.common = Common()
+      self.title = self.common.getToolCopyright().split(' - ')
 
    #SAVE top = tkinter.Tk()
    #top.title(TOOLNAME + ' ' + COPYRIGHT.split(' ')[2])
@@ -172,7 +173,7 @@ class drawit:
    #SAVE top.title(title[0])
    #SAVE statusText = tkinter.StringVar()
 
-   printmessage(COPYRIGHT)
+   #printmessage(self.common.getToolCopyright())
    #printmessage(toolheader)
 
    def main(self): 
@@ -202,7 +203,7 @@ class drawit:
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
 
         parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, or web")
-        parser.add_argument('--version', action='version', version='drawIT ' + COPYRIGHT.split(' ')[1])
+        parser.add_argument('--version', action='version', version='drawIT ' + self.common.getToolCopyright().split(' ')[1])
         
         args = parser.parse_args()
 

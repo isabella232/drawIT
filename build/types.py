@@ -22,6 +22,7 @@ from common.common import Common
 from common.utils import *
 
 class Types:
+   common = None
    data = None
    xml = None
 
@@ -33,49 +34,49 @@ class Types:
       random.seed(time.time())
 
    def buildLink(self, label, source, target):
-      data = {'header': {'id': compress(str(random.random())),
+      data = {'header': {'id': self.common.compress(str(random.random())),
                          'label': ''},
               'cell':   {'style': 'endArrow=none;dashed=1;',
                          'edge': '1',
                          'parent': '1',
-                         'source': compress(source),
-                         'target': compress(target)},
+                         'source': self.common.compress(source),
+                         'target': self.common.compress(target)},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data
 
    def buildSolidLink(self, label, source, target):
-      data = {'header': {'id': compress(str(random.random())),
+      data = {'header': {'id': self.common.compress(str(random.random())),
                          'label': label},
               'cell':   {'style': 'endArrow=none;dashed=0;',
                          'edge': '1',
                          'parent': '1',
-                         'source': compress(source),
-                         'target': compress(target)},
+                         'source': self.common.compress(source),
+                         'target': iself.common.compress(target)},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data
 
    def buildSolidLinkSingleArrow(self, label, source, target):
-         data = {'header': {'id': compress(str(random.random())),
+         data = {'header': {'id': self.common.compress(str(random.random())),
                             'label': label},
                  'cell':   {'style': 'endArrow=block;endFill=1;dashed=0;',
                             'edge': '1',
                             'parent': '1',
-                            'source': compress(source),
-                            'target': compress(target)},
+                            'source': self.common.compress(source),
+                            'target': self.common.compress(target)},
                   'geo':   {'relative': '1',
                             'as': 'geometry'}}
          return data
 
    def buildSolidLinkDoubleArrow(self, label, source, target):
-      data = {'header': {'id': compress(str(random.random())),
+      data = {'header': {'id': self.common.compress(str(random.random())),
                          'label': label},
               'cell':   {'style': 'endArrow=block;endFill=1;startArrow=block;startFill=1;dashed=0;',
                          'edge': '1',
                          'parent': '1',
-                         'source': compress(source),
-                         'target': compress(target)},
+                         'source': self.common.compress(source),
+                         'target': self.common.compress(target)},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data
@@ -96,10 +97,10 @@ class Types:
          labelsize = 25
 
       if len(name) > 0:
-         name = truncateText(name, labelsize, '<br>')
+         name = self.common.truncateText(name, labelsize, '<br>')
 
       if len(subname) > 0:
-         subname = truncateText(subname, labelsize, '<br>')
+         subname = self.common.truncateText(subname, labelsize, '<br>')
 
       data = {'header': {'id': id,
                          'label': shapelabel,
@@ -134,7 +135,7 @@ class Types:
       return data
 
    def buildPage(self, name):
-      data = {'header': {'id': compress(name),
+      data = {'header': {'id': self.common.compress(name),
                          'name': name},
               'graph':  {'dx': '1326',
                          'dy': '846',

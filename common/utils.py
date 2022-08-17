@@ -29,8 +29,8 @@ import pandas as pd
 
 # Constants
 
-TOOLNAME = 'drawIT'
-TOOLVERSION = '0.5.7'
+#TOOLNAME = 'drawIT'
+#TOOLVERSION = '0.5.8'
 
 #ACCOUNT_PLACEHOLDER = '(Account-ID)'
 #KEY_PLACEHOLDER = '(API-Key)'
@@ -38,11 +38,11 @@ TOOLVERSION = '0.5.7'
 #OUTPUT_PLACEHOLDER = '(Output-Directory)'
 
 # Following static string is included in binary - update version here.
-COPYRIGHT = TOOLNAME + ' ' + TOOLVERSION + ' - Copyright 2022 IBM Corporation'
+#COPYRIGHT = TOOLNAME + ' ' + TOOLVERSION + ' - Copyright 2022 IBM Corporation'
 
 # Messages
 
-toolheader = TOOLNAME + '\n'
+#toolheader = TOOLNAME + '\n'
 #starttoolmessage = 'Starting with input from %s'
 #donetoolmessage = 'Completed with output to %s'
 startprovidermessage = 'Generating Resource for provider'
@@ -78,104 +78,104 @@ processingsheetmessage = 'Processing %s'
 
 # Global data
 
-zonecidrs = {
-        'au-syd-1': '10.245.0.0/18', 
-        'au-syd-2': '10.245.64.0/18', 
-        'au-syd-3': '10.245.128.0/18', 
+#zonecidrs = {
+#        'au-syd-1': '10.245.0.0/18', 
+#        'au-syd-2': '10.245.64.0/18', 
+#        'au-syd-3': '10.245.128.0/18', 
+#
+#        'br-sao-1': '10.250.0.0/18', 
+#        'br-sao-2': '10.250.64.0/18', 
+#        'br-sao-3': '10.250.128.0/18', 
+#
+#        'ca-tor-1': '10.249.0.0/18', 
+#        'ca-tor-2': '10.249.64.0/18', 
+#        'ca-tor-3': '10.249.128.0/18', 
+#
+#        'eu-de-1': '10.243.0.0/18', 
+#        'eu-de-2': '10.243.64.0/18', 
+#        'eu-de-3': '10.243.128.0/18',
+#
+#        'eu-gb-1': '10.242.0.0/18', 
+#        'eu-gb-2': '10.242.64.0/18', 
+#        'eu-gb-3': '10.242.128.0/18', 
+#
+#        'jp-osa-1': '10.248.0.0/18', 
+#        'jp-osa-2': '10.248.64.0/18', 
+#        'jp-osa-3': '10.248.128.0/18', 
+#
+#        'jp-tok-1': '10.244.0.0/18', 
+#        'jp-tok-2': '10.244.64.0/18', 
+#        'jp-tok-3': '10.244.128.0/18', 
+#
+#        'us-east-1': '10.241.0.0/18', 
+#        'us-east-2': '10.241.64.0/18', 
+#        'us-east-3': '10.241.128.0/18', 
+#
+#        'us-south-1': '10.240.0.0/18', 
+#        'us-south-2': '10.240.64.0/18', 
+#        'us-south-3': '10.240.128.0/18' 
+#}
 
-        'br-sao-1': '10.250.0.0/18', 
-        'br-sao-2': '10.250.64.0/18', 
-        'br-sao-3': '10.250.128.0/18', 
+#iconwidth = 48
+#iconheight = 48
 
-        'ca-tor-1': '10.249.0.0/18', 
-        'ca-tor-2': '10.249.64.0/18', 
-        'ca-tor-3': '10.249.128.0/18', 
+#groupwidth = 240
+#groupheight = 152
 
-        'eu-de-1': '10.243.0.0/18', 
-        'eu-de-2': '10.243.64.0/18', 
-        'eu-de-3': '10.243.128.0/18',
+#mingroupwidth = 240
+#mingroupheight = 48
 
-        'eu-gb-1': '10.242.0.0/18', 
-        'eu-gb-2': '10.242.64.0/18', 
-        'eu-gb-3': '10.242.128.0/18', 
+#groupspace = 30
+#topspace = 70
+#textgroupspace = 10
+#texttopspace = 70
+#iconspace = 48
+##leftspace = iconwidth + groupspace
+#leftspace = iconspace * 3
 
-        'jp-osa-1': '10.248.0.0/18', 
-        'jp-osa-2': '10.248.64.0/18', 
-        'jp-osa-3': '10.248.128.0/18', 
+#firsticonx = iconspace
+#firsticony = topspace
 
-        'jp-tok-1': '10.244.0.0/18', 
-        'jp-tok-2': '10.244.64.0/18', 
-        'jp-tok-3': '10.244.128.0/18', 
+#secondiconx = iconspace
+#secondicony = firsticony + iconheight + iconspace
 
-        'us-east-1': '10.241.0.0/18', 
-        'us-east-2': '10.241.64.0/18', 
-        'us-east-3': '10.241.128.0/18', 
+#publiciconcount = 2
+#publicnetworkwidth = iconspace * 3
+#publicnetworkheight = topspace + (iconspace * publiciconcount) + (iconheight * publiciconcount)
 
-        'us-south-1': '10.240.0.0/18', 
-        'us-south-2': '10.240.64.0/18', 
-        'us-south-3': '10.240.128.0/18' 
-}
+#enterpriseiconcount = 1
+#enterprisenetworkwidth = iconspace * 3
+#enterprisenetworkheight = topspace + (iconspace * enterpriseiconcount) + (iconheight * enterpriseiconcount)
 
-iconwidth = 48
-iconheight = 48
-
-groupwidth = 240
-groupheight = 152
-
-mingroupwidth = 240
-mingroupheight = 48
-
-groupspace = 30
-topspace = 70
-textgroupspace = 10
-texttopspace = 70
-iconspace = 48
-#leftspace = iconwidth + groupspace
-leftspace = iconspace * 3
-
-firsticonx = iconspace
-firsticony = topspace
-
-secondiconx = iconspace
-secondicony = firsticony + iconheight + iconspace
-
-publiciconcount = 2
-publicnetworkwidth = iconspace * 3
-publicnetworkheight = topspace + (iconspace * publiciconcount) + (iconheight * publiciconcount)
-
-enterpriseiconcount = 1
-enterprisenetworkwidth = iconspace * 3
-enterprisenetworkheight = topspace + (iconspace * enterpriseiconcount) + (iconheight * enterpriseiconcount)
-
-internetname = 'Internet'
-publicnetworkname = 'Public<br>Network'
-publicusername = 'User'
-enterprisenetworkname = 'Enterprise<br>Network'
-enterpriseusername = 'Enterprise User'
+#internetname = 'Internet'
+#publicnetworkname = 'Public<br>Network'
+#publicusername = 'User'
+#enterprisenetworkname = 'Enterprise<br>Network'
+#enterpriseusername = 'Enterprise User'
 
 # Utility functions
 
-def inflate(b,b64=False):
-    """~2016 draw.io started compressing 'using standard deflate'
-        https://about.draw.io/extracting-the-xml-from-mxfiles/
-        experience has shown this is deflate WITH NO HEADER
-    """
-    if b64: # optional, additionally base64 decode
-        b = base64.b64decode(b)
-    decompress = zlib.decompressobj(-zlib.MAX_WBITS)
-    inflated = decompress.decompress(b);
-    decoded = inflated.decode('utf8')
-    unquoted = unquote(decoded)
-    return unquoted
+#def inflate(b,b64=False):
+#    """~2016 draw.io started compressing 'using standard deflate'
+#        https://about.draw.io/extracting-the-xml-from-mxfiles/
+#        experience has shown this is deflate WITH NO HEADER
+#    """
+#    if b64: # optional, additionally base64 decode
+#        b = base64.b64decode(b)
+#    decompress = zlib.decompressobj(-zlib.MAX_WBITS)
+#    inflated = decompress.decompress(b);
+#    decoded = inflated.decode('utf8')
+#    unquoted = unquote(decoded)
+#    return unquoted
 
-def deflate(b,b64=False):
-    compress = zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15, memLevel=8, strategy=zlib.Z_DEFAULT_STRATEGY)
-    quoted = quote(b)
-    #deflated = compress.compress(bytes(quoted, 'iso-8859-1'), safe='~()*!.\'')
-    deflated = compress.compress(bytes(quoted, 'iso-8859-1'))
-    deflated += compress.flush()
-    deflatedstring = str(encode(deflated, 'hex'), 'utf-8')
-    return deflatedstring
+#def deflate(b,b64=False):
+#    compress = zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15, memLevel=8, strategy=zlib.Z_DEFAULT_STRATEGY)
+#    quoted = quote(b)
+#    #deflated = compress.compress(bytes(quoted, 'iso-8859-1'), safe='~()*!.\'')
+#    deflated = compress.compress(bytes(quoted, 'iso-8859-1'))
+#    deflated += compress.flush()
+#    deflatedstring = str(encode(deflated, 'hex'), 'utf-8')
+#    return deflatedstring
 
 # isna returns True for NA values such as None or numpy.NaN.
 # isna returns False for empty strings or numpy.inf unless
@@ -201,35 +201,35 @@ def deflate(b,b64=False):
 #   else:
 #      return False
 
-def truncateText(text, size, linebreak):
-    if text.find(linebreak) == -1:
-       if len(text) > size:
-          return text[0:size-1] + '...'
-       else:
-          return text
-    else:
-       textsplit = text.split(linebreak)
-       newtext = ''
-       count = 0
-       for name in textsplit:
-          count = count + 1
-          if len(name) == 0:
-             continue
-          elif len(name) > size:
-             if count == 1:
-                newtext = name[0:size-1] + '...'
-             else:
-                newtext = newtext + linebreak + name[0:size-1] + '...'
-          else:
-             if count == 1:
-                newtext = name
-             else:
-                newtext = newtext + linebreak + name
-
-       if len(newtext) > 0:
-          return newtext
-       else:
-          return text
+#def truncateText(text, size, linebreak):
+#    if text.find(linebreak) == -1:
+#       if len(text) > size:
+#          return text[0:size-1] + '...'
+#       else:
+#          return text
+#    else:
+#       textsplit = text.split(linebreak)
+#       newtext = ''
+#       count = 0
+#       for name in textsplit:
+#          count = count + 1
+#          if len(name) == 0:
+#             continue
+#          elif len(name) > size:
+#             if count == 1:
+#                newtext = name[0:size-1] + '...'
+#             else:
+#                newtext = newtext + linebreak + name[0:size-1] + '...'
+#          else:
+#             if count == 1:
+#                newtext = name
+#             else:
+#                newtext = newtext + linebreak + name
+#
+#       if len(newtext) > 0:
+#          return newtext
+#       else:
+#          return text
 
 def printline(user, name, line):
    genpath = user['outputfolder']
@@ -268,28 +268,28 @@ def printxml(*args):
     #sys.stdout.write(deflate(*args))
 
 # Backup output directory
-def backupdirectory(user):
-   genbackup = None
-   genpath = user['outputfolder']
-   # Check for existing output directory and backup if exists.
-   if os.path.exists(genpath):
-      backup = 1
-      found = False
-      genbackup = None
-      # Find a new backup directory.
-      while not found:
-         genbackup = genpath + '.backup' + str(backup)
-         if os.path.exists(genbackup):
-            backup += 1
-         else:
-            found = True
-      # Move existing output directory to backup directory.
-      shutil.move(genpath, genbackup)
-
-   # Create new empty output directory.
-   os.makedirs(genpath)
-
-   return
+#def backupdirectory(user):
+#   genbackup = None
+#   genpath = user['outputfolder']
+#   # Check for existing output directory and backup if exists.
+#   if os.path.exists(genpath):
+#      backup = 1
+#      found = False
+#      genbackup = None
+#      # Find a new backup directory.
+#      while not found:
+#         genbackup = genpath + '.backup' + str(backup)
+#         if os.path.exists(genbackup):
+#            backup += 1
+#         else:
+#            found = True
+#      # Move existing output directory to backup directory.
+#      shutil.move(genpath, genbackup)
+#
+#   # Create new empty output directory.
+#   os.makedirs(genpath)
+#
+#   return
 
 # Search functions
 
@@ -346,6 +346,6 @@ def backupdirectory(user):
 #   df = normalized.T.unstack()[0]
 #   return df
 
-def compress(string):
-   hash = hashlib.md5(string.encode())
-   return hash.hexdigest()
+#def compress(string):
+#   hash = hashlib.md5(string.encode())
+#   return hash.hexdigest()
