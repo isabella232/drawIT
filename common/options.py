@@ -14,8 +14,7 @@
 # limitations under the License.
 
 from enum import Enum
-
-from common.utils import *
+from os import path
 
 class RunMode(Enum):
    BATCH = 'batch'
@@ -75,7 +74,7 @@ class Options:
       self.inputType = InputType.JSON
       self.region = Regions.USSOUTH
       self.outputFile = 'output'
-      self.outputFolder = os.path.join(os.path.expanduser('~'), 'Documents', self.constants.getToolName())
+      self.outputFolder = path.join(path.expanduser('~'), 'Documents', self.constants.getToolName())
       self.outputSplit = OutputSplit.SINGLE
       self.outputDetail = OutputDetail.MEDIUM
       self.outputShapes = OutputShapes.PRESCRIBED
@@ -93,12 +92,6 @@ class Options:
 
    def setAPIKey(self, value):
       self.apiKey = value
-
-   def getRegion(self):
-      return self.region
-
-   def setRegion(self, value):
-      self.region = value
 
    def getInputFile(self):
       return self.inputFile
@@ -126,6 +119,15 @@ class Options:
 
    def isWebMode(self):
       return self.runMode == RunMode.WEB
+
+   def isBatchMode(self, value):
+      return value == RunMode.BATCH.value
+
+   def isGUIMode(self, value):
+      return value == RunMode.GUI.value
+
+   def isWebMode(self, value):
+      return value == RunMode.WEB.value
 
    def getRunMode(self):
       return self.runMode
@@ -157,6 +159,15 @@ class Options:
    #def setInputType(self, value):
    #   self.inputType = value
 
+   def setSingleSplit(self):
+      self.outputSplit = OutputSplit.SINGLE
+
+   def setRegionSplit(self):
+      self.outputSplit = OutputSplit.REGION
+
+   def setVPCSplit(self):
+      self.outputSplit = OutputSplit.VPC
+
    def isSingleSplit(self):
       return self.outputSplit == OutputSplit.SINGLE
 
@@ -171,6 +182,15 @@ class Options:
 
    def setOutputSplit(self, value):
       self.outputSplit = value
+
+   def setLowDetail(self):
+      self.outputDetail = OutputDetail.LOW
+
+   def setMediumDetail(self):
+      self.outputDetail = OutputDetail.MEDIUM
+
+   def setHighDetail(self):
+      self.outputDetail = OutputDetail.HIGH
 
    def isLowDetail(self):
       return self.outputDetail == OutputDetail.LOW
@@ -187,6 +207,12 @@ class Options:
    def setOutputDetail(self, value):
       self.outputDetail = value
 
+   def setLogicalShapes(self):
+      self.outputShapes = OutputShapes.LOGICAL
+
+   def setPrescribedShapes(self):
+      self.outputShapes = OutputShapes.PRESCRIBED
+
    def isLogicalShapes(self):
       return self.outputShapes == OutputShapes.LOGICAL
 
@@ -199,3 +225,38 @@ class Options:
    def setOutputShapes(self, value):
       self.outputShapes = value
 
+   def setAllRegion(self):
+      self.region = Regions.ALL
+
+   def setGermanyRegion(self):
+      self.region = Regions.GERMANY
+
+   def setOsakaRegion(self):
+      self.region = Regions.OSAKA
+
+   def setSaoPauloRegion(self):
+      self.region = Regions.SAOPAULO
+
+   def setSydneyRegion(self):
+      self.region = Regions.SYDNEY
+
+   def setTokyoRegion(self):
+      self.region = Regions.TOKYO
+
+   def setTorontoRegion(self):
+      self.region = Regions.TORONTO
+
+   def setUnitedKingdomRegion(self):
+      self.region = Regions.UNITEDKINGDOM
+
+   def setUSEastRegion(self):
+      self.region = Regions.USEAST
+
+   def setUSSouthRegion(self):
+      self.region = Regions.USSOUTH
+
+   def getRegion(self):
+      return self.region
+
+   def setRegion(self, value):
+      self.region = value

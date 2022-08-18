@@ -13,17 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
-import json
-import yaml
-import requests
-import urllib3
-#import logging
-from zipfile import ZipFile
+from json import loads as json_load
+from requests import post as post_request
+from requests import get as get_request
+from sys import exit as sys_exit
+from urllib3 import disable_warnings 
+from pandas import json_normalize
 
 from common.common import Common
-from common.utils import *
 
 class RIAS:
    floatingIPs = {}
@@ -69,12 +66,12 @@ class RIAS:
          'grant_type': 'urn:ibm:params:oauth:grant-type:apikey', 
          'apikey': apiKey
       }
-      urllib3.disable_warnings()
-      response = requests.post(url=endpoint + "/identity/token", headers=headers, data=data, verify=False)
-      token_dict = json.loads(response.text)
+      disable_warnings()
+      response = post_request(url=endpoint + "/identity/token", headers=headers, data=data, verify=False)
+      token_dict = json_load(response.text)
       if 'errorCode' in token_dict:
-         printerror(invalidmessage % (token_dict['errorCode'], token_dict['errorMessage'])) 
-         sys.exit()
+         self.common.printResponseMessage(token_dict['errorCode'], token_dict['errorMessage']) 
+         sys_exit()
       token = token_dict["token_type"] + " " + token_dict["access_token"]
       return token
 
@@ -104,19 +101,19 @@ class RIAS:
          'generation': '2'
       }
       request = endpoint + "/v1/" + group
-      response = requests.get(url=request, headers=headers, params=params, verify=False)
-      rawdata = json.loads(response.text)
+      response = get_request(url=request, headers=headers, params=params, verify=False)
+      rawdata = json_load(response.text)
       if 'errors' in rawdata:
          errors = rawdata['errors']
          error = errors[0]
-         printerror(invalidmessage % (error['code'], error['message'] + ' href=' + request)) 
-         sys.exit()
+         self.common.printRequestMessage(error['code'], error['message'], request) 
+         sys_exit()
       elif group == "vpcs" and rawdata['total_count'] == 0:
          self.common.printMissingVPCs('href=' + request)
-         sys.exit()
+         sys_exit()
       elif group == "subnets" and rawdata['total_count'] == 0:
          self.commonprintMissingSubnets('href=' + request)
-         sys.exit()
+         sys_exit()
       data = rawdata[group]
       #if group == "vpcs":
       #   for vpc in data:
@@ -145,13 +142,13 @@ class RIAS:
          'generation': 2
       }
       request = endpoint + "/v1/" + group + '/' + id + '/' + subgroup
-      response = requests.get(url=request, headers=headers, params=params, verify=False)
-      rawdata = json.loads(response.text)
+      response = get_request(url=request, headers=headers, params=params, verify=False)
+      rawdata = json_load(response.text)
       if 'errors' in rawdata:
          errors = rawdata['errors']
          error = errors[0]
-         printerror(invalidmessage % (error['code'], error['message'] + ' href=' + request)) 
-         sys.exit()
+         self.common.printRequestMessage(error['code'], error['message'], request) 
+         sys_exit()
       data = rawdata[group]
       return data
       #return rawdata
@@ -178,13 +175,13 @@ class RIAS:
          'generation': '2'
       }
       request = endpoint + "/v1/" + group + '/' + id + '/' + subgroup + '/' + id2 + '/' + subgroup2
-      response = requests.get(url=request, headers=headers, params=params, verify=False)
-      rawdata = json.loads(response.text)
+      response = get_request(url=request, headers=headers, params=params, verify=False)
+      rawdata = json_load(response.text)
       if 'errors' in rawdata:
          errors = rawdata['errors']
          error = errors[0]
-         printerror(invalidmessage % (error['code'], error['message'] + ' href=' + request)) 
-         sys.exit()
+         self.common.printRequestMessage(error['code'], error['message'], request) 
+         sys_exit()
       data = rawdata[group]
       return data
       #return rawdata
@@ -279,22 +276,22 @@ class RIAS:
       return
 
    def normalizeData(self, data):
-      self.vpcs = pd.json_normalize(data['vpcs'] if ('vpcs' in data) else pd.json_normalize({}))
-      self.subnets = pd.json_normalize(data['subnets'] if ('subnets' in data) else pd.json_normalize({}))
-      self.instances = pd.json_normalize(data['instances'] if ('instances' in data) else pd.json_normalize({}))
-      #self.networkInterfaces = pd.json_normalize(data['network_interfaces'] if ('network_interfaces' in data) else pd.json_normalize({}))
-      self.publicGateways = pd.json_normalize(data['public_gateways'] if ('public_gateways' in data) else pd.json_normalize({}))
-      self.floatingIPs = pd.json_normalize(data['floating_ips'] if ('floating_ips' in data) else pd.json_normalize({}))
-      self.vpnGateways = pd.json_normalize(data['vpn_gateways'] if ('vpn_gateways' in data) else pd.json_normalize({}))
-      self.vpnConnections = pd.json_normalize({})
-      self.loadBalancers = pd.json_normalize(data['load_balancers'] if ('load_balancers' in data) else pd.json_normalize({}))
-      self.loadBalancerListeners = pd.json_normalize(data['load_balancer_listeners'] if ('load_balancer_listeners' in data) else pd.json_normalize({}))
-      self.loadBalancerPools = pd.json_normalize(data['load_balancer_pools'] if ('load_balancer_pools' in data) else pd.json_normalize({}))
-      self.loadBalancerMembers = pd.json_normalize(data['load_balancer_members'] if ('load_balancer_members' in data) else pd.json_normalize({}))
-      self.volumes = pd.json_normalize({})
-      self.networkACLs = pd.json_normalize({})
-      self.securityGroups = pd.json_normalize({})
-      self.keys = pd.json_normalize({})
+      self.vpcs = json_normalize(data['vpcs'] if ('vpcs' in data) else json_normalize({}))
+      self.subnets = json_normalize(data['subnets'] if ('subnets' in data) else json_normalize({}))
+      self.instances = json_normalize(data['instances'] if ('instances' in data) else json_normalize({}))
+      #self.networkInterfaces = json_normalize(data['network_interfaces'] if ('network_interfaces' in data) else json_normalize({}))
+      self.publicGateways = json_normalize(data['public_gateways'] if ('public_gateways' in data) else json_normalize({}))
+      self.floatingIPs = json_normalize(data['floating_ips'] if ('floating_ips' in data) else json_normalize({}))
+      self.vpnGateways = json_normalize(data['vpn_gateways'] if ('vpn_gateways' in data) else json_normalize({}))
+      self.vpnConnections = json_normalize({})
+      self.loadBalancers = json_normalize(data['load_balancers'] if ('load_balancers' in data) else json_normalize({}))
+      self.loadBalancerListeners = json_normalize(data['load_balancer_listeners'] if ('load_balancer_listeners' in data) else json_normalize({}))
+      self.loadBalancerPools = json_normalize(data['load_balancer_pools'] if ('load_balancer_pools' in data) else json_normalize({}))
+      self.loadBalancerMembers = json_normalize(data['load_balancer_members'] if ('load_balancer_members' in data) else json_normalize({}))
+      self.volumes = json_normalize({})
+      self.networkACLs = json_normalize({})
+      self.securityGroups = json_normalize({})
+      self.keys = json_normalize({})
 
       return
 

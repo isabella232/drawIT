@@ -1,4 +1,4 @@
-# @file data.py
+# @file load.py
 #
 # Copyright IBM Corporation 2022
 #
@@ -13,12 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from common.common import Common
 from load.file import File
 from load.rias import RIAS
-from common.common import Common
-from common.utils import *
 
-class Data:
+class Load:
    instancesTable = {} # Table of instances ordered by subnet that shows instances within each subnet.
    nicsTable = {}      # Table of nics ordered by subnet+instance that shows nics for same instance in different subnets.
    vpcsTable = {}      # Table of zones ordered by vpc that shows zones with each vpc.
@@ -26,11 +25,11 @@ class Data:
    zonesTable = {}     # Table of subnets ordered by vpc+zone that shows subnets within each zone.
 
    data = None
-   options = None
+   common = None
 
    def __init__(self, common):
       self.common = common
-      if self.common.isInputRIAS():
+      if common.isInputRIAS():
          self.data = RIAS(common)
       else:
          self.data = File(common)
@@ -79,7 +78,7 @@ class Data:
                         self.instancesTable[nicsubnetid].append(instanceframe)
                         addedInstance = True
                   else:
-                     printerror(invalidsubnetreferencemessage % nicsubnetid)
+                     self.common.printInvalidSubnet(nicsubnetid)
                      continue
 
                   dualid = nicsubnetid + ':' + instanceid
@@ -95,7 +94,7 @@ class Data:
 
          subnetzonename = subnetframe['zone.name']
          if subnetzonename == None:
-            printerror(invalidzonereferencemessage % subnetname)
+            self.common.printMissingZone(subnetname)
             continue
 
          lastindex = subnetzonename.rfind('-')

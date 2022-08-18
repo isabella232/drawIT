@@ -1,4 +1,4 @@
-# @file xml.py
+# @file elements.py
 #
 # Copyright IBM Corporation 2022
 #
@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import xml.etree.ElementTree as ET
+from os import path, makedirs
+from xml.etree import ElementTree as ET
 
-class XML:
+class Elements:
    def __init__(self, data):
       self.xml = ET.Element("mxfile", data['header'])
       self.root = None
@@ -57,11 +57,11 @@ class XML:
                self.addLink(link)
 
    def dumpXML(self, file, folder):
-      pathname = os.path.join(folder, file)
-      filepath, filename = os.path.split(pathname)
+      pathname = path.join(folder, file)
+      filepath, filename = path.split(pathname)
 
-      if not os.path.exists(filepath):
-         os.makedirs(filepath)
+      if not path.exists(filepath):
+         makedirs(filepath)
 
       tree = ET.ElementTree(self.xml)
       tree.write(pathname)

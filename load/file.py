@@ -13,17 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
-import json
-import yaml
-import requests
-import urllib3
-#import logging
-from zipfile import ZipFile
+from json import loads as json_load
+from yaml import load as yaml_load
+from pandas import json_normalize
 
 from common.common import Common
-from common.utils import *
 
 class File:
    floatingIPs = {}
@@ -54,7 +48,7 @@ class File:
 
    def loadJSON(self):
       stream = open(self.common.getInputFile(), 'r', encoding='utf-8-sig')
-      self.data = json.loads(stream.read())
+      self.data = json_load(stream.read())
       if not 'vpcs' in self.data:
          self.common.printMissingVPCs(self.common.getInputFile())
          sys.exit()
@@ -69,7 +63,7 @@ class File:
 
    def loadYAML(self):
       stream = open(self.common.getInputFile(), 'r')
-      self.data = yaml.load(stream, Loader=yaml.FullLoader)
+      self.data = yaml_load(stream, Loader=yaml.FullLoader)
       if not 'vpcs' in self.data:
          self.common.printMissingVPCs(self.common.getInputFile())
          sys.exit()
@@ -83,22 +77,22 @@ class File:
       return
 
    def normalizeData(self):
-      self.vpcs = pd.json_normalize(self.data['vpcs'] if ('vpcs' in self.data) else pd.json_normalize({}))
-      self.subnets = pd.json_normalize(self.data['subnets'] if ('subnets' in self.data) else pd.json_normalize({}))
-      self.instances = pd.json_normalize(self.data['instances'] if ('instances' in self.data) else pd.json_normalize({}))
-      #self.networkInterfaces = pd.json_normalize(self.data['networkInterfaces'] if ('networkInterfaces' in self.data) else pd.json_normalize({}))
-      self.publicGateways = pd.json_normalize(self.data['publicGateways'] if ('publicGateways' in self.data) else pd.json_normalize({}))
-      self.floatingIPs = pd.json_normalize(self.data['floatingIPs'] if ('floatingIPs' in self.data) else pd.json_normalize({}))
-      self.vpnGateways = pd.json_normalize(self.data['vpnGateways'] if ('vpnGateways' in self.data) else pd.json_normalize({}))
-      self.vpnConnections = pd.json_normalize(self.data['vpnConnections'] if ('vpnConnections' in self.data) else pd.json_normalize({}))
-      self.loadBalancers = pd.json_normalize(self.data['loadBalancers'] if ('loadBalancers' in self.data) else pd.json_normalize({}))
-      self.loadBalancerListeners = pd.json_normalize(self.data['loadBalancerListeners'] if ('loadBalancerListeners' in self.data) else pd.json_normalize({}))
-      self.loadBalancerPools = pd.json_normalize(self.data['loadBalancerPools'] if ('loadBalancerPools' in self.data) else pd.json_normalize({}))
-      self.loadBalancerMembers = pd.json_normalize(self.data['loadBalancerMembers'] if ('loadBalancerMembers' in self.data) else pd.json_normalize({}))
-      self.volumes = pd.json_normalize(self.data['volumes'] if ('volumes' in self.data) else pd.json_normalize({}))
-      self.networkACLs = pd.json_normalize(self.data['networkACLs'] if ('networkACLs' in self.data) else pd.json_normalize({}))
-      self.securityGroups = pd.json_normalize(self.data['securityGroups'] if ('securityGroups' in self.data) else pd.json_normalize({}))
-      self.keys = pd.json_normalize(self.data['keys'] if ('keys' in self.data) else pd.json_normalize({}))
+      self.vpcs = json_normalize(self.data['vpcs'] if ('vpcs' in self.data) else json_normalize({}))
+      self.subnets = json_normalize(self.data['subnets'] if ('subnets' in self.data) else json_normalize({}))
+      self.instances = json_normalize(self.data['instances'] if ('instances' in self.data) else json_normalize({}))
+      #self.networkInterfaces = json_normalize(self.data['networkInterfaces'] if ('networkInterfaces' in self.data) else json_normalize({}))
+      self.publicGateways = json_normalize(self.data['publicGateways'] if ('publicGateways' in self.data) else json_normalize({}))
+      self.floatingIPs = json_normalize(self.data['floatingIPs'] if ('floatingIPs' in self.data) else json_normalize({}))
+      self.vpnGateways = json_normalize(self.data['vpnGateways'] if ('vpnGateways' in self.data) else json_normalize({}))
+      self.vpnConnections = json_normalize(self.data['vpnConnections'] if ('vpnConnections' in self.data) else json_normalize({}))
+      self.loadBalancers = json_normalize(self.data['loadBalancers'] if ('loadBalancers' in self.data) else json_normalize({}))
+      self.loadBalancerListeners = json_normalize(self.data['loadBalancerListeners'] if ('loadBalancerListeners' in self.data) else json_normalize({}))
+      self.loadBalancerPools = json_normalize(self.data['loadBalancerPools'] if ('loadBalancerPools' in self.data) else json_normalize({}))
+      self.loadBalancerMembers = json_normalize(self.data['loadBalancerMembers'] if ('loadBalancerMembers' in self.data) else json_normalize({}))
+      self.volumes = json_normalize(self.data['volumes'] if ('volumes' in self.data) else json_normalize({}))
+      self.networkACLs = json_normalize(self.data['networkACLs'] if ('networkACLs' in self.data) else json_normalize({}))
+      self.securityGroups = json_normalize(self.data['securityGroups'] if ('securityGroups' in self.data) else json_normalize({}))
+      self.keys = json_normalize(self.data['keys'] if ('keys' in self.data) else json_normalize({}))
 
       listenerdata = []
       pooldata = []
@@ -163,7 +157,7 @@ class File:
                   #   #for lbmemberarray in lbmembers:
                   #   #   if lbmemberarray:
                   #   #      for lbmember in lbmemberarray:
-                  #   #         normalizedmember = pd.json_normalize(lbmember)
+                  #   #         normalizedmember = json_normalize(lbmember)
 
                   #   #         vpcs.rename(
                   #   #            columns={'is_public': 'isPublic'}, inplace=True)
@@ -183,9 +177,9 @@ class File:
                   extended['lbid'] = lbid
                   listenerdata.append(extended)
 
-      loadBalancerListeners =  pd.json_normalize(listenerdata)
-      loadBalancerPools =  pd.json_normalize(pooldata)
-      loadBalancerMembers =  pd.json_normalize(memberdata)
+      loadBalancerListeners =  json_normalize(listenerdata)
+      loadBalancerPools =  json_normalize(pooldata)
+      loadBalancerMembers =  json_normalize(memberdata)
 
       if not self.vpcs.empty:
          self.vpcs.rename(

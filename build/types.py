@@ -16,21 +16,20 @@
 import random
 import time
 
-from build.xml import XML
-from build.tables import *
+from build.elements import Elements
+from build.tables import icons, formats, layouts, shapes, sizes, styles
 from common.common import Common
-from common.utils import *
 
 class Types:
    common = None
    data = None
-   xml = None
+   elements = None
 
    def __init__(self, common):
       self.common = common
       self.data = {'header': {'type': 'device',
                               'compressed': 'false'}}
-      self.xml = XML(self.data)
+      self.elements = Elements(self.data)
       random.seed(time.time())
 
    def buildLink(self, label, source, target):
@@ -163,12 +162,12 @@ class Types:
    #   return data
 
    def buildXML(self, vpcdata, pagedata):
-      self.xml.buildXML(vpcdata, pagedata)
+      self.elements.buildXML(vpcdata, pagedata)
 
    def dumpXML(self, file, folder):
-      self.xml.dumpXML(file, folder)
+      self.elements.dumpXML(file, folder)
 
    def resetXML(self):
       self.data = {'header': {'type': 'device',
                          'compressed': 'false'}}
-      self.xml.resetXML(self.data)
+      self.elements.resetXML(self.data)

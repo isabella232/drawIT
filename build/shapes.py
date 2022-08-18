@@ -14,7 +14,6 @@
 # limitations under the License.
 
 from build.types import Types
-from common.utils import *
 
 class Shapes:
    common = None

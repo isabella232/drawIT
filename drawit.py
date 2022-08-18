@@ -13,21 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-import argparse
-import configparser
-
 #SAVE import tkinter
 #SAVE from tkinter import filedialog
 #SAVE from tkinter import IntVar
 #SAVE from tkinter import messagebox
 
-from build.diagrams import Diagrams
-from load.data import Data
+from argparse import ArgumentParser
+from configparser import ConfigParser
+from os import path
+from platform import system as platform_system
+from sys import exit as sys_exit
+
 from common.common import Common
-from common.options import Options, OutputDetail, OutputShapes, OutputSplit, Regions, RunMode
-from common.messages  import Messages
-from common.utils import *
+from build.build import Build
+from load.load import Load
 
 class Config:
     def __init__(self, appName):
@@ -36,10 +35,10 @@ class Config:
         if self.isWindows():
             self.filename = appName + ".ini"
         else:
-            self.filename =  os.path.expanduser('~') + '/Library/Application Support/' + appName + ".ini"
+            self.filename =  path.expanduser('~') + '/Library/Application Support/' + appName + ".ini"
         
-        self.config = configparser.ConfigParser()
-        if os.path.exists(self.filename):
+        self.config = ConfigParser()
+        if path.exists(self.filename):
             self.config.read(self.filename)
         if not self.config.has_section("parameters"):
             self.config.add_section("parameters")
@@ -49,17 +48,18 @@ class Config:
             if self.isWindows():
                 self.setInputFile("./" + appName)
             else:
-                self.setInputFile(os.path.expanduser('~') + '/' + appName)
+                self.setInputFile(path.expanduser('~') + '/' + appName)
 
         # platform specific...
         if not self.has("outputDirectory"):
             if self.isWindows():
                 self.setOutputDirectory("./" + appName)
             else:
-                self.setOutputDirectory(os.path.join(os.path.expanduser('~'), 'Documents', TOOLNAME))
+                self.setOutputDirectory(path.join(path.expanduser('~'), 'Documents', TOOLNAME))
 
     def isWindows(self):
-        return hasattr(sys, 'getwindowsversion')
+        #return hasattr(sys, 'getwindowsversion')
+        return platform_system == 'Windows'
 
     def get(self,propertyName):
         if propertyName in self.config["parameters"]:
@@ -191,13 +191,13 @@ class drawit:
         runmode = config.getRunMode()
         region = config.getRegion()
       
-        parser = argparse.ArgumentParser(description='Draw IT')
+        parser = ArgumentParser(description='Draw IT')
 
         parser.add_argument('-key', dest='apikey', default=self.common.getAPIKey(), help='API Key')
         parser.add_argument('-account', dest='accountid', default=self.common.getAccountID(), help='Account ID')
         parser.add_argument('-input', dest='inputfile', default=self.common.getInputFile(), help='JSON/YAML')
         parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
-        parser.add_argument('-output', dest='outputfolder', default=os.path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
+        parser.add_argument('-output', dest='outputfolder', default=path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
         parser.add_argument('-detail', dest='outputdetail', default=self.common.getOutputDetail().value, help='low, medium, or high')
         parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, region, or vpc')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
@@ -236,60 +236,56 @@ class drawit:
         self.common.setOutputFolder(outputfolder)
 
         if outputdetail == "low":
-            outputdetail = OutputDetail.LOW
+            self.common.setLowDetail()
         elif outputdetail== "medium":
-            outputdetail = OutputDetail.MEDIUM
-        elif outputdetail == "high":
-            outputdetail = OutputDetail.HIGH
-        self.common.setOutputDetail(outputdetail)
+            self.common.setMediumDetail()
+        else: # outputdetail == "high"
+            self.common.setHighDetail()
 
         if outputshapes == "logical":
-            outputshapes = OutputShapes.LOGICAL
-        elif outputshapes == "prescribed":
-            outputshapes = OutputShapes.PRESCRIBED
-        self.common.setOutputShapes(outputshapes)
+            self.common.setLogicalShapes()
+        else: # outputshapes == "prescribed"
+            self.common.setPrescribedShapes()
 
         if outputsplit == "single":
-            outputsplit = OutputSplit.SINGLE
+            self.common.setSingleSplit()
         elif outputsplit == "region":
-            outputsplit = OutputSplit.REGION
-        elif outputsplit == "vpc":
-            outputsplit = OutputSplit.VPC
-        self.common.setOutputSplit(outputsplit)
+            self.common.setRegionSplit()
+        else: # outputsplit == "vpc"
+            self.common.setVPCSplit()
 
         if region == "eu-de":
-            region = Regions.GERMANY
+            self.common.setGermanyRegion()
         elif region == "jp-osa":
-            region = Regions.OSAKA
+            self.common.setOsakaRegion()
         elif region == "br-sao":
-            region = Regions.SAOPAULO
+            self.common.setSaoPauloRegion()
         elif region == "au-syd":
-            region = Regions.SYDNEY
+            self.common.setSydneyRegion()
         elif region == "jp-tok":
-            region = Regions.TOKYO
+            self.common.setTokyoRegion()
         elif region == "ca-tor":
-            region = Regions.TORONTO
+            self.common.setTorontoRegion()
         elif region == "eu-gb":
-            region = Regions.UNITEDKINGDOM
+            self.common.setUnitedKingdomRegion()
         elif region == "us-east":
-            region = Regions.USEAST
+            self.common.setUSEastRegion()
         elif region == "us-south":
-            region = Regions.USSOUTH
+            self.common.setUSSouthRegion()
         else:
-            region = Regions.ALL
-        self.common.setRegion(region)
+            self.common.setAllRegion()
 
         self.minInfo = False
 
         done = False
 
-        if args.runmode == RunMode.BATCH.value:
+        if self.common.isBatchMode(args.runmode):
             #try: 
                 #printmessage(COPYRIGHT)
                 #print(toolheader)
 
                 # Check for existing input file and exit if not valid.
-                #if not os.path.isfile(self.inputFile):
+                #if not path.isfile(self.inputFile):
                 #    print(invalidinputfilemessage % inputfile)
                 #    return
 
@@ -311,9 +307,9 @@ class drawit:
                     else:
                         self.common.printStartRIASwithKey(apikey, region)
                 elif len(inputfile) > 0:
-                    basename = os.path.basename(inputfile)
-                    inputbase = os.path.splitext(basename)[0]
-                    inputtype = os.path.splitext(basename)[1][1:]
+                    basename = path.basename(inputfile)
+                    inputbase = path.splitext(basename)[0]
+                    inputtype = path.splitext(basename)[1][1:]
                     if inputtype == 'yaml' or inputtype == 'yml':
                         self.common.setInputYAML()
                     elif inputtype == 'json':
@@ -329,23 +325,23 @@ class drawit:
                     printmessage(errormessage % 'No RIAS, JSON, or YAML')
                     return
 
-                self.data = Data(self.common)
+                self.data = Load(self.common)
                 self.data.loadData()
-                self.diagrams = Diagrams(self.common, self.data)
+                self.diagrams = Build(self.common, self.data)
                 self.diagrams.buildDiagrams()
 
                 self.common.printDone(outputfolder)
 
                 done = True
 
-        elif args.runmode == RunMode.GUI.value:
+        elif self.common.isGUIMode(args.runmode):
             import tkinter
             from tkinter import filedialog
             from tkinter import IntVar
             from tkinter import messagebox
         
             self.top = tkinter.Tk()
-            self.title = COPYRIGHT.split(' - ')
+            self.title = self.common.getToolCopyright().split(' - ')
             self.top.title(self.title[0])
             self.statusText = tkinter.StringVar()
 
@@ -537,50 +533,48 @@ class drawit:
                     frame.after_idle(onClickGenerate)                   
 
                     outputdetail = str(eOutputDetail.get())
-                    if outputdetail == "Low":
-                        outputdetail = OutputDetail.LOW
-                    elif outputdetail == "Medium":
-                        outputdetail = OutputDetail.MEDIUM
-                    elif outputdetail == "High":
-                        outputdetail = OutputDetail.HIGH
-                    self.common.setOutputDetail(outputdetail)
+                    if outputdetail == "low":
+                       self.common.setLowDetail()
+                    elif outputdetail== "medium":
+                       self.common.setMediumDetail()
+                    else: # outputdetail == "high"
+                       self.common.setHighDetail()
 
                     outputshapes = str(eOutputShape.get())
-                    if outputshapes == "Logical":
-                        outputshapes = OutputShapes.LOGICAL
-                    elif outputshapes == "Prescribed":
-                        outputshapes = OutputShapes.PRESCRIBED
-                    self.common.setOutputShapes(outputshapes)
+                    if outputshapes == "logical":
+                       self.common.setLogicalShapes()
+                    else: # outputshapes == "prescribed"
+                       self.common.setPrescribedShapes()
 
                     outputsplit = str(eOutputSplit.get())
                     if outputsplit == "Single":
-                        outputsplit = OutputSplit.SINGLE
+                       self.common.setSingleSplit()
                     elif outputsplit == "Region":
-                        outputsplit = OutputSplit.REGION
-                    elif outputsplit == "VPC":
-                        outputsplit = OutputSplit.VPC
-                    self.common.setOutputSplit(outputsplit)
+                       self.common.setRegionSplit()
+                    else: # outputsplit == "VPC"
+                       self.common.setVPCSplit()
 
                     region = str(eRegion.get())
-                    if region == "Germany":
-                        region = Regions.GERMANY
-                    elif region == "Osaka":
-                        region = Regions.OSAKA
-                    elif region == "Sao Paulo":
-                        region = Regions.SAOPAULO
-                    elif region == "Sydney":
-                        region = Regions.SYDNEY
-                    elif region == "Tokyo":
-                        region = Regions.TOKYO
-                    elif region == "Toronto":
-                        region = Regions.TORONTO
-                    elif region == "United Kingdom":
-                        region = Regions.UNITEDKINGDOM
-                    elif region == "US East":
-                        region = Regions.USEAST
-                    elif region == "US South":
-                        region = Regions.USSOUTH
-                    self.common.setRegion(region)
+                    if region == "eu-de":
+                       self.common.setGermanyRegion()
+                    elif region == "jp-osa":
+                       self.common.setOsakaRegion()
+                    elif region == "br-sao":
+                       self.common.setSaoPauloRegion()
+                    elif region == "au-syd":
+                       self.common.setSydneyRegion()
+                    elif region == "jp-tok":
+                       self.common.setTokyoRegion()
+                    elif region == "ca-tor":
+                       self.common.setTorontoRegion()
+                    elif region == "eu-gb":
+                       self.common.setUnitedKingdomRegion()
+                    elif region == "us-east":
+                       self.common.setUSEastRegion()
+                    elif region == "us-south":
+                       self.common.setUSSouthRegion()
+                    else:
+                       self.common.setAllRegion()
 
                     accountid = str(lAccountID.get())
                     self.common.setAccountID(accountid)
@@ -610,9 +604,9 @@ class drawit:
                         else:
                            self.common.printStartRIASwithKey(apikey, region)
                     elif len(inputfile) > 0:
-                        basename = os.path.basename(self.inputFile)
-                        inputbase = os.path.splitext(basename)[0]
-                        inputtype = os.path.splitext(basename)[1][1:]
+                        basename = path.basename(self.inputFile)
+                        inputbase = path.splitext(basename)[0]
+                        inputtype = path.splitext(basename)[1][1:]
                         if inputtype == 'yaml' or inputtype == 'yml':
                             self.common.setInputYAML()
                         elif inputtype == 'json':
@@ -626,18 +620,18 @@ class drawit:
                     else:
                         #printerror(invalidmodemessage % args.runmode)
                         printmessage(errormessage % 'No RIAS, JSON, or YAML')
-                        sys.exit()
+                        sys_exit()
 
-                    self.data = Data(self.common)
+                    self.data = Load(self.common)
                     self.data.loadData()
-                    self.diagrams = Diagrams(self.common, self.data)
+                    self.diagrams = Build(self.common, self.data)
                     self.diagrams.buildDiagrams()
 
                     self.common.printDone(outputfolder)
 
                     self.statusText.set("Completed")
 
-                    sys.exit()
+                    sys_exit()
 
                 except Exception as error:
                     self.statusText.set("Generate failed")
@@ -656,10 +650,10 @@ class drawit:
             #SAVE self.top.mainloop()
             self.top.mainloop()
 
-        elif args.runmode == RunMode.WEB.value:
-            basename = os.path.basename(inputfile)
-            inputbase = os.path.splitext(basename)[0]
-            inputtype = os.path.splitext(basename)[1][1:]
+        elif self.common.isWebMode(args.runmode):
+            basename = path.basename(inputfile)
+            inputbase = path.splitext(basename)[0]
+            inputtype = path.splitext(basename)[1][1:]
             if inputtype == 'yaml' or inputtype == 'yml':
                 self.common.setInputYAML()
             elif inputtype == 'json':
@@ -671,9 +665,9 @@ class drawit:
             outputfile = inputbase + '.' + outputtype
             self.common.setOutputFile(outputfile)
 
-            self.data = Data(self.common)
+            self.data = Load(self.common)
             self.data.loadData()
-            self.diagrams = Diagrams(self.common, self.data)
+            self.diagrams = Build(self.common, self.data)
             self.diagrams.buildDiagrams()
             
         else:

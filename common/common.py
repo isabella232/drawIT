@@ -13,10 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from hashlib import md5
+
 from common.constants import Constants
 from common.options import Options
 from common.messages import Messages
-from common.utils import *
 
 class Common:
    constants = None
@@ -32,7 +33,7 @@ class Common:
    # Utilities
 
    def compress(self, string):
-      hash = hashlib.md5(string.encode())
+      hash = md5(string.encode())
       return hash.hexdigest()
 
    def truncateText(self, text, size, linebreak):
@@ -79,6 +80,36 @@ class Common:
    def setAPIKey(self, value):
       self.options.setAPIKey(value)
 
+   def setAllRegion(self):
+      self.options.setAllRegion()
+
+   def setGermanyRegion(self):
+      self.options.setGermanyRegion()
+
+   def setOsakaRegion(self):
+      self.options.setOsakaRegion()
+
+   def setSaoPauloRegion(self):
+      self.options.setSaoPauloRegion()
+
+   def setSydneyRegion(self):
+      self.options.setSydneyRegion()
+
+   def setTokyoRegion(self):
+      self.options.setTokyoRegion()
+
+   def setTorontoRegion(self):
+      self.options.setTorontoRegion()
+
+   def setUnitedKingdomRegion(self):
+      self.options.setUnitedKingdomRegion()
+
+   def setUSEastRegion(self):
+      self.options.setUSEasRegion()
+
+   def setUSSouthRegion(self):
+      self.options.setUSSouthRegion()
+
    def getRegion(self):
       return self.options.getRegion()
 
@@ -112,6 +143,15 @@ class Common:
    def isWebMode(self):
       return self.options.isWebMode()
 
+   def isBatchMode(self, value):
+      return self.options.isBatchMode(value)
+
+   def isGUIMode(self, value):
+      return self.options.isGUIMode(value)
+
+   def isWebMode(self, value):
+      return self.options.isWebMode(value)
+
    def getRunMode(self):
       return self.options.getRunMode()
 
@@ -142,6 +182,15 @@ class Common:
    #def setInputType(self, value):
    #   self.options.setInputType(value)
 
+   def setSingleSplit(self):
+      self.options.setSingleSplit()
+
+   def setRegionSplit(self):
+      self.options.setRegionSplit()
+
+   def setVPCSplit(self):
+      self.options.setVPCSplit()
+
    def isSingleSplit(self):
       return self.options.isSingleSplit()
 
@@ -157,6 +206,15 @@ class Common:
    def setOutputSplit(self, value):
       self.options.setOutputSplit(value)
 
+   def setLowDetail(self):
+      self.options.setLowDetail()
+
+   def setMediumDetail(self):
+      self.options.setMediumDetail()
+
+   def setHighDetail(self):
+      self.options.setHighDetail()
+
    def isLowDetail(self):
       return self.options.isLowDetail()
 
@@ -171,6 +229,12 @@ class Common:
 
    def setOutputDetail(self, value):
       self.options.setOutputDetail(value)
+
+   def setLogicalShapes(self):
+      self.options.setLogicalShapes()
+
+   def setPrescribedShapes(self):
+      self.options.setPrescribedShapes()
 
    def isLogicalShapes(self):
       return self.options.isLogicalShapes()
@@ -204,8 +268,29 @@ class Common:
    def printMissingSubnets(self, *args):
       self.messages.printMissingSubnets(*args)
 
-   def getOptions(self):
-      return self.options
+   def printMissingZone(self, subnetname):
+      self.messages.printMissingZone(subnetname)
+
+   def printInvalidLoadBalancer(self, lbname):
+      self.messages.printInvalidLoadBalancer(lbname)
+
+   def printInvalidPrivateLoadBalancer(self, lbname):
+      self.messages.printInvalidPrivateLoadBalancer(lbname)
+
+   def printInvalidPublicGateway(self, pubgateid):
+      self.messages.printInvalidPublicGateway(pubgateid)
+
+   def printInvalidSubnet(self, subnetid):
+      self.messages.printInvalidSubnet(subnetid)
+
+   def printInvalidVPC(self, vpcid):
+      self.messages.printInvalidVPC(vpcid)
+
+   def printRequestMessage(self, code, message, href):
+      self.messages.printRequestMessage(code, message, href)
+
+   def printResponseMessage(self, code, message):
+      self.messages.printRequestMessage(code, message)
 
   # Constants
 

@@ -15,7 +15,7 @@
 
 class Constants:
    toolName = 'drawIT'
-   toolVersion = '0.5.8'
+   toolVersion = '0.5.9'
    toolCopyright = toolName + ' ' + toolVersion + ' - Copyright 2022 IBM Corporation'
 
    zoneCIDRs = {

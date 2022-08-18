@@ -13,8 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from sys import stderr
+
 from common.options import Options
-from common.utils import *
 
 class Messages:
    startFileMessage = 'Starting with input from %s'
@@ -26,6 +27,8 @@ class Messages:
    warningMessage = '(Warning) %s'
    errorMessage = '(Error) %s'
    invalidMessage = '(Error) %s: %s'
+   invalidRequestMessage = '(Error) %s: %s, href=%s'
+   invalidResponseMessage = '(Error) %s: %s'
    invalidModeMessage = '(Error) Invalid run mode: %s'
    invalidInputDirectoryMessage = '(Error) Invalid input directory: %s'
    invalidInputFileMessage = '(Error) Invalid input file: %s'
@@ -38,7 +41,6 @@ class Messages:
    invalidFIPReferenceMessage = '(Error) Invalid FIP reference: %s'
    invalidInstanceReferenceMessage = '(Error) Invalid Instance reference: %s'
    invalidSubnetReferenceMessage = '(Error) Invalid Subnet reference: %s'
-   invalidZonereferenceMessage = '(Error) Invalid Zone reference for Subnet: %s'
    invalidVPCreferenceMessage = '(Error) Invalid VPC reference: %s'
    invalidLBReferenceMessage = '(Error) Invalid LB reference: %s'
    invalidLPPrivateMessage = '(Warning) Private LB not implemented: %s'
@@ -46,6 +48,7 @@ class Messages:
    missingImageMessage = '(Error) Image %s not found'
    missingRegionMessage = '(Error) Region %s not found'
    missingZoneMessage = '(Error) Zone %s not found'
+   missingZoneReferenceMessage = '(Error) Invalid Zone reference for Subnet: %s'
    missingSubnetMessage = '(Error) Subnet for %s not found'
    missingImageProfileMessage = '(Error) Image profile %s not found'
    missingVolumeProfileMessage = '(Error) Volume profile %s not found'
@@ -86,10 +89,10 @@ class Messages:
       return
 
    def printError(self, *args):
-      print(*args, file=sys.stderr)
+      print(*args, file=stderr)
 
    def printMessage(self, *args):
-      print(*args, file=sys.stderr)
+      print(*args, file=stderr)
 
    def printXML(self, *args):
       sys.stdout.write(*args)
@@ -113,5 +116,26 @@ class Messages:
    def printMissingSubnets(self, *args):
       self.printError(self.invalidMessage % (self.missingSubnets, *args))
 
-   def printDetailsRIAS(self, arg):
-      self.printError(self.invalidMessage % arg)
+   def printInvalidLoadBalancer(self, lbname):
+      self.printError(self.invalidLBReference % lbname)
+
+   def printInvalidPrivateLoadBalancer(self, lbname):
+      self.printError(self.invalidLBPrivateMessage % lbname)
+
+   def printInvalidPublicGateway(self, pubgateid):
+      self.printError(self.invalidPublicGatewayMessage % pubgateid)
+
+   def printInvalidSubnet(self, subnetid):
+      self.printError(self.invalidSubnetReferenceMessage % subnetid)
+
+   def printInvalidVPC(self, vpcid):
+      self.printError(self.invalidVPCReferenceMessage % vpcid)
+
+   def printMissingZone(self, subnetname):
+      self.printError(self.missingZoneReferenceMessage % subnetname)
+
+   def printRequestMessage(self, code, message, href):
+      self.printError(self.invalidRequestMessage % (code, message, href))
+
+   def printResponseMessage(self, code, message):
+      self.printError(self.invalidResponseMessage % (code, message))

@@ -1,4 +1,4 @@
-# @file diagrams.py
+# @file build.py
 #
 # Copyright IBM Corporation 2022
 #
@@ -20,14 +20,12 @@
 #   xml.py - build drawio objects  
 #   tables.py - collections of drawio properties
 
-import math 
+from math import isnan
 
-from build.shapes import Shapes
-from load.data import Data
 from common.common import Common
-from common.utils import *
+from build.shapes import Shapes
 
-class Diagrams:
+class Build:
    data = None
    common = None
    shapes = None
@@ -88,7 +86,7 @@ class Diagrams:
          #vpcframe = findrow(user, self.inputdata['vpcs'], 'id', vpcid)
          vpcframe = self.data.getVPC(vpcid)
          if len(vpcframe) == 0:
-            printerror(invalidvpcreferencemessage % vpcid)
+            self.common.printInvalidVPC(vpcid)
          else:
             nodes = []
             links = []
@@ -361,7 +359,7 @@ class Diagrams:
                links.append(publiclink2)
 
             elif subnetpubgateid != save_subnetpubgateid:
-               printerror(invalidpublicgatewaymessage % subnetpubgateid)
+               self.common.printInvalidPublicGateway(subnetpubgateid)
 
             else:
                publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid)
@@ -454,7 +452,7 @@ class Diagrams:
          instancememory = instanceframe['memory']
 
          bandwidth = instanceframe['bandwidth']
-         if bandwidth == '' or (isinstance(bandwidth, float) and math.isnan(bandwidth)):
+         if bandwidth == '' or (isinstance(bandwidth, float) and isnan(bandwidth)):
             instancecpuspeed = 0
          else:
             instancecpuspeed = int(instanceframe['bandwidth'] / 1000)
@@ -565,7 +563,7 @@ class Diagrams:
          lbname = lb['name']
 
          if lbname[0:4] == 'kube':
-            printerror(invalidlbreferencemessage % lbname)
+            self.common.printInvalidLoadBalancer(lbname)
             continue
 
          if self.inputtype == 'rias':
@@ -578,7 +576,7 @@ class Diagrams:
             lbpublicips = lb['publicIPs']
 
          if lbispublic == False:
-            printerror(invalidlbprivatemessage % lbname)
+            self.common.printInvalidPrivateLoadBalancer(lbname)
             continue
 
          lbpubliciplist = ""
