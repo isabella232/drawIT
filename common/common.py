@@ -105,7 +105,7 @@ class Common:
       self.options.setUnitedKingdomRegion()
 
    def setUSEastRegion(self):
-      self.options.setUSEasRegion()
+      self.options.setUSEastRegion()
 
    def setUSSouthRegion(self):
       self.options.setUSSouthRegion()
