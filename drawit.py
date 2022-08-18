@@ -55,7 +55,7 @@ class Config:
             if self.isWindows():
                 self.setOutputDirectory("./" + appName)
             else:
-                self.setOutputDirectory(path.join(path.expanduser('~'), 'Documents', TOOLNAME))
+                self.setOutputDirectory(path.join(path.expanduser('~'), 'Documents', appName))
 
     def isWindows(self):
         #return hasattr(sys, 'getwindowsversion')

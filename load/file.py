@@ -15,6 +15,7 @@
 
 from json import loads as json_load
 from yaml import load as yaml_load
+from yaml import FullLoader as yaml_FullLoader
 from pandas import json_normalize
 
 from common.common import Common
@@ -63,7 +64,7 @@ class File:
 
    def loadYAML(self):
       stream = open(self.common.getInputFile(), 'r')
-      self.data = yaml_load(stream, Loader=yaml.FullLoader)
+      self.data = yaml_load(stream, Loader=yaml_FullLoader)
       if not 'vpcs' in self.data:
          self.common.printMissingVPCs(self.common.getInputFile())
          sys.exit()
