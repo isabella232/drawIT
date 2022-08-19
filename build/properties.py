@@ -1,4 +1,4 @@
-# @file tables.py
+# @file properties.py
 #
 # Copyright IBM Corporation 2022
 #
@@ -60,9 +60,9 @@ layouts = {
     'itemIcon': 'ibmLayout=itemIcon;'
 }
 
-# Sizes
+# Size Properties
 
-sizes = {
+minsizes = {
     'collapsed': {'width': '48', 'height': '48'},
     'expanded': {'width': '240', 'height': '48'},
     'group': {'width': '240', 'height': '152'},
@@ -116,42 +116,42 @@ collapsedColors = {
     'security': 'strokeColor=#fa4d56;fillColor=none;',
     'item': 'strokeColor=#198038;fillColor=none;'}
 
-# Shapes
+# Shape Table
 
-shapes = {
+ibmshapes = {
     # Groups
-    'cloud': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': sizes['group'], 'icon': icons['cloud']},
-    'enterpriseNetwork': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': sizes['group'], 'icon': icons['enterpriseNetwork']},
-    'publicNetwork': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': sizes['group'], 'icon': icons['publicNetwork']},
-    'region': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group'], 'size': sizes['group'], 'icon': icons['region']},
-    'subnet': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group3'], 'size': sizes['group'], 'icon': icons['subnet']},
-    'vpc': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': sizes['group'], 'icon': icons['vpc']},
-    'zone': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group3'], 'size': sizes['group'], 'icon': icons['zone']},
+    'cloud': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['cloud']},
+    'enterpriseNetwork': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['enterpriseNetwork']},
+    'publicNetwork': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['publicNetwork']},
+    'region': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['region']},
+    'subnet': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group3'], 'size': minsizes['group'], 'icon': icons['subnet']},
+    'vpc': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['vpc']},
+    'zone': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group3'], 'size': minsizes['group'], 'icon': icons['zone']},
 
     # Expanded Icons
-    'instanceExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['compute'], 'style': styles['iconExpanded3'], 'size': sizes['expanded'], 'icon': icons['instance']},
-    'instanceBastionExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': sizes['expanded'], 'icon': icons['instanceBastion']},
-    'instanceExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['compute'], 'style': styles['iconExpandedStack3'], 'size': sizes['expanded'], 'icon': icons['instance']},
-    'instanceBastionExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': sizes['expanded'], 'icon': icons['instanceBastion']},
+    'instanceExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['compute'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instance']},
+    'instanceBastionExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instanceBastion']},
+    'instanceExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['compute'], 'style': styles['iconExpandedStack3'], 'size': minsizes['expanded'], 'icon': icons['instance']},
+    'instanceBastionExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instanceBastion']},
 
     # Collapsed Icons
-    'instance': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['compute'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['instance']},
-    'instanceBastion': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['instanceBastion']},
-    'floatingIP': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['floatingIP']},
-    'internet': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['internet']},
-    'loadBalancer': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['loadBalancer']},
-    'publicGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['publicGateway']},
-    'router': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['router']},
-    'user': {'format': formats['actor'], 'layout': layouts['collapsed'], 'color': collapsedColors['actor'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['user']},
-    'vpnConnection': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['vpnConnection']},
-    'vpnGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': sizes['collapsed'], 'icon': icons['vpnGateway']},
+    'instance': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['compute'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['instance']},
+    'instanceBastion': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['instanceBastion']},
+    'floatingIP': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['floatingIP']},
+    'internet': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['internet']},
+    'loadBalancer': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['loadBalancer']},
+    'publicGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['publicGateway']},
+    'router': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['router']},
+    'user': {'format': formats['actor'], 'layout': layouts['collapsed'], 'color': collapsedColors['actor'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['user']},
+    'vpnConnection': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['vpnConnection']},
+    'vpnGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['vpnGateway']},
 
     # Item Icons
-    'operatingSystem': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': sizes['item'], 'icon': icons['linux']},
-    'profileBalanced': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': sizes['item'], 'icon': icons['profileBalanced']},
-    'profileCompute': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': sizes['item'], 'icon': icons['profileCompute']},
-    'profileMemory': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': sizes['item'], 'icon': icons['profileMemory']},
-    'blockStorage': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': sizes['item'], 'icon': icons['blockStorage']},
+    'operatingSystem': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['linux']},
+    'profileBalanced': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['profileBalanced']},
+    'profileCompute': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['profileCompute']},
+    'profileMemory': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['profileMemory']},
+    'blockStorage': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['blockStorage']},
 
     # Text
     'text': {'style': styles['text']}

@@ -23,6 +23,7 @@
 from math import isnan
 
 from common.common import Common
+from build.constants import names, points, zoneCIDRs 
 from build.shapes import Shapes
 
 class Build:
@@ -68,14 +69,14 @@ class Build:
 
       publicx = 0
       publicy = 0
-      publicnode = self.shapes.buildPublicNetwork(self.common.getPublicNetworkName(), '', self.common.getPublicNetworkName(), '', publicx, publicy, self.common.getPublicNetworkWidth(), self.common.getPublicNetworkHeight())
-      publicusernode = self.shapes.buildUser(self.common.getPublicUserName(), self.common.getPublicNetworkName(), self.common.getPublicUserName(), '', self.common.getFirstIconX, self.common.getFirstIconY, self.common.getIconWidth(), self.common.getIconHeight())
-      publicinternetnode = self.shapes.buildInternet(self.common.getInternetName(), self.common.getPublicNetworkName(), self.common.getInternetName(), '', self.common.getSecondIconX(), self.common.getSecondIconY(), self.common.getIconWidth(), self.common.getIconHeight())
+      publicnode = self.shapes.buildPublicNetwork(names['publicNetworkName'], '', names['publicNetworkName'], '', publicx, publicy, points['publicNetworkWidth'], points['publicNetworkHeight'])
+      publicusernode = self.shapes.buildUser(names['publicUserName'], names['publicNetworkName'], names['publicUserName'], '', points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'])
+      publicinternetnode = self.shapes.buildInternet(names['internetName'], names['publicNetworkName'], names['internetName'], '', points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
 
       enterprisex = 0
-      enterprisey = self.common.getPublicNetworkHeight() + self.common.getGroupSpace()
-      enterprisenode = self.shapes.buildEnterpriseNetwork(self.common.getEnterpriseNetworkName(), '', self.common.getEnterpriseNetworkName(), '', enterprisex, enterprisey, self.common.getEnterpriseNetworkWidth(), self.common.getEnterpriseNetworkHeight())
-      enterpriseusernode = self.shapes.buildUser(self.common.getEnterpriseUserName(), self.common.getEnterpriseNetworkName(), self.common.getEnterpriseUserName(), '', self.common.getFirstIconX(), self.common.getFirstIconY(), self.common.getIconWidth(), self.common.getIconHeight())
+      enterprisey = points['publicNetworkHeight'] + points['groupSpace']
+      enterprisenode = self.shapes.buildEnterpriseNetwork(names['enterpriseNetworkName'], '', names['enterpriseNetworkName'], '', enterprisex, enterprisey, points['enterpriseNetworkWidth'], points['enterpriseNetworkHeight'])
+      enterpriseusernode = self.shapes.buildUser(names['enterpriseUserName'], names['enterpriseNetworkName'], names['enterpriseUserName'], '', points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'])
 
       if self.common.isLogicalShapes():
          cloudname = "Cloud"
@@ -99,13 +100,13 @@ class Build:
             #SAVE publiclink = genlink(user, publicname, publicname, internetname)
             #SAVE links.append(publiclink)
 
-            publicuserlink = self.shapes.buildDoubleArrow('', self.common.getInternetName(), self.common.getPublicUserName())
+            publicuserlink = self.shapes.buildDoubleArrow('', names['internetName'], names['publicUserName'])
             links.append(publicuserlink)
 
             nodes.append(enterprisenode)
             nodes.append(enterpriseusernode)
 
-            enterpriseuserlink = self.shapes.buildDoubleArrow('', self.common.getInternetName(), self.common.getEnterpriseUserName())
+            enterpriseuserlink = self.shapes.buildDoubleArrow('', names['internetName'], names['enterpriseUserName'])
             links.append(enterpriseuserlink)
 
             vpcname = vpcframe['name']
@@ -118,14 +119,14 @@ class Build:
             links = links + zonelinks
             values = values + zonevalues
 
-            width = self.common.getIconWidth()
-            height = self.common.getIconHeight()
+            width = points['iconWidth']
+            height = points['iconHeight']
 
             routername = vpcname + '-router'
-            routernode = self.shapes.buildRouter(routername, vpcname, routername, '', self.common.getFirstIconX(), self.common.getFirstIconY(), width, height)
+            routernode = self.shapes.buildRouter(routername, vpcname, routername, '', points['firstIconX'], points['firstIconY'], width, height)
             nodes.append(routernode)
 
-            routerlink = self.shapes.buildDoubleArrow('', routername, self.common.getInternetName())
+            routerlink = self.shapes.buildDoubleArrow('', routername, names['internetName'])
             links.append(routerlink)
 
             width = 0
@@ -134,14 +135,14 @@ class Build:
                if size[0] > width:
                   width = size[0]
 
-               height = height + size[1] + self.common.getGroupSpace()
+               height = height + size[1] + points['groupSpace']
 
-            width = self.common.getLeftSpace() + width + self.common.getGroupSpace()  # space after inner groups
-            height = height + self.common.getTopSpace() # space at top of outer group to top inner group
-            height  = height - self.common.getGroupSpace()  # TODO Remove extra groupspace.
+            width = points['leftSpace'] + width + points['groupSpace']  # space after inner groups
+            height = height + points['topSpace'] # space at top of outer group to top inner group
+            height  = height - points['groupSpace']  # TODO Remove extra groupspace.
 
-            x = self.common.getGroupSpace()
-            y = self.common.getTopSpace()
+            x = points['groupSpace']
+            y = points['topSpace']
 
             vpcnode = self.shapes.buildVPC(vpcname, regionname, vpcname, '', x, y, width, height) 
             nodes.append(vpcnode)
@@ -149,8 +150,8 @@ class Build:
             x = 30
             y = 70
 
-            width = width + (self.common.getGroupSpace() * 2)
-            height = height + (self.common.getTopSpace() + self.common.getGroupSpace())
+            width = width + (points['groupSpace'] * 2)
+            height = height + (points['topSpace'] + points['groupSpace'])
 
             regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height)
             nodes.append(regionnode)
@@ -162,11 +163,11 @@ class Build:
 
             #publicwidth = (groupspace * 2) + (48 * 3)
             #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-            x = self.common.getPublicNetworkWidth() + self.common.getGroupSpace()  # Allow space for public network.
+            x = points['publicNetworkWidth'] + points['groupSpace']  # Allow space for public network.
             y = 0
 
-            width = width + (self.common.getGroupSpace() * 2)
-            height = height + (self.common.getTopSpace() + self.common.getGroupSpace())
+            width = width + (points['groupSpace'] * 2)
+            height = height + (points['topSpace'] + points['groupSpace'])
 
             cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height)
             nodes.append(cloudnode)
@@ -203,26 +204,26 @@ class Build:
             if size[0] > width:
                width = size[0]
 
-            height = height + size[1] + self.common.getGroupSpace()
+            height = height + size[1] + points['groupSpace']
 
-         width = self.common.getLeftSpace() + width + self.common.getGroupSpace()
-         height = height + self.common.getTopSpace()  # space at top of outer group to top inner group
-         height = height - self.common.getGroupSpace()
+         width = points['leftSpace'] + width + points['groupSpace']
+         height = height + points['topSpace']  # space at top of outer group to top inner group
+         height = height - points['groupSpace']
 
-         x = (self.common.getIconSpace() * 2) + self.common.getIconWidth()
-         y = self.common.getTopSpace() + saveheight + (self.common.getGroupSpace() * (count - 1))
+         x = (points['iconSpace'] * 2) + points['iconWidth']
+         y = points['topSpace'] + saveheight + (points['groupSpace'] * (count - 1))
 
          saveheight += height
 
          zonename = regionzonename.split(':')[1]
-         zonecidr = self.common.getZoneCIDR(zonename)
+         zonecidr = zoneCIDRs[zonename]
 
          zonenode = self.shapes.buildZone(regionzonename, vpcname, regionzonename, zonecidr, x, y, width, height)
          nodes.append(zonenode)
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([self.common.getLeftSpace() - self.common.getGroupSpace(), 0])
+            sizes.append([points['leftSpace'] - points['groupSpace'], 0])
 
       return nodes, links, values, sizes
 
@@ -311,27 +312,27 @@ class Build:
             bastion = True
 
          if (len(instancesizes) == 0):
-            width = self.common.getMinGroupWidth()
-            height = self.common.getMinGroupHeight()
+            width = points['minGroupWidth']
+            height = points['minGroupHeight']
          else:
-            width = self.common.getGroupSpace()
+            width = points['groupSpace']
             height = 0
 
          for size in instancesizes:
-            width = width + size[0] + self.common.getGroupSpace()
+            width = width + size[0] + points['groupSpace']
 
             if size[1] > height:
                height = size[1]
 
          # Leave height as groupheight if no instances.
          if (len(instancesizes) != 0):
-            height = height + self.common.getTopSpace() + self.common.getGroupSpace()  # space at top and bottom of group
+            height = height + points['topSpace'] + points['groupSpace']  # space at top and bottom of group
 
          #SAVE x = (iconspace * 2) + iconwidth
          #SAVE y = topspace + (height * (count - 1)) + (groupspace * (count - 1))
 
-         x = (self.common.getIconSpace() * 2) + self.common.getIconWidth()
-         y = self.common.getTopSpace() + saveheight + (self.common.getGroupSpace() * (count - 1))
+         x = (points['iconSpace'] * 2) + points['iconWidth']
+         y = points['topSpace'] + saveheight + (points['groupSpace'] * (count - 1))
 
          saveheight += height
 
@@ -340,7 +341,7 @@ class Build:
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([self.common.getLeftSpace() - self.common.getGroupSpace(), 0])
+            sizes.append([points['leftSpace'] - points['groupSpace'], 0])
 
          internetname = 'Internet'
 
@@ -349,7 +350,7 @@ class Build:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, self.common.getFirstIconX(), self.common.getFirstIconY(), self.common.getIconWidth(), self.common.getIconHeight())
+               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'])
                nodes.append(publicnode)
 
                routername = vpcname + '-router'
@@ -366,7 +367,7 @@ class Build:
                links.append(publiclink1)
 
          if vpngateip != None:
-            vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, self.common.getSecondIconX(), self.common.getSecondIconY(), self.common.getIconWidth(), self.common.getIconHeight())
+            vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
             nodes.append(vpngatenode)
                 
             routername = vpcname + '-router'
@@ -464,17 +465,17 @@ class Build:
          storagedetails = '100GB/3000IOPS'
 
          if self.common.isLowDetail(): 
-            width = self.common.getIconWidth()
-            height = self.common.getIconHeight()
+            width = points['iconWidth']
+            height = points['iconHeight']
             extrawidth = width * 3
             extraheight = height * 2
-            x = width + (extrawidth * (count - 1)) + (self.common.getGroupSpace() * count)
+            x = width + (extrawidth * (count - 1)) + (points['groupSpace'] * count)
             y = self.common.getTopSpace()
          else:
             width = 240
             height = 152
-            x = (width * (count - 1)) + (self.common.getGroupSpace() * count) 
-            y = self.common.getTopSpace()
+            x = (width * (count - 1)) + (points['groupSpace'] * count) 
+            y = points['topSpace']
 
          #SAVE x = (width * (count - 1)) + (groupspace * count) 
          #SAVE y = topspace
@@ -503,11 +504,11 @@ class Build:
          nodes.append(instancenode)
 
          if not self.common.isLowDetail(): 
-            textwidth = width - (self.common.getTextGroupSpace() * 2)
-            textheight = height - (self.common.getTextTopSpace() + self.common.getTextGroupSpace())
+            textwidth = width - (points['textGroupSpace'] * 2)
+            textheight = height - (points['textTopSpace'] + points['textGroupSpace'])
 
-            textx = self.common.getTextGroupSpace()
-            texty = self.common.getTextTopSpace()
+            textx = points['textGroupSpace']
+            texty = points['textTopSpace']
 
             #textid = nicid + ':details'
             textid = instanceid + ':details'

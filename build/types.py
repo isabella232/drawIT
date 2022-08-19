@@ -17,7 +17,7 @@ import random
 import time
 
 from build.elements import Elements
-from build.tables import icons, formats, layouts, shapes, sizes, styles
+from build.properties import ibmshapes
 from common.common import Common
 
 class Types:
@@ -82,7 +82,7 @@ class Types:
 
    def buildNode(self, shapename, id, parentid, name, subname, badgetext, x, y, width, height):
       outputshapes = self.common.getOutputShapes().value
-      shape = shapes[shapename]
+      shape = ibmshapes[shapename]
       shapetype = shape['format']
       style = shapetype[outputshapes] + shape['layout'] + shape['color'] + shape['style']  
       size = shape['size']
@@ -119,7 +119,7 @@ class Types:
       return data
 
    def buildValue(self, id, parentid, name, parent, subname, text, x, y, width, height):
-      shape = shapes['text']
+      shape = ibmshapes['text']
       style = shape['style']  
       data = {'cell': {'id': id,
                        'value': text,

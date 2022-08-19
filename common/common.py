@@ -15,18 +15,19 @@
 
 from hashlib import md5
 
-from common.constants import Constants
 from common.options import Options
 from common.messages import Messages
 
 class Common:
-   constants = None
+   toolName = 'drawIT'
+   toolVersion = '0.5.9'
+   toolCopyright = toolName + ' ' + toolVersion + ' - Copyright 2022 IBM Corporation'
+
    options = None
    messages = None
 
    def __init__(self):
-      self.constants = Constants()
-      self.options = Options(self.constants)
+      self.options = Options(self.toolName)
       self.messages = Messages(self.options)
       return
 
@@ -295,97 +296,10 @@ class Common:
   # Constants
 
    def getToolName(self):
-      return self.constants.getToolName()
+      return self.toolName
 
    def getToolVersion(self):
-      return self.constants.getToolVersion()
+      return self.toolVersion
 
    def getToolCopyright(self):
-      return self.constants.getToolCopyright()
-
-   def getZoneCIDRs(self):
-      return self.constants.getZoneCIDRs()
-
-   def getZoneCIDR(self, zone):
-      return self.constants.getZoneCIDR(zone)
-
-   def getIconWidth(self):
-      return self.constants.getIconWidth()
-
-   def getIconHeight(self):
-      return self.constants.getIconHeight()
-
-   def getGroupWidth(self):
-      return self.constants.getGroupWidth()
-
-   def getGroupHeight(self):
-      return self.constants.getGroupHeight()
-
-   def getMinGroupWidth(self):
-      return self.constants.getMinGroupWidth()
-
-   def getMinGroupHeight(self):
-      return self.constants.getMinGroupHeight()
-
-   def getGroupSpace(self):
-      return self.constants.getGroupSpace()
-
-   def getTopSpace(self):
-      return self.constants.getTopSpace()
-
-   def getTextGroupSpace(self):
-      return self.constants.getTextGroupSpace()
-
-   def getTextTopSpace(self):
-      return self.constants.getTextTopSpace()
-
-   def getIconSpace(self):
-      return self.constants.getIconSpace()
-
-   def getLeftSpace(self):
-      return self.constants.getLeftSpace()
-
-   def getFirstIconX(self):
-      return self.constants.getFirstIconX()
-
-   def getFirstIconY(self):
-      return self.constants.getFirstIconY()
-
-   def getSecondIconX(self):
-      return self.constants.getSecondIconX()
-
-   def getSecondIconY(self):
-      return self.constants.getSecondIconY()
-
-   def getPublicIconCount(self):
-      return self.constants.getPublicIconCount()
-
-   def getPublicNetworkWidth(self):
-      return self.constants.getPublicNetworkWidth()
-
-   def getPublicNetworkHeight(self):
-      return self.constants.getPublicNetworkHeight()
-
-   def getEnterpriseIconCount(self):
-      return self.constants.getEnterpiseIconCount()
-
-   def getEnterpriseNetworkWidth(self):
-      return self.constants.getEnterpriseNetworkWidth()
-
-   def getEnterpriseNetworkHeight(self):
-      return self.constants.getEnterpriseNetworkHeight()
-
-   def getInternetName(self):
-      return self.constants.getInternetName()
-
-   def getPublicNetworkName(self):
-      return self.constants.getPublicNetworkName()
-
-   def getPublicUserName(self):
-      return self.constants.getPublicUserName()
-
-   def getEnterpriseNetworkName(self):
-      return self.constants.getEnterpriseNetworkName()
-
-   def getEnterpriseUserName(self):
-      return self.constants.getEnterpriseUserName()
+      return self.toolCopyright
