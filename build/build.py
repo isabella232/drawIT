@@ -17,13 +17,12 @@
 #   diagrams.py - iterate diagram objects, invokes shapes.py
 #   shapes.py - build ibm types, invokes types.py
 #   types.py - build drawio types, invokes xml.py with tables.py
-#   xml.py - build drawio objects  
-#   tables.py - collections of drawio properties
+#   elements.py - build drawio objects  
 
 from math import isnan
 
 from common.common import Common
-from build.constants import names, points, zoneCIDRs 
+from build.tables import names, points, zoneCIDRs 
 from build.shapes import Shapes
 
 class Build:
