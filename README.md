@@ -53,30 +53,22 @@ Using GUI:
 
 ## Features Supported
 
-Locations:
 - Cloud
 - Region
 - Availability Zone
+  - Public Gateway
+  - VPN Gateway
 - VPC
+  - Implicit Router
+  - Public ALB
 - Subnet
-- Instances
-- NICs (Primary & Secondary)
+  - Instances
+  - Floating IP
 - Public Network
+  - Internet
+  - User
 - Enterprise Network
-
-Icons:
-- User
-- Internet
-- Instance
-- Public Gateway
-- Implicit Router
-- Unix
-- Profile
-- Storage
-
-Connectors:
-- Floating IP (Ingress & Egress)
-- Public Gateway (Egress only)
+  - User 
 
 ## License
 
