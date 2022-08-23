@@ -1,5 +1,5 @@
 # drawIT
-Build IT architecture diagrams from diagrams-as-code to diagrams.net.
+Build IT architecture diagrams from code or tooling to diagrams.net.
 
 ## Overview
 
