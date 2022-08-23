@@ -1,5 +1,5 @@
 # drawIT
-Automatically create IT architecture diagrams from diagrams-as-code to diagrams.net.
+Build IT architecture diagrams from diagrams-as-code to diagrams.net.
 
 ## Overview
 
