@@ -499,7 +499,7 @@ class drawit:
                 "Medium",
                 "High"]
             eOutputDetail = tkinter.StringVar(self.top)
-            eOutputDetail.set("Medium")
+            eOutputDetail.set("Low")
             tkinter.Label(frame, text="Detail Level").grid(row=row)
             shapemenu = tkinter.OptionMenu(frame, eOutputDetail, *detailoptions).grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
             row = row + 1
@@ -520,7 +520,7 @@ class drawit:
                 "Region", 
                 "VPC"]
             eOutputSplit = tkinter.StringVar(self.top)
-            eOutputSplit.set("VPC")
+            eOutputSplit.set("Single")
             tkinter.Label(frame, text="File Organization").grid(row=row)
             #splitmenu = tkinter.OptionMenu(self.top, eOutputSplit, *splitoptions)
             splitmenu = tkinter.OptionMenu(frame, eOutputSplit, *splitoptions).grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
@@ -532,29 +532,30 @@ class drawit:
                     self.statusText.set("Starting")
                     frame.after_idle(onClickGenerate)                   
 
-                    outputdetail = str(eOutputDetail.get())
+                    outputdetail = str(eOutputDetail.get()).lower()
+                    print(outputdetail)
                     if outputdetail == "low":
                        self.common.setLowDetail()
-                    elif outputdetail== "medium":
+                    elif outputdetail == "medium":
                        self.common.setMediumDetail()
                     else: # outputdetail == "high"
                        self.common.setHighDetail()
 
-                    outputshapes = str(eOutputShape.get())
+                    outputshapes = str(eOutputShape.get()).lower()
                     if outputshapes == "logical":
                        self.common.setLogicalShapes()
                     else: # outputshapes == "prescribed"
                        self.common.setPrescribedShapes()
 
-                    outputsplit = str(eOutputSplit.get())
-                    if outputsplit == "Single":
+                    outputsplit = str(eOutputSplit.get()).lower()
+                    if outputsplit == "single":
                        self.common.setSingleSplit()
-                    elif outputsplit == "Region":
+                    elif outputsplit == "region":
                        self.common.setRegionSplit()
                     else: # outputsplit == "VPC"
                        self.common.setVPCSplit()
 
-                    region = str(eRegion.get())
+                    region = str(eRegion.get()).lower()
                     if region == "eu-de":
                        self.common.setGermanyRegion()
                     elif region == "jp-osa":

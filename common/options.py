@@ -72,7 +72,7 @@ class Options:
       self.outputFile = 'output'
       self.outputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
       self.outputSplit = OutputSplit.SINGLE
-      self.outputDetail = OutputDetail.MEDIUM
+      self.outputDetail = OutputDetail.LOW
       self.outputShapes = OutputShapes.PRESCRIBED
       return
 

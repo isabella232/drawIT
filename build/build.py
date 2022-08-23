@@ -22,8 +22,8 @@
 from math import isnan
 
 from common.common import Common
-from build.tables import names, points, zoneCIDRs 
 from build.shapes import Shapes
+from build.tables import names, points, zoneCIDRs 
 
 class Build:
    data = None
@@ -42,7 +42,7 @@ class Build:
 
       regiondata = {}
 
-      for regionname, regionvalues in self.data.getRegionsTable().items():
+      for regionname, regionvalues in self.data.getRegionTable().items():
          vpcdata = self.buildVPCs(regionname, regionvalues)
          regiondata[regionname] = vpcdata
 
@@ -122,7 +122,7 @@ class Build:
             height = points['iconHeight']
 
             routername = vpcname + '-router'
-            routernode = self.shapes.buildRouter(routername, vpcname, routername, '', points['firstIconX'], points['firstIconY'], width, height)
+            routernode = self.shapes.buildRouter(routername, vpcid, 'Router', '', points['firstIconX'], points['firstIconY'], width, height)
             nodes.append(routernode)
 
             routerlink = self.shapes.buildDoubleArrow('', routername, names['internetName'])
@@ -143,7 +143,7 @@ class Build:
             x = points['groupSpace']
             y = points['topSpace']
 
-            vpcnode = self.shapes.buildVPC(vpcname, regionname, vpcname, '', x, y, width, height) 
+            vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height) 
             nodes.append(vpcnode)
 
             x = 30
@@ -155,10 +155,10 @@ class Build:
             regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height)
             nodes.append(regionnode)
          
-            #SAVE lbnodes, lblinks = genloadbalancers(user, vpcname, vpcid)
-            #SAVE if len(lbnodes) > 0:
-            #SAVE    nodes = nodes + lbnodes
-            #SAVE    links = links + lblinks
+            lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
+            if len(lbnodes) > 0:
+               nodes = nodes + lbnodes
+               links = links + lblinks
 
             #publicwidth = (groupspace * 2) + (48 * 3)
             #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
@@ -183,9 +183,9 @@ class Build:
 
       saveheight = 0
 
-      vpcsTable = self.data.getVPCsTable() 
+      vpcTable = self.data.getVPCTable() 
       count = 0
-      for regionzonename in vpcsTable[vpcid]:
+      for regionzonename in vpcTable[vpcid]:
          count = count + 1
 
          zonelink = self.shapes.buildLink(regionzonename + ':' + vpcname, regionzonename, vpcname)
@@ -217,7 +217,7 @@ class Build:
          zonename = regionzonename.split(':')[1]
          zonecidr = zoneCIDRs[zonename]
 
-         zonenode = self.shapes.buildZone(regionzonename, vpcname, regionzonename, zonecidr, x, y, width, height)
+         zonenode = self.shapes.buildZone(regionzonename, vpcid, regionzonename, zonecidr, x, y, width, height)
          nodes.append(zonenode)
          sizes.append([width, height])
 
@@ -234,11 +234,11 @@ class Build:
 
       saveheight = 0
 
-      zonesTable = self.data.getZonesTable()
+      zoneTable = self.data.getZoneTable()
       count = 0
       save_subnetpubgateid = None
 
-      for subnetid in zonesTable[zonename]:
+      for subnetid in zoneTable[zonename]:
          count = count + 1
          pubgateid = None
 
@@ -288,7 +288,7 @@ class Build:
          vpngateways = self.data.getVPNGateways()
          if not vpngateways.empty:
             vpngateframe = self.data.getVPNGateway(subnetid)
-            #if self.inputtype == 'rias': 
+            #if self.common.isInputRIAS():
             #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'subnet.id', subnetid)
             #else:
             #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'networkId', subnetid)
@@ -393,7 +393,7 @@ class Build:
       sizes = []
 
       #nicstable = self.setupdata['nics']
-      instances = self.data.getInstancesTable(subnetid)
+      instances = self.data.getInstanceTable(subnetid)
 
       count = 0
 
@@ -403,7 +403,7 @@ class Build:
 
          instancename = instanceframe['name']
          instanceid = instanceframe['id']
-         nics = self.data.getNICsTable(subnetid, instanceid)
+         nics = self.data.getNICTable(subnetid, instanceid)
 
          nicips = ''
          nicid = ''
@@ -469,7 +469,7 @@ class Build:
             extrawidth = width * 3
             extraheight = height * 2
             x = width + (extrawidth * (count - 1)) + (points['groupSpace'] * count)
-            y = self.common.getTopSpace()
+            y = points['topSpace']
          else:
             width = 240
             height = 152
@@ -553,84 +553,81 @@ class Build:
       nodes = []
       links = []
 
-      lbtable = self.inputdata['loadBalancers'] 
+      lbs = self.data.getLoadBalancers(vpcid)
+      if lbs != None:
+         for lbmembers in lbs:
+            for lbid, members in lbmembers.items():
+               lb = self.data.getLoadBalancer(lbid)
+               lbid = lb['id']
+               lbname = lb['name']
 
-      if len(lbtable) == 0:
-         return nodes, links
+               if lbname[0:4] == 'kube':
+                  # Kube LB not implemented for now.
+                  # self.common.printInvalidLoadBalancer(lbname)
+                  continue
 
-      for lbindex, lb in lbtable.iterrows():
-         lbid = lb['id']
-         lbname = lb['name']
+               if self.common.isInputRIAS():
+                  lbispublic = lb['is_public']
+                  lbprivateips = lb['private_ips']
+                  lbpublicips = lb['public_ips']
+               else:  # yaml
+                  lbispublic = lb['isPublic']
+                  lbprivateips = lb['privateIPs']
+                  lbpublicips = lb['publicIPs']
 
-         if lbname[0:4] == 'kube':
-            self.common.printInvalidLoadBalancer(lbname)
-            continue
+               if lbispublic == False:
+                  # TODO Implement private LB.
+                  #self.common.printInvalidPrivateLoadBalancer(lbname)
+                  continue
 
-         if self.inputtype == 'rias':
-            lbispublic = lb['is_public']
-            lbprivateips = lb['private_ips']
-            lbpublicips = lb['public_ips']
-         else:  # yaml
-            lbispublic = lb['isPublic']
-            lbprivateips = lb['privateIPs']
-            lbpublicips = lb['publicIPs']
-
-         if lbispublic == False:
-            self.common.printInvalidPrivateLoadBalancer(lbname)
-            continue
-
-         lbpubliciplist = ""
-         for lbpublicip in lbpublicips:
-            if self.inputtype == 'rias':
-               ip = lbpublicip['address']
-            else:
-               ip = lbpublicip
-            if lbpubliciplist == "":
-               lbpubliciplist = ip
-            else:
-               lbpubliciplist = lbpubliciplist + " " + ip
-
-         lbgenerated = False
-                
-         memberdata = findrow(user, self.inputdata['loadBalancerMembers'], 'id', lbid)
-         if len(memberdata) > 0:
-            membersall = memberdata['members']
-         else:
-            membersall = {}
-
-         for members in membersall:
-            for member in members:
-               if self.inputtype == 'rias':
-                  target = member['target']
-                  address = target['address']
-               else:
-                  instanceid = member['instanceId']
-                  instance = findrow(user, self.inputdata['instances'], 'id', instanceid)
-                  if len(instance) > 0:
-                     addressarray = instance['ipAddresses']
-                     address = addressarray[0]
+               lbpubliciplist = ""
+               for lbpublicip in lbpublicips:
+                  if self.common.isInputRIAS():
+                     ip = lbpublicip['address']
                   else:
-                     address = "0.0.0.0"
+                     ip = lbpublicip
+                  if lbpubliciplist == "":
+                     lbpubliciplist = ip
+                  else:
+                     lbpubliciplist = lbpubliciplist + " " + ip
 
-               nicdata = findrow(user, self.inputdata['networkInterfaces'], 'primary_ip.address', address)
-               if len(nicdata) != 0:
-                  nicinstanceid = nicdata['instance.id']
-                  instanceframe = findrow(user, self.inputdata['instances'], 'id', nicinstanceid)
-                  instancename = instanceframe['name']
-                  instancevpcid = instanceframe['vpc.id']
-
-                  if instancevpcid == vpcid: 
-                     if not lbgenerated:
-                        lbgenerated = True
-                        # TODO Handle spacing for > 1 LBs.
-                        lbnode = self.shapes.buildLoadBalancer(lbname, vpcname, lbpubliciplist, self.common.getSecondIconX(), self.common.getSecondIconY(), self.common.getIconWidth(), self.common.getIconHeight())
-                        nodes.append(lbnode)
-                        routername = vpcname + '-router'
-                        lblink = self.shapes.buildDoubleArrow('', lbname, routername)
-                        links.append(lblink)
+               lbgenerated = False
                 
-                     # label, source, target 
-                     instancelink = self.shapes.buildDoubleArrow('', instancename, lbname)
-                     links.append(instancelink)
+               #for lbid, members in lb.items():
+               for member in members:
+                  if self.common.isInputRIAS():
+                     # TODO Get instance id.
+                     target = member['target']
+                     address = target['address']
+                  else:
+                     instanceid = member['instanceId']
+                     instance = self.data.getInstance(instanceid)
+                     if len(instance) > 0:
+                        addressarray = instance['ipAddresses']
+                        address = addressarray[0]
+                     else:
+                        return nodes, links
+
+                  nicdata = self.data.getNetworkInterface(address, instanceid)
+                  if len(nicdata) != 0:
+                     nicid = nicdata['id']
+                     nicinstanceid = nicdata['instance.id']
+                     instanceframe = self.data.getInstance(nicinstanceid)
+                     instancename = instanceframe['name']
+                     instancevpcid = instanceframe['vpc.id']
+
+                     if instancevpcid == vpcid: 
+                        if not lbgenerated:
+                           lbgenerated = True
+                           # TODO Handle spacing for > 1 LBs.
+                           lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbpubliciplist, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
+                           nodes.append(lbnode)
+                           routername = vpcname + '-router'
+                           lblink = self.shapes.buildDoubleArrow('', lbid, routername)
+                           links.append(lblink)
+                
+                        # label, source, target
+                        instancelink = self.shapes.buildDoubleArrow('', nicid, lbid)
+                        links.append(instancelink)
 
       return nodes, links

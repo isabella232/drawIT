@@ -92,8 +92,7 @@ class Shapes:
       return node
 
    def buildLoadBalancer(self, id, parentid, name, subname, x, y, width, height):
-      shapename = 'Load Balancer'
-      node = self.types.buildNode('loadBalancer', self.common.compress(id), self.common.compress(parentid), shapename, name + '<br>' + subname, '', x, y, width, height) 
+      node = self.types.buildNode('loadBalancer', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height) 
       return node
 
    def buildPublicGateway(self, id, parentid, name, subname, x, y, width, height):
@@ -101,8 +100,7 @@ class Shapes:
       return node
 
    def buildRouter(self, id, parentid, name, subname, x, y, width, height):
-      shapename = 'VPC Router'
-      node = self.types.buildNode('router', self.common.compress(id), self.common.compress(parentid), shapename, name + '<br>' + subname, '', x, y, width, height) 
+      node = self.types.buildNode('router', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height) 
       return node
 
    def buildUser(self, id, parentid, name, subname, x, y, width, height):

@@ -18,11 +18,12 @@ from load.file import File
 from load.rias import RIAS
 
 class Load:
-   instancesTable = {} # Table of instances ordered by subnet that shows instances within each subnet.
-   nicsTable = {}      # Table of nics ordered by subnet+instance that shows nics for same instance in different subnets.
-   vpcsTable = {}      # Table of zones ordered by vpc that shows zones with each vpc.
-   regionsTable = {}   # Table of vpcs ordered by region that shows vpcs within each region.
-   zonesTable = {}     # Table of subnets ordered by vpc+zone that shows subnets within each zone.
+   instanceTable = {} # Table of instances ordered by subnet that shows instances within each subnet.
+   nicTable = {}      # Table of nics ordered by subnet+instance that shows nics for same instance in different subnets.
+   regionTable = {}   # Table of vpcs ordered by region that shows vpcs within each region.
+   vpcTable = {}      # Table of zones ordered by vpc that shows zones with each vpc.
+   zoneTable = {}     # Table of subnets ordered by vpc+zone that shows subnets within each zone.
+   lbTable = {}       # Table of load balancerbs ordered by vpc+lb that shows load balancers within each vpc.
 
    data = None
    common = None
@@ -43,18 +44,23 @@ class Load:
          self.data.loadJSON()
       else:
          self.data.loadYAML()
-      self.analyzeData()
+
+      self.analyzeInstances()
+      self.analyzeContainers()
+      self.analyzeLoadBalancers()
+
       return
 
-   def analyzeData(self):
-      # Create empty instancesTable.
+   def analyzeInstances(self):
       subnets = self.data.getSubnets()
+
+      # Create empty instanceTable.
       if not subnets.empty:
          for subnetindex, subnetframe in subnets.iterrows():
             subnetid = subnetframe['id']
-            self.instancesTable[subnetid] = []
+            self.instanceTable[subnetid] = []
 
-      # Add instances to instancesTable ordered by subnetid, nics to nicsTable ordered by subnetid+instanceid..
+      # Add instances to instanceTable ordered by subnetid, nics to nicTable ordered by subnetid+instanceid..
       instances = self.data.getInstances()
       if not instances.empty:
          for instanceindex, instanceframe in instances.iterrows():
@@ -73,21 +79,26 @@ class Load:
                   #nicid = nicframe['id']
                   nicsubnetid = nicframe['subnet']['id'] if self.common.isInputRIAS() else nicframe['networkId']
 
-                  if nicsubnetid in self.instancesTable:
+                  if nicsubnetid in self.instanceTable:
                      if addedInstance == False:
-                        self.instancesTable[nicsubnetid].append(instanceframe)
+                        self.instanceTable[nicsubnetid].append(instanceframe)
                         addedInstance = True
                   else:
                      self.common.printInvalidSubnet(nicsubnetid)
                      continue
 
                   dualid = nicsubnetid + ':' + instanceid
-                  if dualid in self.nicsTable:
-                     self.nicsTable[dualid].append(nicframe)
+                  if dualid in self.nicTable:
+                     self.nicTable[dualid].append(nicframe)
                   else:
-                     self.nicsTable[dualid] = [nicframe]
+                     self.nicTable[dualid] = [nicframe]
 
-      # Add subnets to zonesTable, zones to vpcsTable, and vpcs to regionsTable.
+      return
+
+   def analyzeContainers(self):
+      subnets = self.data.getSubnets()
+
+      # Add subnets to zoneTable, zones to vpcTable, and vpcs to regionTable.
       for subnetindex, subnetframe in subnets.iterrows():
          subnetname = subnetframe['name']
          subnetid = subnetframe['id']
@@ -102,52 +113,117 @@ class Load:
          subnetvpcid = subnetframe['vpc.id']
          subnetvpcname = subnetframe['vpc.name']
 
-         # Add subnets to zonesTable ordered by vpcid+zonename.
+         # Add subnets to zoneTable ordered by vpcid+zonename.
          zonekey = subnetvpcid + ':' + subnetzonename
-         if zonekey in self.zonesTable:
-            if subnetid not in self.zonesTable[zonekey]:
-               self.zonesTable[zonekey].append(subnetid)
+         if zonekey in self.zoneTable:
+            if subnetid not in self.zoneTable[zonekey]:
+               self.zoneTable[zonekey].append(subnetid)
          else:
-            self.zonesTable[zonekey] = [subnetid]
+            self.zoneTable[zonekey] = [subnetid]
 
-         # Add zones to vpcsTable ordered by vpcid.
+         # Add zones to vpcTable ordered by vpcid.
          #zonekey = subnetvpcid +  subnetzonename
-         if subnetvpcid in self.vpcsTable:
-            if zonekey not in self.vpcsTable[subnetvpcid]:
-               self.vpcsTable[subnetvpcid].append(zonekey)
+         if subnetvpcid in self.vpcTable:
+            if zonekey not in self.vpcTable[subnetvpcid]:
+               self.vpcTable[subnetvpcid].append(zonekey)
          else:
-            self.vpcsTable[subnetvpcid] = [zonekey]
+            self.vpcTable[subnetvpcid] = [zonekey]
 
-         # Add vpcs to regionsTable ordered by region.
-         if subnetregion in self.regionsTable:
-            if subnetvpcid not in self.regionsTable[subnetregion]:
-               self.regionsTable[subnetregion].append(subnetvpcid)
+         # Add vpcs to regionTable ordered by region.
+         if subnetregion in self.regionTable:
+            if subnetvpcid not in self.regionTable[subnetregion]:
+               self.regionTable[subnetregion].append(subnetvpcid)
          else:
-            self.regionsTable[subnetregion] = [subnetvpcid]
+            self.regionTable[subnetregion] = [subnetvpcid]
 
       return
 
-   def findRow(self, user, dictionarylist, columnname, columnvalue):
+   def analyzeLoadBalancers(self):
+      listenerdata = []
+      pooldata = []
+      memberdata = []
+
+      lbdata = self.data.getLoadBalancers()
+      if not lbdata.empty:
+         for lbindex, lb in lbdata.iterrows():
+            lbid = lb['id']
+            lbname = lb['name']
+            lblisteners = lb['listeners']
+            lbpools = lb['pools']
+
+            if lbname[0:4] == 'kube':
+               continue
+
+            vpcid = None
+
+            if lbpools:
+               for lbpool in lbpools:
+                  lbpoolid = lbpool['id']
+                  lbpoolname = lbpool['name']
+
+                  extended = lbpool
+                  extended['lbid'] = lbid
+                  pooldata.append(extended)
+
+                  lbpoolid = extended['lbid']
+
+                  poolmemberdata = []
+
+                  lbmembers = lbpool['members']
+                  if lbmembers:
+                     for lbmember in lbmembers:
+                        if lbmember:
+                           if lbmember['health'] == 'ok':
+                              poolmemberdata.append(lbmember)
+
+                              if vpcid == None:
+                                 instanceId = lbmember['instanceId']
+                                 if instanceId != None:
+                                    instance = self.getInstance(instanceId)
+                                    vpcid = instance['vpcId']
+
+                  if poolmemberdata and vpcid != None:
+                     #extended = {vpcid: {lbid: [ poolmemberdata ] }}
+                     extended = {lbid: poolmemberdata }
+                     #memberdata.append(extended)
+                     if vpcid in self.lbTable:
+                        self.lbTable[vpcid].append(extended)
+                     else:
+                        self.lbTable[vpcid] = [extended]
+
+      return
+
+   def findRow(self, dictionarylist, columnname, columnvalue):
       if len(dictionarylist) > 0:
          for dictionaryindex, dictionary in dictionarylist.iterrows():
             if dictionary[columnname] == columnvalue:
                return dictionary
       return {}
 
-   def getInstancesTable(self, subnetid):
-      return self.instancesTable[subnetid]
+   def findRow2(self, dictionarylist, columnname1, columnvalue1, columnname2, columnvalue2):
+      if len(dictionarylist) > 0:
+         for dictionaryindex, dictionary in dictionarylist.iterrows():
+            if dictionary[columnname1] == columnvalue1 and dictionary[columnname2] == columnvalue2:
+               return dictionary
+      return {}
 
-   def getNICsTable(self, subnetid, instanceid):
-       return self.nicsTable[subnetid + ':' + instanceid]
+   def getInstanceTable(self, subnetid):
+      return self.instanceTable[subnetid]
 
-   def getVPCsTable(self):
-      return self.vpcsTable
+   def getLoadBalancerTable(self):
+      return self.lbTable
 
-   def getRegionsTable(self):
-      return self.regionsTable
+   def getNICTable(self, subnetid, instanceid):
+      return self.nicTable[subnetid + ':' + instanceid]
 
-   def getZonesTable(self):
-      return self.zonesTable
+   def getRegionTable(self):
+      return self.regionTable
+
+   def getVPCTable(self):
+      return self.vpcTable
+
+   def getZoneTable(self):
+      return self.zoneTable
 
    def getFloatingIPs(self):
       return self.data.getFloatingIPs()
@@ -163,6 +239,12 @@ class Load:
 
    def getLoadBalancers(self):
       return self.data.getLoadBalancers()
+
+   def getLoadBalancers(self, vpcid):
+      if vpcid in self.lbTable:
+         return self.lbTable[vpcid]
+      else:
+         return None
 
    def getLoadBalancerListeners(self):
       return self.data.getLoadBalancerListeners()
@@ -198,22 +280,31 @@ class Load:
       return self.data.getVPNConnections()
 
    def getInstance(self, id):
-      return self.findRow(self.common, self.data.getInstances(), 'id', id)
+      return self.findRow(self.data.getInstances(), 'id', id)
+
+   def getNetworkInterface(self, id1, id2):
+      return self.findRow2( self.data.getNetworkInterfaces(), 'primary_ip.address', id1, 'instance.id', id2)
+
+   def getLoadBalancer(self, id):
+      return self.findRow(self.data.getLoadBalancers(), 'id', id)
+
+   def getLoadBalancerMember(self, id):
+      return self.findRow(self.data.getLoadBalancerMembers(), 'id', id)
 
    def getSubnet(self, id):
-      return self.findRow(self.common, self.data.getSubnets(), 'id', id)
+      return self.findRow(self.data.getSubnets(), 'id', id)
 
    def getVPC(self, id):
-      return self.findRow(self.common, self.data.getVPCs(), 'id', id)
+      return self.findRow(self.data.getVPCs(), 'id', id)
 
    def getFloatingIP(self, id):
-      return self.findRow(self.common, self.data.getFloatingIPs(), 'target.id', id)
+      return self.findRow(self.data.getFloatingIPs(), 'target.id', id)
 
    def getPublicGateway(self, id):
-      return self.findRow(self.common, self.data.getPublicGateways(), 'id', id)
+      return self.findRow(self.data.getPublicGateways(), 'id', id)
 
    def getVPNGateway(self, id):
       if self.common.isInputRIAS():
-         return self.findRow(self.common, self.data.getVPNGateways(), 'subnet.id', id)
+         return self.findRow(self.data.getVPNGateways(), 'subnet.id', id)
       else:
-         return self.findRow(self.common, self.data.getVPNGateways(), 'networkId', id)
+         return self.findRow(self.data.getVPNGateways(), 'networkId', id)

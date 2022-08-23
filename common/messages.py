@@ -42,8 +42,8 @@ class Messages:
    invalidInstanceReferenceMessage = '(Error) Invalid Instance reference: %s'
    invalidSubnetReferenceMessage = '(Error) Invalid Subnet reference: %s'
    invalidVPCreferenceMessage = '(Error) Invalid VPC reference: %s'
-   invalidLBReferenceMessage = '(Error) Invalid LB reference: %s'
-   invalidLPPrivateMessage = '(Warning) Private LB not implemented: %s'
+   invalidLBReferenceMessage = '(Error) Invalid Load Balancer reference: %s'
+   invalidLBPrivateMessage = '(Warning) Private Load Balancer not implemented: %s'
    missingInputMessage = '(Error) No input files found: %s'
    missingImageMessage = '(Error) Image %s not found'
    missingRegionMessage = '(Error) Region %s not found'
@@ -117,7 +117,7 @@ class Messages:
       self.printError(self.invalidMessage % (self.missingSubnets, *args))
 
    def printInvalidLoadBalancer(self, lbname):
-      self.printError(self.invalidLBReference % lbname)
+      self.printError(self.invalidLBReferenceMessage % lbname)
 
    def printInvalidPrivateLoadBalancer(self, lbname):
       self.printError(self.invalidLBPrivateMessage % lbname)

@@ -187,11 +187,33 @@ points = {
 
    'leftSpace': 0,
 
+   # Public network icon locations:
+   #    First x,y is User icon.
+   #    Second x,y is Internet icon.
+
+   # Enterprse network icon locations:
+   #    First x,y is User icon.
+
+   # VPC icon locations:
+   #    First x,y is Router icon.
+   #    Second x,y is ALB icon.
+
+   # Zone icon locations:
+   #    First x,y is Public Gateway icon.
+   #    Second x,y is VPN Gateway icon.
+   #    Third x,y is NLB icon.
+
    'firstIconX': 0,
    'firstIconY': 0,
 
    'secondIconX': 0,
    'secondIconY': 0,
+
+   'thirdIconX': 0,
+   'thirdIconY': 0,
+
+   'fourthIconX': 0,
+   'fourthIconY': 0,
 
    'publicIconCount': 2,
    'publicNetworkWidth': 0,
@@ -203,11 +225,18 @@ points = {
 }
 
 points['leftSpace'] = points['iconSpace'] * 3
+
 points['firstIconX'] = points['iconSpace']
 points['firstIconY'] = points['topSpace']
 
 points['secondIconX'] = points['iconSpace']
 points['secondIconY'] = points['firstIconY'] + points['iconHeight'] + points['iconSpace']
+
+points['thirdIconX'] = points['iconSpace']
+points['thirdIconY'] = points['secondIconY'] + points['iconHeight'] + points['iconSpace']
+
+points['fourthIconX'] = points['iconSpace']
+points['fourthIconY'] = points['thirdIconY'] + points['iconHeight'] + points['iconSpace']
 
 points['publicNetworkWidth'] = points['iconSpace'] * 3
 points['publicNetworkHeight'] = points['topSpace'] + (points['iconSpace'] * points['publicIconCount']) + (points['iconHeight'] * points['publicIconCount'])

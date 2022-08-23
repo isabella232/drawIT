@@ -16,7 +16,7 @@
 from json import loads as json_load
 from yaml import load as yaml_load
 from yaml import FullLoader as yaml_FullLoader
-from pandas import json_normalize
+from pandas import json_normalize, DataFrame
 
 from common.common import Common
 
@@ -24,7 +24,7 @@ class File:
    floatingIPs = {}
    instances = {}
    keys = {}
-   networkInterfaces = {}
+   networkInterfaces = {} # Used to match NICs referenced in LB members.
    loadBalancers = {}
    loadBalancerListeners = {}
    loadBalancerPools = {}
@@ -38,12 +38,9 @@ class File:
    vpnGateways = {}
    vpnConnections = {}
    data = {}
-   types = []
    common = None
 
    def __init__(self, common):
-      #self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
-      self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips']
       self.common = common
       return
 
@@ -81,7 +78,7 @@ class File:
       self.vpcs = json_normalize(self.data['vpcs'] if ('vpcs' in self.data) else json_normalize({}))
       self.subnets = json_normalize(self.data['subnets'] if ('subnets' in self.data) else json_normalize({}))
       self.instances = json_normalize(self.data['instances'] if ('instances' in self.data) else json_normalize({}))
-      #self.networkInterfaces = json_normalize(self.data['networkInterfaces'] if ('networkInterfaces' in self.data) else json_normalize({}))
+      self.networkInterfaces = json_normalize(self.data['networkInterfaces'] if ('networkInterfaces' in self.data) else json_normalize({}))
       self.publicGateways = json_normalize(self.data['publicGateways'] if ('publicGateways' in self.data) else json_normalize({}))
       self.floatingIPs = json_normalize(self.data['floatingIPs'] if ('floatingIPs' in self.data) else json_normalize({}))
       self.vpnGateways = json_normalize(self.data['vpnGateways'] if ('vpnGateways' in self.data) else json_normalize({}))
@@ -94,93 +91,6 @@ class File:
       self.networkACLs = json_normalize(self.data['networkACLs'] if ('networkACLs' in self.data) else json_normalize({}))
       self.securityGroups = json_normalize(self.data['securityGroups'] if ('securityGroups' in self.data) else json_normalize({}))
       self.keys = json_normalize(self.data['keys'] if ('keys' in self.data) else json_normalize({}))
-
-      listenerdata = []
-      pooldata = []
-      memberdata = []
-
-      if not self.loadBalancers.empty:
-         lbdata = self.loadBalancers
-         for lbindex, lb in lbdata.iterrows():
-            lbid = lb['id']
-            lbname = lb['name']
-            lblisteners = lb['listeners']
-            lbpools = lb['pools']
-
-            if lbpools:
-               for lbpool in lbpools:
-                  lbpoolid = lbpool['id']
-                  lbpoolname = lbpool['name']
-
-                  extended = lbpool
-                  extended['lbid'] = lbid
-                  pooldata.append(extended)
-
-                  lbpoolid = extended['lbid']
-
-                  poolmemberdata = []
-
-                  lbmembers = lbpool['members']
-                  if lbmembers:
-                     for lbmember in lbmembers:
-                        if lbmember:
-                           if lbmember['health'] == 'ok':
-                              #print(lbmember)
-                              #extended = {'id': lbid, "members": [ lbmember ]}
-                              poolmemberdata.append(lbmember)
-  
-                              #for lbmember in lbmemberarray:
-
-                              # vpcs.rename(
-                              # columns={'is_public': 'isPublic'}, inplace=True)
-  
-                              #lbmemberid = lbmember['id']
- 
-                              #print(lbmemberarray)
-                              #extended = lbmember
-                              #extended['id'] = lbid
-                              #extended['lbpoolid'] = lbpoolid
-                              #memberdata.append(extended)
-
-                  if poolmemberdata:
-                     extended = {'id': lbid, "members": [ poolmemberdata ] }
-                     memberdata.append(extended)
-
-                  #if len(lbmembers) > 0 and lbmembers[0] != None:
-                  #   # TODO: Remove 0
-                  #   lbmembers = [ lbmembers[0] ]
-                  #   #print(lbmembers)
-                  #   #print(lbmembers)
-                  #   extended['id'] = lbid
-                  #   #extended['poolid'] = lbpoolid
-                  #   memberdata.append(extended)
-
-                  #   #for lbmemberarray in lbmembers:
-                  #   #   if lbmemberarray:
-                  #   #      for lbmember in lbmemberarray:
-                  #   #         normalizedmember = json_normalize(lbmember)
-
-                  #   #         vpcs.rename(
-                  #   #            columns={'is_public': 'isPublic'}, inplace=True)
-
-                  #   #         lbmemberid = normalizedmember['id']
-
-                  #   #         extended = normalizedmember
-                  #   #         extended['lbid'] = lbid
-                  #   #         extended['lbpoolid'] = lbpoolid
-                  #   #         memberdata.append(extended)
-
-            if lblisteners:
-               for lblistener in lblisteners:
-                  lblistenerid = lblistener['id']
-
-                  extended = lblistener
-                  extended['lbid'] = lbid
-                  listenerdata.append(extended)
-
-      loadBalancerListeners =  json_normalize(listenerdata)
-      loadBalancerPools =  json_normalize(pooldata)
-      loadBalancerMembers =  json_normalize(memberdata)
 
       if not self.vpcs.empty:
          self.vpcs.rename(
@@ -203,22 +113,11 @@ class File:
                      'profile': 'profile.name',
                      'osVersion': 'image.name'}, inplace=True)
 
-
-      #networkInterfaces = instances['networkInterfaces']
-      #nicframe = pd.DataFrame.from_dict(networkInterfaces)
-      #if not nicframe.empty:
-      #   nicframe.rename(
-      #      columns={'ip': 'primary_ip.address',
-      #               'networkId': 'subnet.id',
-      #               'instanceId': 'instance.id'}, inplace=True)
-      #instances['networkInterfaces'] = nicframe
-
-      #if not networkInterfaces.empty:
-      #   networkInterfaces.rename(
-      #      #columns={'ip': 'primary_ipv4_address',
-      #      columns={'ip': 'primary_ip.address',
-      #               'networkId': 'subnet.id',
-      #               'instanceId': 'instance.id'}, inplace=True)
+      if not self.networkInterfaces.empty:
+         self.networkInterfaces.rename(
+            columns={'ip': 'primary_ip.address',
+                     'networkId': 'subnet.id',
+                     'instanceId': 'instance.id'}, inplace=True)
 
       if not self.vpnGateways.empty:
          self.vpnGateways.rename(
@@ -273,24 +172,3 @@ class File:
 
    def getVPNConnections(self):
       return self.vpnConnections
-
-   def getInstance(self, id):
-      return findrow(self.common, self.inputInstances, 'id', id)
-
-   def getSubnet(self, id):
-      return findrow(self.common, self.inputSubnets, 'id', id)
-
-   def getVPC(self, id):
-      return findrow(self.common, self.inputVPCs, 'id', id)
-
-   def getFloatingIP(self, id):
-      return findrow(self.common, self.inputFloatingIPs, 'target.id', id)
-
-   def getPublicGateway(self, id):
-      return findrow(self.common, self.InputPublicGateways(), 'id', id)
-
-   def getVPNGateway(self, id):
-      if self.user.isInputRIAS() == 'rias':
-         return findrow(self.common, self.inputVPNGateways, 'subnet.id', id)
-      else:
-         return findrow(self.common, self.inputVPNGateways, 'networkId', id)
