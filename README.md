@@ -1,9 +1,9 @@
 # drawIT
-Automate IBM IT architecture diagrams.
+Automatically create IT architecture diagrams from diagrams-as-code to diagrams.net.
 
 ## Overview
 
-drawIT accepts input from JSON, YAML, or RIAS, and generates diagrams that can be viewed in IBM2 on diagrams.net.
+drawIT accepts input from JSON, YAML, or RIAS, and creates diagrams that can be viewed in IBM2 on diagrams.net.
 
 ## Running drawIT
 
