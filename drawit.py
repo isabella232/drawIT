@@ -315,14 +315,13 @@ class drawit:
                     elif inputtype == 'json':
                         self.common.setInputJSON()
                     else:
-                        printerror(invalidinputfilemessage % args.inputfile)
+                        self.common.printInvalidFile(args.inputfile)
                         return
                     outputfile = inputbase + '.' + outputtype
                     self.common.setOutputFile(outputfile)
                     self.common.printStartFile(inputfile)
                 else:
-                    #printerror(invalidmodemessage % args.runmode)
-                    printmessage(errormessage % 'No RIAS, JSON, or YAML')
+                    self.common.printInvalidInput()
                     return
 
                 self.data = Load(self.common)
@@ -533,7 +532,6 @@ class drawit:
                     frame.after_idle(onClickGenerate)                   
 
                     outputdetail = str(eOutputDetail.get()).lower()
-                    print(outputdetail)
                     if outputdetail == "low":
                        self.common.setLowDetail()
                     elif outputdetail == "medium":
@@ -613,14 +611,13 @@ class drawit:
                         elif inputtype == 'json':
                             self.common.setInputJSON()
                         else:
-                           printerror(invalidinputfilemessage % args.inputfile)
-                           return
+                           self.common.printInvalidFile(inputfile)
+                           sys_exit()
                         outputfile = inputbase + '.' + outputtype
                         self.common.setOutputFile(outputfile)
                         self.common.printStartFile(inputfile)
                     else:
-                        #printerror(invalidmodemessage % args.runmode)
-                        printmessage(errormessage % 'No RIAS, JSON, or YAML')
+                        self.common.printInvalidInput()
                         sys_exit()
 
                     self.data = Load(self.common)
@@ -660,7 +657,7 @@ class drawit:
             elif inputtype == 'json':
                 self.common.setInputJSON()
             else:
-                printerror(invalidinputfilemessage % inputfile)
+                self.common.printInvalidFile(args.inputfile)
                 return
             outputtype = 'xml'
             outputfile = inputbase + '.' + outputtype
@@ -672,7 +669,7 @@ class drawit:
             self.diagrams.buildDiagrams()
             
         else:
-            printerror(invalidmodemessage % args.runmode)
+            self.common.printInvalidMode(args.runmode)
 
 #main()
 

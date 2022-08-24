@@ -31,6 +31,7 @@ class Messages:
    invalidResponseMessage = '(Error) %s: %s'
    invalidModeMessage = '(Error) Invalid run mode: %s'
    invalidInputDirectoryMessage = '(Error) Invalid input directory: %s'
+   invalidInputMessage = '(Error) Invalid input: No RIAS, JSON, or YAML'
    invalidInputFileMessage = '(Error) Invalid input file: %s'
    invalidOutputTypeMessage = '(Error) Invalid output type: %s'
    invalidProtocolMessage = '(Error) Invalid protocol: %s'
@@ -115,6 +116,18 @@ class Messages:
 
    def printMissingSubnets(self, *args):
       self.printError(self.invalidMessage % (self.missingSubnets, *args))
+
+   def printInvalidMode(self, mode):
+      self.printError(self.invalidModeMessage % mode)
+
+   def printInvalidInput(self):
+      self.printError(self.invalidInputMessage)
+
+   def printInvalidFile(self, filename):
+      self.printError(self.invalidInputFileMessage % filename)
+
+   def printInvalidInstance(self, instanceid):
+      self.printError(self.invalidInstanceReferenceMessage % instanceid)
 
    def printInvalidLoadBalancer(self, lbname):
       self.printError(self.invalidLBReferenceMessage % lbname)

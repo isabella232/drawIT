@@ -272,6 +272,18 @@ class Common:
    def printMissingZone(self, subnetname):
       self.messages.printMissingZone(subnetname)
 
+   def printInvalidMode(self, mode):
+      self.messages.printInvalidMode(mode)
+
+   def printInvalidInput(self):
+      self.messages.printInvalidInput()
+
+   def printInvalidFile(self, inputfile):
+      self.messages.printInvalidFile(inputfile)
+
+   def printInvalidInstance(self, instanceid):
+      self.messages.printInvalidInstance(instanceid)
+
    def printInvalidLoadBalancer(self, lbname):
       self.messages.printInvalidLoadBalancer(lbname)
 

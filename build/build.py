@@ -439,7 +439,7 @@ class Build:
          #old instanceframe = findrow(user, self.inputdata['instances'], 'id', nicinstanceid)
          #instanceframe = self.data.getInstance(nicinstanceid)
          #if len(instanceframe) == 0:
-         #   printerror(invalidinstancereferencemessage % nicinstanceid)
+         #   self.common.printInvalidInstance(nicinstanceid)
          #   continue
 
          instancename = instanceframe['name']
