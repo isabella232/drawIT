@@ -60,7 +60,7 @@ class Load:
             subnetid = subnetframe['id']
             self.instanceTable[subnetid] = []
 
-      # Add instances to instanceTable ordered by subnetid, nics to nicTable ordered by subnetid+instanceid..
+      # Add instances to instanceTable ordered by subnetid, nics to nicTable ordered by subnetid+instanceid.
       instances = self.data.getInstances()
       if not instances.empty:
          for instanceindex, instanceframe in instances.iterrows():
@@ -148,7 +148,7 @@ class Load:
          for lbindex, lb in lbdata.iterrows():
             lbid = lb['id']
             lbname = lb['name']
-            lblisteners = lb['listeners']
+            #lblisteners = lb['listeners']
             lbpools = lb['pools']
 
             if lbname[0:4] == 'kube':

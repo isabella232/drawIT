@@ -37,10 +37,12 @@ class File:
    vpcs = {}
    vpnGateways = {}
    vpnConnections = {}
+   types = []
    data = {}
    common = None
 
    def __init__(self, common):
+      self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
       self.common = common
       return
 
