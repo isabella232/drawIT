@@ -366,13 +366,17 @@ class Build:
                links.append(publiclink1)
 
          if vpngateip != None:
-            vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
+             # TODO Handle >1 VPN gateways.
+            #vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'])
+            vpngatenode = self.shapes.buildVPNGateway(vpngatename, subnetvpcid, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'])
             nodes.append(vpngatenode)
                 
             routername = vpcname + '-router'
             # This link can be assumed since everything inside zone is accesible by the VPN.
             #vpnlink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
             #links.append(vpnlink1)
+            vpnlink1 = self.shapes.buildDoubleArrow('', regionzonename, vpngatename)
+            links.append(vpnlink1)
             vpnlink2 = self.shapes.buildDoubleArrow('', vpngatename, routername)
             links.append(vpnlink2)
 

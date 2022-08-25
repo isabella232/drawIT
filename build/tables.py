@@ -197,11 +197,11 @@ points = {
    # VPC icon locations:
    #    First x,y is Router icon.
    #    Second x,y is ALB icon.
+   #    Third x,y is VPN Gateway icon.
 
    # Zone icon locations:
    #    First x,y is Public Gateway icon.
-   #    Second x,y is VPN Gateway icon.
-   #    Third x,y is NLB icon.
+   #    Second x,y is NLB icon.
 
    'firstIconX': 0,
    'firstIconY': 0,
