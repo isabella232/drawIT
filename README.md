@@ -57,10 +57,10 @@ Using GUI:
 - Region
 - Availability Zone
   - Public Gateway
-  - VPN Gateway
+  - VPN Gateway (JSON/YAML)
 - VPC
   - Implicit Router
-  - Public ALB
+  - Public ALB (JSON/YAML)
 - Subnet
   - Instances
   - Floating IP
