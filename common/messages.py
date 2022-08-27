@@ -42,7 +42,7 @@ class Messages:
    invalidFIPReferenceMessage = '(Error) Invalid FIP reference: %s'
    invalidInstanceReferenceMessage = '(Error) Invalid Instance reference: %s'
    invalidSubnetReferenceMessage = '(Error) Invalid Subnet reference: %s'
-   invalidVPCreferenceMessage = '(Error) Invalid VPC reference: %s'
+   invalidVPCReferenceMessage = '(Error) Invalid VPC reference: %s'
    invalidLBReferenceMessage = '(Error) Invalid Load Balancer reference: %s'
    invalidLBPrivateMessage = '(Warning) Private Load Balancer not implemented: %s'
    missingInputMessage = '(Error) No input files found: %s'
