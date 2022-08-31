@@ -579,21 +579,34 @@ class Build:
                   lbprivateips = lb['privateIPs']
                   lbpublicips = lb['publicIPs']
 
-               if lbispublic == False:
-                  # TODO Implement private LB.
-                  #self.common.printInvalidPrivateLoadBalancer(lbname)
-                  continue
+               #if lbispublic == False:
+               #   #self.common.printInvalidPrivateLoadBalancer(lbname)
+               #   continue
 
-               lbpubliciplist = ""
-               for lbpublicip in lbpublicips:
-                  if self.common.isInputRIAS():
-                     ip = lbpublicip['address']
-                  else:
-                     ip = lbpublicip
-                  if lbpubliciplist == "":
-                     lbpubliciplist = ip
-                  else:
-                     lbpubliciplist = lbpubliciplist + "<br>" + ip
+               lbiplist = ""
+               if lbispublic == False:
+                  print(vpcname + ":")
+                  print("lb is private")
+                  for lbprivateip in lbprivateips:
+                     if self.common.isInputRIAS():
+                        ip = lbprivateip['address']
+                     else:
+                        ip = lbprivateip
+                     if lbiplist == "":
+                        lbiplist = ip
+                     else:
+                        lbiplist = lbiplist + "<br>" + ip
+                  print(lbiplist)
+               else:
+                  for lbpublicip in lbpublicips:
+                     if self.common.isInputRIAS():
+                        ip = lbpublicip['address']
+                     else:
+                        ip = lbpublicip
+                     if lbiplist == "":
+                        lbiplist = ip
+                     else:
+                        lbiplist = lbiplist + "<br>" + ip
 
                lbgenerated = False
                 
@@ -624,7 +637,7 @@ class Build:
                         if not lbgenerated:
                            lbgenerated = True
                            # TODO Handle spacing for > 1 LBs.
-                           lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbpubliciplist, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
+                           lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
                            nodes.append(lbnode)
                            routername = vpcname + '-router'
                            lblink = self.shapes.buildDoubleArrow('', lbid, routername)
