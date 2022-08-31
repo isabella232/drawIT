@@ -60,7 +60,8 @@ Using GUI:
   - VPN Gateway (JSON/YAML)
 - VPC
   - Implicit Router
-  - Public ALB (JSON/YAML)
+  - Private & Public ALB (JSON/YAML)
+  - Private & Public NLB (JSON/YAML)
 - Subnet
   - Instances
   - Floating IP
