@@ -431,7 +431,7 @@ class Build:
             if nicips == '':
                nicips = nicip
             else:
-              nicips = nicips + ', ' + nicip
+              nicips = nicips + '<br>' + nicip
             nicid = nicframe['id']
             #fipframe = findrow(user, self.inputdata['floatingIPs'], 'target.id', nicid)
             fipframe = self.data.getFloatingIP(nicid)
@@ -593,7 +593,7 @@ class Build:
                   if lbpubliciplist == "":
                      lbpubliciplist = ip
                   else:
-                     lbpubliciplist = lbpubliciplist + " " + ip
+                     lbpubliciplist = lbpubliciplist + "<br>" + ip
 
                lbgenerated = False
                 
