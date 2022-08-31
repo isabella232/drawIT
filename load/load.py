@@ -184,7 +184,7 @@ class Load:
 
                   if poolmemberdata and vpcid != None:
                      #extended = {vpcid: {lbid: [ poolmemberdata ] }}
-                     extended = {lbid: poolmemberdata }
+                     extended = {lbid: { lbpoolid: poolmemberdata }}
                      #memberdata.append(extended)
                      if vpcid in self.lbTable:
                         self.lbTable[vpcid].append(extended)

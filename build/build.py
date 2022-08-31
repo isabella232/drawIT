@@ -559,92 +559,87 @@ class Build:
 
       lbs = self.data.getLoadBalancers(vpcid)
       if lbs != None:
-         for lbmembers in lbs:
-            for lbid, members in lbmembers.items():
-               lb = self.data.getLoadBalancer(lbid)
-               lbid = lb['id']
-               lbname = lb['name']
+         for lbpool in lbs:
+            #for lbmembers in lbs:
+            for lbkey in lbpool:
+               #for lbid, members in lbmembers.items():
+               for lbid, members in lbpool[lbkey].items():
+                  lb = self.data.getLoadBalancer(lbid)
+                  lbid = lb['id']
+                  lbname = lb['name']
 
-               if lbname[0:4] == 'kube':
-                  # Kube LB not implemented for now.
-                  # self.common.printInvalidLoadBalancer(lbname)
-                  continue
+                  if lbname[0:4] == 'kube':
+                     # Kube LB not implemented for now.
+                     # self.common.printInvalidLoadBalancer(lbname)
+                     continue
 
-               if self.common.isInputRIAS():
-                  lbispublic = lb['is_public']
-                  lbprivateips = lb['private_ips']
-                  lbpublicips = lb['public_ips']
-               else:  # yaml
-                  lbispublic = lb['isPublic']
-                  lbprivateips = lb['privateIPs']
-                  lbpublicips = lb['publicIPs']
-
-               #if lbispublic == False:
-               #   #self.common.printInvalidPrivateLoadBalancer(lbname)
-               #   continue
-
-               lbiplist = ""
-               if lbispublic == False:
-                  print(vpcname + ":")
-                  print("lb is private")
-                  for lbprivateip in lbprivateips:
-                     if self.common.isInputRIAS():
-                        ip = lbprivateip['address']
-                     else:
-                        ip = lbprivateip
-                     if lbiplist == "":
-                        lbiplist = ip
-                     else:
-                        lbiplist = lbiplist + "<br>" + ip
-                  print(lbiplist)
-               else:
-                  for lbpublicip in lbpublicips:
-                     if self.common.isInputRIAS():
-                        ip = lbpublicip['address']
-                     else:
-                        ip = lbpublicip
-                     if lbiplist == "":
-                        lbiplist = ip
-                     else:
-                        lbiplist = lbiplist + "<br>" + ip
-
-               lbgenerated = False
-                
-               #for lbid, members in lb.items():
-               for member in members:
                   if self.common.isInputRIAS():
-                     # TODO Get instance id.
-                     target = member['target']
-                     address = target['address']
+                     lbispublic = lb['is_public']
+                     lbprivateips = lb['private_ips']
+                     lbpublicips = lb['public_ips']
+                  else:  # yaml
+                     lbispublic = lb['isPublic']
+                     lbprivateips = lb['privateIPs']
+                     lbpublicips = lb['publicIPs']
+ 
+                  lbiplist = ""
+                  if lbispublic == False:
+                     for lbprivateip in lbprivateips:
+                        if self.common.isInputRIAS():
+                           ip = lbprivateip['address']
+                        else:
+                           ip = lbprivateip
+                        if lbiplist == "":
+                           lbiplist = ip
+                        else:
+                           lbiplist = lbiplist + "<br>" + ip
                   else:
-                     instanceid = member['instanceId']
-                     instance = self.data.getInstance(instanceid)
-                     if len(instance) > 0:
-                        addressarray = instance['ipAddresses']
-                        address = addressarray[0]
+                     for lbpublicip in lbpublicips:
+                        if self.common.isInputRIAS():
+                           ip = lbpublicip['address']
+                        else:
+                           ip = lbpublicip
+                        if lbiplist == "":
+                           lbiplist = ip
+                        else:
+                           lbiplist = lbiplist + "<br>" + ip
+
+                  lbgenerated = False
+               
+                  for member in members:
+                     if self.common.isInputRIAS():
+                        # TODO Get instance id.
+                        target = member['target']
+                        address = target['address']
                      else:
-                        return nodes, links
+                        instanceid = member['instanceId']
+                        instance = self.data.getInstance(instanceid)
+                        if len(instance) > 0:
+                           addressarray = instance['ipAddresses']
+                           address = addressarray[0]
+                        else:
+                           return nodes, links
 
-                  nicdata = self.data.getNetworkInterface(address, instanceid)
-                  if len(nicdata) != 0:
-                     nicid = nicdata['id']
-                     nicinstanceid = nicdata['instance.id']
-                     instanceframe = self.data.getInstance(nicinstanceid)
-                     instancename = instanceframe['name']
-                     instancevpcid = instanceframe['vpc.id']
+                     nicdata = self.data.getNetworkInterface(address, instanceid)
+                     if len(nicdata) != 0:
+                        nicid = nicdata['id']
+                        nicinstanceid = nicdata['instance.id']
+                        instanceframe = self.data.getInstance(nicinstanceid)
+                        instancename = instanceframe['name']
+                        instancevpcid = instanceframe['vpc.id']
 
-                     if instancevpcid == vpcid: 
-                        if not lbgenerated:
-                           lbgenerated = True
-                           # TODO Handle spacing for > 1 LBs.
-                           lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
-                           nodes.append(lbnode)
-                           routername = vpcname + '-router'
-                           lblink = self.shapes.buildDoubleArrow('', lbid, routername)
-                           links.append(lblink)
+                        if instancevpcid == vpcid: 
+                           if not lbgenerated:
+                              lbgenerated = True
+                              # TODO Handle spacing for > 1 LBs.
+                              lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
+                              nodes.append(lbnode)
+                              routername = vpcname + '-router'
+                              lblink = self.shapes.buildDoubleArrow('', lbid, routername)
+                              links.append(lblink)
                 
-                        # label, source, target
-                        instancelink = self.shapes.buildDoubleArrow('', nicid, lbid)
-                        links.append(instancelink)
+                           # label, source, target
+                           instancelink = self.shapes.buildDoubleArrow('', nicid, lbid)
+                           links.append(instancelink)
 
       return nodes, links
