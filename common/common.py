@@ -20,8 +20,8 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.18'
-   toolCopyright = toolName + ' ' + toolVersion + ' - Copyright 2022 IBM Corporation'
+   toolVersion = '0.5.19'
+   toolCopyright = toolName + ' ' + toolVersion + ' - Copyright IBM Corporation'
 
    options = None
    messages = None
@@ -144,6 +144,9 @@ class Common:
    def isWebMode(self):
       return self.options.isWebMode()
 
+   def isTerraformMode(self):
+      return self.options.isTerraformMode()
+
    def isBatchMode(self, value):
       return self.options.isBatchMode(value)
 
@@ -152,6 +155,9 @@ class Common:
 
    def isWebMode(self, value):
       return self.options.isWebMode(value)
+
+   def isTerraformMode(self, value):
+      return self.options.isTerraformMode(value)
 
    def getRunMode(self):
       return self.options.getRunMode()
@@ -303,7 +309,7 @@ class Common:
       self.messages.printRequestMessage(code, message, href)
 
    def printResponseMessage(self, code, message):
-      self.messages.printRequestMessage(code, message)
+      self.messages.printResponseMessage(code, message)
 
   # Constants
 

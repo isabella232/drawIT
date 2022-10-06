@@ -1,4 +1,4 @@
-# @file build.py
+# @file diagram.py
 #
 # Copyright IBM Corporation 2022
 #
@@ -22,10 +22,10 @@
 from math import isnan
 
 from common.common import Common
-from build.shapes import Shapes
-from build.tables import names, points, zoneCIDRs 
+from diagram.shapes import Shapes
+from diagram.tables import names, points, zoneCIDRs 
 
-class Build:
+class Diagram:
    data = None
    common = None
    shapes = None
@@ -215,7 +215,10 @@ class Build:
          saveheight += height
 
          zonename = regionzonename.split(':')[1]
-         zonecidr = zoneCIDRs[zonename]
+         if zonename in zoneCIDRs:
+            zonecidr = zoneCIDRs[zonename]
+         else:
+            zonecidr = ''
 
          zonenode = self.shapes.buildZone(regionzonename, vpcid, regionzonename, zonecidr, x, y, width, height)
          nodes.append(zonenode)

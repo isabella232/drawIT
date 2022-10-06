@@ -25,8 +25,14 @@ from platform import system as platform_system
 from sys import exit as sys_exit
 
 from common.common import Common
-from build.build import Build
+from diagram.diagram import Diagram
 from load.load import Load
+
+# TODO Convert to classes.
+from terraform.util import *
+from terraform.load import *
+from terraform.gentf import *
+import zipfile
 
 class Config:
     def __init__(self, appName):
@@ -160,7 +166,7 @@ class drawit:
    top = None
    statusText = None
    data = None
-   diagrams = None 
+   diagram = None 
    common = None
 
    def __init__(self):
@@ -191,7 +197,7 @@ class drawit:
         runmode = config.getRunMode()
         region = config.getRegion()
       
-        parser = ArgumentParser(description='Draw IT')
+        parser = ArgumentParser(description='drawIT')
 
         parser.add_argument('-key', dest='apikey', default=self.common.getAPIKey(), help='API Key')
         parser.add_argument('-account', dest='accountid', default=self.common.getAccountID(), help='Account ID')
@@ -202,7 +208,8 @@ class drawit:
         parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, region, or vpc')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
 
-        parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, or web")
+        #parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, or web")
+        parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, web, or terraform")
         parser.add_argument('--version', action='version', version='drawIT ' + self.common.getToolCopyright().split(' ')[1])
         
         args = parser.parse_args()
@@ -326,8 +333,8 @@ class drawit:
 
                 self.data = Load(self.common)
                 self.data.loadData()
-                self.diagrams = Build(self.common, self.data)
-                self.diagrams.buildDiagrams()
+                self.diagram = Diagram(self.common, self.data)
+                self.diagram.buildDiagrams()
 
                 self.common.printDone(outputfolder)
 
@@ -622,8 +629,8 @@ class drawit:
 
                     self.data = Load(self.common)
                     self.data.loadData()
-                    self.diagrams = Build(self.common, self.data)
-                    self.diagrams.buildDiagrams()
+                    self.diagram = Diagram(self.common, self.data)
+                    self.diagram.buildDiagrams()
 
                     self.common.printDone(outputfolder)
 
@@ -665,8 +672,23 @@ class drawit:
 
             self.data = Load(self.common)
             self.data.loadData()
-            self.diagrams = Build(self.common, self.data)
-            self.diagrams.buildDiagrams()
+            self.diagram = Diagram(self.common, self.data)
+            self.diagram.buildDiagrams()
+
+        elif self.common.isTerraformMode(args.runmode):
+            outputfolder = self.common.getOutputFolder()
+            inputdirectory = 'tables'
+            userdata['inputtype'] = 'xlsx'
+
+            userdata['inputdirectory'] = os.path.join(config.getOutputDirectory(), 'tables')
+            print(userdata['inputdirectory'])
+
+            basename = os.path.basename(outputfolder)
+            userdata['outputdirectory'] = os.path.join(outputfolder, basename + '.resources')
+            print(userdata['inputdirectory'])
+            print(userdata['outputdirectory'])
+
+            genall(userdata)
             
         else:
             self.common.printInvalidMode(args.runmode)

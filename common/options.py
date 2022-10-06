@@ -20,6 +20,7 @@ class RunMode(Enum):
    BATCH = 'batch'
    GUI = 'gui'
    WEB = 'web'
+   TERRAFORM = 'terraform'
 
 class InputType(Enum):
    RIAS = 'rias'
@@ -115,6 +116,9 @@ class Options:
    def isWebMode(self):
       return self.runMode == RunMode.WEB
 
+   def isTerraformMode(self):
+      return self.runMode == RunMode.TERRAFORM
+
    def isBatchMode(self, value):
       return value == RunMode.BATCH.value
 
@@ -123,6 +127,9 @@ class Options:
 
    def isWebMode(self, value):
       return value == RunMode.WEB.value
+
+   def isTerraformMode(self, value):
+      return value == RunMode.TERRAFORM.value
 
    def getRunMode(self):
       return self.runMode

@@ -16,8 +16,8 @@
 import random
 import time
 
-from build.elements import Elements
-from build.tables import ibmshapes
+from diagram.elements import Elements
+from diagram.tables import ibmshapes
 from common.common import Common
 
 class Types:
