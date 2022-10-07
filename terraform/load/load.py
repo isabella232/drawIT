@@ -15,7 +15,7 @@
 
 from pandas import DataFrame, read_excel
 
-from build.common.common import Common
+from terraform.common.common import Common
 
 class Load:
    common = None 

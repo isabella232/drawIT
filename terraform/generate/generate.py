@@ -16,9 +16,9 @@
 from os import listdir, makedirs, path
 from shutil import copy, copytree, move
    
-from build.common.common import Common
-from build.load.load import Load
-from build.generate.tables import headers, footers, resources 
+from terraform.common.common import Common
+from terraform.load.load import Load
+from terraform.generate.tables import headers, footers, resources 
    
 class Generate:
    common = None

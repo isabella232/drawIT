@@ -13,11 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#SAVE import tkinter
-#SAVE from tkinter import filedialog
-#SAVE from tkinter import IntVar
-#SAVE from tkinter import messagebox
-
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from os import path
@@ -27,8 +22,6 @@ from sys import exit as sys_exit
 from common.common import Common
 from diagram.diagram import Diagram
 from load.load import Load
-
-#import zipfile
 
 class Config:
     def __init__(self, appName):
@@ -673,8 +666,8 @@ class drawit:
             self.diagram.buildDiagrams()
 
         elif self.common.isTerraformMode(args.runmode):
-            from build.common.common import Common
-            from build.generate.generate import Generate
+            from terraform.common.common import Common
+            from terraform.generate.generate import Generate
 
             buildcommon = Common()
 

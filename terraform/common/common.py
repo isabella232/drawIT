@@ -16,8 +16,8 @@
 from os import makedirs, path
 from pandas import isna
 
-from build.common.options import Options
-from build.common.messages import Messages
+from terraform.common.options import Options
+from terraform.common.messages import Messages
 
 class Common:
    toolName = 'buildIT'
@@ -120,16 +120,34 @@ class Common:
    def setName(self, value):
       self.options.setName(value)
 
+   def isBatchMode(self):
+      return self.options.isBatchMode()
+
+   def isGUIMode(self):
+      return self.options.isGUIMode()
+
+   def isBatchMode(self, value):
+      return self.options.isBatchMode(value)
+
+   def isGUIMode(self, value):
+      return self.options.isGUIMode(value)
+
+   def getRunMode(self):
+      return self.options.getRunMode()
+
+   def setRunMode(self, value):
+      self.options.setRunMode(value)
+
    # Messages
 
    def printToolHeader(self):
       self.messages.printToolHeader()
 
    def printStart(self, inputFolder):
-      self.messages.printStart()
+      self.messages.printStart(inputFolder)
 
    def printDone(self, outputFolder):
-      self.messages.printDone()
+      self.messages.printDone(outputFolder)
 
    def printSheet(self, sheet):
       self.messages.printSheet(sheet)
@@ -184,3 +202,14 @@ class Common:
 
    def printMissingValue(self, column, row):
       self.messages.printMissingValue(column, row)
+
+   # Constants
+
+   def getToolName(self):
+      return self.toolName
+
+   def getToolVersion(self):
+      return self.toolVersion
+
+   def getToolCopyright(self):
+      return self.toolCopyright

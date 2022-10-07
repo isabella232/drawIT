@@ -16,7 +16,12 @@
 from enum import Enum
 from os import path
 
+class RunMode(Enum):
+   BATCH = 'batch'
+   GUI = 'gui'
+
 class Options:
+   runMode = None
    inputDirectory = ''
    outputDirectory = ''
    inputType = 'xlsx'
@@ -25,6 +30,7 @@ class Options:
    propName = '*'
 
    def __init__(self, toolName):
+      self.runMode = RunMode.BATCH
       return
 
    def getInputDirectory(self):
@@ -62,3 +68,21 @@ class Options:
 
    def setName(self, name):
       self.propName = name
+
+   def isBatchMode(self):
+      return self.runMode == RunMode.BATCH
+
+   def isGUIMode(self):
+      return self.runMode == RunMode.GUI
+
+   def isBatchMode(self, value):
+      return value == RunMode.BATCH.value
+
+   def isGUIMode(self, value):
+      return value == RunMode.GUI.value
+
+   def getRunMode(self):
+      return self.runMode
+
+   def setRunMode(self, value):
+      self.runMode = value
