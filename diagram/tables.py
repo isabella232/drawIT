@@ -13,33 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Icons Table
-
-icons = {
-    'cloud': {'logical': 'cloud', 'prescribed': 'ibm-cloud'},
-    'enterpriseNetwork': {'logical': 'network--enterprise', 'prescribed': 'network--enterprise'},
-    'floatingIP': {'logical': 'floating-ip', 'prescribed': 'floating-ip'},
-    'instance': {'logical': 'virtual-machine', 'prescribed': 'instance--virtual'},
-    'instanceBastion': {'logical': 'bastion-host', 'prescribed': 'bastion-host'},
-    'internet': {'logical': 'wikis', 'prescribed': 'wikis'},
-    'loadBalancer': {'logical': 'load-balancer--vpc', 'prescribed': 'load-balancer--vpc'},
-    'publicGateway': {'logical': 'gateway--public', 'prescribed': 'gateway--public'},
-    'publicNetwork': {'logical': 'network--public', 'prescribed': 'network--public'},
-    'region': {'logical': 'location', 'prescribed': 'location'},
-    'router': {'logical': 'router', 'prescribed': 'router'},
-    'subnet': {'logical': 'locked', 'prescribed': 'ibm-cloud--subnets'},
-    'user': {'logical': 'user', 'prescribed': 'user'},
-    'vpc': {'logical': 'virtual-private-cloud', 'prescribed': 'virtual-private-cloud--alt'},
-    'vpnConnection': {'logical': 'vpn--connection', 'prescribed': 'vpn--connection'},
-    'vpnGateway': {'logical': 'gateway--vpn', 'prescribed': 'gateway--vpn'},
-    'zone': {'logical': 'data--center', 'prescribed': 'data--center'},
-
-    'linux': {'logical': 'linux', 'prescribed': 'linux'},
-    'profileBalanced': {'logical': 'instance--bx', 'prescribed': 'instance--bx'},
-    'profileCompute': {'logical': 'instance--cx', 'prescribed': 'instance--cx'},
-    'profileMemory': {'logical': 'instance--mx', 'prescribed': 'instance--mx'},
-    'blockStorage': {'logical': 'block-storage', 'prescribed': 'block-storage'}
-}
+from diagram.icons import icons
 
 # Format Properties
 
@@ -129,13 +103,13 @@ ibmshapes = {
     'zone': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group3'], 'size': minsizes['group'], 'icon': icons['zone']},
 
     # Expanded Icons
-    'instanceExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['compute'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instance']},
+    'instanceExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['compute'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instanceVirtual']},
     'instanceBastionExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instanceBastion']},
-    'instanceExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['compute'], 'style': styles['iconExpandedStack3'], 'size': minsizes['expanded'], 'icon': icons['instance']},
+    'instanceExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['compute'], 'style': styles['iconExpandedStack3'], 'size': minsizes['expanded'], 'icon': icons['instanceVirtual']},
     'instanceBastionExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instanceBastion']},
 
     # Collapsed Icons
-    'instance': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['compute'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['instance']},
+    'instance': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['compute'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['instanceVirtual']},
     'instanceBastion': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['instanceBastion']},
     'floatingIP': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['floatingIP']},
     'internet': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['internet']},
