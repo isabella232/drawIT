@@ -28,11 +28,7 @@ from common.common import Common
 from diagram.diagram import Diagram
 from load.load import Load
 
-# TODO Convert to classes.
-from terraform.util import *
-from terraform.load import *
-from terraform.gentf import *
-import zipfile
+#import zipfile
 
 class Config:
     def __init__(self, appName):
@@ -168,6 +164,7 @@ class drawit:
    data = None
    diagram = None 
    common = None
+   generate = None
 
    def __init__(self):
       self.common = Common()
@@ -676,20 +673,21 @@ class drawit:
             self.diagram.buildDiagrams()
 
         elif self.common.isTerraformMode(args.runmode):
+            from build.common.common import Common
+            from build.generate.generate import Generate
+
+            buildcommon = Common()
+
             outputfolder = self.common.getOutputFolder()
             inputdirectory = 'tables'
-            userdata['inputtype'] = 'xlsx'
+            buildcommon.setInputType('xlsx')
+            buildcommon.setInputDirectory(path.join(config.getOutputDirectory(), 'tables'))
+            basename = path.basename(outputfolder)
+            buildcommon.setOutputDirectory(path.join(outputfolder, basename + '.resources'))
 
-            userdata['inputdirectory'] = os.path.join(config.getOutputDirectory(), 'tables')
-            print(userdata['inputdirectory'])
-
-            basename = os.path.basename(outputfolder)
-            userdata['outputdirectory'] = os.path.join(outputfolder, basename + '.resources')
-            print(userdata['inputdirectory'])
-            print(userdata['outputdirectory'])
-
-            genall(userdata)
-            
+            self.generate = Generate(buildcommon)
+            self.generate.all()
+   
         else:
             self.common.printInvalidMode(args.runmode)
 
