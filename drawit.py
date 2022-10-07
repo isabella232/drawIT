@@ -331,55 +331,52 @@ class drawit:
                 done = True
 
         elif self.common.isGUIMode(args.runmode):
-            import tkinter
-            from tkinter import filedialog
-            from tkinter import IntVar
-            from tkinter import messagebox
+            from tkinter import Button, Entry, filedialog, Frame, IntVar, Label, messagebox, OptionMenu, StringVar, Tk, LEFT, RIGHT, TOP, E, W, X
         
-            self.top = tkinter.Tk()
+            self.top = Tk()
             self.title = self.common.getToolCopyright().split(' - ')
             self.top.title(self.title[0])
-            self.statusText = tkinter.StringVar()
+            self.statusText = StringVar()
 
-            frame = tkinter.Frame(self.top)
-            frame.pack(fill=tkinter.X, side=tkinter.TOP)
+            frame = Frame(self.top)
+            frame.pack(fill=X, side=TOP)
             frame.grid_columnconfigure(1, weight=1)            
             row = 1
             
-            genbutton = tkinter.Frame(frame)
-            eGenerate = tkinter.Button(genbutton, text="Generate", state='normal', fg="blue", command=lambda: onClickGenerate())
-            genbutton.grid(row=row, columnspan=2, sticky=tkinter.E)
-            eGenerate.pack(side=tkinter.LEFT)
+            genbutton = Frame(frame)
+            eGenerate = Button(genbutton, text="Generate", state='normal', fg="blue", command=lambda: onClickGenerate())
+            genbutton.grid(row=row, columnspan=2, sticky=E)
+            eGenerate.pack(side=LEFT)
             row = row + 1
             
-            tkinter.Label(frame, text="").grid(row=row, columnspan=2)
+            Label(frame, text="").grid(row=row, columnspan=2)
             row = row + 1
 
-            tkinter.Label(frame, text="API Key").grid(row=row)
-            lAPIKey = tkinter.Entry(frame, bd=5)
+            Label(frame, text="API Key").grid(row=row)
+            lAPIKey = Entry(frame, bd=5)
             lAPIKey.insert(0, apikey)
-            lAPIKey.grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
+            lAPIKey.grid(row=row, column=1, sticky=W + E)
             config.set("apiKey",apikey)
             config.write()
             row = row + 1
 
-            tkinter.Label(frame, text="Account ID").grid(row=row)
-            lAccountID = tkinter.Entry(frame, bd=5)
+            Label(frame, text="Account ID").grid(row=row)
+            lAccountID = Entry(frame, bd=5)
             lAccountID.insert(0, accountid)
-            lAccountID.grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
+            lAccountID.grid(row=row, column=1, sticky=W + E)
             config.set("accountID", accountid)
             config.write()
             row = row + 1
 
-            tkinter.Label(frame, text="- or -").grid(row=row, columnspan=2)
+            Label(frame, text="- or -").grid(row=row, columnspan=2)
             row = row + 1
 
             #tkinter.Label(frame, text="Yaml").grid(row=row)
             #lInputFile = tkinter.Label(frame, text=inputfile)
-            tkinter.Label(frame, text="JSON/YAML").grid(row=row)
-            lInputFile = tkinter.Entry(frame, bd=5)
+            Label(frame, text="JSON/YAML").grid(row=row)
+            lInputFile = Entry(frame, bd=5)
             lInputFile.insert(0, inputfile)
-            lInputFile.grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
+            lInputFile.grid(row=row, column=1, sticky=W + E)
             row = row + 1
 
             if len(apikey) > 0:
@@ -403,19 +400,19 @@ class drawit:
                     config.set("inputFile", self.inputFile)
                     config.write()
                     
-            inputbutton = tkinter.Frame(frame)
-            eSelectInputFile = tkinter.Button(inputbutton, text="Select JSON/YAML", fg="blue", command=lambda: onClickSelectInputFile())
-            inputbutton.grid(row=row, columnspan=2, sticky=tkinter.E)
-            eSelectInputFile.pack(side=tkinter.RIGHT)
+            inputbutton = Frame(frame)
+            eSelectInputFile = Button(inputbutton, text="Select JSON/YAML", fg="blue", command=lambda: onClickSelectInputFile())
+            inputbutton.grid(row=row, columnspan=2, sticky=E)
+            eSelectInputFile.pack(side=RIGHT)
             row = row + 1
 
-            tkinter.Label(frame, text="").grid(row=row, columnspan=2)
+            Label(frame, text="").grid(row=row, columnspan=2)
             row = row + 1
 
-            tkinter.Label(frame, text="Directory").grid(row=row)
-            lOutputDirectory = tkinter.Entry(frame, bd=5)
+            Label(frame, text="Directory").grid(row=row)
+            lOutputDirectory = Entry(frame, bd=5)
             lOutputDirectory.insert(0, outputfolder)
-            lOutputDirectory.grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
+            lOutputDirectory.grid(row=row, column=1, sticky=W + E)
             row = row + 1
 
             def onClickSelectOutputDirectory():
@@ -429,13 +426,13 @@ class drawit:
                     config.write()
                     self.common.setOutputFolder(self.outputDirectory)
                     
-            outputbutton = tkinter.Frame(frame)
-            eSelectOutputDirectory = tkinter.Button(outputbutton, text="Select Directory", fg="blue", command=lambda: onClickSelectOutputDirectory())
-            outputbutton.grid(row=row, columnspan=2, sticky=tkinter.E)
-            eSelectOutputDirectory.pack(side=tkinter.RIGHT)
+            outputbutton = Frame(frame)
+            eSelectOutputDirectory = Button(outputbutton, text="Select Directory", fg="blue", command=lambda: onClickSelectOutputDirectory())
+            outputbutton.grid(row=row, columnspan=2, sticky=E)
+            eSelectOutputDirectory.pack(side=RIGHT)
             row = row + 2
 
-            tkinter.Label(frame, text="").grid(row=row, columnspan=2)
+            Label(frame, text="").grid(row=row, columnspan=2)
             row = row + 1
 
             #layoutoptions = [
@@ -476,11 +473,11 @@ class drawit:
                 "United Kingdom",
                 "US East",
                 "US South"]
-            eRegion = tkinter.StringVar(self.top)
+            eRegion = StringVar(self.top)
             eRegion.set("US South")
-            tkinter.Label(frame, text="Region").grid(row=row)
+            Label(frame, text="Region").grid(row=row)
             #regionmenu = tkinter.OptionMenu(self.top, eRegion, *regionoptions).grid(row=row)
-            regionmenu = tkinter.OptionMenu(frame, eRegion, *regionoptions).grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
+            regionmenu = OptionMenu(frame, eRegion, *regionoptions).grid(row=row, column=1, sticky=W + E)
             #regionmenu.pack()
             row = row + 1
 
@@ -494,20 +491,20 @@ class drawit:
                 "Low", 
                 "Medium",
                 "High"]
-            eOutputDetail = tkinter.StringVar(self.top)
+            eOutputDetail = StringVar(self.top)
             eOutputDetail.set("Low")
-            tkinter.Label(frame, text="Detail Level").grid(row=row)
-            shapemenu = tkinter.OptionMenu(frame, eOutputDetail, *detailoptions).grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
+            Label(frame, text="Detail Level").grid(row=row)
+            shapemenu = OptionMenu(frame, eOutputDetail, *detailoptions).grid(row=row, column=1, sticky=W + E)
             row = row + 1
 
             shapeoptions = [
                 "Logical", 
                 "Prescribed"]
-            eOutputShape = tkinter.StringVar(self.top)
+            eOutputShape = StringVar(self.top)
             eOutputShape.set("Prescribed")
-            tkinter.Label(frame, text="Diagram Type").grid(row=row)
+            Label(frame, text="Diagram Type").grid(row=row)
             #shapemenu = tkinter.OptionMenu(self.top, eOutputShape, *shapeoptions)
-            shapemenu = tkinter.OptionMenu(frame, eOutputShape, *shapeoptions).grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
+            shapemenu = OptionMenu(frame, eOutputShape, *shapeoptions).grid(row=row, column=1, sticky=W + E)
             #shapemenu.pack()
             row = row + 1
 
@@ -515,11 +512,11 @@ class drawit:
                 "Single", 
                 "Region", 
                 "VPC"]
-            eOutputSplit = tkinter.StringVar(self.top)
+            eOutputSplit = StringVar(self.top)
             eOutputSplit.set("Single")
-            tkinter.Label(frame, text="File Organization").grid(row=row)
+            Label(frame, text="File Organization").grid(row=row)
             #splitmenu = tkinter.OptionMenu(self.top, eOutputSplit, *splitoptions)
-            splitmenu = tkinter.OptionMenu(frame, eOutputSplit, *splitoptions).grid(row=row, column=1, sticky=tkinter.W + tkinter.E)
+            splitmenu = OptionMenu(frame, eOutputSplit, *splitoptions).grid(row=row, column=1, sticky=W + E)
             #splitmenu.pack()
             row = row + 1
 
@@ -634,13 +631,13 @@ class drawit:
                     #traceback.print_exc()
                     #traceback.print_last()
 
-            eGenerate.pack(side=tkinter.RIGHT)
+            eGenerate.pack(side=RIGHT)
 
             #SAVE self.statusText.set("Ready")    
             self.statusText.set("Ready")    
     
-            statusLabel = tkinter.Label(self.top, textvariable=self.statusText)
-            statusLabel.pack(side=tkinter.RIGHT)
+            statusLabel = Label(self.top, textvariable=self.statusText)
+            statusLabel.pack(side=RIGHT)
     
             #SAVE self.top.mainloop()
             self.top.mainloop()
