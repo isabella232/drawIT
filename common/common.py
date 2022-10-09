@@ -135,6 +135,12 @@ class Common:
    def setOutputFolder(self, value):
       self.options.setOutputFolder(value)
 
+   def getTablesFolder(self):
+      return self.options.getTablesFolder()
+
+   def setTablesFolder(self, value):
+      self.options.setTablesFolder(value)
+
    def isBatchMode(self):
       return self.options.isBatchMode()
 

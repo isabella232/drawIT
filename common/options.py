@@ -62,6 +62,7 @@ class Options:
    region = None
    outputFile = ''
    outputFolder = ''
+   tablesFolder = ''
    outputSplit = None
    outputDetail = None
    outputShapes = None
@@ -72,6 +73,7 @@ class Options:
       self.region = Regions.USSOUTH
       self.outputFile = 'output'
       self.outputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
+      self.tablesFolder ='tables'
       self.outputSplit = OutputSplit.SINGLE
       self.outputDetail = OutputDetail.LOW
       self.outputShapes = OutputShapes.PRESCRIBED
@@ -106,6 +108,12 @@ class Options:
 
    def setOutputFolder(self, value):
       self.outputFolder = value
+
+   def getTablesFolder(self):
+      return self.tablesFolder
+
+   def setTablesFolder(self, value):
+      self.tablesFolder = value
 
    def isBatchMode(self):
       return self.runMode == RunMode.BATCH

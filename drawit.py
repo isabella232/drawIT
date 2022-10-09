@@ -108,6 +108,12 @@ class Config:
     def setOutputFolder(self,outputFolder):
         self.set("outputFolder",outputFolder)
 
+    def getTablesFolder(self):
+        return self.get("tablesFolder")
+    
+    def setTablesFolder(self,tablesFolder):
+        self.set("tablesFolder",tablesFolder)
+
     def getOutputDetail(self):
         return self.get("outputDetail")
     
@@ -181,6 +187,7 @@ class drawit:
         outputfile = config.getOutputFile()
         outputfolder = config.getOutputFolder()
         outputdirectory = config.getOutputDirectory()
+        tablesfolder = config.getTablesFolder()
         outputdetail = config.getOutputDetail()
         outputsplit = config.getOutputSplit()
         outputshapes = config.getOutputShapes()
@@ -197,6 +204,7 @@ class drawit:
         parser.add_argument('-detail', dest='outputdetail', default=self.common.getOutputDetail().value, help='low, medium, or high')
         parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, region, or vpc')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
+        parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
 
         #parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, or web")
         parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, web, or terraform")
@@ -220,6 +228,7 @@ class drawit:
         region = args.region.lower()
         inputfile = args.inputfile
         outputfolder = args.outputfolder
+        tablesfolder = args.tablesfolder
         outputtype = "xml"
         outputdetail = args.outputdetail.lower()
         outputsplit = args.outputsplit.lower()
@@ -669,9 +678,8 @@ class drawit:
             buildcommon = Common()
 
             outputfolder = self.common.getOutputFolder()
-            inputdirectory = 'tables'
             buildcommon.setInputType('xlsx')
-            buildcommon.setInputDirectory(path.join(config.getOutputDirectory(), 'tables'))
+            buildcommon.setInputDirectory(tablesfolder)
             basename = path.basename(outputfolder)
             buildcommon.setOutputDirectory(path.join(outputfolder, basename + '.resources'))
 

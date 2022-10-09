@@ -8,9 +8,8 @@ drawIT accepts input from JSON, YAML, or RIAS, and creates diagrams that can be 
 ## Running drawIT
 
 Using GUI:
-- test/run.py  (use for JSON/YAML/RIAS passing no parameters) 
-- test/run.py <api-key\>  (use for RIAS passing IBM Cloud API Key)
-- GUI outputs drawio xml (plus errors/warnings) to user's Documents/drawIT folder by default.
+- test/run.sh
+- GUI outputs drawio xml to Documents/drawIT by default.
 
 <!--
 2. Using NodeJS: 

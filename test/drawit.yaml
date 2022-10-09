@@ -1,35 +1,95 @@
 vpcs:
-  - name: drawit-vpc
-    id: drawit-vpc-id
+  - name: drawIT
+    id: vpc-id
     type: VPC
     region: us-south
-    networkACLId: drawit-network-acl-id
-    securityGroupId: drawit-security-group-id
-    resourceGroupId: drawit-resource-group-id
+    networkACLId: acl-id
+    securityGroupId: security-id
+    resourceGroupId: resource-id
 subnets:
-  - name: drawit-subnet1
-    id: drawit-subnet1-id
+  - name: Subnet1
+    id: subnet1-id
     type: Network
     region: us-south
     availabilityZone: us-south-1
     bandwidthMb: 1000
     subnet: 10.240.0.0/24
-    vpcId: drawit-vpc-id
-    networkACL: drawit-acl-id
+    vpcId: vpc-id
+    networkACL: acl-id
     publicGateway:
-      name: drawit-pg
-      id: drawit-pg-id
+      name: Gateway1
+      id: gateway1-id
+  - name: Subnet2
+    id: subnet2-id
+    type: Network
+    region: us-south
+    availabilityZone: us-south-1
+    bandwidthMb: 1000
+    subnet: 10.240.1.0/24
+    vpcId: vpc-id
+    networkACL: acl-id
+    publicGateway:
+      name: Gateway1
+      id: gateway1-id
+  - name: Subnet3
+    id: subnet3-id
+    type: Network
+    region: us-south
+    availabilityZone: us-south-2
+    bandwidthMb: 1000
+    subnet: 10.240.64.0/24
+    vpcId: vpc-id
+    networkACL: acl-id
+    publicGateway:
+      name: Gateway2
+      id: gateway2-id
+  - name: Subnet4
+    id: subnet4-id
+    type: Network
+    region: us-south
+    availabilityZone: us-south-2
+    bandwidthMb: 1000
+    subnet: 10.240.65.0/24
+    vpcId: vpc-id
+    networkACL: acl-id
+    publicGateway:
+      name: Gateway2
+      id: gateway2-id
+  - name: Subnet5
+    id: subnet5-id
+    type: Network
+    region: us-south
+    availabilityZone: us-south-3
+    bandwidthMb: 1000
+    subnet: 10.240.128.0/24
+    vpcId: vpc-id
+    networkACL: acl-id
+    publicGateway:
+      name: Gateway3
+      id: gateway3-id
+  - name: Subnet6
+    id: subnet6-id
+    type: Network
+    region: us-south
+    availabilityZone: us-south-3
+    bandwidthMb: 1000
+    subnet: 10.240.129.0/24
+    vpcId: vpc-id
+    networkACL: acl-id
+    publicGateway:
+      name: Gateway3
+      id: gateway3-id
 instances:
-  - name: drawit-instance1
-    id: drawit-instance1-id
+  - name: Instance1
+    id: instance1-id
     type: Instance
     region: us-south
     availabilityZone: us-south-1
-    vpcName: drawit-vpc
-    vpcId: drawit-vpc-id
-    osName: ubuntu-20-04-amd64
-    osVendor: Canonical
-    osVersion: 20.04 LTS Focal Fossa Minimal Install
+    vpcName: drawIT
+    vpcId: vpc-id
+    osName: ibm-redhat-8-6-minimal-amd64-1
+    osVendor: Red Hat
+    osVersion: Red Hat Enterprise Linux 8.x - Minimal Install (amd64)
     bandwidthMb: 8000
     gpuModel: null
     hostIP: null
@@ -39,55 +99,292 @@ instances:
     cpuSpeedMhz: 2095
     memoryGb: 16
     ipAddresses:
-      - 172.21.0.4
+      - 10.240.0.0
     profile: bx2-4x16
     volumeAttachments:
-      - drawit-volume1-id
+      - volume1-id
     networkInterfaces:
-      - name: drawit-nic1
-        id: drawit-nic1-id
-        networkId: drawit-subnet1-id
-        instanceId: drawit-instance1-id
+      - name: Instance1-Nic1
+        id: instance1-nic1-id
+        networkId: subnet1-id
+        instanceId: instance1-id
         region: us-south
-        ip: 172.21.0.4
+        ip: 10.240.0.0
         floatingIPReference:
-          id: drawit-fip1-id
+          id: fip1-id
+          ip: 52.118.146.152
+        maxMbps: 3000
+        securityGroupIds: []
+        type: NetworkInterface
+  - name: Instance2
+    id: instance2-id
+    type: Instance
+    region: us-south
+    availabilityZone: us-south-1
+    vpcName: drawIT
+    vpcId: vpc-id
+    osName: ibm-redhat-8-6-minimal-amd64-1
+    osVendor: Red Hat
+    osVersion: Red Hat Enterprise Linux 8.x - Minimal Install (amd64)
+    bandwidthMb: 8000
+    gpuModel: null
+    hostIP: null
+    memoryMiB: 16384
+    cpuCount: 4
+    gpuCount: 0
+    cpuSpeedMhz: 2095
+    memoryGb: 16
+    ipAddresses:
+      - 10.240.1.0
+    profile: bx2-4x16
+    volumeAttachments:
+      - volume2-id
+    networkInterfaces:
+      - name: Instance2-Nic1
+        id: instance2-nic1-id
+        networkId: subnet2-id
+        instanceId: instance2-id
+        region: us-south
+        ip: 10.240.1.0
+        maxMbps: 3000
+        securityGroupIds: []
+        type: NetworkInterface
+  - name: Instance3
+    id: instance3-id
+    type: Instance
+    region: us-south
+    availabilityZone: us-south-2
+    vpcName: drawIT
+    vpcId: vpc-id
+    osName: ibm-redhat-8-6-minimal-amd64-1
+    osVendor: Red Hat
+    osVersion: Red Hat Enterprise Linux 8.x - Minimal Install (amd64)
+    bandwidthMb: 8000
+    gpuModel: null
+    hostIP: null
+    memoryMiB: 16384
+    cpuCount: 4
+    gpuCount: 0
+    cpuSpeedMhz: 2095
+    memoryGb: 16
+    ipAddresses:
+      - 10.240.64.0
+    profile: bx2-4x16
+    volumeAttachments:
+      - volume3-id
+    networkInterfaces:
+      - name: Instance3-Nic1
+        id: instance3-nic1-id
+        networkId: subnet3-id
+        instanceId: instance3-id
+        region: us-south
+        ip: 10.240.64.0
+        floatingIPReference:
+          id: fip2-id
+          ip: 52.118.146.154
+        maxMbps: 3000
+        securityGroupIds: []
+        type: NetworkInterface
+  - name: Instance4
+    id: instance4-id
+    type: Instance
+    region: us-south
+    availabilityZone: us-south-2
+    vpcName: drawIT
+    vpcId: vpc-id
+    osName: ibm-redhat-8-6-minimal-amd64-1
+    osVendor: Red Hat
+    osVersion: Red Hat Enterprise Linux 8.x - Minimal Install (amd64)
+    bandwidthMb: 8000
+    gpuModel: null
+    hostIP: null
+    memoryMiB: 16384
+    cpuCount: 4
+    gpuCount: 0
+    cpuSpeedMhz: 2095
+    memoryGb: 16
+    ipAddresses:
+      - 10.240.65.0
+    profile: bx2-4x16
+    volumeAttachments:
+      - volume4-id
+    networkInterfaces:
+      - name: Instance4-Nic1
+        id: instance4-nic1-id
+        networkId: subnet4-id
+        instanceId: instance4-id
+        region: us-south
+        ip: 10.240.65.0
+        maxMbps: 3000
+        securityGroupIds: []
+        type: NetworkInterface
+  - name: Instance5
+    id: instance5-id
+    type: Instance
+    region: us-south
+    availabilityZone: us-south-3
+    vpcName: drawIT
+    vpcId: vpc-id
+    osName: ibm-redhat-8-6-minimal-amd64-1
+    osVendor: Red Hat
+    osVersion: Red Hat Enterprise Linux 8.x - Minimal Install (amd64)
+    bandwidthMb: 8000
+    gpuModel: null
+    hostIP: null
+    memoryMiB: 16384
+    cpuCount: 4
+    gpuCount: 0
+    cpuSpeedMhz: 2095
+    memoryGb: 16
+    ipAddresses:
+      - 10.240.128.0
+    profile: bx2-4x16
+    volumeAttachments:
+      - volume5-id
+    networkInterfaces:
+      - name: Instance5-Nic1
+        id: instance5-nic1-id
+        networkId: subnet5-id
+        instanceId: instance5-id
+        region: us-south
+        ip: 10.240.128.0
+        floatingIPReference:
+          id: fip3-id
           ip: 52.118.146.156
         maxMbps: 3000
         securityGroupIds: []
         type: NetworkInterface
+  - name: Instance6
+    id: instance6-id
+    type: Instance
+    region: us-south
+    availabilityZone: us-south-3
+    vpcName: drawIT
+    vpcId: vpc-id
+    osName: ibm-redhat-8-6-minimal-amd64-1
+    osVendor: Red Hat
+    osVersion: Red Hat Enterprise Linux 8.x - Minimal Install (amd64)
+    bandwidthMb: 8000
+    gpuModel: null
+    hostIP: null
+    memoryMiB: 16384
+    cpuCount: 4
+    gpuCount: 0
+    cpuSpeedMhz: 2095
+    memoryGb: 16
+    ipAddresses:
+      - 10.240.129.0
+    profile: bx2-4x16
+    volumeAttachments:
+      - volume6-id
+    networkInterfaces:
+      - name: Instance6-Nic1
+        id: instance6-nic1-id
+        networkId: subnet6-id
+        instanceId: instance6-id
+        region: us-south
+        ip: 10.240.129.0
+        maxMbps: 3000
+        securityGroupIds: []
+        type: NetworkInterface
 floatingIPs:
-  - name: drawit-fip1
-    id: drawit-fip1-id
+  - name: Fip1
+    id: fip1-id
+    type: FloatingIP
+    region: us-south
+    address: 52.118.146.152
+    resourceGroupId: resource-id
+    target:
+      name: Instance1-Nic1
+      id: instance1-nic1-id
+      resourceType: network_interface
+      ipv4Address: 10.240.0.0
+  - name: Fip2
+    id: fip2-id
+    type: FloatingIP
+    region: us-south
+    address: 52.118.146.154
+    resourceGroupId: resource-id
+    target:
+      name: Instance3-Nic1
+      id: instance3-nic1-id
+      resourceType: network_interface
+      ipv4Address: 10.240.64.0
+  - name: Fip3
+    id: fip3-id
     type: FloatingIP
     region: us-south
     address: 52.118.146.156
-    resourceGroupId: drawit-rg-id
+    resourceGroupId: resource-id
     target:
-      name: drawit-nic1
-      id: drawit-nic1-id
+      name: Instance5-Nic1
+      id: instance5-nic1-id
       resourceType: network_interface
-      ipv4Address: 172.21.0.4
-  - name: drawit-fip2
-    id: drawit-fip2-id
+      ipv4Address: 10.240.128.0
+  - name: FipGateway1
+    id: fipgateway1-id
     type: FloatingIP
     region: us-south
-    address: 52.116.135.9
-    resourceGroupId: drawit-rg-id
+    address: 52.118.146.162
+    resourceGroupId: resource-id
     target:
-      name: drawit-pg
-      id: drawit-pg-id
+      name: gateway1
+      id: gateway1-id
+      resourceType: public_gateway
+      ipv4Address: null
+  - name: FipGateway2
+    id: fipgateway2-id
+    type: FloatingIP
+    region: us-south
+    address: 52.118.146.164
+    resourceGroupId: resource-id
+    target:
+      name: gateway2
+      id: gateway2-id
+      resourceType: public_gateway
+      ipv4Address: null
+  - name: FipGateway3
+    id: fipgateway3-id
+    type: FloatingIP
+    region: us-south
+    address: 52.118.146.166
+    resourceGroupId: resource-id
+    target:
+      name: gateway3
+      id: gateway3-id
       resourceType: public_gateway
       ipv4Address: null
 publicGateways:
-  - name: drawit-pg
-    id: drawit-pg-id
+  - name: Gateway1
+    id: gateway1-id
     type: PublicGateway
     region: us-south
-    vpcId: drawit-vpc-id
-    floatingIP: 52.116.135.9
+    vpcId: vpc-id
+    floatingIP: 52.118.146.162
     floatingIPReference:
-      id: drawit-fip2-id
-      ip: 52.116.135.9
+      id: fipgateway1-id
+      ip: 52.118.146.162
       name: null
-    resourceGroupId: drawit-rg-id
+    resourceGroupId: resource-id
+  - name: Gateway2
+    id: gateway2-id
+    type: PublicGateway
+    region: us-south
+    vpcId: vpc-id
+    floatingIP: 52.118.145.164
+    floatingIPReference:
+      id: fipgateway2-id
+      ip: 52.118.146.164
+      name: null
+    resourceGroupId: resource-id
+  - name: Gateway3
+    id: gateway3-id
+    type: PublicGateway
+    region: us-south
+    vpcId: vpc-id
+    floatingIP: 52.118.146.166
+    floatingIPReference:
+      id: fipgateway3-id
+      ip: 52.118.146.166
+      name: null
+    resourceGroupId: resource-id
