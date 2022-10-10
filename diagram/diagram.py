@@ -122,7 +122,7 @@ class Diagram:
             height = points['iconHeight']
 
             routername = vpcname + '-router'
-            routernode = self.shapes.buildRouter(routername, vpcid, 'Router', '', points['firstIconX'], points['firstIconY'], width, height)
+            routernode = self.shapes.buildRouter(routername, vpcid, '', '', points['firstIconX'], points['firstIconY'], width, height)
             nodes.append(routernode)
 
             routerlink = self.shapes.buildDoubleArrow('', routername, names['internetName'])

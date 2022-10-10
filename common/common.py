@@ -281,8 +281,8 @@ class Common:
 
    # Messages
 
-   def printStartFile(self, filename):
-      self.messages.printStartFile(filename)
+   def printStartFile(self, filename, cloud):
+      self.messages.printStartFile(filename, cloud)
 
    def printStartRIASwithKey(self, apikey, region):
       self.messages.printStartRIASwithKey(apikey, region)

@@ -248,6 +248,7 @@ class drawit:
         self.common.setRegion(region)
         self.common.setInputFile(inputfile)
         self.common.setOutputFolder(outputfolder)
+        self.common.setCloudType(cloudtype)
 
         if outputdetail == "low":
             self.common.setLowDetail()
@@ -333,7 +334,7 @@ class drawit:
                         return
                     outputfile = inputbase + '.' + outputtype
                     self.common.setOutputFile(outputfile)
-                    self.common.printStartFile(inputfile)
+                    self.common.printStartFile(inputfile, self.common.getCloudType().upper())
                 else:
                     self.common.printInvalidInput()
                     return
@@ -626,7 +627,7 @@ class drawit:
                            sys_exit()
                         outputfile = inputbase + '.' + outputtype
                         self.common.setOutputFile(outputfile)
-                        self.common.printStartFile(inputfile)
+                        self.common.printStartFile(inputfile, self.common.getCloudType().upper())
                     else:
                         self.common.printInvalidInput()
                         sys_exit()

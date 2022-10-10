@@ -18,7 +18,7 @@ from sys import stderr
 from common.options import Options
 
 class Messages:
-   startFileMessage = 'Starting with input from %s'
+   startFileMessage = 'Starting with input from %s for %s Cloud'
    startRIASKeyMessage = 'Starting with input from RIAS for API Key %s in %s'
    startRIASAccountMessage = 'Starting with input from RIAS for API Key %s and Account ID %s in %s'
    doneToolMessage = 'Completed with output to %s'
@@ -99,8 +99,8 @@ class Messages:
       sys.stdout.write(*args)
 
 
-   def printStartFile(self, filename):
-      self.printError(self.startFileMessage % filename)
+   def printStartFile(self, filename, cloud):
+      self.printError(self.startFileMessage % (filename, cloud))
 
    def printStartRIASwithKey(self, apikey, region):
       self.printError(self.startRIASKeyMessage % (apikey, region))
