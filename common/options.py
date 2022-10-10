@@ -16,6 +16,10 @@
 from enum import Enum
 from os import path
 
+class CloudType(Enum):
+   IBM = 'ibm'
+   AWS = 'aws'
+
 class RunMode(Enum):
    BATCH = 'batch'
    GUI = 'gui'
@@ -54,6 +58,7 @@ class Regions(Enum):
    USSOUTH = 'us-south'
 
 class Options:
+   cloudType = None
    runMode = None
    inputType = None
    accountID = ''
@@ -68,6 +73,7 @@ class Options:
    outputShapes = None
 
    def __init__(self, toolName):
+      self.cloudType = CloudType.IBM
       self.runMode = RunMode.BATCH
       self.inputType = InputType.JSON
       self.region = Regions.USSOUTH
@@ -114,6 +120,24 @@ class Options:
 
    def setTablesFolder(self, value):
       self.tablesFolder = value
+
+   def isIBMCloud(self):
+      return self.cloudType == CloudType.IBM
+
+   def isAWSCloud(self):
+      return self.cloudType == CloudType.AWS
+
+   def isIBMCloud(self, value):
+      return value == CloudType.IBM.value
+
+   def isAWSCloud(self, value):
+      return value == CloudType.AWS.value
+
+   def getCloudType(self):
+      return self.cloudType
+
+   def setCloudType(self, value):
+      self.cloudType = value
 
    def isBatchMode(self):
       return self.runMode == RunMode.BATCH

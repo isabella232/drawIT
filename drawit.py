@@ -156,6 +156,12 @@ class Config:
     def setRunMode(self,runmode):
         self.set("runmode",runmode)
 
+    def getCloudType(self):
+        return self.get("cloudtype")
+    
+    def setCloudType(self,cloudtype):
+        self.set("cloudtype",cloudtype)
+
 class drawit:
    title = None
    top = None
@@ -192,6 +198,7 @@ class drawit:
         outputsplit = config.getOutputSplit()
         outputshapes = config.getOutputShapes()
         runmode = config.getRunMode()
+        cloudtype = config.getCloudType()
         region = config.getRegion()
       
         parser = ArgumentParser(description='drawIT')
@@ -206,8 +213,8 @@ class drawit:
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
         parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
 
-        #parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, or web")
         parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, web, or terraform")
+        parser.add_argument('-cloud', dest='cloudtype', default=self.common.getCloudType().value, help="ibm or aws")
         parser.add_argument('--version', action='version', version='drawIT ' + self.common.getToolCopyright().split(' ')[1])
         
         args = parser.parse_args()
@@ -234,6 +241,7 @@ class drawit:
         outputsplit = args.outputsplit.lower()
         outputshapes = args.outputshapes.lower()
         runmode = args.runmode.lower()
+        cloudtype = args.cloudtype.lower()
 
         self.common.setAPIKey(apikey)
         self.common.setAccountID(accountid)

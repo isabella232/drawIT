@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from sys import exit
+
 from json import loads as json_load
 from yaml import load as yaml_load
 from yaml import FullLoader as yaml_FullLoader
@@ -51,10 +53,10 @@ class File:
       self.data = json_load(stream.read())
       if not 'vpcs' in self.data:
          self.common.printMissingVPCs(self.common.getInputFile())
-         sys.exit()
+         exit()
       elif not 'subnets' in self.data:
          self.common.printMissingSubnets(self.common.getInputFile())
-         sys.exit()
+         exit()
 
       if self.data != None:
          self.normalizeData()
@@ -66,10 +68,10 @@ class File:
       self.data = yaml_load(stream, Loader=yaml_FullLoader)
       if not 'vpcs' in self.data:
          self.common.printMissingVPCs(self.common.getInputFile())
-         sys.exit()
+         exit()
       elif not 'subnets' in self.data:
          self.common.printMissingSubnets(self.common.getInputFile())
-         sys.exit()
+         exit()
 
       if self.data != None:
          self.normalizeData()

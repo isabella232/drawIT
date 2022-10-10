@@ -141,6 +141,24 @@ class Common:
    def setTablesFolder(self, value):
       self.options.setTablesFolder(value)
 
+   def isIBMCloud(self):
+      return self.options.isIBMCloud()
+
+   def isAWSCloud(self):
+      return self.options.isAWSCloud()
+
+   def isIBMCloud(self, value):
+      return self.options.isIBMCloud(value)
+
+   def isAWSCloud(self, value):
+      return self.options.isAWSCloud(value)
+
+   def getCloudType(self):
+      return self.options.getCloudType()
+
+   def setCloudType(self, value):
+      self.options.setCloudType(value)
+
    def isBatchMode(self):
       return self.options.isBatchMode()
 
