@@ -9,5 +9,5 @@ then
       python3 ../drawit.py -mode batch -region us-south -key $1
    fi
 else
-   python3 ../drawit.py -mode gui -input drawit.json -output downloads
+   python3 ../drawit.py -mode gui -input ibmvpc.json -output downloads
 fi
