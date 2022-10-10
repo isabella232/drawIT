@@ -1,7 +1,7 @@
 {
   "vpcs": [
     {
-      "name": "drawIT",
+      "name": "VPC",
       "id": "vpc-id",
       "type": "VPC",
       "region": "us-south",
