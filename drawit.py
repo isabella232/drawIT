@@ -492,7 +492,7 @@ class drawit:
                 "US East",
                 "US South"]
             eRegion = StringVar(self.top)
-            eRegion.set("US South")
+            eRegion.set("All")
             Label(frame, text="Region").grid(row=row)
             #regionmenu = tkinter.OptionMenu(self.top, eRegion, *regionoptions).grid(row=row)
             regionmenu = OptionMenu(frame, eRegion, *regionoptions).grid(row=row, column=1, sticky=W + E)

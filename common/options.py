@@ -76,7 +76,7 @@ class Options:
       self.cloudType = CloudType.IBM
       self.runMode = RunMode.BATCH
       self.inputType = InputType.JSON
-      self.region = Regions.USSOUTH
+      self.region = Regions.ALL
       self.outputFile = 'output'
       self.outputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
       self.tablesFolder ='tables'
