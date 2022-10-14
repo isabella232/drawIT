@@ -299,6 +299,12 @@ class Common:
    def printMissingSubnets(self, *args):
       self.messages.printMissingSubnets(*args)
 
+   def printMissingVPCs(self):
+      self.messages.printMissingVPCs()
+
+   def printMissingSubnets(self):
+      self.messages.printMissingSubnets()
+
    def printMissingZone(self, subnetname):
       self.messages.printMissingZone(subnetname)
 

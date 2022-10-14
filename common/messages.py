@@ -58,8 +58,8 @@ class Messages:
    warningMissingMemberMessage = '(Warning) No member defined for Load Balancer: %s, Pool: %s'
    processingSheetMessage = 'Processing %s'
 
-   missingVPCs = 'No VPCs were found'
-   missingSubnets = 'No Subnets were found'
+   missingVPCsMessage = '(Error) No VPCs were found'
+   missingSubnetsMessage = '(Error) No Subnets were found'
 
    options = None
 
@@ -114,10 +114,16 @@ class Messages:
       self.printError(self.doneToolMessage % outputfolder)
 
    def printMissingVPCs(self, *args):
-      self.printError(self.invalidMessage % (self.missingVPCs, *args))
+      self.printError(self.invalidMessage % (self.missingVPCsMessage, *args))
 
    def printMissingSubnets(self, *args):
-      self.printError(self.invalidMessage % (self.missingSubnets, *args))
+      self.printError(self.invalidMessage % (self.missingSubnetsMessage, *args))
+
+   def printMissingVPCs(self):
+      self.printError(self.missingVPCsMessage)
+
+   def printMissingSubnets(self):
+      self.printError(self.missingSubnetsMessage)
 
    def printInvalidMode(self, mode):
       self.printError(self.invalidModeMessage % mode)

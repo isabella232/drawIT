@@ -45,11 +45,20 @@ class Load:
       else:
          self.data.loadYAML()
 
-      self.analyzeInstances()
-      self.analyzeContainers()
-      self.analyzeLoadBalancers()
+      if self.analyzeData():
+         self.analyzeInstances()
+         self.analyzeContainers()
+         self.analyzeLoadBalancers()
 
       return
+
+   def analyzeData(self):
+      vpcs = self.data.getVPCs()
+      if vpcs.empty:
+          self.common.printMissingVPCs() 
+          return False
+      else:
+          return True
 
    def analyzeInstances(self):
       subnets = self.data.getSubnets()
