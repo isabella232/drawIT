@@ -68,14 +68,14 @@ class Diagram:
 
       publicx = 0
       publicy = 0
-      publicnode = self.shapes.buildPublicNetwork(names['publicNetworkName'], '', names['publicNetworkName'], '', publicx, publicy, points['publicNetworkWidth'], points['publicNetworkHeight'])
-      publicusernode = self.shapes.buildUser(names['publicUserName'], names['publicNetworkName'], names['publicUserName'], '', points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'])
-      publicinternetnode = self.shapes.buildInternet(names['internetName'], names['publicNetworkName'], names['internetName'], '', points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
+      publicnode = self.shapes.buildPublicNetwork(names['publicNetworkName'], '', names['publicNetworkName'], '', publicx, publicy, points['publicNetworkWidth'], points['publicNetworkHeight'], None)
+      publicusernode = self.shapes.buildUser(names['publicUserName'], names['publicNetworkName'], names['publicUserName'], '', points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'], None)
+      publicinternetnode = self.shapes.buildInternet(names['internetName'], names['publicNetworkName'], names['internetName'], '', points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'], None)
 
       enterprisex = 0
       enterprisey = points['publicNetworkHeight'] + points['groupSpace']
-      enterprisenode = self.shapes.buildEnterpriseNetwork(names['enterpriseNetworkName'], '', names['enterpriseNetworkName'], '', enterprisex, enterprisey, points['enterpriseNetworkWidth'], points['enterpriseNetworkHeight'])
-      enterpriseusernode = self.shapes.buildUser(names['enterpriseUserName'], names['enterpriseNetworkName'], names['enterpriseUserName'], '', points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'])
+      enterprisenode = self.shapes.buildEnterpriseNetwork(names['enterpriseNetworkName'], '', names['enterpriseNetworkName'], '', enterprisex, enterprisey, points['enterpriseNetworkWidth'], points['enterpriseNetworkHeight'], None)
+      enterpriseusernode = self.shapes.buildUser(names['enterpriseUserName'], names['enterpriseNetworkName'], names['enterpriseUserName'], '', points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'], None)
 
       if self.common.isLogicalShapes():
          cloudname = "Cloud"
@@ -99,13 +99,13 @@ class Diagram:
             #SAVE publiclink = genlink(user, publicname, publicname, internetname)
             #SAVE links.append(publiclink)
 
-            publicuserlink = self.shapes.buildDoubleArrow('', names['internetName'], names['publicUserName'])
+            publicuserlink = self.shapes.buildDoubleArrow('', names['internetName'], names['publicUserName'], None)
             links.append(publicuserlink)
 
             nodes.append(enterprisenode)
             nodes.append(enterpriseusernode)
 
-            enterpriseuserlink = self.shapes.buildDoubleArrow('', names['internetName'], names['enterpriseUserName'])
+            enterpriseuserlink = self.shapes.buildDoubleArrow('', names['internetName'], names['enterpriseUserName'], None)
             links.append(enterpriseuserlink)
 
             vpcname = vpcframe['name']
@@ -122,10 +122,10 @@ class Diagram:
             height = points['iconHeight']
 
             routername = vpcname + '-router'
-            routernode = self.shapes.buildRouter(routername, vpcid, '', '', points['firstIconX'], points['firstIconY'], width, height)
+            routernode = self.shapes.buildRouter(routername, vpcid, '', '', points['firstIconX'], points['firstIconY'], width, height, None)
             nodes.append(routernode)
 
-            routerlink = self.shapes.buildDoubleArrow('', routername, names['internetName'])
+            routerlink = self.shapes.buildDoubleArrow('', routername, names['internetName'], None)
             links.append(routerlink)
 
             width = 0
@@ -143,7 +143,7 @@ class Diagram:
             x = points['groupSpace']
             y = points['topSpace']
 
-            vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height) 
+            vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
             nodes.append(vpcnode)
 
             x = 30
@@ -152,7 +152,7 @@ class Diagram:
             width = width + (points['groupSpace'] * 2)
             height = height + (points['topSpace'] + points['groupSpace'])
 
-            regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height)
+            regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height, None)
             nodes.append(regionnode)
          
             lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
@@ -168,7 +168,7 @@ class Diagram:
             width = width + (points['groupSpace'] * 2)
             height = height + (points['topSpace'] + points['groupSpace'])
 
-            cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height)
+            cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height, None)
             nodes.append(cloudnode)
    
             data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
@@ -188,7 +188,7 @@ class Diagram:
       for regionzonename in vpcTable[vpcid]:
          count = count + 1
 
-         zonelink = self.shapes.buildLink(regionzonename + ':' + vpcname, regionzonename, vpcname)
+         zonelink = self.shapes.buildLink(regionzonename + ':' + vpcname, regionzonename, vpcname, None)
          #SAVE links.append(zonelink)
 
          subnetnodes, subnetlinks, subnetvalues, subnetsizes = self.buildSubnets(regionzonename, vpcname)
@@ -220,7 +220,7 @@ class Diagram:
          else:
             zonecidr = ''
 
-         zonenode = self.shapes.buildZone(regionzonename, vpcid, regionzonename, zonecidr, x, y, width, height)
+         zonenode = self.shapes.buildZone(regionzonename, vpcid, regionzonename, zonecidr, x, y, width, height, None)
          nodes.append(zonenode)
          sizes.append([width, height])
 
@@ -266,7 +266,7 @@ class Diagram:
          regionname = zonename.split(':')[0]
          regionzonename = regionname + ':' + subnetzonename;
 
-         zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname)
+         zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname, None)
          #SAVE links.append(zonelink)
 
          if 'public_gateway.id' in subnetframe:
@@ -338,7 +338,7 @@ class Diagram:
 
          saveheight += height
 
-         subnetnode = self.shapes.buildSubnet(subnetid, regionzonename, subnetname, subnetcidr, x, y, width, height) 
+         subnetnode = self.shapes.buildSubnet(subnetid, regionzonename, subnetname, subnetcidr, x, y, width, height, None) 
          nodes.append(subnetnode)
          sizes.append([width, height])
 
@@ -352,35 +352,35 @@ class Diagram:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'])
+               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'], None)
                nodes.append(publicnode)
 
                routername = vpcname + '-router'
-               publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid)
+               publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
                links.append(publiclink1)
-               publiclink2 = self.shapes.buildSingleArrow('', subnetpubgateid, routername)
+               publiclink2 = self.shapes.buildSingleArrow('', subnetpubgateid, routername, None)
                links.append(publiclink2)
 
             elif subnetpubgateid != save_subnetpubgateid:
                self.common.printInvalidPublicGateway(subnetpubgateid)
 
             else:
-               publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid)
+               publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
                links.append(publiclink1)
 
          if vpngateip != None:
              # TODO Handle >1 VPN gateways.
             #vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'])
-            vpngatenode = self.shapes.buildVPNGateway(vpngatename, subnetvpcid, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'])
+            vpngatenode = self.shapes.buildVPNGateway(vpngatename, subnetvpcid, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'], None)
             nodes.append(vpngatenode)
                 
             routername = vpcname + '-router'
             # This link can be assumed since everything inside zone is accesible by the VPN.
             #vpnlink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
             #links.append(vpnlink1)
-            vpnlink1 = self.shapes.buildDoubleArrow('', regionzonename, vpngatename)
+            vpnlink1 = self.shapes.buildDoubleArrow('', regionzonename, vpngatename, None)
             links.append(vpnlink1)
-            vpnlink2 = self.shapes.buildDoubleArrow('', vpngatename, routername)
+            vpnlink2 = self.shapes.buildDoubleArrow('', vpngatename, routername, None)
             links.append(vpnlink2)
 
             # label, source, target 
@@ -492,19 +492,23 @@ class Diagram:
 
          bastion = False
 
+         meta = {'Operating-System': osdetails,
+                 'Instance-Profile': profiledetails,
+                 'Boot-Volume': storagedetails} 
+
          if self.common.isLowDetail(): 
             if instancename.lower().find("bastion") != -1:
                bastion = True
-               instancenode = self.shapes.buildInstanceBastion(nicid, subnetid, instancename, nicips, x, y, width, height)
+               instancenode = self.shapes.buildInstanceBastion(nicid, subnetid, instancename, nicips, x, y, width, height, meta)
             else:
-               instancenode = self.shapes.buildInstance(nicid, subnetid, instancename, nicips, x, y, width, height)
+               instancenode = self.shapes.buildInstance(nicid, subnetid, instancename, nicips, x, y, width, height, meta)
             sizes.append([extrawidth, extraheight])
          else:
             if instancename.lower().find("bastion") != -1:
                bastion = True
-               instancenode = self.shapes.buildInstanceBastionExpandedStack(nicid, subnetid, instancename, nicips, x, y, width, height)
+               instancenode = self.shapes.buildInstanceBastionExpandedStack(nicid, subnetid, instancename, nicips, x, y, width, height, meta)
             else:
-               instancenode = self.shapes.buildInstanceExpandedStack(nicid, subnetid, instancename, nicips, x, y, width, height)
+               instancenode = self.shapes.buildInstanceExpandedStack(nicid, subnetid, instancename, nicips, x, y, width, height, meta)
             sizes.append([width, height])
 
          nodes.append(instancenode)
@@ -524,15 +528,15 @@ class Diagram:
             stackheight = 16
             stackx = 16
             stacky = 64
-            osnode = self.shapes.buildItemOS(nicid + ':' + osdetails, nicid, osdetails, '', stackx, stacky, stackwidth, stackheight)
+            osnode = self.shapes.buildItemOS(nicid + ':' + osdetails, nicid, osdetails, '', stackx, stacky, stackwidth, stackheight, None)
             profilenode = ''
             if profiledetails[0] == 'b':
-               profilenode = self.shapes.buildItemProfileBalanced(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
+               profilenode = self.shapes.buildItemProfileBalanced(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
             elif profiledetails[0] == 'c' or profiledetails[0] == 'g':
-               profilenode = self.shapes.buildItemProfileCompute(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
+               profilenode = self.shapes.buildItemProfileCompute(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
             elif profiledetails[0] == 'm' or profiledetails[0] == 'u' or profiledetails[1] == 'v':
-               profilenode = self.shapes.buildItemProfileMemory(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight)
-            storagenode = self.shapes.buildItemBlockStorage(nicid + ':' + storagedetails, nicid, storagedetails, '', stackx, stacky + 48, stackwidth, stackheight)
+               profilenode = self.shapes.buildItemProfileMemory(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
+            storagenode = self.shapes.buildItemBlockStorage(nicid + ':' + storagedetails, nicid, storagedetails, '', stackx, stacky + 48, stackwidth, stackheight, None)
 
             nodes.append(osnode)
             nodes.append(profilenode)
@@ -551,7 +555,7 @@ class Diagram:
             routername = vpcname + '-router'
             iplabel =  "fip:" + nicfipip
             #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
-            fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername)
+            fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
             links.append(fiplink)
 
       return nodes, links, values, sizes
@@ -635,14 +639,14 @@ class Diagram:
                            if not lbgenerated:
                               lbgenerated = True
                               # TODO Handle spacing for > 1 LBs.
-                              lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'])
+                              lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'], None)
                               nodes.append(lbnode)
                               routername = vpcname + '-router'
-                              lblink = self.shapes.buildDoubleArrow('', lbid, routername)
+                              lblink = self.shapes.buildDoubleArrow('', lbid, routername, None)
                               links.append(lblink)
                 
                            # label, source, target
-                           instancelink = self.shapes.buildDoubleArrow('', nicid, lbid)
+                           instancelink = self.shapes.buildDoubleArrow('', nicid, lbid, None)
                            links.append(instancelink)
 
       return nodes, links

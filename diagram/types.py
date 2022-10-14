@@ -32,7 +32,7 @@ class Types:
       self.elements = Elements(self.data)
       random.seed(time.time())
 
-   def buildLink(self, label, source, target):
+   def buildLink(self, label, source, target, meta):
       data = {'header': {'id': self.common.compress(str(random.random())),
                          'label': ''},
               'cell':   {'style': 'endArrow=none;dashed=1;',
@@ -44,7 +44,7 @@ class Types:
                          'as': 'geometry'}}
       return data
 
-   def buildSolidLink(self, label, source, target):
+   def buildSolidLink(self, label, source, target, meta):
       data = {'header': {'id': self.common.compress(str(random.random())),
                          'label': label},
               'cell':   {'style': 'endArrow=none;dashed=0;',
@@ -56,7 +56,7 @@ class Types:
                          'as': 'geometry'}}
       return data
 
-   def buildSolidLinkSingleArrow(self, label, source, target):
+   def buildSolidLinkSingleArrow(self, label, source, target, meta):
          data = {'header': {'id': self.common.compress(str(random.random())),
                             'label': label},
                  'cell':   {'style': 'endArrow=block;endFill=1;dashed=0;',
@@ -68,7 +68,7 @@ class Types:
                             'as': 'geometry'}}
          return data
 
-   def buildSolidLinkDoubleArrow(self, label, source, target):
+   def buildSolidLinkDoubleArrow(self, label, source, target, meta):
       data = {'header': {'id': self.common.compress(str(random.random())),
                          'label': label},
               'cell':   {'style': 'endArrow=block;endFill=1;startArrow=block;startFill=1;dashed=0;',
@@ -80,7 +80,7 @@ class Types:
                          'as': 'geometry'}}
       return data
 
-   def buildNode(self, shapename, id, parentid, name, subname, badgetext, x, y, width, height):
+   def buildNode(self, shapename, id, parentid, name, subname, badgetext, x, y, width, height, meta):
       outputshapes = self.common.getOutputShapes().value
       shape = ibmshapes[shapename]
       shapetype = shape['format']
@@ -101,21 +101,30 @@ class Types:
       if len(subname) > 0:
          subname = self.common.truncateText(subname, labelsize, '<br>')
 
-      data = {'header': {'id': id,
-                         'label': shapelabel,
-                         'placeholders': '1'},
-              'cell':   {'parent': parentid,
-                         'style': style,
-                         'vertex': '1'},
-              'geo':    {'x': str(x),
-                         'y': str(y),
-                         'width': str(width),
-                         'height': str(height),
-                         'as': 'geometry'},
-              'props':  {'Badge-Text': badgetext,
-                         'Icon-Name': iconname,
-                         'Primary-Label': name,
-                         'Secondary-Text': subname}}
+      header = {'id': id,
+                'label': shapelabel,
+                'placeholders': '1'}
+
+      cell = {'parent': parentid,
+              'style': style,
+              'vertex': '1'}
+
+      geo = {'x': str(x),
+             'y': str(y),
+             'width': str(width),
+             'height': str(height),
+             'as': 'geometry'}
+
+      props = {'Badge-Text': badgetext,
+               'Icon-Name': iconname,
+               'Primary-Label': name,
+               'Secondary-Text': subname}
+
+      if meta != None:
+         props.update(meta)
+
+      data = {'header': header, 'cell': cell, 'geo': geo, 'props':  props}
+
       return data
 
    def buildValue(self, id, parentid, name, parent, subname, text, x, y, width, height):

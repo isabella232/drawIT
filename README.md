@@ -1,5 +1,5 @@
 # drawIT
-Build IT architecture diagrams from code or tooling.
+Create IT architecture diagrams from code or tooling.
 
 ## Overview
 
