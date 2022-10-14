@@ -329,6 +329,12 @@ class Common:
    def printInvalidVPC(self, vpcid):
       self.messages.printInvalidVPC(vpcid)
 
+   def printMissingPool(self, lbname):
+      self.messages.printMissingPool(lbname)
+
+   def printMissingMember(self, lbname, lbpoolname):
+      self.messages.printMissingMember(lbname, lbpoolname)
+
    def printRequestMessage(self, code, message, href):
       self.messages.printRequestMessage(code, message, href)
 

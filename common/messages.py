@@ -54,6 +54,8 @@ class Messages:
    missingImageProfileMessage = '(Error) Image profile %s not found'
    missingVolumeProfileMessage = '(Error) Volume profile %s not found'
    missingValueMessage = '(Error) Required value missing on column %s, row %s'
+   warningMissingPoolMessage = '(Warning) No pool defined for Load Balancer: %s'
+   warningMissingMemberMessage = '(Warning) No member defined for Load Balancer: %s, Pool: %s'
    processingSheetMessage = 'Processing %s'
 
    missingVPCs = 'No VPCs were found'
@@ -146,6 +148,12 @@ class Messages:
 
    def printMissingZone(self, subnetname):
       self.printError(self.missingZoneReferenceMessage % subnetname)
+
+   def printMissingPool(self, lbname):
+      self.printError(self.warningMissingPoolMessage % lbname)
+
+   def printMissingMember(self, lbname, lbpoolname):
+      self.printError(self.warningMissingMemberMessage % (lbname, lbpoolname))
 
    def printRequestMessage(self, code, message, href):
       self.printError(self.invalidRequestMessage % (code, message, href))

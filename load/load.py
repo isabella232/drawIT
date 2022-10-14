@@ -147,11 +147,16 @@ class Load:
       if not lbdata.empty:
          for lbindex, lb in lbdata.iterrows():
             lbid = lb['id']
-            lbname = lb['name']
-            #lblisteners = lb['listeners']
-            lbpools = lb['pools']
 
+            lbname = lb['name']
             if lbname[0:4] == 'kube':
+               continue
+
+            #lblisteners = lb['listeners']
+
+            lbpools = lb['pools']
+            if not hasattr(lbpools, '__iter__'):
+               self.common.printMissingPool(lbname)
                continue
 
             vpcid = None
@@ -168,6 +173,10 @@ class Load:
                   lbpoolid = extended['lbid']
 
                   poolmemberdata = []
+
+                  if not 'members' in lbpool:
+                     self.common.printMissingMember(lbname, lbpoolname)
+                     continue
 
                   lbmembers = lbpool['members']
                   if lbmembers:
