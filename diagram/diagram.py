@@ -110,10 +110,15 @@ class Diagram:
 
             vpcname = vpcframe['name']
 
+            if 'availabilityZones' in vpcframe:
+               zonecidrs = vpcframe['availabilityZones']
+            else:
+               zonecidrs = None
+
             #SAVE if not vpcname.startswith('jww'):
             #SAVE    continue
          
-            zonenodes, zonelinks, zonevalues, zonesizes = self.buildZones(vpcname, vpcid)
+            zonenodes, zonelinks, zonevalues, zonesizes = self.buildZones(vpcname, vpcid, zonecidrs)
             nodes = nodes + zonenodes
             links = links + zonelinks
             values = values + zonevalues
@@ -175,13 +180,16 @@ class Diagram:
 
       return data
 
-   def buildZones(self, vpcname, vpcid):
+   def buildZones(self, vpcname, vpcid, zonecidrs):
       nodes = []
       links = []
       values = []
       sizes = []
 
       saveheight = 0
+
+      if zonecidrs != None:
+         zonecidrsarray = zonecidrs.split(',')
 
       vpcTable = self.data.getVPCTable() 
       count = 0
@@ -217,6 +225,19 @@ class Diagram:
          zonename = regionzonename.split(':')[1]
          if zonename in zoneCIDRs:
             zonecidr = zoneCIDRs[zonename]
+         elif zonecidrs != None:
+           pos1 = zonecidrs.find(zonename)
+           if pos1 != -1:
+              namestart = zonecidrs[pos1:]
+              pos2 = namestart.find('=')
+              if pos2 != 1:
+                 cidrstart = namestart[pos2+1:] 
+                 zonearray = cidrstart.split(',')
+                 zonecidr = zonearray[0]
+              else:
+                 zonecidr = ''
+           else:
+              zonecidr = ''
          else:
             zonecidr = ''
 
