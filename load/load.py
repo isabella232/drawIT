@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from math import isnan
+
 from common.common import Common
 from load.file import File
 from load.rias import RIAS
@@ -60,6 +62,28 @@ class Load:
          self.common.printMissingVPCs() 
          return False
 
+      for vpcindex, vpcframe in vpcs.iterrows():
+         vpcname = vpcframe['name']
+         if vpcname == '':
+            vpcname = None
+
+         vpcid = vpcframe['id']
+         if vpcid == '':
+            vpcid = None
+
+         # If invalid vpc name/id then print error and drop vpc.
+         if vpcname == None or vpcid == None:
+            self.common.printInvalidVPC("(unknown)")
+            vpcs.drop(index=vpcindex, inplace=True)
+            continue
+
+      self.data.setVPCs(vpcs)
+
+      # Recheck if no vpcs then print error and exit.
+      if vpcs.empty:
+         self.common.printMissingVPCs() 
+         return False
+
       # If no subnets then print error and exit.
       subnets = self.data.getSubnets()
       if subnets.empty:
@@ -68,16 +92,30 @@ class Load:
 
       for subnetindex, subnetframe in subnets.iterrows():
          subnetname = subnetframe['name']
+         if subnetname == '':
+            subnetname = None
+
          subnetid = subnetframe['id']
+         if subnetid == '':
+            subnetid = None
+
+         # If invalid subnet name/id then print error and drop subnet.
+         if subnetname == None or subnetid == None:
+            self.common.printInvalidSubnet("(unknown)")
+            subnets.drop(index=subnetindex, inplace=True)
+            continue
+
          self.instanceTable[subnetid] = []
 
          # If invalid zone then print error and drop subnet.
          # TODO Add check for valid zone.
          subnetzonename = subnetframe['zone.name']
+         if subnetzonename == '':
+            subnetzonename = None
+
          if subnetzonename == None:
             self.common.printMissingZone(subnetname)
-            subnets.drop(subnetindex)
-            self.data.setSubnets(subnets)
+            subnets.drop(index=subnetindex, inplace=True)
             continue
 
          subnetvpcid = subnetframe['vpc.id']
@@ -88,8 +126,9 @@ class Load:
          if len(vpcframe) == 0:
             self.common.printInvalidVPC(subnetvpcid)
             subnets.drop(index=subnetindex, inplace=True)
-            self.data.setSubnets(subnets)
             continue
+
+      self.data.setSubnets(subnets)
 
       # Recheck if no subnets then print error and exit.
       if subnets.empty:
