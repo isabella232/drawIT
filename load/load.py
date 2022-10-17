@@ -49,16 +49,54 @@ class Load:
          self.analyzeInstances()
          self.analyzeContainers()
          self.analyzeLoadBalancers()
+         return True
 
-      return
+      return False
 
    def analyzeData(self):
+      # If no VPCs then print error and exit.
       vpcs = self.data.getVPCs()
       if vpcs.empty:
-          self.common.printMissingVPCs() 
-          return False
-      else:
-          return True
+         self.common.printMissingVPCs() 
+         return False
+
+      # If no subnets then print error and exit.
+      subnets = self.data.getSubnets()
+      if subnets.empty:
+         self.common.printMissingSubnets() 
+         return False
+
+      for subnetindex, subnetframe in subnets.iterrows():
+         subnetname = subnetframe['name']
+         subnetid = subnetframe['id']
+         self.instanceTable[subnetid] = []
+
+         # If invalid zone then print error and drop subnet.
+         # TODO Add check for valid zone.
+         subnetzonename = subnetframe['zone.name']
+         if subnetzonename == None:
+            self.common.printMissingZone(subnetname)
+            subnets.drop(subnetindex)
+            self.data.setSubnets(subnets)
+            continue
+
+         subnetvpcid = subnetframe['vpc.id']
+         subnetvpcname = subnetframe['vpc.name']
+
+         # If invalid vpc then print error and drop subnet.
+         vpcframe = self.findRow(vpcs, 'id', subnetvpcid)
+         if len(vpcframe) == 0:
+            self.common.printInvalidVPC(subnetvpcid)
+            subnets.drop(index=subnetindex, inplace=True)
+            self.data.setSubnets(subnets)
+            continue
+
+      # Recheck if no subnets then print error and exit.
+      if subnets.empty:
+         self.common.printMissingSubnets() 
+         return False
+
+      return True
 
    def analyzeInstances(self):
       subnets = self.data.getSubnets()

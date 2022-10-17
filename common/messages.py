@@ -21,7 +21,8 @@ class Messages:
    startFileMessage = 'Starting with input from %s for %s Cloud'
    startRIASKeyMessage = 'Starting with input from RIAS for API Key %s in %s'
    startRIASAccountMessage = 'Starting with input from RIAS for API Key %s and Account ID %s in %s'
-   doneToolMessage = 'Completed with output to %s'
+   doneMessage = 'Completed with output to %s'
+   exitMessage = 'Completed with no output'
    startProviderMessage = 'Generating Resource for provider'
    backupDirectoryMessage = 'Backed up existing output directory %s to %s'
    warningMessage = '(Warning) %s'
@@ -111,7 +112,10 @@ class Messages:
       self.printError(self.startRIASAccountMessage % (apikey, accountid, region))
 
    def printDone(self, outputfolder):
-      self.printError(self.doneToolMessage % outputfolder)
+      self.printError(self.doneMessage % outputfolder)
+
+   def printExit(self):
+      self.printError(self.exitMessage)
 
    def printMissingVPCs(self, *args):
       self.printError(self.invalidMessage % (self.missingVPCsMessage, *args))

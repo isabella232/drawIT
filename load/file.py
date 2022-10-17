@@ -165,11 +165,17 @@ class File:
    def getSubnets(self):
       return self.subnets
 
+   def setSubnets(self, subnets):
+      self.subnets = subnets
+
    def getVolumes(self):
       return self.volumes
 
    def getVPCs(self):
       return self.vpcs
+
+   def setVPCs(self, vpcs):
+      self.vpcs = vpcs
 
    def getVPNGateways(self):
       return self.vpnGateways

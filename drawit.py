@@ -340,11 +340,12 @@ class drawit:
                     return
 
                 self.data = Load(self.common)
-                self.data.loadData()
-                self.diagram = Diagram(self.common, self.data)
-                self.diagram.buildDiagrams()
-
-                self.common.printDone(outputfolder)
+                if self.data.loadData():
+                    self.diagram = Diagram(self.common, self.data)
+                    self.diagram.buildDiagrams()
+                    self.common.printDone(outputfolder)
+                else:
+                    self.common.printExit()
 
                 done = True
 
@@ -633,11 +634,12 @@ class drawit:
                         sys_exit()
 
                     self.data = Load(self.common)
-                    self.data.loadData()
-                    self.diagram = Diagram(self.common, self.data)
-                    self.diagram.buildDiagrams()
-
-                    self.common.printDone(outputfolder)
+                    if self.data.loadData():
+                        self.diagram = Diagram(self.common, self.data)
+                        self.diagram.buildDiagrams()
+                        self.common.printDone(outputfolder)
+                    else:
+                        self.common.printExit()
 
                     self.statusText.set("Completed")
 
@@ -676,9 +678,9 @@ class drawit:
             self.common.setOutputFile(outputfile)
 
             self.data = Load(self.common)
-            self.data.loadData()
-            self.diagram = Diagram(self.common, self.data)
-            self.diagram.buildDiagrams()
+            if self.data.loadData():
+                self.diagram = Diagram(self.common, self.data)
+                self.diagram.buildDiagrams()
 
         elif self.common.isTerraformMode(args.runmode):
             from terraform.common.common import Common

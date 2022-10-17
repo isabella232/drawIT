@@ -293,6 +293,9 @@ class Common:
    def printDone(self, outputfolder):
       self.messages.printDone(outputfolder)
 
+   def printExit(self):
+      self.messages.printExit()
+
    def printMissingVPCs(self, *args):
       self.messages.printMissingVPCs(*args)
 
