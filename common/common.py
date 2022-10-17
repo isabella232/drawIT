@@ -1,6 +1,6 @@
 # @file common.py
 #
-# Copyright IBM Corporation 2022
+# Copyright contributors to the drawIT project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ from common.messages import Messages
 class Common:
    toolName = 'drawIT'
    toolVersion = '0.5.19'
-   toolCopyright = toolName + ' ' + toolVersion + ' - Copyright IBM Corporation'
+   toolCopyright = toolName + ' ' + toolVersion + ' - Copyright contributors to the drawIT project'
 
    options = None
    messages = None
