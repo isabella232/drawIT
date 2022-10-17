@@ -20,8 +20,8 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.19'
-   toolCopyright = toolName + ' ' + toolVersion + ' - Copyright contributors to the drawIT project'
+   toolVersion = '0.5.25'
+   toolTitle = toolName + ' ' + toolVersion
 
    options = None
    messages = None
@@ -358,5 +358,5 @@ class Common:
    def getToolVersion(self):
       return self.toolVersion
 
-   def getToolCopyright(self):
-      return self.toolCopyright
+   def getToolTitle(self):
+      return self.toolTitle

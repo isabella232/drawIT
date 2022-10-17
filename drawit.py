@@ -173,7 +173,7 @@ class drawit:
 
    def __init__(self):
       self.common = Common()
-      self.title = self.common.getToolCopyright().split(' - ')
+      self.title = self.common.getToolTitle()
 
    #SAVE top = tkinter.Tk()
    #top.title(TOOLNAME + ' ' + COPYRIGHT.split(' ')[2])
@@ -215,7 +215,7 @@ class drawit:
 
         parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, web, or terraform")
         parser.add_argument('-cloud', dest='cloudtype', default=self.common.getCloudType().value, help="ibm or aws")
-        parser.add_argument('--version', action='version', version='drawIT ' + self.common.getToolCopyright().split(' ')[1])
+        parser.add_argument('--version', action='version', version='drawIT ' + self.common.getToolTitle().split(' ')[1])
         
         args = parser.parse_args()
 
@@ -353,8 +353,8 @@ class drawit:
             from tkinter import Button, Entry, filedialog, Frame, IntVar, Label, messagebox, OptionMenu, StringVar, Tk, LEFT, RIGHT, TOP, E, W, X
         
             self.top = Tk()
-            self.title = self.common.getToolCopyright().split(' - ')
-            self.top.title(self.title[0])
+            self.title = self.common.getToolTitle()
+            self.top.title(self.title)
             self.statusText = StringVar()
 
             frame = Frame(self.top)
