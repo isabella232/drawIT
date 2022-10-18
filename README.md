@@ -56,11 +56,11 @@ Using GUI:
 - Region
 - Availability Zone
   - Public Gateway
-  - VPN Gateway (JSON/YAML)
+  - VPN Gateway
 - VPC
   - Implicit Router
-  - Private & Public ALB (JSON/YAML)
-  - Private & Public NLB (JSON/YAML)
+  - Private & Public ALB
+  - Private & Public NLB
 - Subnet
   - Instances
   - Floating IP
@@ -69,6 +69,13 @@ Using GUI:
   - User
 - Enterprise Network
   - User 
+
+## References
+
+- [IT Architecture Diagrams](https://github.com/IBM/it-architecture-diagrams)
+- [buildIT](https://github.com/IBM/buildit)
+- [Code Pattern](https://github.com/IBM/codepattern-multitier-vpc)
+- [Schematics](https://cloud.ibm.com/docs/schematics?topic=schematics-getting-started&interface=ui)
 
 ## License
 

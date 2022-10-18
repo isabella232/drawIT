@@ -111,14 +111,14 @@ class Diagram:
             vpcname = vpcframe['name']
 
             if 'availabilityZones' in vpcframe:
-               zonecidrs = vpcframe['availabilityZones']
+               usercidrs = vpcframe['availabilityZones']
             else:
-               zonecidrs = None
+               usercidrs = None
 
             #SAVE if not vpcname.startswith('jww'):
             #SAVE    continue
          
-            zonenodes, zonelinks, zonevalues, zonesizes = self.buildZones(vpcname, vpcid, zonecidrs)
+            zonenodes, zonelinks, zonevalues, zonesizes = self.buildZones(vpcname, vpcid, usercidrs)
             nodes = nodes + zonenodes
             links = links + zonelinks
             values = values + zonevalues
@@ -180,16 +180,13 @@ class Diagram:
 
       return data
 
-   def buildZones(self, vpcname, vpcid, zonecidrs):
+   def buildZones(self, vpcname, vpcid, usercidrs):
       nodes = []
       links = []
       values = []
       sizes = []
 
       saveheight = 0
-
-      if zonecidrs != None:
-         zonecidrsarray = zonecidrs.split(',')
 
       vpcTable = self.data.getVPCTable() 
       count = 0
@@ -223,13 +220,12 @@ class Diagram:
          saveheight += height
 
          zonename = regionzonename.split(':')[1]
-         if zonename in zoneCIDRs:
-            zonecidr = zoneCIDRs[zonename]
-         elif zonecidrs != None:
-           pos1 = zonecidrs.find(zonename)
+
+         if usercidrs != None:
+           pos1 = usercidrs.find(zonename)
            if pos1 != -1:
-              namestart = zonecidrs[pos1:]
-              pos2 = namestart.find('=')
+              namestart = usercidrs[pos1:]
+              pos2 = namestart.find(':')
               if pos2 != 1:
                  cidrstart = namestart[pos2+1:] 
                  zonearray = cidrstart.split(',')
@@ -238,6 +234,8 @@ class Diagram:
                  zonecidr = ''
            else:
               zonecidr = ''
+         elif zonename in zoneCIDRs:
+            zonecidr = zoneCIDRs[zonename]
          else:
             zonecidr = ''
 
