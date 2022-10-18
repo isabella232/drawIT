@@ -72,8 +72,8 @@ Using GUI:
 
 ## References
 
-- [IT Architecture Diagrams](https://github.com/IBM/it-architecture-diagrams)
 - [buildIT](https://github.com/IBM/buildit)
+- [IT Architecture Diagrams](https://github.com/IBM/it-architecture-diagrams)
 - [Code Pattern](https://github.com/IBM/codepattern-multitier-vpc)
 - [Schematics](https://cloud.ibm.com/docs/schematics?topic=schematics-getting-started&interface=ui)
 
