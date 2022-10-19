@@ -136,7 +136,7 @@ icons = {
     'zone': {'logical': 'data--center', 'prescribed': 'data--center'},  
     'sim-card': {'logical': 'sim-card', 'prescribed': 'sim-card'},  
     'chat--operational': {'logical': 'chat--operational', 'prescribed': 'chat--operational'},  
-    'ibm-cloud--vpc-endpoints': {'logical': 'ibm-cloud--vpc-endpoints', 'prescribed': 'ibm-cloud--vpc-endpoints'},  
+    'vpcEndpoint': {'logical': 'ibm-cloud--vpc-endpoints', 'prescribed': 'ibm-cloud--vpc-endpoints'},  
     'id-management': {'logical': 'id-management', 'prescribed': 'id-management'},  
     'gui--management': {'logical': 'gui--management', 'prescribed': 'gui--management'},  
     'virtual-desktop': {'logical': 'virtual-desktop', 'prescribed': 'virtual-desktop'},  
