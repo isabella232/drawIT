@@ -119,6 +119,9 @@ ibmshapes = {
     'user': {'format': formats['actor'], 'layout': layouts['collapsed'], 'color': collapsedColors['actor'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['user']},
     'vpnConnection': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['vpnConnection']},
     'vpnGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['vpnGateway']},
+    'vpcEndpoint': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['vpcEndpoint']},
+
+    # Item Icons
 
     # Item Icons
     'operatingSystem': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['linux']},
