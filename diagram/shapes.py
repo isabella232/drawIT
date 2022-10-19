@@ -115,10 +115,6 @@ class Shapes:
       node = self.types.buildNode('vpnGateway', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
-   def buildVPCEndpoint(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('vpcEndpoint', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
-      return node
-
    def buildItemOS(self, id, parentid, name, subname, x, y, width, height, meta):
       node = self.types.buildNode('operatingSystem', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node

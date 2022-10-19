@@ -222,12 +222,18 @@ class Diagram:
          zonename = regionzonename.split(':')[1]
 
          if usercidrs != None:
-            for usercidr in usercidrs:
-                if zonename == usercidr['name']:
-                   zonecidr = usercidr['addressPrefix']
-                   break
-                else:
-                   zonecidr = ''
+           pos1 = usercidrs.find(zonename)
+           if pos1 != -1:
+              namestart = usercidrs[pos1:]
+              pos2 = namestart.find(':')
+              if pos2 != 1:
+                 cidrstart = namestart[pos2+1:] 
+                 zonearray = cidrstart.split(',')
+                 zonecidr = zonearray[0]
+              else:
+                 zonecidr = ''
+           else:
+              zonecidr = ''
          elif zonename in zoneCIDRs:
             zonecidr = zoneCIDRs[zonename]
          else:

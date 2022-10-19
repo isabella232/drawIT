@@ -1,0 +1,334 @@
+{
+  "vpcs": [
+    {
+      "name": "VPC 1 (Management)",
+      "id": "vpc1-id",
+      "type": "VPC",
+      "region": "Region A",
+      "availabilityZones": "Zone 1:10.10.0.0/18,Zone 2:10.20.0.0/18,Zone 3:10.30.0.0/18",
+      "networkACLId": "acl-id",
+      "securityGroupId": "security-id",
+      "resourceGroupId": "resource-id"
+    },
+
+    {
+      "name": "VPC 2 (Workload)",
+      "id": "vpc2-id",
+      "type": "VPC",
+      "region": "Region A",
+      "availabilityZones": "Zone 1:10.40.0.0/18,Zone 2:10.50.0.0/18,Zone 3:10.60.0.0/18",
+      "networkACLId": "acl-id",
+      "securityGroupId": "security-id",
+      "resourceGroupId": "resource-id"
+    }
+  ],
+
+  "subnets": [
+    {
+      "name": "Management Subnet",
+      "id": "mgmt-subnet-vpc1-zone1-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 1",
+      "bandwidthMb": 1000,
+      "subnet": "10.10.10.0/24",
+      "vpcId": "vpc1-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "VPE Subnet",
+      "id": "vpe-subnet-vpc1-zone1-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 1",
+      "bandwidthMb": 1000,
+      "subnet": "10.10.20.0/24",
+      "vpcId": "vpc1-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "VPN Subnet",
+      "id": "vpn-subnet-vpc1-zone1-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 1",
+      "bandwidthMb": 1000,
+      "subnet": "10.10.30.0/24",
+      "vpcId": "vpc1-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "Management Subnet",
+      "id": "mgmt-subnet-vpc1-zone2-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 2",
+      "bandwidthMb": 1000,
+      "subnet": "10.20.10.0/24",
+      "vpcId": "vpc1-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "VPE Subnet",
+      "id": "vpe-subnet-vpc1-zone2-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 2",
+      "bandwidthMb": 1000,
+      "subnet": "10.20.20.0/24",
+      "vpcId": "vpc1-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "Management Subnet",
+      "id": "mgmt-subnet-vpc1-zone3-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 3",
+      "bandwidthMb": 1000,
+      "subnet": "10.30.10.0/24",
+      "vpcId": "vpc1-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "VPE Subnet",
+      "id": "vpe-subnet-vpc1-zone3-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 3",
+      "bandwidthMb": 1000,
+      "subnet": "10.30.20.0/24",
+      "vpcId": "vpc1-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "Management Subnet",
+      "id": "mgmt-subnet-vpc2-zone1-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 1",
+      "bandwidthMb": 1000,
+      "subnet": "10.40.10.0/24",
+      "vpcId": "vpc2-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "VPE Subnet",
+      "id": "vpe-subnet-vpc2-zone1-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 1",
+      "bandwidthMb": 1000,
+      "subnet": "10.40.20.0/24",
+      "vpcId": "vpc2-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "VPN Subnet",
+      "id": "vpn-subnet-vpc2-zone1-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 1",
+      "bandwidthMb": 1000,
+      "subnet": "10.40.30.0/24",
+      "vpcId": "vpc2-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "Management Subnet",
+      "id": "mgmt-subnet-vpc2-zone2-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 2",
+      "bandwidthMb": 1000,
+      "subnet": "10.50.10.0/24",
+      "vpcId": "vpc2-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "VPE Subnet",
+      "id": "vpe-subnet-vpc2-zone2-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 2",
+      "bandwidthMb": 1000,
+      "subnet": "10.50.20.0/24",
+      "vpcId": "vpc2-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "Management Subnet",
+      "id": "mgmt-subnet-vpc2-zone3-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 3",
+      "bandwidthMb": 1000,
+      "subnet": "10.60.10.0/24",
+      "vpcId": "vpc2-id",
+      "networkACL": "acl-id"
+    },
+
+    {
+      "name": "VPE Subnet",
+      "id": "vpe-subnet-vpc2-zone3-id",
+      "type": "Network",
+      "region": "Region A",
+      "availabilityZone": "Zone 3",
+      "bandwidthMb": 1000,
+      "subnet": "10.60.20.0/24",
+      "vpcId": "vpc2-id",
+      "networkACL": "acl-id"
+    }
+  ],
+
+  "floatingIPs": [
+    {
+      "name": "Fip1",
+      "id": "fip1-id",
+      "type": "FloatingIP",
+      "region": "Region A",
+      "address": "52.118.146.152",
+      "resourceGroupId": "resource-id",
+      "target": {
+        "name": "Instance1-Nic1",
+        "id": "instance1-nic1-id",
+        "resourceType": "network_interface",
+        "ipv4Address": "10.240.0.0"
+      }
+    },
+
+    {
+      "name": "Fip2",
+      "id": "fip2-id",
+      "type": "FloatingIP",
+      "region": "Region A",
+      "address": "52.118.146.154",
+      "resourceGroupId": "resource-id",
+      "target": {
+        "name": "Instance3-Nic1",
+        "id": "instance3-nic1-id",
+        "resourceType": "network_interface",
+        "ipv4Address": "10.240.64.0"
+      }
+    },
+
+    {
+      "name": "Fip3",
+      "id": "fip3-id",
+      "type": "FloatingIP",
+      "region": "Region A",
+      "address": "52.118.146.156",
+      "resourceGroupId": "resource-id",
+      "target": {
+        "name": "Instance5-Nic1",
+        "id": "instance5-nic1-id",
+        "resourceType": "network_interface",
+        "ipv4Address": "10.240.128.0"
+      }
+    },
+
+    {
+      "name": "FipGateway1",
+      "id": "fipgateway1-id",
+      "type": "FloatingIP",
+      "region": "Region A",
+      "address": "52.118.146.162",
+      "resourceGroupId": "resource-id",
+      "target": {
+        "name": "gateway1",
+        "id": "gateway1-id",
+        "resourceType": "public_gateway",
+        "ipv4Address": null
+      }
+    },
+
+    {
+      "name": "FipGateway2",
+      "id": "fipgateway2-id",
+      "type": "FloatingIP",
+      "region": "Region A",
+      "address": "52.118.146.164",
+      "resourceGroupId": "resource-id",
+      "target": {
+        "name": "gateway2",
+        "id": "gateway2-id",
+        "resourceType": "public_gateway",
+        "ipv4Address": null
+      }
+    },
+
+    {
+      "name": "FipGateway3",
+      "id": "fipgateway3-id",
+      "type": "FloatingIP",
+      "region": "Region A",
+      "address": "52.118.146.166",
+      "resourceGroupId": "resource-id",
+      "target": {
+        "name": "gateway3",
+        "id": "gateway3-id",
+        "resourceType": "public_gateway",
+        "ipv4Address": null
+      }
+    }
+  ],
+
+  "publicGateways": [
+    {
+      "name": "Gateway1",
+      "id": "gateway1-id",
+      "type": "PublicGateway",
+      "region": "Region A",
+      "vpcId": "mgmt-vpc-id",
+      "floatingIP": "52.118.146.162",
+      "floatingIPReference": {
+        "id": "fipgateway1-id",
+        "ip": "52.118.146.162",
+        "name": null
+      },
+      "resourceGroupId": "resource-id"
+    },
+
+    {
+      "name": "Gateway2",
+      "id": "gateway2-id",
+      "type": "PublicGateway",
+      "region": "Region A",
+      "vpcId": "mgmt-vpc-id",
+      "floatingIP": "52.118.145.164",
+      "floatingIPReference": {
+        "id": "fipgateway2-id",
+        "ip": "52.118.146.164",
+        "name": null
+      },
+      "resourceGroupId": "resource-id"
+    },
+
+    {
+      "name": "Gateway3",
+      "id": "gateway3-id",
+      "type": "PublicGateway",
+      "region": "Region A",
+      "vpcId": "mgmt-vpc-id",
+      "floatingIP": "52.118.146.166",
+      "floatingIPReference": {
+        "id": "fipgateway3-id",
+        "ip": "52.118.146.166",
+        "name": null
+      },
+      "resourceGroupId": "resource-id"
+    }
+  ]
+}  
