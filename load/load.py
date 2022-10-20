@@ -194,9 +194,11 @@ class Load:
             self.common.printMissingZone(subnetname)
             continue
 
-         #lastindex = subnetzonename.rfind('-')
-         #subnetregion = subnetzonename[0:lastindex]
-         subnetregion = subnetframe['region']
+         if self.common.isInputRIAS():
+            lastindex = subnetzonename.rfind('-')
+            subnetregion = subnetzonename[0:lastindex]
+         else:
+            subnetregion = subnetframe['region']
          subnetvpcid = subnetframe['vpc.id']
          subnetvpcname = subnetframe['vpc.name']
 
