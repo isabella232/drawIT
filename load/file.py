@@ -52,10 +52,12 @@ class File:
       stream = open(self.common.getInputFile(), 'r', encoding='utf-8-sig')
       self.data = json_load(stream.read())
       if not 'vpcs' in self.data:
-         self.common.printMissingVPCs(self.common.getInputFile())
+         #self.common.printMissingVPCs(self.common.getInputFile())
+         self.common.printMissingVPCs()
          exit()
       elif not 'subnets' in self.data:
-         self.common.printMissingSubnets(self.common.getInputFile())
+         #self.common.printMissingSubnets(self.common.getInputFile())
+         self.common.printMissingSubnets()
          exit()
 
       if self.data != None:

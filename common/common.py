@@ -296,12 +296,6 @@ class Common:
    def printExit(self):
       self.messages.printExit()
 
-   def printMissingVPCs(self, *args):
-      self.messages.printMissingVPCs(*args)
-
-   def printMissingSubnets(self, *args):
-      self.messages.printMissingSubnets(*args)
-
    def printMissingVPCs(self):
       self.messages.printMissingVPCs()
 

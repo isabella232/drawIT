@@ -117,12 +117,6 @@ class Messages:
    def printExit(self):
       self.printError(self.exitMessage)
 
-   def printMissingVPCs(self, *args):
-      self.printError(self.invalidMessage % (self.missingVPCsMessage, *args))
-
-   def printMissingSubnets(self, *args):
-      self.printError(self.invalidMessage % (self.missingSubnetsMessage, *args))
-
    def printMissingVPCs(self):
       self.printError(self.missingVPCsMessage)
 

@@ -109,10 +109,12 @@ class RIAS:
          self.common.printRequestMessage(error['code'], error['message'], request) 
          sys_exit()
       elif group == "vpcs" and rawdata['total_count'] == 0:
-         self.common.printMissingVPCs('href=' + request)
+         #self.common.printMissingVPCs('href=' + request)
+         self.common.printMissingVPCs()
          sys_exit()
       elif group == "subnets" and rawdata['total_count'] == 0:
-         self.commonprintMissingSubnets('href=' + request)
+         #self.commonprintMissingSubnets('href=' + request)
+         self.commonprintMissingSubnets()
          sys_exit()
       data = rawdata[group]
       #if group == "vpcs":
