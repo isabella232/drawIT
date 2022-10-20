@@ -475,7 +475,10 @@
       "availabilityZone": "Zone 1",
       "vpcId": "mgmt-vpc-id",
       "resourceGroupId": "",
-      "securityGroups": []
+      "securityGroups": [],
+      "ips": [
+        {"address": "10.10.20.4", "networkId": "mgmt-subnet-vpe-zone1-id"}
+      ]
     },
 
     {
@@ -486,7 +489,66 @@
       "availabilityZone": "Zone 2",
       "vpcId": "mgmt-vpc-id",
       "resourceGroupId": "",
-      "securityGroups": []
+      "securityGroups": [],
+      "ips": [
+        {"address": "10.20.20.4", "networkId": "mgmt-subnet-vpe-zone2-id"}
+      ]
+    },
+
+    {
+      "name": "Virtual Private Endpoint",
+      "id": "mgmt-vpe-zone3-id",
+      "type": "VPE",
+      "region": "Region",
+      "availabilityZone": "Zone 3",
+      "vpcId": "mgmt-vpc-id",
+      "resourceGroupId": "",
+      "securityGroups": [],
+      "ips": [
+        {"address": "10.30.20.4", "networkId": "mgmt-subnet-vpe-zone3-id"}
+      ]
+    },
+
+    {
+      "name": "Virtual Private Endpoint",
+      "id": "work-vpe-zone1-id",
+      "type": "VPE",
+      "region": "Region",
+      "availabilityZone": "Zone 1",
+      "vpcId": "work-vpc-id",
+      "resourceGroupId": "",
+      "securityGroups": [],
+      "ips": [
+        {"address": "10.40.20.4", "networkId": "work-subnet-vpe-zone1-id"}
+      ]
+    },
+
+    {
+      "name": "Virtual Private Endpoint",
+      "id": "work-vpe-zone2-id",
+      "type": "VPE",
+      "region": "Region",
+      "availabilityZone": "Zone 2",
+      "vpcId": "work-vpc-id",
+      "resourceGroupId": "",
+      "securityGroups": [],
+      "ips": [
+        {"address": "10.50.20.4", "networkId": "work-subnet-vpe-zone2-id"}
+      ]
+    },
+
+    {
+      "name": "Virtual Private Endpoint",
+      "id": "work-vpe-zone3-id",
+      "type": "VPE",
+      "region": "Region",
+      "availabilityZone": "Zone 3",
+      "vpcId": "work-vpc-id",
+      "resourceGroupId": "",
+      "securityGroups": [],
+      "ips": [
+        {"address": "10.50.20.4", "networkId": "work-subnet-vpe-zone3-id"}
+      ]
     }
   ]
 }  
