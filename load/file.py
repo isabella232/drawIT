@@ -39,6 +39,7 @@ class File:
    vpcs = {}
    vpnGateways = {}
    vpnConnections = {}
+   vpeGateways = {}
    types = []
    data = {}
    common = None
@@ -89,6 +90,7 @@ class File:
       self.floatingIPs = json_normalize(self.data['floatingIPs'] if ('floatingIPs' in self.data) else json_normalize({}))
       self.vpnGateways = json_normalize(self.data['vpnGateways'] if ('vpnGateways' in self.data) else json_normalize({}))
       self.vpnConnections = json_normalize(self.data['vpnConnections'] if ('vpnConnections' in self.data) else json_normalize({}))
+      self.vpeGateways = json_normalize(self.data['vpes'] if ('vpes' in self.data) else json_normalize({}))
       self.loadBalancers = json_normalize(self.data['loadBalancers'] if ('loadBalancers' in self.data) else json_normalize({}))
       self.loadBalancerListeners = json_normalize(self.data['loadBalancerListeners'] if ('loadBalancerListeners' in self.data) else json_normalize({}))
       self.loadBalancerPools = json_normalize(self.data['loadBalancerPools'] if ('loadBalancerPools' in self.data) else json_normalize({}))
@@ -184,3 +186,6 @@ class File:
 
    def getVPNConnections(self):
       return self.vpnConnections
+
+   def getVPEGateways(self):
+      return self.vpeGateways

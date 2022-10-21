@@ -332,6 +332,9 @@ class Common:
    def printInvalidVPC(self, vpcid):
       self.messages.printInvalidVPC(vpcid)
 
+   def printInvalidVPE(self, vpeid):
+      self.messages.printInvalidVPE(vpeid)
+
    def printMissingPool(self, lbname):
       self.messages.printMissingPool(lbname)
 

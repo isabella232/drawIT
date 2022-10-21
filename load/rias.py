@@ -39,12 +39,13 @@ class RIAS:
    vpcs = {}
    vpnGateways = {}
    vpnConnections = {}
+   vpeGateways = {}
    data = {}
    types = []
    common = None
 
    def __init__(self, common):
-      #self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      #self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'endpoint_gateways', 'load_balancers']
       self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips']
       self.common = common
       return
@@ -80,7 +81,7 @@ class RIAS:
       version = '2022-07-05'
       endpoint = 'https://' + self.common.getRegion().value + '.iaas.cloud.ibm.com'
       if len(accountID) > 0:
-         if group == 'vpn_gateways' or group == 'load_balancers':
+         if group == 'vpn_gateways' or group == 'endpoint_gateways' or group == 'load_balancers':
             # Exit for now as causing error with other accounts:
             #    not_authorized: The request is not authorized. href=https://us-south.iaas.cloud.ibm.com/v1/vpn_gateways
             return {}
@@ -302,6 +303,7 @@ class RIAS:
       self.floatingIPs = json_normalize(self.data['floating_ips'] if ('floating_ips' in self.data) else json_normalize({}))
       self.vpnGateways = json_normalize(self.data['vpn_gateways'] if ('vpn_gateways' in self.data) else json_normalize({}))
       self.vpnConnections = json_normalize({})
+      self.vpeGateways = json_normalize(self.data['vpes'] if ('vpes' in self.data) else json_normalize({}))
       self.loadBalancers = json_normalize(self.data['load_balancers'] if ('load_balancers' in self.data) else json_normalize({}))
       #self.loadBalancerListeners = json_normalize(self.data['load_balancer_listeners'] if ('load_balancer_listeners' in self.data) else json_normalize({}))
       #self.loadBalancerPools = json_normalize(self.data['load_balancer_pools'] if ('load_balancer_pools' in self.data) else json_normalize({}))
@@ -365,6 +367,9 @@ class RIAS:
 
    def getVPNConnections(self):
       return self.vpnConnections
+
+   def getVPEGateways(self):
+      return self.vpeGateways
 
    def getInstance(self, id):
       return self.findRow(self.instances, 'id', id)

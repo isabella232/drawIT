@@ -22,6 +22,7 @@ from load.rias import RIAS
 class Load:
    instanceTable = {} # Table of instances ordered by subnet that shows instances within each subnet.
    nicTable = {}      # Table of nics ordered by subnet+instance that shows nics for same instance in different subnets.
+   iconTable = {}     # Table of icons ordered by subnet that shows icons within each subnet.
    regionTable = {}   # Table of vpcs ordered by region that shows vpcs within each region.
    vpcTable = {}      # Table of zones ordered by vpc that shows zones with each vpc.
    zoneTable = {}     # Table of subnets ordered by vpc+zone that shows subnets within each zone.
@@ -48,8 +49,9 @@ class Load:
          self.data.loadYAML()
 
       if self.analyzeData():
-         self.analyzeInstances()
          self.analyzeContainers()
+         self.analyzeInstances()
+         self.analyzeIcons()
          self.analyzeLoadBalancers()
          return True
 
@@ -137,50 +139,6 @@ class Load:
 
       return True
 
-   def analyzeInstances(self):
-      subnets = self.data.getSubnets()
-
-      # Create empty instanceTable.
-      if not subnets.empty:
-         for subnetindex, subnetframe in subnets.iterrows():
-            subnetid = subnetframe['id']
-            self.instanceTable[subnetid] = []
-
-      # Add instances to instanceTable ordered by subnetid, nics to nicTable ordered by subnetid+instanceid.
-      instances = self.data.getInstances()
-      if not instances.empty:
-         for instanceindex, instanceframe in instances.iterrows():
-            instanceid = instanceframe['id']
-            #instancename = instanceframe['name']
-            #vpcname = instanceframe['vpc.name'] if self.common.isInputRIAS() else instanceframe['vpcName']
-            #vpcid = instanceframe['vpc.id'] if self.common.isInputRIAS() else instanceframe['vpcId']
-            #zonename = instanceframe['zone.name'] if self.common.isInputRIAS() else instanceframe['availabilityZone']
-            #regionname = zonename[:len(zonename) - 2] if self.common.isInputRIAS() else instanceframe['availabilityZone']
-
-            addedInstance = False
-            nics = instanceframe['network_interfaces'] if self.common.isInputRIAS() else instanceframe['networkInterfaces']
-            if nics:
-               for nicframe in nics:
-                  #nicname = nicframe['name']
-                  #nicid = nicframe['id']
-                  nicsubnetid = nicframe['subnet']['id'] if self.common.isInputRIAS() else nicframe['networkId']
-
-                  if nicsubnetid in self.instanceTable:
-                     if addedInstance == False:
-                        self.instanceTable[nicsubnetid].append(instanceframe)
-                        addedInstance = True
-                  else:
-                     self.common.printInvalidSubnet(nicsubnetid)
-                     continue
-
-                  dualid = nicsubnetid + ':' + instanceid
-                  if dualid in self.nicTable:
-                     self.nicTable[dualid].append(nicframe)
-                  else:
-                     self.nicTable[dualid] = [nicframe]
-
-      return
-
    def analyzeContainers(self):
       subnets = self.data.getSubnets()
 
@@ -225,6 +183,84 @@ class Load:
          else:
             self.regionTable[subnetregion] = [subnetvpcid]
 
+      return
+
+   def analyzeInstances(self):
+      subnets = self.data.getSubnets()
+
+      # Create empty instanceTable.
+      if not subnets.empty:
+         for subnetindex, subnetframe in subnets.iterrows():
+            subnetid = subnetframe['id']
+            self.instanceTable[subnetid] = []
+
+      # Add instances to instanceTable ordered by subnetid, nics to nicTable ordered by subnetid+instanceid.
+      instances = self.data.getInstances()
+      if not instances.empty:
+         for instanceindex, instanceframe in instances.iterrows():
+            instanceid = instanceframe['id']
+            #instancename = instanceframe['name']
+            #vpcname = instanceframe['vpc.name'] if self.common.isInputRIAS() else instanceframe['vpcName']
+            #vpcid = instanceframe['vpc.id'] if self.common.isInputRIAS() else instanceframe['vpcId']
+            #zonename = instanceframe['zone.name'] if self.common.isInputRIAS() else instanceframe['availabilityZone']
+            #regionname = zonename[:len(zonename) - 2] if self.common.isInputRIAS() else instanceframe['availabilityZone']
+
+            addedInstance = False
+            nics = instanceframe['network_interfaces'] if self.common.isInputRIAS() else instanceframe['networkInterfaces']
+            if nics:
+               for nicframe in nics:
+                  #nicname = nicframe['name']
+                  #nicid = nicframe['id']
+                  nicsubnetid = nicframe['subnet']['id'] if self.common.isInputRIAS() else nicframe['networkId']
+
+                  if nicsubnetid in self.instanceTable:
+                     if addedInstance == False:
+                        self.instanceTable[nicsubnetid].append(instanceframe)
+                        addedInstance = True
+                  else:
+                     self.common.printInvalidSubnet(nicsubnetid)
+                     continue
+
+                  dualid = nicsubnetid + ':' + instanceid
+                  if dualid in self.nicTable:
+                     self.nicTable[dualid].append(nicframe)
+                  else:
+                     self.nicTable[dualid] = [nicframe]
+
+      return
+
+   def analyzeIcons(self):
+      subnets = self.data.getSubnets()
+
+      # Create empty iconTable.
+      if not subnets.empty:
+         for subnetindex, subnetframe in subnets.iterrows():
+            subnetid = subnetframe['id']
+            self.iconTable[subnetid] = []
+
+      # Add vpes to iconTable ordered by subnetid.
+      vpes = self.data.getVPEGateways()
+      if not vpes.empty:
+         for vpeindex, vpeframe in vpes.iterrows():
+            vpeips = vpeframe['ips']
+
+            for vpeip in vpeips:
+               if not 'id' in vpeip:
+                  self.common.printInvalidVPE(vpeip)
+                  continue
+
+               vpeid = vpeip['id']
+               vpeaddress = vpeip['address']
+               vpesubnetid = vpeip['networkId']
+
+               addedVPE = False
+               if vpesubnetid in self.iconTable:
+                   if addedVPE == False:
+                       self.iconTable[vpesubnetid].append(vpeip)
+                       addedVPE = True
+                   else:
+                       self.common.printInvalidSubnet(vpesubnetid)
+                       continue
       return
 
    def analyzeLoadBalancers(self):
@@ -376,6 +412,9 @@ class Load:
 
    def getVPNConnections(self):
       return self.data.getVPNConnections()
+
+   def getVPEGateways(self):
+      return self.data.getVPEGateways()
 
    def getInstance(self, id):
       return self.findRow(self.data.getInstances(), 'id', id)

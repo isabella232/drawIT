@@ -44,6 +44,7 @@ class Messages:
    invalidInstanceReferenceMessage = '(Error) Invalid Instance reference: %s'
    invalidSubnetReferenceMessage = '(Error) Invalid Subnet reference: %s'
    invalidVPCReferenceMessage = '(Error) Invalid VPC reference: %s'
+   invalidVPEReferenceMessage = '(Error) Invalid VPE reference: %s'
    invalidLBReferenceMessage = '(Error) Invalid Load Balancer reference: %s'
    invalidLBPrivateMessage = '(Warning) Private Load Balancer not implemented: %s'
    missingInputMessage = '(Error) No input files found: %s'
@@ -149,6 +150,9 @@ class Messages:
 
    def printInvalidVPC(self, vpcid):
       self.printError(self.invalidVPCReferenceMessage % vpcid)
+
+   def printInvalidVPE(self, vpeid):
+      self.printError(self.invalidVPEReferenceMessage % vpeid)
 
    def printMissingZone(self, subnetname):
       self.printError(self.missingZoneReferenceMessage % subnetname)
