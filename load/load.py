@@ -246,7 +246,8 @@ class Load:
 
             for vpeip in vpeips:
                if not 'id' in vpeip:
-                  self.common.printInvalidVPE(vpeip)
+                  # Readd message when vpe support is complete.
+                  #self.common.printInvalidVPE(vpeip)
                   continue
 
                vpeid = vpeip['id']
