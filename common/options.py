@@ -41,6 +41,12 @@ class OutputDetail(Enum):
    MEDIUM = 'medium'
    HIGH = 'high'
 
+class OutputLayout(Enum):
+   HORIZONTAL = 'horizontal'
+   VERTICAL = 'vertical'
+   HORIZONTAL_NOLINK = 'horizontalnolink'
+   VERTICAL_NOLINK = 'verticalnolink'
+
 class OutputShapes(Enum):
    LOGICAL = 'logical'
    PRESCRIBED = 'prescribed'
@@ -71,6 +77,7 @@ class Options:
    outputSplit = None
    outputDetail = None
    outputShapes = None
+   outputLayout = None
 
    def __init__(self, toolName):
       self.cloudType = CloudType.IBM
@@ -83,6 +90,7 @@ class Options:
       self.outputSplit = OutputSplit.SINGLE
       self.outputDetail = OutputDetail.LOW
       self.outputShapes = OutputShapes.PRESCRIBED
+      self.outputLayout = OutputLayout.VERTICAL
       return
 
    def getAccountID(self):
@@ -258,6 +266,33 @@ class Options:
 
    def setOutputShapes(self, value):
       self.outputShapes = value
+
+   def setHorizontalLayout(self):
+      self.outputLayout = OutputLayout.HORIZONTAL
+
+   def setVerticalLayout(self):
+      self.outputLayout = OutputLayout.VERTICAL
+
+   def setHorizontalNoLinkLayout(self):
+      self.outputLayout = OutputLayout.HORIZONTAL_NOLINK
+
+   def setVerticalNoLinkLayout(self):
+      self.outputLayout = OutputLayout.VERTICAL_NOLINK
+
+   def isHorizontalLayout(self):
+      return self.outputLayout == OutputLayout.HORIZONTAL or self.outputLayout == OutputLayout.HORIZONTAL_NOLINK
+
+   def isVerticalLayout(self):
+      return self.outputLayout == OutputLayout.VERTICAL or self.outputLayout == OutputLayout.VERTICAL_NOLINK
+
+   def isLinkLayout(self):
+      return self.outputLayout != OutputLayout.HORIZONTAL_NOLINK and self.outputLayout != OutputLayout.VERTICAL_NOLINK
+
+   def getOutputLayout(self):
+      return self.outputLayout
+
+   def setOutputLayout(self, value):
+      self.outputLayout = value
 
    def setAllRegion(self):
       self.region = Regions.ALL

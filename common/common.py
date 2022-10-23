@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.33'
+   toolVersion = '0.5.35'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -278,6 +278,33 @@ class Common:
 
    def setOutputShapes(self, value):
       self.options.setOutputShapes(value)
+
+   def setHorizontalLayout(self):
+      self.options.setHorizontalLayout()
+
+   def setVerticalLayout(self):
+      self.options.setVerticalLayout()
+
+   def setHorizontalNoLinkLayout(self):
+      self.options.setHorizontalNoLinkLayout()
+
+   def setVerticalNoLinkLayout(self):
+      self.options.setVerticalNoLinkLayout()
+
+   def isHorizontalLayout(self):
+      return self.options.isHorizontalLayout()
+
+   def isVerticalLayout(self):
+      return self.options.isVerticalLayout()
+
+   def isLinkLayout(self):
+      return self.options.isLinkLayout()
+
+   def getOutputLayout(self):
+      return self.options.getOutputLayout()
+
+   def setOutputLayout(self, value):
+      self.options.setOutputLayout(value)
 
    # Messages
 

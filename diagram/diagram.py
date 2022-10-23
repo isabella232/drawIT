@@ -66,16 +66,17 @@ class Diagram:
    def buildVPCs(self, regionname, regionvalues):
       data = {}
 
-      publicx = 0
-      publicy = 0
-      publicnode = self.shapes.buildPublicNetwork(names['PublicNetworkName'], '', names['PublicNetworkName'], '', publicx, publicy, points['PublicNetworkWidth'], points['PublicNetworkHeight'], None)
-      publicusernode = self.shapes.buildUser(names['PublicUserName'], names['PublicNetworkName'], names['PublicUserName'], '', points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
-      publicinternetnode = self.shapes.buildInternet(names['InternetName'], names['PublicNetworkName'], names['InternetName'], '', points['SecondIconX'], points['SecondIconY'], points['IconWidth'], points['IconHeight'], None)
+      if self.common.isLinkLayout():
+         publicx = 0
+         publicy = 0
+         publicnode = self.shapes.buildPublicNetwork(names['PublicNetworkName'], '', names['PublicNetworkName'], '', publicx, publicy, points['PublicNetworkWidth'], points['PublicNetworkHeight'], None)
+         publicusernode = self.shapes.buildUser(names['PublicUserName'], names['PublicNetworkName'], names['PublicUserName'], '', points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
+         publicinternetnode = self.shapes.buildInternet(names['InternetName'], names['PublicNetworkName'], names['InternetName'], '', points['SecondIconX'], points['SecondIconY'], points['IconWidth'], points['IconHeight'], None)
 
-      enterprisex = 0
-      enterprisey = points['PublicNetworkHeight'] + points['GroupSpace']
-      enterprisenode = self.shapes.buildEnterpriseNetwork(names['EnterpriseNetworkName'], '', names['EnterpriseNetworkName'], '', enterprisex, enterprisey, points['EnterpriseNetworkWidth'], points['EnterpriseNetworkHeight'], None)
-      enterpriseusernode = self.shapes.buildUser(names['EnterpriseUserName'], names['EnterpriseNetworkName'], names['EnterpriseUserName'], '', points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
+         enterprisex = 0
+         enterprisey = points['PublicNetworkHeight'] + points['GroupSpace']
+         enterprisenode = self.shapes.buildEnterpriseNetwork(names['EnterpriseNetworkName'], '', names['EnterpriseNetworkName'], '', enterprisex, enterprisey, points['EnterpriseNetworkWidth'], points['EnterpriseNetworkHeight'], None)
+         enterpriseusernode = self.shapes.buildUser(names['EnterpriseUserName'], names['EnterpriseNetworkName'], names['EnterpriseUserName'], '', points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
 
       if self.common.isLogicalShapes():
          cloudname = "Cloud"
@@ -92,21 +93,22 @@ class Diagram:
             links = []
             values = []
             
-            nodes.append(publicnode)
-            nodes.append(publicusernode)
-            nodes.append(publicinternetnode)
+            if self.common.isLinkLayout():
+               nodes.append(publicnode)
+               nodes.append(publicusernode)
+               nodes.append(publicinternetnode)
 
-            #SAVE publiclink = genlink(user, publicname, publicname, internetname)
-            #SAVE links.append(publiclink)
+               #SAVE publiclink = genlink(user, publicname, publicname, internetname)
+               #SAVE links.append(publiclink)
 
-            publicuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['PublicUserName'], None)
-            links.append(publicuserlink)
+               publicuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['PublicUserName'], None)
+               links.append(publicuserlink)
 
-            nodes.append(enterprisenode)
-            nodes.append(enterpriseusernode)
+               nodes.append(enterprisenode)
+               nodes.append(enterpriseusernode)
 
-            enterpriseuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['EnterpriseUserName'], None)
-            links.append(enterpriseuserlink)
+               enterpriseuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['EnterpriseUserName'], None)
+               links.append(enterpriseuserlink)
 
             vpcname = vpcframe['name']
 
@@ -126,12 +128,13 @@ class Diagram:
             width = points['IconWidth']
             height = points['IconHeight']
 
-            routername = vpcname + '-router'
-            routernode = self.shapes.buildRouter(routername, vpcid, '', '', points['FirstIconX'], points['FirstIconY'], width, height, None)
-            nodes.append(routernode)
+            if self.common.isLinkLayout():
+               routername = vpcname + '-router'
+               routernode = self.shapes.buildRouter(routername, vpcid, '', '', points['FirstIconX'], points['FirstIconY'], width, height, None)
+               nodes.append(routernode)
 
-            routerlink = self.shapes.buildDoubleArrow('', routername, names['InternetName'], None)
-            links.append(routerlink)
+               routerlink = self.shapes.buildDoubleArrow('', routername, names['InternetName'], None)
+               links.append(routerlink)
 
             width = 0
             height = 0
@@ -193,8 +196,9 @@ class Diagram:
       for regionzonename in vpcTable[vpcid]:
          count = count + 1
 
-         zonelink = self.shapes.buildLink(regionzonename + ':' + vpcname, regionzonename, vpcname, None)
-         #SAVE links.append(zonelink)
+         if self.common.isLinkLayout():
+            zonelink = self.shapes.buildLink(regionzonename + ':' + vpcname, regionzonename, vpcname, None)
+            #SAVE links.append(zonelink)
 
          subnetnodes, subnetlinks, subnetvalues, subnetsizes = self.buildSubnets(regionzonename, vpcname)
          nodes = nodes + subnetnodes
@@ -279,8 +283,9 @@ class Diagram:
          regionname = zonename.split(':')[0]
          regionzonename = regionname + ':' + subnetzonename;
 
-         zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname, None)
-         #SAVE links.append(zonelink)
+         if self.common.isLinkLayout():
+            zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname, None)
+            #SAVE links.append(zonelink)
 
          if 'public_gateway.id' in subnetframe:
             subnetpubgateid = subnetframe['public_gateway.id']
@@ -368,18 +373,20 @@ class Diagram:
                publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
                nodes.append(publicnode)
 
-               routername = vpcname + '-router'
-               publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
-               links.append(publiclink1)
-               publiclink2 = self.shapes.buildSingleArrow('', subnetpubgateid, routername, None)
-               links.append(publiclink2)
+               if self.common.isLinkLayout():
+                  routername = vpcname + '-router'
+                  publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
+                  links.append(publiclink1)
+                  publiclink2 = self.shapes.buildSingleArrow('', subnetpubgateid, routername, None)
+                  links.append(publiclink2)
 
             elif subnetpubgateid != save_subnetpubgateid:
                self.common.printInvalidPublicGateway(subnetpubgateid)
 
             else:
-               publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
-               links.append(publiclink1)
+               if self.common.isLinkLayout():
+                  publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
+                  links.append(publiclink1)
 
          #if vpngateip != None:
          #    # TODO Handle >1 VPN gateways.
@@ -499,11 +506,12 @@ class Diagram:
                #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
                #SAVE links.append(fiplink2)
 
-               routername = vpcname + '-router'
-               iplabel =  "fip:" + nicfipip
-               #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
-               fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
-               links.append(fiplink)
+               if self.common.isLinkLayout():
+                  routername = vpcname + '-router'
+                  iplabel =  "fip:" + nicfipip
+                  #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
+                  fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
+                  links.append(fiplink)
          else:
             secondarytext = ''
             meta = None
@@ -670,12 +678,15 @@ class Diagram:
                               # TODO Handle spacing for > 1 LBs.
                               lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['SecondIconX'], points['SecondIconY'], points['IconWidth'], points['IconHeight'], None)
                               nodes.append(lbnode)
-                              routername = vpcname + '-router'
-                              lblink = self.shapes.buildDoubleArrow('', lbid, routername, None)
-                              links.append(lblink)
-                
-                           # label, source, target
-                           instancelink = self.shapes.buildDoubleArrow('', nicid, lbid, None)
-                           links.append(instancelink)
+
+                              if self.common.isLinkLayout():
+                                 routername = vpcname + '-router'
+                                 lblink = self.shapes.buildDoubleArrow('', lbid, routername, None)
+                                 links.append(lblink)
+                 
+                           if self.common.isLinkLayout():
+                              # label, source, target
+                              instancelink = self.shapes.buildDoubleArrow('', nicid, lbid, None)
+                              links.append(instancelink)
 
       return nodes, links

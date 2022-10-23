@@ -132,6 +132,12 @@ class Config:
     def setOutputShapes(self,outputShapes):
         self.set("outputShapes",outputShapes)
 
+    def getOutputLayout(self):
+        return self.get("outputLayout")
+    
+    def setOutputLayout(self,outputLayout):
+        self.set("outputLayout",outputLayout)
+
     def getRegion(self):
         return self.get("region")
     
@@ -197,6 +203,7 @@ class drawit:
         outputdetail = config.getOutputDetail()
         outputsplit = config.getOutputSplit()
         outputshapes = config.getOutputShapes()
+        outputlayout = config.getOutputLayout()
         runmode = config.getRunMode()
         cloudtype = config.getCloudType()
         region = config.getRegion()
@@ -211,6 +218,7 @@ class drawit:
         parser.add_argument('-detail', dest='outputdetail', default=self.common.getOutputDetail().value, help='low, medium, or high')
         parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, region, or vpc')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
+        parser.add_argument('-layout', dest='outputlayout', default=self.common.getOutputLayout().value, help='horizontal, vertical, horizontalnolink, verticalnolink')
         parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
 
         parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, web, or terraform")
@@ -240,6 +248,7 @@ class drawit:
         outputdetail = args.outputdetail.lower()
         outputsplit = args.outputsplit.lower()
         outputshapes = args.outputshapes.lower()
+        outputlayout = args.outputlayout.lower()
         runmode = args.runmode.lower()
         cloudtype = args.cloudtype.lower()
 
@@ -261,6 +270,15 @@ class drawit:
             self.common.setLogicalShapes()
         else: # outputshapes == "prescribed"
             self.common.setPrescribedShapes()
+
+        if outputlayout == "horizontal":
+            self.common.setHorizontalLayout()
+        elif outputlayout == "horizontalnolink":
+            self.common.setHorizontalNoLinkLayout()
+        elif outputlayout == "verticalnolink":
+            self.common.setVerticalNoLinkLayout()
+        else: # outputlayout == "vertical"
+            self.common.setVerticalLayout()
 
         if outputsplit == "single":
             self.common.setSingleSplit()
@@ -527,6 +545,17 @@ class drawit:
             #shapemenu.pack()
             row = row + 1
 
+            shapelayout = [
+                "Horizontal", 
+                "Vertical",
+                "Horizontal No Links", 
+                "Vertical No Links"]
+            eOutputLayout = StringVar(self.top)
+            eOutputLayout.set("Vertical")
+            Label(frame, text="Diagram Layout").grid(row=row)
+            shapemenu = OptionMenu(frame, eOutputLayout, *shapelayout).grid(row=row, column=1, sticky=W + E)
+            row = row + 1
+
             splitoptions = [
                 "Single", 
                 "Region", 
@@ -557,6 +586,16 @@ class drawit:
                        self.common.setLogicalShapes()
                     else: # outputshapes == "prescribed"
                        self.common.setPrescribedShapes()
+
+                    outputlayout = str(eOutputLayout.get()).lower()
+                    if outputlayout == "horizontal":
+                       self.common.setHorizontalLayout()
+                    elif outputlayout == "horizontalnolink":
+                       self.common.setHorizontalNoLinkLayout()
+                    elif outputlayout == "verticalnolink":
+                       self.common.setVerticalNoLinkLayout()
+                    else: # outputlayout == "vertical"
+                       self.common.setVerticalLayout()
 
                     outputsplit = str(eOutputSplit.get()).lower()
                     if outputsplit == "single":
