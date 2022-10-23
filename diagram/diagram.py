@@ -68,14 +68,14 @@ class Diagram:
 
       publicx = 0
       publicy = 0
-      publicnode = self.shapes.buildPublicNetwork(names['publicNetworkName'], '', names['publicNetworkName'], '', publicx, publicy, points['publicNetworkWidth'], points['publicNetworkHeight'], None)
-      publicusernode = self.shapes.buildUser(names['publicUserName'], names['publicNetworkName'], names['publicUserName'], '', points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'], None)
-      publicinternetnode = self.shapes.buildInternet(names['internetName'], names['publicNetworkName'], names['internetName'], '', points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'], None)
+      publicnode = self.shapes.buildPublicNetwork(names['PublicNetworkName'], '', names['PublicNetworkName'], '', publicx, publicy, points['PublicNetworkWidth'], points['PublicNetworkHeight'], None)
+      publicusernode = self.shapes.buildUser(names['PublicUserName'], names['PublicNetworkName'], names['PublicUserName'], '', points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
+      publicinternetnode = self.shapes.buildInternet(names['InternetName'], names['PublicNetworkName'], names['InternetName'], '', points['SecondIconX'], points['SecondIconY'], points['IconWidth'], points['IconHeight'], None)
 
       enterprisex = 0
-      enterprisey = points['publicNetworkHeight'] + points['groupSpace']
-      enterprisenode = self.shapes.buildEnterpriseNetwork(names['enterpriseNetworkName'], '', names['enterpriseNetworkName'], '', enterprisex, enterprisey, points['enterpriseNetworkWidth'], points['enterpriseNetworkHeight'], None)
-      enterpriseusernode = self.shapes.buildUser(names['enterpriseUserName'], names['enterpriseNetworkName'], names['enterpriseUserName'], '', points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'], None)
+      enterprisey = points['PublicNetworkHeight'] + points['GroupSpace']
+      enterprisenode = self.shapes.buildEnterpriseNetwork(names['EnterpriseNetworkName'], '', names['EnterpriseNetworkName'], '', enterprisex, enterprisey, points['EnterpriseNetworkWidth'], points['EnterpriseNetworkHeight'], None)
+      enterpriseusernode = self.shapes.buildUser(names['EnterpriseUserName'], names['EnterpriseNetworkName'], names['EnterpriseUserName'], '', points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
 
       if self.common.isLogicalShapes():
          cloudname = "Cloud"
@@ -99,13 +99,13 @@ class Diagram:
             #SAVE publiclink = genlink(user, publicname, publicname, internetname)
             #SAVE links.append(publiclink)
 
-            publicuserlink = self.shapes.buildDoubleArrow('', names['internetName'], names['publicUserName'], None)
+            publicuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['PublicUserName'], None)
             links.append(publicuserlink)
 
             nodes.append(enterprisenode)
             nodes.append(enterpriseusernode)
 
-            enterpriseuserlink = self.shapes.buildDoubleArrow('', names['internetName'], names['enterpriseUserName'], None)
+            enterpriseuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['EnterpriseUserName'], None)
             links.append(enterpriseuserlink)
 
             vpcname = vpcframe['name']
@@ -123,14 +123,14 @@ class Diagram:
             links = links + zonelinks
             values = values + zonevalues
 
-            width = points['iconWidth']
-            height = points['iconHeight']
+            width = points['IconWidth']
+            height = points['IconHeight']
 
             routername = vpcname + '-router'
-            routernode = self.shapes.buildRouter(routername, vpcid, '', '', points['firstIconX'], points['firstIconY'], width, height, None)
+            routernode = self.shapes.buildRouter(routername, vpcid, '', '', points['FirstIconX'], points['FirstIconY'], width, height, None)
             nodes.append(routernode)
 
-            routerlink = self.shapes.buildDoubleArrow('', routername, names['internetName'], None)
+            routerlink = self.shapes.buildDoubleArrow('', routername, names['InternetName'], None)
             links.append(routerlink)
 
             width = 0
@@ -139,14 +139,14 @@ class Diagram:
                if size[0] > width:
                   width = size[0]
 
-               height = height + size[1] + points['groupSpace']
+               height = height + size[1] + points['GroupSpace']
 
-            width = points['leftSpace'] + width + points['groupSpace']  # space after inner groups
-            height = height + points['topSpace'] # space at top of outer group to top inner group
-            height  = height - points['groupSpace']  # TODO Remove extra groupspace.
+            width = points['LeftSpace'] + width + points['GroupSpace']  # space after inner groups
+            height = height + points['TopSpace'] # space at top of outer group to top inner group
+            height  = height - points['GroupSpace']  # TODO Remove extra groupspace.
 
-            x = points['groupSpace']
-            y = points['topSpace']
+            x = points['GroupSpace']
+            y = points['TopSpace']
 
             vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
             nodes.append(vpcnode)
@@ -154,8 +154,8 @@ class Diagram:
             x = 30
             y = 70
 
-            width = width + (points['groupSpace'] * 2)
-            height = height + (points['topSpace'] + points['groupSpace'])
+            width = width + (points['GroupSpace'] * 2)
+            height = height + (points['TopSpace'] + points['GroupSpace'])
 
             regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height, None)
             nodes.append(regionnode)
@@ -167,11 +167,11 @@ class Diagram:
 
             #publicwidth = (groupspace * 2) + (48 * 3)
             #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-            x = points['publicNetworkWidth'] + points['groupSpace']  # Allow space for public network.
+            x = points['PublicNetworkWidth'] + points['GroupSpace']  # Allow space for public network.
             y = 0
 
-            width = width + (points['groupSpace'] * 2)
-            height = height + (points['topSpace'] + points['groupSpace'])
+            width = width + (points['GroupSpace'] * 2)
+            height = height + (points['TopSpace'] + points['GroupSpace'])
 
             cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height, None)
             nodes.append(cloudnode)
@@ -208,14 +208,14 @@ class Diagram:
             if size[0] > width:
                width = size[0]
 
-            height = height + size[1] + points['groupSpace']
+            height = height + size[1] + points['GroupSpace']
 
-         width = points['leftSpace'] + width + points['groupSpace']
-         height = height + points['topSpace']  # space at top of outer group to top inner group
-         height = height - points['groupSpace']
+         width = points['LeftSpace'] + width + points['GroupSpace']
+         height = height + points['TopSpace']  # space at top of outer group to top inner group
+         height = height - points['GroupSpace']
 
-         x = (points['iconSpace'] * 2) + points['iconWidth']
-         y = points['topSpace'] + saveheight + (points['groupSpace'] * (count - 1))
+         x = (points['IconSpace'] * 2) + points['IconWidth']
+         y = points['TopSpace'] + saveheight + (points['GroupSpace'] * (count - 1))
 
          saveheight += height
 
@@ -238,7 +238,7 @@ class Diagram:
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([points['leftSpace'] - points['groupSpace'], 0])
+            sizes.append([points['LeftSpace'] - points['GroupSpace'], 0])
 
       return nodes, links, values, sizes
 
@@ -299,24 +299,24 @@ class Diagram:
                   pubgatefipip = pubgateframe['floatingIP']
                pubgatename = pubgateframe['name']
 
-         vpngateip = None
-         vpngatename = None
-         vpngateways = self.data.getVPNGateways()
-         if not vpngateways.empty:
-            vpngateframe = self.data.getVPNGateway(subnetid)
-            #if self.common.isInputRIAS():
-            #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'subnet.id', subnetid)
-            #else:
-            #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'networkId', subnetid)
-            if len(vpngateframe) > 0:
-               vpngateid = vpngateframe['id']
-               # TODO Retrieve VPNGatewayMember[], 
-               #      For each memberi get public_ip and private_ip.
-               vpngateip = ''
-               vpngatename = vpngateframe['name']
-               vpnsubnetid = subnetid
+         #vpngateip = None
+         #vpngatename = None
+         #vpngateways = self.data.getVPNGateways()
+         #if not vpngateways.empty:
+         #   vpngateframe = self.data.getVPNGateway(subnetid)
+         #   #if self.common.isInputRIAS():
+         #   #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'subnet.id', subnetid)
+         #   #else:
+         #   #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'networkId', subnetid)
+         #   if len(vpngateframe) > 0:
+         #      vpngateid = vpngateframe['id']
+         #      # TODO Retrieve VPNGatewayMember[], 
+         #      #      For each memberi get public_ip and private_ip.
+         #      vpngateip = ''
+         #      vpngatename = vpngateframe['name']
+         #      vpnsubnetid = subnetid
 
-         instancenodes, instancelinks, instancevalues, instancesizes = self.buildInstances(subnetid, subnetname, subnetvpcname, vpcname)
+         instancenodes, instancelinks, instancevalues, instancesizes = self.buildIcons(subnetid, subnetname, subnetvpcname, vpcname)
 
          nodes = nodes + instancenodes
          links = links + instancelinks
@@ -327,27 +327,27 @@ class Diagram:
             bastion = True
 
          if (len(instancesizes) == 0):
-            width = points['minGroupWidth']
-            height = points['minGroupHeight']
+            width = points['MinGroupWidth']
+            height = points['MinGroupHeight']
          else:
-            width = points['groupSpace']
+            width = points['GroupSpace']
             height = 0
 
          for size in instancesizes:
-            width = width + size[0] + points['groupSpace']
+            width = width + size[0] + points['GroupSpace']
 
             if size[1] > height:
                height = size[1]
 
          # Leave height as groupheight if no instances.
          if (len(instancesizes) != 0):
-            height = height + points['topSpace'] + points['groupSpace']  # space at top and bottom of group
+            height = height + points['TopSpace'] + points['GroupSpace']  # space at top and bottom of group
 
          #SAVE x = (iconspace * 2) + iconwidth
          #SAVE y = topspace + (height * (count - 1)) + (groupspace * (count - 1))
 
-         x = (points['iconSpace'] * 2) + points['iconWidth']
-         y = points['topSpace'] + saveheight + (points['groupSpace'] * (count - 1))
+         x = (points['IconSpace'] * 2) + points['IconWidth']
+         y = points['TopSpace'] + saveheight + (points['GroupSpace'] * (count - 1))
 
          saveheight += height
 
@@ -356,7 +356,7 @@ class Diagram:
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([points['leftSpace'] - points['groupSpace'], 0])
+            sizes.append([points['LeftSpace'] - points['GroupSpace'], 0])
 
          internetname = 'Internet'
 
@@ -365,7 +365,7 @@ class Diagram:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, points['firstIconX'], points['firstIconY'], points['iconWidth'], points['iconHeight'], None)
+               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
                nodes.append(publicnode)
 
                routername = vpcname + '-router'
@@ -381,120 +381,145 @@ class Diagram:
                publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
                links.append(publiclink1)
 
-         if vpngateip != None:
-             # TODO Handle >1 VPN gateways.
-            #vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'])
-            vpngatenode = self.shapes.buildVPNGateway(vpngatename, subnetvpcid, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'], None)
-            nodes.append(vpngatenode)
+         #if vpngateip != None:
+         #    # TODO Handle >1 VPN gateways.
+         #   #vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'])
+         #   vpngatenode = self.shapes.buildVPNGateway(vpngatename, subnetvpcid, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'], None)
+         #   nodes.append(vpngatenode)
                 
-            routername = vpcname + '-router'
-            # This link can be assumed since everything inside zone is accesible by the VPN.
-            #vpnlink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
-            #links.append(vpnlink1)
-            vpnlink1 = self.shapes.buildDoubleArrow('', regionzonename, vpngatename, None)
-            links.append(vpnlink1)
-            vpnlink2 = self.shapes.buildDoubleArrow('', vpngatename, routername, None)
-            links.append(vpnlink2)
+         #   routername = vpcname + '-router'
+         #   # This link can be assumed since everything inside zone is accesible by the VPN.
+         #   #vpnlink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
+         #   #links.append(vpnlink1)
+         #   vpnlink1 = self.shapes.buildDoubleArrow('', regionzonename, vpngatename, None)
+         #   links.append(vpnlink1)
+         #   vpnlink2 = self.shapes.buildDoubleArrow('', vpngatename, routername, None)
+         #   links.append(vpnlink2)
 
-            # label, source, target 
-            #vpngatelink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
-            #links.append(vpngatelink1)
+         #   # label, source, target 
+         #   #vpngatelink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
+         #   #links.append(vpngatelink1)
 
-            # label, source, target 
-            #vpngatelink2 = gensolidlink_doublearrow(user, '', vpngatename, username)
-            #links.append(vpngatelink2)
+         #   # label, source, target 
+         #   #vpngatelink2 = gensolidlink_doublearrow(user, '', vpngatename, username)
+         #   #links.append(vpngatelink2)
 
       return nodes, links, values, sizes
 
-   def buildInstances(self, subnetid, subnetname, subnetvpcname, vpcname):
+   def buildIcons(self, subnetid, subnetname, subnetvpcname, vpcname):
       nodes = []
       links = []
       values = []
       sizes = []
 
       #nicstable = self.setupdata['nics']
-      instances = self.data.getInstanceTable(subnetid)
+      icons = self.data.getIconTable(subnetid)
 
       count = 0
 
       #for nicframe in nicstable[subnetid]:
-      for instanceframe in instances:
+      for iconframe in icons:
          count = count + 1
 
-         instancename = instanceframe['name']
-         instanceid = instanceframe['id']
-         nics = self.data.getNICTable(subnetid, instanceid)
+         iconname = iconframe['name']
+         iconid = iconframe['id']
+         icontype = iconframe['type']
 
-         nicips = ''
-         nicid = ''
-         nicfipid = None
-         nicfipip = None
-         nicfipname = None
+         if icontype.lower() == 'instance':
+            instancename = iconname
+            instanceid = iconid
+            instanceframe = iconframe
 
-         #nics = instanceframe['network_interfaces'] if self.common.isInputRIAS() else instanceframe['networkInterfaces']
+            if instancename.lower().find("bastion") != -1:
+               icontype += "Bastion"
 
-         #for nicframe in nics:
-         for nicframe in nics:
-            #if nicframe.empty:
-            #   continue
+            nics = self.data.getNICTable(subnetid, instanceid)
 
-            nicname = nicframe['name']
-            #nicinstanceid = nicframe['instance.id']
-            nicinstanceid = instanceframe['id'] if self.common.isInputRIAS() else nicframe['instanceId']
+            nicips = ''
+            nicid = ''
+            nicfipid = None
+            nicfipip = None
+            nicfipname = None
 
-            #nicip = nicframe['primary_ip.address']
-            nicip = nicframe['primary_ip']['address'] if self.common.isInputRIAS() else nicframe['ip']
-            if nicips == '':
-               nicips = nicip
+            #for nicframe in nics:
+            for nicframe in nics:
+               #if nicframe.empty:
+               #   continue
+
+               nicname = nicframe['name']
+               #nicinstanceid = nicframe['instance.id']
+               nicinstanceid = instanceframe['id'] if self.common.isInputRIAS() else nicframe['instanceId']
+
+               #nicip = nicframe['primary_ip.address']
+               nicip = nicframe['primary_ip']['address'] if self.common.isInputRIAS() else nicframe['ip']
+               if nicips == '':
+                  nicips = nicip
+               else:
+                  nicips = nicips + '<br>' + nicip
+               nicid = nicframe['id']
+
+               #fipframe = findrow(user, self.inputdata['floatingIPs'], 'target.id', nicid)
+               fipframe = self.data.getFloatingIP(nicid)
+               if len(fipframe) > 0:
+                  nicfipid = fipframe['id']
+                  nicfipip = fipframe['address']
+                  nicfipname = fipframe['name']
+
+            secondarytext = nicips
+
+            instanceOS = instanceframe['image.name']
+            if instanceOS == None:
+               instanceOS = 'Unknown OS'
+            instanceprofile = instanceframe['profile.name'] 
+            instancememory = instanceframe['memory']
+
+            bandwidth = instanceframe['bandwidth']
+            if bandwidth == '' or (isinstance(bandwidth, float) and isnan(bandwidth)):
+               instancecpuspeed = 0
             else:
-              nicips = nicips + '<br>' + nicip
-            nicid = nicframe['id']
-            #fipframe = findrow(user, self.inputdata['floatingIPs'], 'target.id', nicid)
-            fipframe = self.data.getFloatingIP(nicid)
-            if len(fipframe) > 0:
-               nicfipid = fipframe['id']
-               nicfipip = fipframe['address']
-               nicfipname = fipframe['name']
+               instancecpuspeed = int(instanceframe['bandwidth'] / 1000)
 
-         #old instanceframe = findrow(user, self.inputdata['instances'], 'id', nicinstanceid)
-         #instanceframe = self.data.getInstance(nicinstanceid)
-         #if len(instanceframe) == 0:
-         #   self.common.printInvalidInstance(nicinstanceid)
-         #   continue
+            instancecpucount = instanceframe['vcpu.count']
 
-         instancename = instanceframe['name']
-         instanceid = instanceframe['id']
+            osdetails = instanceOS
+            profiledetails = instanceprofile
+            storagedetails = '100GB/3000IOPS'
 
-         instanceOS = instanceframe['image.name']
-         if instanceOS == None:
-            instanceOS = 'Unknown OS'
-         instanceprofile = instanceframe['profile.name'] 
-         instancememory = instanceframe['memory']
+            meta = {'Operating-System': osdetails,
+                    'Instance-Profile': profiledetails,
+                    'Boot-Volume': storagedetails} 
 
-         bandwidth = instanceframe['bandwidth']
-         if bandwidth == '' or (isinstance(bandwidth, float) and isnan(bandwidth)):
-            instancecpuspeed = 0
+            if nicfipip != None:
+               # Save for option to show FIP icon.
+               #SAVE fipnode = genfloatingip(user, nicfipname, nicfipip)
+               #SAVE nodes.append(fipnode)
+               #SAVE fiplink1 = gensolidlink_doublearrow(user, '', instancename, nicfipname)
+               #SAVE links.append(fiplink1)
+               #SAVE internetname = 'Internet'
+               #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
+               #SAVE links.append(fiplink2)
+
+               routername = vpcname + '-router'
+               iplabel =  "fip:" + nicfipip
+               #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
+               fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
+               links.append(fiplink)
          else:
-            instancecpuspeed = int(instanceframe['bandwidth'] / 1000)
-
-         instancecpucount = instanceframe['vcpu.count']
-
-         osdetails = instanceOS
-         profiledetails = instanceprofile
-         storagedetails = '100GB/3000IOPS'
+            secondarytext = ''
+            meta = None
 
          if self.common.isLowDetail(): 
-            width = points['iconWidth']
-            height = points['iconHeight']
+            width = points['IconWidth']
+            height = points['IconHeight']
             extrawidth = width * 3
             extraheight = height * 2
-            x = width + (extrawidth * (count - 1)) + (points['groupSpace'] * count)
-            y = points['topSpace']
+            x = width + (extrawidth * (count - 1)) + (points['GroupSpace'] * count)
+            y = points['TopSpace']
          else:
             width = 240
             height = 152
-            x = (width * (count - 1)) + (points['groupSpace'] * count) 
-            y = points['topSpace']
+            x = (width * (count - 1)) + (points['GroupSpace'] * count) 
+            y = points['TopSpace']
 
          #SAVE x = (width * (count - 1)) + (groupspace * count) 
          #SAVE y = topspace
@@ -503,73 +528,64 @@ class Diagram:
 
          #SAVE osnode = geninstanceexpandedstack(user, instancename, subnetname, nicip, width, height, x, y)
 
-         bastion = False
+         #bastion = False
 
-         meta = {'Operating-System': osdetails,
-                 'Instance-Profile': profiledetails,
-                 'Boot-Volume': storagedetails} 
+         #if self.common.isLowDetail(): 
+         #   iconnode = self.shapes.buildIcon(nicid, subnetid, instancename, nicips, icontype, x, y, width, height, meta)
+         #   sizes.append([extrawidth, extraheight])
+         #else:
+         #   iconnode = self.shapes.buildIconExpandedStack(nicid, subnetid, instancename, nicips, icontype, x, y, width, height, meta)
+         #   sizes.append([width, height])
 
-         if self.common.isLowDetail(): 
-            if instancename.lower().find("bastion") != -1:
-               bastion = True
-               instancenode = self.shapes.buildInstanceBastion(nicid, subnetid, instancename, nicips, x, y, width, height, meta)
-            else:
-               instancenode = self.shapes.buildInstance(nicid, subnetid, instancename, nicips, x, y, width, height, meta)
-            sizes.append([extrawidth, extraheight])
-         else:
-            if instancename.lower().find("bastion") != -1:
-               bastion = True
-               instancenode = self.shapes.buildInstanceBastionExpandedStack(nicid, subnetid, instancename, nicips, x, y, width, height, meta)
-            else:
-               instancenode = self.shapes.buildInstanceExpandedStack(nicid, subnetid, instancename, nicips, x, y, width, height, meta)
-            sizes.append([width, height])
+         iconnode = self.shapes.buildIcon(iconid, subnetid, iconname, secondarytext, icontype, x, y, width, height, meta)
+         sizes.append([extrawidth, extraheight])
 
-         nodes.append(instancenode)
+         nodes.append(iconnode)
 
-         if not self.common.isLowDetail(): 
-            textwidth = width - (points['textGroupSpace'] * 2)
-            textheight = height - (points['textTopSpace'] + points['textGroupSpace'])
+         #if not self.common.isLowDetail(): 
+         #   textwidth = width - (points['textGroupSpace'] * 2)
+         #   textheight = height - (points['textTopSpace'] + points['textGroupSpace'])
 
-            textx = points['textGroupSpace']
-            texty = points['textTopSpace']
+         #   textx = points['textGroupSpace']
+         #   texty = points['textTopSpace']
 
-            #textid = nicid + ':details'
-            textid = instanceid + ':details'
-            textname = instancename + ':details'
+         #   #textid = nicid + ':details'
+         #   textid = instanceid + ':details'
+         #   textname = instancename + ':details'
 
-            stackwidth = 252
-            stackheight = 16
-            stackx = 16
-            stacky = 64
-            osnode = self.shapes.buildItemOS(nicid + ':' + osdetails, nicid, osdetails, '', stackx, stacky, stackwidth, stackheight, None)
-            profilenode = ''
-            if profiledetails[0] == 'b':
-               profilenode = self.shapes.buildItemProfileBalanced(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
-            elif profiledetails[0] == 'c' or profiledetails[0] == 'g':
-               profilenode = self.shapes.buildItemProfileCompute(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
-            elif profiledetails[0] == 'm' or profiledetails[0] == 'u' or profiledetails[1] == 'v':
-               profilenode = self.shapes.buildItemProfileMemory(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
-            storagenode = self.shapes.buildItemBlockStorage(nicid + ':' + storagedetails, nicid, storagedetails, '', stackx, stacky + 48, stackwidth, stackheight, None)
+         #   stackwidth = 252
+         #   stackheight = 16
+         #   stackx = 16
+         #   stacky = 64
+         #   osnode = self.shapes.buildItemOS(nicid + ':' + osdetails, nicid, osdetails, '', stackx, stacky, stackwidth, stackheight, None)
+         #   profilenode = ''
+         #   if profiledetails[0] == 'b':
+         #      profilenode = self.shapes.buildItemProfileBalanced(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
+         #   elif profiledetails[0] == 'c' or profiledetails[0] == 'g':
+         #      profilenode = self.shapes.buildItemProfileCompute(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
+         #   elif profiledetails[0] == 'm' or profiledetails[0] == 'u' or profiledetails[1] == 'v':
+         #      profilenode = self.shapes.buildItemProfileMemory(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
+         #   storagenode = self.shapes.buildItemBlockStorage(nicid + ':' + storagedetails, nicid, storagedetails, '', stackx, stacky + 48, stackwidth, stackheight, None)
 
-            nodes.append(osnode)
-            nodes.append(profilenode)
-            nodes.append(storagenode)
+         #   nodes.append(osnode)
+         #   nodes.append(profilenode)
+         #   nodes.append(storagenode)
 
-         if nicfipip != None:
-            # Save for option to show FIP icon.
-            #SAVE fipnode = genfloatingip(user, nicfipname, nicfipip)
-            #SAVE nodes.append(fipnode)
-            #SAVE fiplink1 = gensolidlink_doublearrow(user, '', instancename, nicfipname)
-            #SAVE links.append(fiplink1)
-            #SAVE internetname = 'Internet'
-            #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
-            #SAVE links.append(fiplink2)
+         #if nicfipip != None:
+         #   # Save for option to show FIP icon.
+         #   #SAVE fipnode = genfloatingip(user, nicfipname, nicfipip)
+         #   #SAVE nodes.append(fipnode)
+         #   #SAVE fiplink1 = gensolidlink_doublearrow(user, '', instancename, nicfipname)
+         #   #SAVE links.append(fiplink1)
+         #   #SAVE internetname = 'Internet'
+         #   #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
+         #   #SAVE links.append(fiplink2)
 
-            routername = vpcname + '-router'
-            iplabel =  "fip:" + nicfipip
-            #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
-            fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
-            links.append(fiplink)
+         #   routername = vpcname + '-router'
+         #   iplabel =  "fip:" + nicfipip
+         #   #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
+         #   fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
+         #   links.append(fiplink)
 
       return nodes, links, values, sizes
 
@@ -652,7 +668,7 @@ class Diagram:
                            if not lbgenerated:
                               lbgenerated = True
                               # TODO Handle spacing for > 1 LBs.
-                              lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['secondIconX'], points['secondIconY'], points['iconWidth'], points['iconHeight'], None)
+                              lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['SecondIconX'], points['SecondIconY'], points['IconWidth'], points['IconHeight'], None)
                               nodes.append(lbnode)
                               routername = vpcname + '-router'
                               lblink = self.shapes.buildDoubleArrow('', lbid, routername, None)

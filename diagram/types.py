@@ -89,7 +89,7 @@ class Types:
       shapeicon = shape['icon']
       iconname = shapeicon[outputshapes]
       shapelabel = "<b style='font-weight:600'>%Primary-Label%</b><br>%Secondary-Text%"
-      labelsize = 20
+      labelsize = 30
 
       if shapename == 'operatingSystem' or shapename == 'profileBalanced' or shapename == 'profileCompute' or shapename == 'profileMemory' or shapename == 'blockStorage':
          shapelabel = "%Primary-Label%<br>%Secondary-Text%"

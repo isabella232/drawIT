@@ -20,7 +20,7 @@ from load.file import File
 from load.rias import RIAS
 
 class Load:
-   instanceTable = {} # Table of instances ordered by subnet that shows instances within each subnet.
+   #instanceTable = {} # Table of instances ordered by subnet that shows instances within each subnet.
    nicTable = {}      # Table of nics ordered by subnet+instance that shows nics for same instance in different subnets.
    iconTable = {}     # Table of icons ordered by subnet that shows icons within each subnet.
    regionTable = {}   # Table of vpcs ordered by region that shows vpcs within each region.
@@ -50,7 +50,7 @@ class Load:
 
       if self.analyzeData():
          self.analyzeContainers()
-         self.analyzeInstances()
+         #self.analyzeInstances()
          self.analyzeIcons()
          self.analyzeLoadBalancers()
          return True
@@ -107,7 +107,8 @@ class Load:
             subnets.drop(index=subnetindex, inplace=True)
             continue
 
-         self.instanceTable[subnetid] = []
+         #self.instanceTable[subnetid] = []
+         self.iconTable[subnetid] = []
 
          # If invalid zone then print error and drop subnet.
          # TODO Add check for valid zone.
@@ -186,13 +187,13 @@ class Load:
       return
 
    def analyzeInstances(self):
-      subnets = self.data.getSubnets()
+      #subnets = self.data.getSubnets()
 
       # Create empty instanceTable.
-      if not subnets.empty:
-         for subnetindex, subnetframe in subnets.iterrows():
-            subnetid = subnetframe['id']
-            self.instanceTable[subnetid] = []
+      #if not subnets.empty:
+      #   for subnetindex, subnetframe in subnets.iterrows():
+      #      subnetid = subnetframe['id']
+      #      self.instanceTable[subnetid] = []
 
       # Add instances to instanceTable ordered by subnetid, nics to nicTable ordered by subnetid+instanceid.
       instances = self.data.getInstances()
@@ -213,9 +214,9 @@ class Load:
                   #nicid = nicframe['id']
                   nicsubnetid = nicframe['subnet']['id'] if self.common.isInputRIAS() else nicframe['networkId']
 
-                  if nicsubnetid in self.instanceTable:
+                  if nicsubnetid in self.iconTable:
                      if addedInstance == False:
-                        self.instanceTable[nicsubnetid].append(instanceframe)
+                        self.iconTable[nicsubnetid].append(instanceframe)
                         addedInstance = True
                   else:
                      self.common.printInvalidSubnet(nicsubnetid)
@@ -238,6 +239,18 @@ class Load:
             subnetid = subnetframe['id']
             self.iconTable[subnetid] = []
 
+      # Add vpns to iconTable ordered by subnetid.
+      vpns = self.data.getVPNGateways()
+      if not vpns.empty:
+         for vpnindex, vpnframe in vpns.iterrows():
+            vpnid = vpnframe['id']
+            vpnsubnetid = vpnframe['networkId']
+
+            if vpnsubnetid in self.iconTable:
+               self.iconTable[vpnsubnetid].append(vpnframe)
+            else:
+               self.common.printInvalidSubnet(vpnsubnetid)
+
       # Add vpes to iconTable ordered by subnetid.
       vpes = self.data.getVPEGateways()
       if not vpes.empty:
@@ -257,11 +270,14 @@ class Load:
                addedVPE = False
                if vpesubnetid in self.iconTable:
                    if addedVPE == False:
-                       self.iconTable[vpesubnetid].append(vpeip)
+                       self.iconTable[vpesubnetid].append(vpeframe)
                        addedVPE = True
                    else:
                        self.common.printInvalidSubnet(vpesubnetid)
                        continue
+
+      self.analyzeInstances()
+
       return
 
    def analyzeLoadBalancers(self):
@@ -344,6 +360,9 @@ class Load:
 
    def getInstanceTable(self, subnetid):
       return self.instanceTable[subnetid]
+
+   def getIconTable(self, subnetid):
+      return self.iconTable[subnetid]
 
    def getLoadBalancerTable(self):
       return self.lbTable

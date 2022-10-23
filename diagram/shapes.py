@@ -26,117 +26,121 @@ class Shapes:
    # Groups
 
    def buildPublicNetwork(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('publicNetwork', self.common.compress(name), '1', name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('PublicNetwork', self.common.compress(name), '1', name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildEnterpriseNetwork(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('enterpriseNetwork', self.common.compress(name), '1', name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('EnterpriseNetwork', self.common.compress(name), '1', name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildCloud(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('cloud', self.common.compress(name), '1', name, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('Cloud', self.common.compress(name), '1', name, subname, '', x, y, width, height, meta)
       return node
 
    def buildRegion(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('region', self.common.compress(id), self.common.compress(parentid), name, '', '', x, y, width, height, meta) 
+      node = self.types.buildNode('Region', self.common.compress(id), self.common.compress(parentid), name, '', '', x, y, width, height, meta) 
       return node
 
    def buildVPC(self, id, parentid, name, subname, x, y, width, height, meta):
-    node = self.types.buildNode('vpc', self.common.compress(id), self.common.compress(parentid), name, '', '', x, y, width, height, meta)
+    node = self.types.buildNode('VPC', self.common.compress(id), self.common.compress(parentid), name, '', '', x, y, width, height, meta)
     return node
 
    def buildZone(self, id, parentid, name, subname, x, y, width, height, meta):
       zonename = name.split(':')[1]
       shapename = 'Availability Zone ' + zonename[-1]
-      node = self.types.buildNode('zone', self.common.compress(id), self.common.compress(parentid), zonename, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('Zone', self.common.compress(id), self.common.compress(parentid), zonename, subname, '', x, y, width, height, meta)
       return node
 
    def buildSubnet(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('subnet', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('Subnet', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
    # Expanded Icons
 
    def buildInstanceExpanded(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('instanceExpandedStack', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('InstanceExpandedStack', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
    def buildInstanceExpandedStack(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('instanceExpandedStack', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('InstanceExpandedStack', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
    def buildInstanceBastionExpanded(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('instanceBastionExpanded', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('InstanceBastionExpanded', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
    def buildInstanceBastionExpandedStack(self, id, parentid, name, subname, x, y, width, height, meta):
-       node = self.types.buildNode('instanceBastionExpandedStack', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+       node = self.types.buildNode('InstanceBastionExpandedStack', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
        return node
 
     # Icons
 
    def buildInstance(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('instance', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('Instance', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
    def buildInstanceBastion(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('instanceBastion', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('InstanceBastion', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      return node
+
+   def buildIcon(self, id, parentid, name, subname, icontype, x, y, width, height, meta):
+      node = self.types.buildNode(icontype, self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
    def buildFloatingIP(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('floatingIP', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('FloatingIP', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildInternet(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('internet', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('Internet', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildLoadBalancer(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('loadBalancer', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('LoadBalancer', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildPublicGateway(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('publicGateway', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('PublicGateway', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildRouter(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('router', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('Router', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildUser(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('user', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('User', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildVPNConnection(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('vpnConnection', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      node = self.types.buildNode('VPNConnection', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
    def buildVPNGateway(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('vpnGateway', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('VPNGateway', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildVPCEndpoint(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('vpcEndpoint', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('VPE', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildItemOS(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('operatingSystem', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('OperatingSystem', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildItemProfileBalanced(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('profileBalanced', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('ProfileBalanced', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildItemProfileCompute(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('profileCompute', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('ProfileCompute', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildItemProfileMemory(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('profileMemory', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('ProfileMemory', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildItemBlockStorage(self, id, parentid, name, subname, x, y, width, height, meta):
-      node = self.types.buildNode('blockStorage', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
+      node = self.types.buildNode('BlockStorage', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta) 
       return node
 
    def buildText(self, id, parentid, name, subname, text, x, y, width, height, meta):

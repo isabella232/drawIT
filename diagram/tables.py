@@ -94,75 +94,76 @@ collapsedColors = {
 
 ibmshapes = {
     # Groups
-    'cloud': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['cloud']},
-    'enterpriseNetwork': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['enterpriseNetwork']},
-    'publicNetwork': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['publicNetwork']},
-    'region': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['region']},
-    'subnet': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group3'], 'size': minsizes['group'], 'icon': icons['subnet']},
-    'vpc': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['vpc']},
-    'zone': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group3'], 'size': minsizes['group'], 'icon': icons['zone']},
+    'Cloud': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['Cloud']},
+    'EnterpriseNetwork': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['EnterpriseNetwork']},
+    'PublicNetwork': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['PublicNetwork']},
+    'Region': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['Region']},
+    'Subnet': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group3'], 'size': minsizes['group'], 'icon': icons['Subnet']},
+    'VPC': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['network'], 'style': styles['group'], 'size': minsizes['group'], 'icon': icons['VPC']},
+    'Zone': {'format': formats['group'], 'layout': layouts['group'], 'color': expandedColors['location'], 'style': styles['group3'], 'size': minsizes['group'], 'icon': icons['Zone']},
 
     # Expanded Icons
-    'instanceExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['compute'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instanceVirtual']},
-    'instanceBastionExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instanceBastion']},
-    'instanceExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['compute'], 'style': styles['iconExpandedStack3'], 'size': minsizes['expanded'], 'icon': icons['instanceVirtual']},
-    'instanceBastionExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['instanceBastion']},
+    'InstanceExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['compute'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['InstanceVirtual']},
+    'InstanceBastionExpanded': {'format': formats['node'], 'layout': layouts['expanded'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['InstanceBastion']},
+    'InstanceExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['compute'], 'style': styles['iconExpandedStack3'], 'size': minsizes['expanded'], 'icon': icons['InstanceVirtual']},
+    'InstanceBastionExpandedStack': {'format': formats['node'], 'layout': layouts['expandedStack'], 'color': expandedColors['security'], 'style': styles['iconExpanded3'], 'size': minsizes['expanded'], 'icon': icons['InstanceBastion']},
 
     # Collapsed Icons
-    'instance': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['compute'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['instanceVirtual']},
-    'instanceBastion': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['instanceBastion']},
-    'floatingIP': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['floatingIP']},
-    'internet': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['internet']},
-    'loadBalancer': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['loadBalancer']},
-    'publicGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['publicGateway']},
-    'router': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['router']},
-    'user': {'format': formats['actor'], 'layout': layouts['collapsed'], 'color': collapsedColors['actor'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['user']},
-    'vpnConnection': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['vpnConnection']},
-    'vpnGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['vpnGateway']},
-    'vpcEndpoint': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['vpcEndpoint']},
+    'Instance': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['compute'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['InstanceVirtual']},
+    'InstanceBastion': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['InstanceBastion']},
+    'VOE': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['compute'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['VPE']},
+    'FloatingIP': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['FloatingIP']},
+    'Internet': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['Internet']},
+    'LoadBalancer': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['LoadBalancer']},
+    'PublicGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['PublicGateway']},
+    'Router': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['network'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['Router']},
+    'User': {'format': formats['actor'], 'layout': layouts['collapsed'], 'color': collapsedColors['actor'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['User']},
+    'VPNConnection': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['VPNConnection']},
+    'VPNGateway': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['VPNGateway']},
+    'VPE': {'format': formats['node'], 'layout': layouts['collapsed'], 'color': collapsedColors['security'], 'style': styles['icon'], 'size': minsizes['collapsed'], 'icon': icons['VPE']},
 
     # Item Icons
 
     # Item Icons
-    'operatingSystem': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['linux']},
-    'profileBalanced': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['profileBalanced']},
-    'profileCompute': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['profileCompute']},
-    'profileMemory': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['profileMemory']},
-    'blockStorage': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['blockStorage']},
+    'OperatingSystem': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['Linux']},
+    'ProfileBalanced': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['ProfileBalanced']},
+    'ProfileCompute': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['ProfileCompute']},
+    'ProfileMemory': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['ProfileMemory']},
+    'BlockStorage': {'format': formats['node'], 'layout': layouts['itemIcon'], 'color': collapsedColors['item'], 'style': styles['item'], 'size': minsizes['item'], 'icon': icons['BlockStorage']},
 
     # Text
-    'text': {'style': styles['text']}
+    'Text': {'style': styles['text']}
 }
 
 # Names Table
 
 names = {
-   'internetName': 'Internet',
-   'publicNetworkName': 'Public<br>Network',
-   'publicUserName': 'User',
-   'enterpriseNetworkName': 'Enterprise<br>Network',
-   'enterpriseUserName': 'Enterprise User'
+   'InternetName': 'Internet',
+   'PublicNetworkName': 'Public<br>Network',
+   'PublicUserName': 'User',
+   'EnterpriseNetworkName': 'Enterprise<br>Network',
+   'EnterpriseUserName': 'Enterprise User'
 }
 
 # Points Table
 
 points = {
-   'iconWidth': 48,
-   'iconHeight': 48,
+   'IconWidth': 48,
+   'IconHeight': 48,
 
-   'groupWidth': 240,
-   'groupHeight': 152,
+   'GroupWidth': 240,
+   'GroupHeight': 152,
 
-   'minGroupWidth': 240,
-   'minGroupHeight': 48,
+   'MinGroupWidth': 240,
+   'MinGroupHeight': 48,
 
-   'groupSpace': 30,
-   'topSpace': 70,
-   'textGroupSpace': 10,
-   'textTopSpace': 70,
-   'iconSpace': 48,
+   'GroupSpace': 30,
+   'TopSpace': 70,
+   'TextGroupSpace': 10,
+   'TextTopSpace': 70,
+   'IconSpace': 48,
 
-   'leftSpace': 0,
+   'LeftSpace': 0,
 
    # Public network icon locations:
    #    First x,y is User icon.
@@ -180,46 +181,46 @@ points = {
    #    First x,y is Public Gateway icon.
    #    Second x,y is NLB icon.
 
-   'firstIconX': 0,
-   'firstIconY': 0,
+   'FirstIconX': 0,
+   'FirstIconY': 0,
 
-   'secondIconX': 0,
-   'secondIconY': 0,
+   'SecondIconX': 0,
+   'SecondIconY': 0,
 
-   'thirdIconX': 0,
-   'thirdIconY': 0,
+   'ThirdIconX': 0,
+   'ThirdIconY': 0,
 
-   'fourthIconX': 0,
-   'fourthIconY': 0,
+   'FourthIconX': 0,
+   'FourthIconY': 0,
 
-   'publicIconCount': 2,
-   'publicNetworkWidth': 0,
-   'publicNetworkHeight': 0,
+   'PublicIconCount': 2,
+   'PublicNetworkWidth': 0,
+   'PublicNetworkHeight': 0,
 
-   'enterpriseIconCount': 1,
-   'enterpriseNetworkWidth': 0,
-   'enterpriseNetworkHeight': 0
+   'EnterpriseIconCount': 1,
+   'EnterpriseNetworkWidth': 0,
+   'EnterpriseNetworkHeight': 0
 }
 
-points['leftSpace'] = points['iconSpace'] * 3
+points['LeftSpace'] = points['IconSpace'] * 3
 
-points['firstIconX'] = points['iconSpace']
-points['firstIconY'] = points['topSpace']
+points['FirstIconX'] = points['IconSpace']
+points['FirstIconY'] = points['TopSpace']
 
-points['secondIconX'] = points['iconSpace']
-points['secondIconY'] = points['firstIconY'] + points['iconHeight'] + points['iconSpace']
+points['SecondIconX'] = points['IconSpace']
+points['SecondIconY'] = points['FirstIconY'] + points['IconHeight'] + points['IconSpace']
 
-points['thirdIconX'] = points['iconSpace']
-points['thirdIconY'] = points['secondIconY'] + points['iconHeight'] + points['iconSpace']
+points['ThirdIconX'] = points['IconSpace']
+points['ThirdIconY'] = points['SecondIconY'] + points['IconHeight'] + points['IconSpace']
 
-points['fourthIconX'] = points['iconSpace']
-points['fourthIconY'] = points['thirdIconY'] + points['iconHeight'] + points['iconSpace']
+points['FourthIconX'] = points['IconSpace']
+points['FourthIconY'] = points['ThirdIconY'] + points['IconHeight'] + points['IconSpace']
 
-points['publicNetworkWidth'] = points['iconSpace'] * 3
-points['publicNetworkHeight'] = points['topSpace'] + (points['iconSpace'] * points['publicIconCount']) + (points['iconHeight'] * points['publicIconCount'])
+points['PublicNetworkWidth'] = points['IconSpace'] * 3
+points['PublicNetworkHeight'] = points['TopSpace'] + (points['IconSpace'] * points['PublicIconCount']) + (points['IconHeight'] * points['PublicIconCount'])
 
-points['enterpriseNetworkWidth'] = points['iconSpace'] * 3
-points['enterpriseNetworkHeight'] = points['topSpace'] + (points['iconSpace'] * points['enterpriseIconCount']) + (points['iconHeight'] * points['enterpriseIconCount'])
+points['EnterpriseNetworkWidth'] = points['IconSpace'] * 3
+points['EnterpriseNetworkHeight'] = points['TopSpace'] + (points['IconSpace'] * points['EnterpriseIconCount']) + (points['IconHeight'] * points['EnterpriseIconCount'])
 
 # Zone CIDR Table
 

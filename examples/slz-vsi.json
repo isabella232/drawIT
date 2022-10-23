@@ -312,6 +312,129 @@
           "type": "NetworkInterface"
         }
       ]
+    },
+
+    {
+      "name": "Virtual Server",
+      "id": "work-vsi-zone1-id",
+      "type": "Instance",
+      "region": "Region",
+      "availabilityZone": "Zone 1",
+      "vpcName": "Work VPC",
+      "vpcId": "work-vpc-id",
+      "osName": "ibm-redhat-8-6-minimal-amd64-1",
+      "osVendor": "Red Hat",
+      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
+      "bandwidthMb": 8000,
+      "gpuModel": null,
+      "hostIP": null,
+      "memoryMiB": 16384,
+      "cpuCount": 4,
+      "gpuCount": 0,
+      "cpuSpeedMhz": 2095,
+      "memoryGb": 16,
+      "ipAddresses": [
+        "10.40.10.4"
+      ],
+      "profile": "bx2-4x16",
+      "volumeAttachments": [
+        "work-vsi-zone1-volume-id"
+      ],
+      "networkInterfaces": [
+        {
+          "name": "eth0",
+          "id": "work-vsi-zone1-eth0-id",
+          "networkId": "work-subnet-vsi-zone1-id",
+          "instanceId": "work-vsi-zone1-id",
+          "region": "us-south",
+          "ip": "10.40.10.4",
+          "maxMbps": 3000,
+          "securityGroupIds": [],
+          "type": "NetworkInterface"
+        }
+      ]
+    },
+
+    {
+      "name": "Virtual Server",
+      "id": "work-vsi-zone2-id",
+      "type": "Instance",
+      "region": "Region",
+      "availabilityZone": "Zone 2",
+      "vpcName": "Work VPC",
+      "vpcId": "work-vpc-id",
+      "osName": "ibm-redhat-8-6-minimal-amd64-1",
+      "osVendor": "Red Hat",
+      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
+      "bandwidthMb": 8000,
+      "gpuModel": null,
+      "hostIP": null,
+      "memoryMiB": 16384,
+      "cpuCount": 4,
+      "gpuCount": 0,
+      "cpuSpeedMhz": 2095,
+      "memoryGb": 16,
+      "ipAddresses": [
+        "10.50.10.4"
+      ],
+      "profile": "bx2-4x16",
+      "volumeAttachments": [
+        "work-vsi-zone2-volume-id"
+      ],
+      "networkInterfaces": [
+        {
+          "name": "eth0",
+          "id": "work-vsi-zone2-eth0-id",
+          "networkId": "work-subnet-vsi-zone2-id",
+          "instanceId": "work-vsi-zone2-id",
+          "region": "us-south",
+          "ip": "10.50.10.4",
+          "maxMbps": 3000,
+          "securityGroupIds": [],
+          "type": "NetworkInterface"
+        }
+      ]
+    },
+
+    {
+      "name": "Virtual Server",
+      "id": "work-vsi-zone3-id",
+      "type": "Instance",
+      "region": "Region",
+      "availabilityZone": "Zone 3",
+      "vpcName": "Work VPC",
+      "vpcId": "work-vpc-id",
+      "osName": "ibm-redhat-8-6-minimal-amd64-1",
+      "osVendor": "Red Hat",
+      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
+      "bandwidthMb": 8000,
+      "gpuModel": null,
+      "hostIP": null,
+      "memoryMiB": 16384,
+      "cpuCount": 4,
+      "gpuCount": 0,
+      "cpuSpeedMhz": 2095,
+      "memoryGb": 16,
+      "ipAddresses": [
+        "10.60.10.4"
+      ],
+      "profile": "bx2-4x16",
+      "volumeAttachments": [
+        "work-vsi-zone3-volume-id"
+      ],
+      "networkInterfaces": [
+        {
+          "name": "eth0",
+          "id": "work-vsi-zone3-eth0-id",
+          "networkId": "work-subnet-vsi-zone3-id",
+          "instanceId": "work-vsi-zone3-id",
+          "region": "us-south",
+          "ip": "10.60.10.4",
+          "maxMbps": 3000,
+          "securityGroupIds": [],
+          "type": "NetworkInterface"
+        }
+      ]
     }
   ],
 
