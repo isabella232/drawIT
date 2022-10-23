@@ -31,6 +31,7 @@ class Messages:
    invalidRequestMessage = '(Error) %s: %s, href=%s'
    invalidResponseMessage = '(Error) %s: %s'
    invalidModeMessage = '(Error) Invalid run mode: %s'
+   invalidCloudMessage = '(Error) Cloud type not supported: %s'
    invalidInputDirectoryMessage = '(Error) Invalid input directory: %s'
    invalidInputMessage = '(Error) Invalid input: No RIAS, JSON, or YAML'
    invalidInputFileMessage = '(Error) Invalid input file: %s'
@@ -126,6 +127,9 @@ class Messages:
 
    def printInvalidMode(self, mode):
       self.printError(self.invalidModeMessage % mode)
+
+   def printInvalidCloud(self, cloud):
+      self.printError(self.invalidCloudMessage % cloud)
 
    def printInvalidInput(self):
       self.printError(self.invalidInputMessage)

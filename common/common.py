@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.35'
+   toolVersion = '0.5.36'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -334,6 +334,9 @@ class Common:
 
    def printInvalidMode(self, mode):
       self.messages.printInvalidMode(mode)
+
+   def printInvalidCloud(self, cloud):
+      self.messages.printInvalidCloud(cloud)
 
    def printInvalidInput(self):
       self.messages.printInvalidInput()

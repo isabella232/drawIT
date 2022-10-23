@@ -222,7 +222,7 @@ class drawit:
         parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
 
         parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, web, or terraform")
-        parser.add_argument('-cloud', dest='cloudtype', default=self.common.getCloudType().value, help="ibm or aws")
+        parser.add_argument('-cloud', dest='cloudtype', default=self.common.getCloudType().value, help="ibm")
         parser.add_argument('--version', action='version', version='drawIT ' + self.common.getToolTitle().split(' ')[1])
         
         args = parser.parse_args()
@@ -258,6 +258,11 @@ class drawit:
         self.common.setInputFile(inputfile)
         self.common.setOutputFolder(outputfolder)
         self.common.setCloudType(cloudtype)
+
+
+        if cloudtype != 'ibm':
+           self.common.printInvalidCloud(cloudtype)
+           return
 
         if outputdetail == "low":
             self.common.setLowDetail()
