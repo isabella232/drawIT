@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.36'
+   toolVersion = '0.5.37'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -216,6 +216,9 @@ class Common:
    def setSingleSplit(self):
       self.options.setSingleSplit()
 
+   def setCombineSplit(self):
+      self.options.setCombineSplit()
+
    def setRegionSplit(self):
       self.options.setRegionSplit()
 
@@ -224,6 +227,9 @@ class Common:
 
    def isSingleSplit(self):
       return self.options.isSingleSplit()
+
+   def isCombineSplit(self):
+      return self.options.isCombineSplit()
 
    def isRegionSplit(self):
       return self.options.isRegionSplit()

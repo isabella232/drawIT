@@ -138,15 +138,25 @@ class Diagram:
 
             width = 0
             height = 0
-            for size in zonesizes:
-               if size[0] > width:
-                  width = size[0]
 
-               height = height + size[1] + points['GroupSpace']
+            if self.common.isVerticalLayout():
+               for size in zonesizes:
+                  if size[0] > width:
+                     width = size[0]
+                  height = height + size[1] + points['GroupSpace']
 
-            width = points['LeftSpace'] + width + points['GroupSpace']  # space after inner groups
-            height = height + points['TopSpace'] # space at top of outer group to top inner group
-            height  = height - points['GroupSpace']  # TODO Remove extra groupspace.
+               width += points['LeftSpace'] + points['GroupSpace']  # space after inner groups
+               height += points['TopSpace'] # space at top of outer group to top inner group
+               height -= points['GroupSpace']  # TODO Remove extra groupspace.
+            else:
+               for size in zonesizes:
+                  if size[1] > height:
+                     height = size[1]
+                  width = width + size[0] + points['GroupSpace']
+
+               #width += points['LeftSpace']  # space after inner groups
+               height += points['TopSpace'] # space at top of outer group to top inner group
+               height += points['GroupSpace']  # TODO Remove extra groupspace.
 
             x = points['GroupSpace']
             y = points['TopSpace']
@@ -190,6 +200,7 @@ class Diagram:
       sizes = []
 
       saveheight = 0
+      savewidth = 0
 
       vpcTable = self.data.getVPCTable() 
       count = 0
@@ -218,10 +229,14 @@ class Diagram:
          height = height + points['TopSpace']  # space at top of outer group to top inner group
          height = height - points['GroupSpace']
 
-         x = (points['IconSpace'] * 2) + points['IconWidth']
-         y = points['TopSpace'] + saveheight + (points['GroupSpace'] * (count - 1))
-
-         saveheight += height
+         if self.common.isVerticalLayout():
+            x = (points['IconSpace'] * 2) + points['IconWidth']
+            y = points['TopSpace'] + saveheight + (points['GroupSpace'] * (count - 1))
+            saveheight += height
+         else:
+            x = (points['IconSpace'] * 2) + points['IconWidth'] + savewidth + (points['GroupSpace'] * (count - 1))
+            y = points['TopSpace']
+            savewidth += width
 
          zonename = regionzonename.split(':')[1]
 
@@ -239,6 +254,7 @@ class Diagram:
 
          zonenode = self.shapes.buildZone(regionzonename, vpcid, regionzonename, zonecidr, x, y, width, height, None)
          nodes.append(zonenode)
+
          sizes.append([width, height])
 
          if count == 1:

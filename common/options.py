@@ -33,6 +33,7 @@ class InputType(Enum):
 
 class OutputSplit(Enum):
    SINGLE = 'single'
+   COMBINE = 'combine'
    REGION = 'region'
    VPC = 'vpc'
 
@@ -204,6 +205,9 @@ class Options:
    def setSingleSplit(self):
       self.outputSplit = OutputSplit.SINGLE
 
+   def setCombineSplit(self):
+      self.outputSplit = OutputSplit.COMBINE
+
    def setRegionSplit(self):
       self.outputSplit = OutputSplit.REGION
 
@@ -212,6 +216,9 @@ class Options:
 
    def isSingleSplit(self):
       return self.outputSplit == OutputSplit.SINGLE
+
+   def isCombineSplit(self):
+      return self.outputSplit == OutputSplit.COMBINE
 
    def isRegionSplit(self):
       return self.outputSplit == OutputSplit.REGION

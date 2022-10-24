@@ -216,7 +216,7 @@ class drawit:
         parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
         parser.add_argument('-output', dest='outputfolder', default=path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
         parser.add_argument('-detail', dest='outputdetail', default=self.common.getOutputDetail().value, help='low, medium, or high')
-        parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, region, or vpc')
+        parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, combine, region, or vpc')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
         parser.add_argument('-layout', dest='outputlayout', default=self.common.getOutputLayout().value, help='horizontal, vertical, horizontalnolink, verticalnolink')
         parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
@@ -287,6 +287,8 @@ class drawit:
 
         if outputsplit == "single":
             self.common.setSingleSplit()
+        elif outputsplit == "combine":
+            self.common.setCombineSplit()
         elif outputsplit == "region":
             self.common.setRegionSplit()
         else: # outputsplit == "vpc"
@@ -563,6 +565,7 @@ class drawit:
 
             splitoptions = [
                 "Single", 
+                "Combine", 
                 "Region", 
                 "VPC"]
             eOutputSplit = StringVar(self.top)
@@ -605,6 +608,8 @@ class drawit:
                     outputsplit = str(eOutputSplit.get()).lower()
                     if outputsplit == "single":
                        self.common.setSingleSplit()
+                    elif outputsplit == "combine":
+                       self.common.setCombineSplit()
                     elif outputsplit == "region":
                        self.common.setRegionSplit()
                     else: # outputsplit == "VPC"
