@@ -221,7 +221,7 @@ class Options:
       return self.outputSplit == OutputSplit.COMBINE
 
    def isRegionSplit(self):
-      return self.outputSplit == OutputSplit.REGION
+      return self.outputSplit == OutputSplit.REGION or self.outputSplit == OutputSplit.COMBINE
 
    def isVPCSplit(self):
       return self.outputSplit == OutputSplit.VPC

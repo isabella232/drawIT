@@ -83,15 +83,45 @@ class Diagram:
       else:
          cloudname = "IBM Cloud"
 
+      nodes = []
+      links = []
+      values = []
+
+      saveheight = 0
+      savewidth = 0
+
+      previousheight = 0
+      previouswidth = 0
+
+      #savex = 0
+      #savey = 0
+
+      count = 0
+
       for vpcid in regionvalues:
          #vpcframe = findrow(user, self.inputdata['vpcs'], 'id', vpcid)
          vpcframe = self.data.getVPC(vpcid)
          if len(vpcframe) == 0:
             self.common.printInvalidVPC(vpcid)
          else:
-            nodes = []
-            links = []
-            values = []
+            count = count + 1
+
+            vpcname = vpcframe['name']
+
+            #vpcname = vpcframe['name']
+
+            #SAVE if not vpcname.startswith('jww'):
+            #SAVE    continue
+         
+            if 'availabilityZones' in vpcframe:
+               usercidrs = vpcframe['availabilityZones']
+            else:
+               usercidrs = None
+
+            if not self.common.isCombineSplit():
+               nodes = []
+               links = []
+               values = []
             
             if self.common.isLinkLayout():
                nodes.append(publicnode)
@@ -110,16 +140,6 @@ class Diagram:
                enterpriseuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['EnterpriseUserName'], None)
                links.append(enterpriseuserlink)
 
-            vpcname = vpcframe['name']
-
-            if 'availabilityZones' in vpcframe:
-               usercidrs = vpcframe['availabilityZones']
-            else:
-               usercidrs = None
-
-            #SAVE if not vpcname.startswith('jww'):
-            #SAVE    continue
-         
             zonenodes, zonelinks, zonevalues, zonesizes = self.buildZones(vpcname, vpcid, usercidrs)
             nodes = nodes + zonenodes
             links = links + zonelinks
@@ -139,11 +159,14 @@ class Diagram:
             width = 0
             height = 0
 
+            #x = points['GroupSpace']
+            #y = points['TopSpace']
+
             if self.common.isVerticalLayout():
                for size in zonesizes:
                   if size[0] > width:
                      width = size[0]
-                  height = height + size[1] + points['GroupSpace']
+                  height += size[1] + points['GroupSpace']
 
                width += points['LeftSpace'] + points['GroupSpace']  # space after inner groups
                height += points['TopSpace'] # space at top of outer group to top inner group
@@ -152,44 +175,131 @@ class Diagram:
                for size in zonesizes:
                   if size[1] > height:
                      height = size[1]
-                  width = width + size[0] + points['GroupSpace']
+                  width += size[0] + points['GroupSpace']
 
                #width += points['LeftSpace']  # space after inner groups
                height += points['TopSpace'] # space at top of outer group to top inner group
                height += points['GroupSpace']  # TODO Remove extra groupspace.
 
-            x = points['GroupSpace']
-            y = points['TopSpace']
+            #if count > 1:
+            #   if self.common.isCombineSplit():
+            #      if self.common.isVerticalLayout():
+            #         x = savex
+            #         y = savey + height + points['GroupSpace']
+            #      else:
+            #         x = savex + width + points['GroupSpace']
+            #         y = savey
 
-            vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
-            nodes.append(vpcnode)
+            #savex = x
+            #savey = y
+            #print(vpcname)
+            #print(x)
+            #print(y)
+            #print(width)
+            #print(height)
 
-            x = 30
-            y = 70
+            #vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
+            #nodes.append(vpcnode)
 
-            width = width + (points['GroupSpace'] * 2)
-            height = height + (points['TopSpace'] + points['GroupSpace'])
+            #x = 30
+            #y = 70
 
-            regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height, None)
-            nodes.append(regionnode)
+            #width += points['GroupSpace'] * 2
+            #height += points['TopSpace'] + points['GroupSpace']
+
+            if self.common.isCombineSplit():
+               if self.common.isVerticalLayout():
+                  if width > savewidth:
+                     savewidth = width
+                  saveheight += height + points['GroupSpace']
+               else:
+                  if height > saveheight:
+                     saveheight = height
+                  savewidth += width + points['GroupSpace']
+
+               if count == 1:
+                  x = points['GroupSpace']
+                  y = points['TopSpace']
+               elif self.common.isVerticalLayout():
+                  #x = points['GroupSpace']
+                  #y = saveheight + points['GroupSpace']
+                  #x += points['GroupSpace']
+                  y += previousheight + points['GroupSpace']
+               else:
+                  #x = savewidth + points['GroupSpace']
+                  #y = points['TopSpace']
+                  x += previouswidth + points['GroupSpace']
+                  #y += points['TopSpace']
+
+               previousheight = height + points['GroupSpace']
+               previouswidth = width
+
+               vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
+               nodes.append(vpcnode)
+            else:
+               x = points['GroupSpace']
+               y = points['TopSpace']
+
+               vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
+               nodes.append(vpcnode)
+
+               x = 30
+               y = 70
+
+               width += points['GroupSpace'] * 2
+               height += points['TopSpace'] + points['GroupSpace']
+
+               regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height, None)
+               nodes.append(regionnode)
          
-            lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
-            if len(lbnodes) > 0:
-               nodes = nodes + lbnodes
-               links = links + lblinks
+               lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
+               if len(lbnodes) > 0:
+                  nodes = nodes + lbnodes
+                  links = links + lblinks
 
-            #publicwidth = (groupspace * 2) + (48 * 3)
-            #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-            x = points['PublicNetworkWidth'] + points['GroupSpace']  # Allow space for public network.
-            y = 0
+               #publicwidth = (groupspace * 2) + (48 * 3)
+               #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
+               x = points['PublicNetworkWidth'] + points['GroupSpace']  # Allow space for public network.
+               y = 0
 
-            width = width + (points['GroupSpace'] * 2)
-            height = height + (points['TopSpace'] + points['GroupSpace'])
+               width += points['GroupSpace'] * 2
+               height += points['TopSpace'] + points['GroupSpace']
 
-            cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height, None)
-            nodes.append(cloudnode)
+               cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height, None)
+               nodes.append(cloudnode)
    
-            data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
+               data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
+
+      if self.common.isCombineSplit():
+         x = 30
+         y = 70
+
+         width = savewidth
+         height = saveheight
+
+         width += points['GroupSpace'] * 2
+         height += points['TopSpace'] + points['GroupSpace']
+
+         regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height, None)
+         nodes.append(regionnode)
+         
+         #lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
+         #if len(lbnodes) > 0:
+         #   nodes = nodes + lbnodes
+         #   links = links + lblinks
+
+         #publicwidth = (groupspace * 2) + (48 * 3)
+         #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
+         x = points['PublicNetworkWidth'] + points['GroupSpace']  # Allow space for public network.
+         y = 0
+
+         width += points['GroupSpace'] * 2
+         height += points['TopSpace'] + points['GroupSpace']
+
+         cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height, None)
+         nodes.append(cloudnode)
+   
+         data[regionname] = {'nodes': nodes, 'values': values, 'links': links}
 
       return data
 
