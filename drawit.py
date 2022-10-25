@@ -208,7 +208,7 @@ class drawit:
         parser.add_argument('-input', dest='inputfile', default=self.common.getInputFile(), help='JSON/YAML')
         parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
         parser.add_argument('-output', dest='outputfolder', default=path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
-        parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, combine, region, or vpc')
+        parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, combine, region, vpc, or vpc:vpcname')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
         parser.add_argument('-layout', dest='outputlayout', default=self.common.getOutputLayout().value, help='horizontal, vertical, horizontalnolink, verticalnolink')
         parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
@@ -274,7 +274,10 @@ class drawit:
             self.common.setCombineSplit()
         elif outputsplit == "region":
             self.common.setRegionSplit()
-        else: # outputsplit == "vpc"
+        else: # outputsplit == "vpc" or "vpc:vpcname"
+            outputvpc = outputsplit.split(':')
+            if outputvpc[0] == 'vpc' and len(outputvpc) > 1:
+                self.common.setVPCName(outputvpc[1])
             self.common.setVPCSplit()
 
         if region == "eu-de":

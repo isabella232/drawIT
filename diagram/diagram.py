@@ -108,10 +108,8 @@ class Diagram:
 
             vpcname = vpcframe['name']
 
-            #vpcname = vpcframe['name']
-
-            #SAVE if not vpcname.startswith('jww'):
-            #SAVE    continue
+            if not self.common.isDesignatedVPC(vpcname):
+               continue
          
             if 'availabilityZones' in vpcframe:
                usercidrs = vpcframe['availabilityZones']
