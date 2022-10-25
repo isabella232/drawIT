@@ -8,8 +8,8 @@ drawIT accepts input from JSON, YAML, or RIAS, and creates diagrams that can be 
 ## Running drawIT
 
 Using GUI:
-- test/run.sh
-- GUI outputs drawio xml to Documents/drawIT by default.
+- cd scripts
+- ./rungui.sh
 
 <!--
 2. Using NodeJS: 
