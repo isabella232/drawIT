@@ -107,8 +107,9 @@ class Diagram:
             count = count + 1
 
             vpcname = vpcframe['name']
+            vpcid = vpcframe['id']
 
-            if not self.common.isDesignatedVPC(vpcname):
+            if not self.common.isDesignatedVPC(vpcid):
                continue
          
             if 'availabilityZones' in vpcframe:

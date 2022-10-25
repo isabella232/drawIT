@@ -73,7 +73,7 @@ class Options:
    outputSplit = None
    outputShapes = None
    outputLayout = None
-   vpcName = None
+   designatedVPC = None
 
    def __init__(self, toolName):
       self.cloudType = CloudType.IBM
@@ -86,7 +86,7 @@ class Options:
       self.outputSplit = OutputSplit.SINGLE
       self.outputShapes = OutputShapes.PRESCRIBED
       self.outputLayout = OutputLayout.VERTICAL
-      self.vpcName = '*'
+      self.designatedVPC = '*'
       return
 
    def getAccountID(self):
@@ -197,14 +197,14 @@ class Options:
    #def setInputType(self, value):
    #   self.inputType = value
 
-   def getVPCName(self):
-      return self.vpcName
+   def getDesignatedVPC(self):
+      return self.designatedVPC
 
-   def setVPCName(self, name):
-      self.vpcName = name
+   def setDesignatedVPC(self, name):
+      self.designatedVPC = name
 
    def isDesignatedVPC(self, name):
-      return self.vpcName == '*' or self.vpcName == name
+      return self.designatedVPC == '*' or self.designatedVPC == name
 
    def setSingleSplit(self):
       self.outputSplit = OutputSplit.SINGLE

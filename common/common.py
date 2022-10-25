@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.42'
+   toolVersion = '0.5.43'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -213,11 +213,11 @@ class Common:
    #def setInputType(self, value):
    #   self.options.setInputType(value)
 
-   def getVPCName(self):
-      return self.options.getVPCName()
+   def getDesignatedVPC(self):
+      return self.options.getDesignatedVPC()
 
-   def setVPCName(self, name):
-      self.options.setVPCName(name)
+   def setDesignatedVPC(self, name):
+      self.options.setDesignatedVPC(name)
 
    def isDesignatedVPC(self, name):
       return self.options.isDesignatedVPC(name)

@@ -123,6 +123,57 @@ class RIAS:
       #      print(vpc["name"])
       return data
 
+   def getriasdatavpc(self, token, accountID, group, designatedVPC):
+      #version = '2022-03-15'
+      version = '2022-07-05'
+      endpoint = 'https://' + self.common.getRegion().value + '.iaas.cloud.ibm.com'
+      if len(accountID) > 0:
+         if group == 'vpn_gateways' or group == 'endpoint_gateways' or group == 'load_balancers':
+            # Exit for now as causing error with other accounts:
+            #    not_authorized: The request is not authorized. href=https://us-south.iaas.cloud.ibm.com/v1/vpn_gateways
+            return {}
+         headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+            'Authorization': token,
+            'X-Account-ID': accountID
+         }
+      else:
+         headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+            'Authorization': token
+         }
+      params = {
+         'version': version, 
+         'generation': '2'
+      }
+      request = endpoint + "/v1/" + group
+      request = endpoint + "/v1/" + group + "/" + designatedVPC
+      response = get_request(url=request, headers=headers, params=params, verify=False)
+      rawdata = json_load(response.text)
+      print("rawdata:")
+      print(rawdata)
+      if 'errors' in rawdata:
+         errors = rawdata['errors']
+         error = errors[0]
+         self.common.printRequestMessage(error['code'], error['message'], request) 
+         sys_exit()
+      #elif group == "vpcs" and rawdata['total_count'] == 0:
+      #   #self.common.printMissingVPCs('href=' + request)
+      #   self.common.printMissingVPCs()
+      #   sys_exit()
+      #elif group == "subnets" and rawdata['total_count'] == 0:
+      #   #self.commonprintMissingSubnets('href=' + request)
+      #   self.commonprintMissingSubnets()
+      #   sys_exit()
+      #data = rawdata[group]
+      data = rawdata
+      #if group == "vpcs":
+      #   for vpc in data:
+      #      print(vpc["name"])
+      return data
+
    def getriassubdata(self, token, accountID, id, group, subgroup):
       #version = '2022-05-31'
       version = '2022-07-05'
@@ -203,7 +254,11 @@ class RIAS:
       #return data
  
       for datatype in self.types:
-         rawdata = self.getriasdata(token, self.common.getAccountID(), datatype)
+         designatedVPC = self.common.getDesignatedVPC()
+         if designatedVPC == '*':
+            rawdata = self.getriasdata(token, self.common.getAccountID(), datatype)
+         else:
+            rawdata = self.getriasdatavpc(token, self.common.getAccountID(), datatype, designatedVPC)
          self.data[datatype] = rawdata
 
       self.normalizeData()
