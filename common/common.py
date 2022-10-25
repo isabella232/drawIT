@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.39'
+   toolVersion = '0.5.40'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -242,30 +242,6 @@ class Common:
 
    def setOutputSplit(self, value):
       self.options.setOutputSplit(value)
-
-   def setLowDetail(self):
-      self.options.setLowDetail()
-
-   def setMediumDetail(self):
-      self.options.setMediumDetail()
-
-   def setHighDetail(self):
-      self.options.setHighDetail()
-
-   def isLowDetail(self):
-      return self.options.isLowDetail()
-
-   def isMediumDetail(self):
-      return self.options.isMediumDetail()
-
-   def isHighDetail(self):
-      return self.options.isHighDetail()
-
-   def getOutputDetail(self):
-      return self.options.getOutputDetail()
-
-   def setOutputDetail(self, value):
-      self.options.setOutputDetail(value)
 
    def setLogicalShapes(self):
       self.options.setLogicalShapes()

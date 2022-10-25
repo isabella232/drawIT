@@ -642,18 +642,18 @@ class Diagram:
             secondarytext = ''
             meta = None
 
-         if self.common.isLowDetail(): 
-            width = points['IconWidth']
-            height = points['IconHeight']
-            extrawidth = width * 3
-            extraheight = height * 2
-            x = width + (extrawidth * (count - 1)) + (points['GroupSpace'] * count)
-            y = points['TopSpace']
-         else:
-            width = 240
-            height = 152
-            x = (width * (count - 1)) + (points['GroupSpace'] * count) 
-            y = points['TopSpace']
+         #if self.common.isLowDetail(): 
+         width = points['IconWidth']
+         height = points['IconHeight']
+         extrawidth = width * 3
+         extraheight = height * 2
+         x = width + (extrawidth * (count - 1)) + (points['GroupSpace'] * count)
+         y = points['TopSpace']
+         #else:
+         #   width = 240
+         #   height = 152
+         #   x = (width * (count - 1)) + (points['GroupSpace'] * count) 
+         #   y = points['TopSpace']
 
          #SAVE x = (width * (count - 1)) + (groupspace * count) 
          #SAVE y = topspace

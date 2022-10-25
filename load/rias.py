@@ -298,6 +298,7 @@ class RIAS:
       self.vpcs = json_normalize(self.data['vpcs'] if ('vpcs' in self.data) else json_normalize({}))
       self.subnets = json_normalize(self.data['subnets'] if ('subnets' in self.data) else json_normalize({}))
       self.instances = json_normalize(self.data['instances'] if ('instances' in self.data) else json_normalize({}))
+      self.instances['type'] = 'Instance'
       self.networkInterfaces = json_normalize(self.data['network_interfaces'] if ('network_interfaces' in self.data) else json_normalize({}))
       self.publicGateways = json_normalize(self.data['public_gateways'] if ('public_gateways' in self.data) else json_normalize({}))
       self.floatingIPs = json_normalize(self.data['floating_ips'] if ('floating_ips' in self.data) else json_normalize({}))
@@ -312,6 +313,15 @@ class RIAS:
       self.networkACLs = json_normalize({})
       self.securityGroups = json_normalize({})
       self.keys = json_normalize({})
+
+      self.vpcs['type'] = 'VPC'
+      self.subnets['type'] = 'Network'
+      self.instances['type'] = 'Instance'
+      self.networkInterfaces['type'] = 'NetworkInterface'
+      self.publicGateways['type'] = 'PublicGateway'
+      self.floatingIPs['type'] = 'FloatingIP'
+      self.vpeGateways['type'] = 'VPE'
+
       return
 
    def getFloatingIPs(self):

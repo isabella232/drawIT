@@ -37,11 +37,6 @@ class OutputSplit(Enum):
    REGION = 'region'
    VPC = 'vpc'
 
-class OutputDetail(Enum):
-   LOW = 'low'
-   MEDIUM = 'medium'
-   HIGH = 'high'
-
 class OutputLayout(Enum):
    HORIZONTAL = 'horizontal'
    VERTICAL = 'vertical'
@@ -76,7 +71,6 @@ class Options:
    outputFolder = ''
    tablesFolder = ''
    outputSplit = None
-   outputDetail = None
    outputShapes = None
    outputLayout = None
 
@@ -89,7 +83,6 @@ class Options:
       self.outputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
       self.tablesFolder ='tables'
       self.outputSplit = OutputSplit.SINGLE
-      self.outputDetail = OutputDetail.LOW
       self.outputShapes = OutputShapes.PRESCRIBED
       self.outputLayout = OutputLayout.VERTICAL
       return
@@ -231,30 +224,6 @@ class Options:
 
    def setOutputSplit(self, value):
       self.outputSplit = value
-
-   def setLowDetail(self):
-      self.outputDetail = OutputDetail.LOW
-
-   def setMediumDetail(self):
-      self.outputDetail = OutputDetail.MEDIUM
-
-   def setHighDetail(self):
-      self.outputDetail = OutputDetail.HIGH
-
-   def isLowDetail(self):
-      return self.outputDetail == OutputDetail.LOW
-
-   def isMediumDetail(self):
-      return self.outputDetail == OutputDetail.MEDIUM
-
-   def isHighDetail(self):
-      return self.outputDetail == OutputDetail.HIGH
-
-   def getOutputDetail(self):
-      return self.outputDetail
-
-   def setOutputDetail(self, value):
-      self.outputDetail = value
 
    def setLogicalShapes(self):
       self.outputShapes = OutputShapes.LOGICAL

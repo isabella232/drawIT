@@ -114,12 +114,6 @@ class Config:
     def setTablesFolder(self,tablesFolder):
         self.set("tablesFolder",tablesFolder)
 
-    def getOutputDetail(self):
-        return self.get("outputDetail")
-    
-    def setOutputDetail(self,outputDetail):
-        self.set("outputFolder",outputDetail)
-
     def getOutputSplit(self):
         return self.get("outputSplit")
     
@@ -200,7 +194,6 @@ class drawit:
         outputfolder = config.getOutputFolder()
         outputdirectory = config.getOutputDirectory()
         tablesfolder = config.getTablesFolder()
-        outputdetail = config.getOutputDetail()
         outputsplit = config.getOutputSplit()
         outputshapes = config.getOutputShapes()
         outputlayout = config.getOutputLayout()
@@ -215,7 +208,6 @@ class drawit:
         parser.add_argument('-input', dest='inputfile', default=self.common.getInputFile(), help='JSON/YAML')
         parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
         parser.add_argument('-output', dest='outputfolder', default=path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
-        parser.add_argument('-detail', dest='outputdetail', default=self.common.getOutputDetail().value, help='low, medium, or high')
         parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, combine, region, or vpc')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
         parser.add_argument('-layout', dest='outputlayout', default=self.common.getOutputLayout().value, help='horizontal, vertical, horizontalnolink, verticalnolink')
@@ -245,7 +237,6 @@ class drawit:
         outputfolder = args.outputfolder
         tablesfolder = args.tablesfolder
         outputtype = "xml"
-        outputdetail = args.outputdetail.lower()
         outputsplit = args.outputsplit.lower()
         outputshapes = args.outputshapes.lower()
         outputlayout = args.outputlayout.lower()
@@ -259,17 +250,9 @@ class drawit:
         self.common.setOutputFolder(outputfolder)
         self.common.setCloudType(cloudtype)
 
-
         if cloudtype != 'ibm':
            self.common.printInvalidCloud(cloudtype)
            return
-
-        if outputdetail == "low":
-            self.common.setLowDetail()
-        elif outputdetail== "medium":
-            self.common.setMediumDetail()
-        else: # outputdetail == "high"
-            self.common.setHighDetail()
 
         if outputshapes == "logical":
             self.common.setLogicalShapes()
@@ -531,16 +514,6 @@ class drawit:
             #tkinter.Label(frame, text="").grid(row=row, columnspan=2)
             #row = row + 1
 
-            detailoptions = [
-                "Low", 
-                "Medium",
-                "High"]
-            eOutputDetail = StringVar(self.top)
-            eOutputDetail.set("Low")
-            Label(frame, text="Detail Level").grid(row=row)
-            shapemenu = OptionMenu(frame, eOutputDetail, *detailoptions).grid(row=row, column=1, sticky=W + E)
-            row = row + 1
-
             shapeoptions = [
                 "Logical", 
                 "Prescribed"]
@@ -580,14 +553,6 @@ class drawit:
                 try:
                     self.statusText.set("Starting")
                     frame.after_idle(onClickGenerate)                   
-
-                    outputdetail = str(eOutputDetail.get()).lower()
-                    if outputdetail == "low":
-                       self.common.setLowDetail()
-                    elif outputdetail == "medium":
-                       self.common.setMediumDetail()
-                    else: # outputdetail == "high"
-                       self.common.setHighDetail()
 
                     outputshapes = str(eOutputShape.get()).lower()
                     if outputshapes == "logical":
