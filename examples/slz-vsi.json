@@ -9,10 +9,7 @@
        {"name": "Zone 1", "addressPrefix": "10.10.0.0/18"},
        {"name": "Zone 2", "addressPrefix": "10.20.0.0/18"},
        {"name": "Zone 3", "addressPrefix": "10.30.0.0/18"}
-      ],
-      "networkACLId": "acl-id",
-      "securityGroupId": "security-id",
-      "resourceGroupId": "resource-id"
+      ]
     },
 
     {
@@ -24,10 +21,7 @@
        {"name": "Zone 1", "addressPrefix": "10.40.0.0/18"},
        {"name": "Zone 2", "addressPrefix": "10.50.0.0/18"},
        {"name": "Zone 3", "addressPrefix": "10.60.0.0/18"}
-      ],
-      "networkACLId": "acl-id",
-      "securityGroupId": "security-id",
-      "resourceGroupId": "resource-id"
+      ]
     }
   ],
 
@@ -38,10 +32,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 1",
-      "bandwidthMb": 1000,
       "subnet": "10.10.10.0/24",
-      "vpcId": "mgmt-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "mgmt-vpc-id"
     },
 
     {
@@ -50,10 +42,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 1",
-      "bandwidthMb": 1000,
       "subnet": "10.10.20.0/24",
-      "vpcId": "mgmt-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "mgmt-vpc-id"
     },
 
     {
@@ -62,23 +52,18 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 1",
-      "bandwidthMb": 1000,
       "subnet": "10.10.30.0/24",
-      "vpcId": "mgmt-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "mgmt-vpc-id"
     },
 
     {
       "name": "VSI Subnet",
-      "id": "mgmt-vsi-zone2-id",
       "id": "mgmt-subnet-vsi-zone2-id",
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 2",
-      "bandwidthMb": 1000,
       "subnet": "10.20.10.0/24",
-      "vpcId": "mgmt-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "mgmt-vpc-id"
     },
 
     {
@@ -87,10 +72,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 2",
-      "bandwidthMb": 1000,
       "subnet": "10.20.20.0/24",
-      "vpcId": "mgmt-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "mgmt-vpc-id"
     },
 
     {
@@ -99,10 +82,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 3",
-      "bandwidthMb": 1000,
       "subnet": "10.30.10.0/24",
-      "vpcId": "mgmt-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "mgmt-vpc-id"
     },
 
     {
@@ -111,10 +92,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 3",
-      "bandwidthMb": 1000,
       "subnet": "10.30.20.0/24",
-      "vpcId": "mgmt-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "mgmt-vpc-id"
     },
 
     {
@@ -123,10 +102,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 1",
-      "bandwidthMb": 1000,
       "subnet": "10.40.10.0/24",
-      "vpcId": "work-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "work-vpc-id"
     },
 
     {
@@ -135,10 +112,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 1",
-      "bandwidthMb": 1000,
       "subnet": "10.40.20.0/24",
-      "vpcId": "work-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "work-vpc-id"
     },
 
     {
@@ -147,10 +122,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 2",
-      "bandwidthMb": 1000,
       "subnet": "10.50.10.0/24",
-      "vpcId": "work-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "work-vpc-id"
     },
 
     {
@@ -159,10 +132,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 2",
-      "bandwidthMb": 1000,
       "subnet": "10.50.20.0/24",
-      "vpcId": "work-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "work-vpc-id"
     },
 
     {
@@ -171,10 +142,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 3",
-      "bandwidthMb": 1000,
       "subnet": "10.60.10.0/24",
-      "vpcId": "work-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "work-vpc-id"
     },
 
     {
@@ -183,10 +152,8 @@
       "type": "Network",
       "region": "Region",
       "availabilityZone": "Zone 3",
-      "bandwidthMb": 1000,
       "subnet": "10.60.20.0/24",
-      "vpcId": "work-vpc-id",
-      "networkACL": "acl-id"
+      "vpcId": "work-vpc-id"
     }
   ],
 
@@ -199,21 +166,6 @@
       "availabilityZone": "Zone 1",
       "vpcName": "Management VPC",
       "vpcId": "mgmt-vpc-id",
-      "osName": "ibm-redhat-8-6-minimal-amd64-1",
-      "osVendor": "Red Hat",
-      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
-      "bandwidthMb": 8000,
-      "gpuModel": null,
-      "hostIP": null,
-      "memoryMiB": 16384,
-      "cpuCount": 4,
-      "gpuCount": 0,
-      "cpuSpeedMhz": 2095,
-      "memoryGb": 16,
-      "ipAddresses": [
-        "10.10.10.4"
-      ],
-      "profile": "bx2-4x16",
       "volumeAttachments": [
         "mgmt-vsi-zone1-volume-id"
       ],
@@ -225,8 +177,6 @@
           "instanceId": "mgmt-vsi-zone1-id",
           "region": "us-south",
           "ip": "10.10.10.4",
-          "maxMbps": 3000,
-          "securityGroupIds": [],
           "type": "NetworkInterface"
         }
       ]
@@ -240,21 +190,6 @@
       "availabilityZone": "Zone 2",
       "vpcName": "Management VPC",
       "vpcId": "mgmt-vpc-id",
-      "osName": "ibm-redhat-8-6-minimal-amd64-1",
-      "osVendor": "Red Hat",
-      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
-      "bandwidthMb": 8000,
-      "gpuModel": null,
-      "hostIP": null,
-      "memoryMiB": 16384,
-      "cpuCount": 4,
-      "gpuCount": 0,
-      "cpuSpeedMhz": 2095,
-      "memoryGb": 16,
-      "ipAddresses": [
-        "10.20.10.4"
-      ],
-      "profile": "bx2-4x16",
       "volumeAttachments": [
         "mgmt-vsi-zone2-volume-id"
       ],
@@ -266,8 +201,6 @@
           "instanceId": "mgmt-vsi-zone2-id",
           "region": "us-south",
           "ip": "10.20.10.4",
-          "maxMbps": 3000,
-          "securityGroupIds": [],
           "type": "NetworkInterface"
         }
       ]
@@ -281,21 +214,6 @@
       "availabilityZone": "Zone 3",
       "vpcName": "Management VPC",
       "vpcId": "mgmt-vpc-id",
-      "osName": "ibm-redhat-8-6-minimal-amd64-1",
-      "osVendor": "Red Hat",
-      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
-      "bandwidthMb": 8000,
-      "gpuModel": null,
-      "hostIP": null,
-      "memoryMiB": 16384,
-      "cpuCount": 4,
-      "gpuCount": 0,
-      "cpuSpeedMhz": 2095,
-      "memoryGb": 16,
-      "ipAddresses": [
-        "10.30.10.4"
-      ],
-      "profile": "bx2-4x16",
       "volumeAttachments": [
         "mgmt-vsi-zone3-volume-id"
       ],
@@ -307,8 +225,6 @@
           "instanceId": "mgmt-vsi-zone3-id",
           "region": "us-south",
           "ip": "10.30.10.4",
-          "maxMbps": 3000,
-          "securityGroupIds": [],
           "type": "NetworkInterface"
         }
       ]
@@ -322,21 +238,6 @@
       "availabilityZone": "Zone 1",
       "vpcName": "Work VPC",
       "vpcId": "work-vpc-id",
-      "osName": "ibm-redhat-8-6-minimal-amd64-1",
-      "osVendor": "Red Hat",
-      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
-      "bandwidthMb": 8000,
-      "gpuModel": null,
-      "hostIP": null,
-      "memoryMiB": 16384,
-      "cpuCount": 4,
-      "gpuCount": 0,
-      "cpuSpeedMhz": 2095,
-      "memoryGb": 16,
-      "ipAddresses": [
-        "10.40.10.4"
-      ],
-      "profile": "bx2-4x16",
       "volumeAttachments": [
         "work-vsi-zone1-volume-id"
       ],
@@ -348,8 +249,6 @@
           "instanceId": "work-vsi-zone1-id",
           "region": "us-south",
           "ip": "10.40.10.4",
-          "maxMbps": 3000,
-          "securityGroupIds": [],
           "type": "NetworkInterface"
         }
       ]
@@ -363,21 +262,6 @@
       "availabilityZone": "Zone 2",
       "vpcName": "Work VPC",
       "vpcId": "work-vpc-id",
-      "osName": "ibm-redhat-8-6-minimal-amd64-1",
-      "osVendor": "Red Hat",
-      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
-      "bandwidthMb": 8000,
-      "gpuModel": null,
-      "hostIP": null,
-      "memoryMiB": 16384,
-      "cpuCount": 4,
-      "gpuCount": 0,
-      "cpuSpeedMhz": 2095,
-      "memoryGb": 16,
-      "ipAddresses": [
-        "10.50.10.4"
-      ],
-      "profile": "bx2-4x16",
       "volumeAttachments": [
         "work-vsi-zone2-volume-id"
       ],
@@ -389,8 +273,6 @@
           "instanceId": "work-vsi-zone2-id",
           "region": "us-south",
           "ip": "10.50.10.4",
-          "maxMbps": 3000,
-          "securityGroupIds": [],
           "type": "NetworkInterface"
         }
       ]
@@ -404,21 +286,6 @@
       "availabilityZone": "Zone 3",
       "vpcName": "Work VPC",
       "vpcId": "work-vpc-id",
-      "osName": "ibm-redhat-8-6-minimal-amd64-1",
-      "osVendor": "Red Hat",
-      "osVersion": "Red Hat Enterprise Linux 8.x - Minimal Install (amd64)",
-      "bandwidthMb": 8000,
-      "gpuModel": null,
-      "hostIP": null,
-      "memoryMiB": 16384,
-      "cpuCount": 4,
-      "gpuCount": 0,
-      "cpuSpeedMhz": 2095,
-      "memoryGb": 16,
-      "ipAddresses": [
-        "10.60.10.4"
-      ],
-      "profile": "bx2-4x16",
       "volumeAttachments": [
         "work-vsi-zone3-volume-id"
       ],
@@ -430,8 +297,6 @@
           "instanceId": "work-vsi-zone3-id",
           "region": "us-south",
           "ip": "10.60.10.4",
-          "maxMbps": 3000,
-          "securityGroupIds": [],
           "type": "NetworkInterface"
         }
       ]
@@ -597,8 +462,6 @@
       "region": "Region",
       "availabilityZone": "Zone 1",
       "vpcId": "mgmt-vpc-id",
-      "resourceGroupId": "",
-      "securityGroups": [],
       "ips": [
         {"id": "mgmt-vpe-zone1-ip-id", "address": "10.10.20.4", "networkId": "mgmt-subnet-vpe-zone1-id"}
       ]
@@ -611,8 +474,6 @@
       "region": "Region",
       "availabilityZone": "Zone 2",
       "vpcId": "mgmt-vpc-id",
-      "resourceGroupId": "",
-      "securityGroups": [],
       "ips": [
         {"id": "mgmt-vpe-zone2-ip-id", "address": "10.20.20.4", "networkId": "mgmt-subnet-vpe-zone2-id"}
       ]
@@ -625,8 +486,6 @@
       "region": "Region",
       "availabilityZone": "Zone 3",
       "vpcId": "mgmt-vpc-id",
-      "resourceGroupId": "",
-      "securityGroups": [],
       "ips": [
         {"id": "mgmt-vpe-zone3-ip-id", "address": "10.30.20.4", "networkId": "mgmt-subnet-vpe-zone3-id"}
       ]
@@ -639,8 +498,6 @@
       "region": "Region",
       "availabilityZone": "Zone 1",
       "vpcId": "work-vpc-id",
-      "resourceGroupId": "",
-      "securityGroups": [],
       "ips": [
         {"id": "work-vpe-zone1-ip-id", "address": "10.40.20.4", "networkId": "work-subnet-vpe-zone1-id"}
       ]
@@ -653,8 +510,6 @@
       "region": "Region",
       "availabilityZone": "Zone 2",
       "vpcId": "work-vpc-id",
-      "resourceGroupId": "",
-      "securityGroups": [],
       "ips": [
         {"id": "work-vpe-zone2-ip-id", "address": "10.50.20.4", "networkId": "work-subnet-vpe-zone2-id"}
       ]
@@ -667,8 +522,6 @@
       "region": "Region",
       "availabilityZone": "Zone 3",
       "vpcId": "work-vpc-id",
-      "resourceGroupId": "",
-      "securityGroups": [],
       "ips": [
         {"id": "work-vpe-zone3-ip-id", "address": "10.50.20.4", "networkId": "work-subnet-vpe-zone3-id"}
       ]

@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.43'
+   toolVersion = '0.5.44'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None

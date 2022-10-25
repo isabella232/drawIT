@@ -599,27 +599,38 @@ class Diagram:
 
             secondarytext = nicips
 
-            instanceOS = instanceframe['image.name']
-            if instanceOS == None:
-               instanceOS = 'Unknown OS'
-            instanceprofile = instanceframe['profile.name'] 
-            instancememory = instanceframe['memory']
+            meta = {}
 
-            bandwidth = instanceframe['bandwidth']
-            if bandwidth == '' or (isinstance(bandwidth, float) and isnan(bandwidth)):
-               instancecpuspeed = 0
+            if 'image.name' in instanceframe:
+               instanceOS = instanceframe['image.name']
+               if instanceOS == None:
+                  instanceOS = 'Unknown OS'
+               meta = meta | {'Operating-System': instanceOS}
+
+            if 'profile.name' in instanceframe:
+               instanceprofile = instanceframe['profile.name'] 
+               meta = meta | {'Profile': instanceprofile}
+
+            if 'memory' in instanceframe:
+               instancememory = instanceframe['memory']
+               meta = meta | {'Memory': str(instancememory)}
+
+            if 'bandwidth' in instanceframe:
+               bandwidth = instanceframe['bandwidth']
+               if bandwidth == '' or (isinstance(bandwidth, float) and isnan(bandwidth)):
+                  instancecpuspeed = 0
+               else:
+                  instancecpuspeed = int(instanceframe['bandwidth'] / 1000)
+               meta = meta | {'CPU-Speed': str(instancecpuspeed)}
+
+            if 'vcpu.count' in instanceframe:
+               instancecpucount = instanceframe['vcpu.count']
+               meta = meta | {'CPU-Count': str(instancecpucount)}
+
+            if meta:
+               meta = meta | {'Boot-Volume': '100GB/3000IOPS'}
             else:
-               instancecpuspeed = int(instanceframe['bandwidth'] / 1000)
-
-            instancecpucount = instanceframe['vcpu.count']
-
-            osdetails = instanceOS
-            profiledetails = instanceprofile
-            storagedetails = '100GB/3000IOPS'
-
-            meta = {'Operating-System': osdetails,
-                    'Instance-Profile': profiledetails,
-                    'Boot-Volume': storagedetails} 
+               meta = None
 
             if nicfipip != None:
                # Save for option to show FIP icon.
