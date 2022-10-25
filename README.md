@@ -7,9 +7,8 @@ drawIT accepts input from JSON, YAML, or RIAS, and creates diagrams that can be 
 
 ## Running drawIT
 
-Using GUI:
-- cd scripts
-- ./rungui.sh
+- Examples folder contain diagram-as-code examples.
+- Scripts folder contains run scripts (e.g. rungui.sh starts GUI).
 
 <!--
 2. Using NodeJS: 
