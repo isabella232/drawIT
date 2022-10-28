@@ -367,6 +367,7 @@ class RIAS:
       self.volumes = json_normalize({})
       self.networkACLs = json_normalize({})
       self.securityGroups = json_normalize({})
+      self.services = json_normalize({})
       self.keys = json_normalize({})
 
       self.vpcs['type'] = 'VPC'

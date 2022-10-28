@@ -545,7 +545,7 @@ class Diagram:
       sizes = []
 
       #nicstable = self.setupdata['nics']
-      icons = self.data.getIconTable(subnetid)
+      icons = self.data.getSubnetIconTable(subnetid)
 
       count = 0
 

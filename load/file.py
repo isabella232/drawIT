@@ -40,6 +40,7 @@ class File:
    vpnGateways = {}
    vpnConnections = {}
    vpeGateways = {}
+   services = {}
    types = []
    data = {}
    common = None
@@ -98,6 +99,7 @@ class File:
       self.volumes = json_normalize(self.data['volumes'] if ('volumes' in self.data) else json_normalize({}))
       self.networkACLs = json_normalize(self.data['networkACLs'] if ('networkACLs' in self.data) else json_normalize({}))
       self.securityGroups = json_normalize(self.data['securityGroups'] if ('securityGroups' in self.data) else json_normalize({}))
+      self.services = json_normalize(self.data['services'] if ('services' in self.data) else json_normalize({}))
       self.keys = json_normalize(self.data['keys'] if ('keys' in self.data) else json_normalize({}))
 
       if not self.vpcs.empty:
@@ -171,6 +173,12 @@ class File:
 
    def setSubnets(self, subnets):
       self.subnets = subnets
+
+   def getServices(self):
+      return self.services
+
+   def setServices(self, services):
+      self.services = services
 
    def getVolumes(self):
       return self.volumes

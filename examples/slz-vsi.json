@@ -303,142 +303,48 @@
     }
   ],
 
-  "floatingIPs": [
+  "services": [
     {
-      "name": "Fip1",
-      "id": "fip1-id",
-      "type": "FloatingIP",
-      "region": "Region",
-      "address": "52.118.146.152",
-      "resourceGroupId": "resource-id",
-      "target": {
-        "name": "Instance1-Nic1",
-        "id": "instance1-nic1-id",
-        "resourceType": "network_interface",
-        "ipv4Address": "10.240.0.0"
-      }
+      "name": "Activity Tracker Object Storage",
+      "id": "activity-tracker-object-storage-id",
+      "type": "ObjectStorage",
+      "region": "Region"
     },
-
     {
-      "name": "Fip2",
-      "id": "fip2-id",
-      "type": "FloatingIP",
-      "region": "Region",
-      "address": "52.118.146.154",
-      "resourceGroupId": "resource-id",
-      "target": {
-        "name": "Instance3-Nic1",
-        "id": "instance3-nic1-id",
-        "resourceType": "network_interface",
-        "ipv4Address": "10.240.64.0"
-      }
+      "name": "Activity Tracker",
+      "id": "activity-tracker-id",
+      "type": "ActivityTracker",
+      "region": "Region"
     },
-
     {
-      "name": "Fip3",
-      "id": "fip3-id",
-      "type": "FloatingIP",
-      "region": "Region",
-      "address": "52.118.146.156",
-      "resourceGroupId": "resource-id",
-      "target": {
-        "name": "Instance5-Nic1",
-        "id": "instance5-nic1-id",
-        "resourceType": "network_interface",
-        "ipv4Address": "10.240.128.0"
-      }
+      "name": "Key Management",
+      "id": "key-management-id",
+      "type": "KeyProtect",
+      "region": "Region"
     },
-
     {
-      "name": "FipGateway1",
-      "id": "fipgateway1-id",
-      "type": "FloatingIP",
-      "region": "Region",
-      "address": "52.118.146.162",
-      "resourceGroupId": "resource-id",
-      "target": {
-        "name": "gateway1",
-        "id": "gateway1-id",
-        "resourceType": "public_gateway",
-        "ipv4Address": null
-      }
+      "name": "Transit Gateway",
+      "id": "transit-gateway-id",
+      "type": "TransitGateway",
+      "region": "Region"
     },
-
     {
-      "name": "FipGateway2",
-      "id": "fipgateway2-id",
-      "type": "FloatingIP",
-      "region": "Region",
-      "address": "52.118.146.164",
-      "resourceGroupId": "resource-id",
-      "target": {
-        "name": "gateway2",
-        "id": "gateway2-id",
-        "resourceType": "public_gateway",
-        "ipv4Address": null
-      }
+      "name": "Object Storage",
+      "id": "object-storage-id",
+      "type": "ObjectStorage",
+      "region": "Region"
     },
-
     {
-      "name": "FipGateway3",
-      "id": "fipgateway3-id",
-      "type": "FloatingIP",
-      "region": "Region",
-      "address": "52.118.146.166",
-      "resourceGroupId": "resource-id",
-      "target": {
-        "name": "gateway3",
-        "id": "gateway3-id",
-        "resourceType": "public_gateway",
-        "ipv4Address": null
-      }
-    }
-  ],
-
-  "publicGateways": [
-    {
-      "name": "Gateway1",
-      "id": "gateway1-id",
-      "type": "PublicGateway",
-      "region": "Region",
-      "vpcId": "mgmt-vpc-id",
-      "floatingIP": "52.118.146.162",
-      "floatingIPReference": {
-        "id": "fipgateway1-id",
-        "ip": "52.118.146.162",
-        "name": null
-      },
-      "resourceGroupId": "resource-id"
+      "name": "Management VPC Flow Log Collector",
+      "id": "mgmt-flow-log-id",
+      "type": "FlowLogs",
+      "region": "Region"
     },
-
     {
-      "name": "Gateway2",
-      "id": "gateway2-id",
-      "type": "PublicGateway",
-      "region": "Region",
-      "vpcId": "mgmt-vpc-id",
-      "floatingIP": "52.118.145.164",
-      "floatingIPReference": {
-        "id": "fipgateway2-id",
-        "ip": "52.118.146.164",
-        "name": null
-      },
-      "resourceGroupId": "resource-id"
-    },
-
-    {
-      "name": "Gateway3",
-      "id": "gateway3-id",
-      "type": "PublicGateway",
-      "region": "Region",
-      "vpcId": "mgmt-vpc-id",
-      "floatingIP": "52.118.146.166",
-      "floatingIPReference": {
-        "id": "fipgateway3-id",
-        "ip": "52.118.146.166",
-        "name": null
-      },
-      "resourceGroupId": "resource-id"
+      "name": "Workload VPC Flow Log Collector",
+      "id": "work-flow-log-id",
+      "type": "FlowLogs",
+      "region": "Region"
     }
   ],
 

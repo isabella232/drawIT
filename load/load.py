@@ -20,13 +20,14 @@ from load.file import File
 from load.rias import RIAS
 
 class Load:
-   #instanceTable = {} # Table of instances ordered by subnet that shows instances within each subnet.
-   nicTable = {}      # Table of nics ordered by subnet+instance that shows nics for same instance in different subnets.
-   iconTable = {}     # Table of icons ordered by subnet that shows icons within each subnet.
-   regionTable = {}   # Table of vpcs ordered by region that shows vpcs within each region.
-   vpcTable = {}      # Table of zones ordered by vpc that shows zones with each vpc.
-   zoneTable = {}     # Table of subnets ordered by vpc+zone that shows subnets within each zone.
-   lbTable = {}       # Table of load balancerbs ordered by vpc+lb that shows load balancers within each vpc.
+   #instanceTable = {}   # Table of instances ordered by subnet that shows instances within each subnet.
+   nicTable = {}         # Table of nics ordered by subnet+instance that shows nics for same instance in different subnets.
+   subnetIconTable = {}  # Table of subnet icons ordered by subnet that shows subnet icons within each subnet.
+   serviceIconTable = {} # Table of service icons ordered by region that shows service icons within each region.
+   regionTable = {}      # Table of vpcs ordered by region that shows vpcs within each region.
+   vpcTable = {}         # Table of zones ordered by vpc that shows zones with each vpc.
+   zoneTable = {}        # Table of subnets ordered by vpc+zone that shows subnets within each zone.
+   lbTable = {}          # Table of load balancerbs ordered by vpc+lb that shows load balancers within each vpc.
 
    data = None
    common = None
@@ -51,7 +52,7 @@ class Load:
       if self.analyzeData():
          self.analyzeContainers()
          #self.analyzeInstances()
-         self.analyzeIcons()
+         self.analyzeSubnetIcons()
          self.analyzeLoadBalancers()
          return True
 
@@ -108,7 +109,7 @@ class Load:
             continue
 
          #self.instanceTable[subnetid] = []
-         self.iconTable[subnetid] = []
+         self.subnetIconTable[subnetid] = []
 
          # If invalid zone then print error and drop subnet.
          # TODO Add check for valid zone.
@@ -214,9 +215,9 @@ class Load:
                   #nicid = nicframe['id']
                   nicsubnetid = nicframe['subnet']['id'] if self.common.isInputRIAS() else nicframe['networkId']
 
-                  if nicsubnetid in self.iconTable:
+                  if nicsubnetid in self.subnetIconTable:
                      if addedInstance == False:
-                        self.iconTable[nicsubnetid].append(instanceframe)
+                        self.subnetIconTable[nicsubnetid].append(instanceframe)
                         addedInstance = True
                   else:
                      self.common.printInvalidSubnet(nicsubnetid)
@@ -230,28 +231,28 @@ class Load:
 
       return
 
-   def analyzeIcons(self):
+   def analyzeSubnetIcons(self):
       subnets = self.data.getSubnets()
 
-      # Create empty iconTable.
+      # Create empty subnetIconTable.
       if not subnets.empty:
          for subnetindex, subnetframe in subnets.iterrows():
             subnetid = subnetframe['id']
-            self.iconTable[subnetid] = []
+            self.subnetIconTable[subnetid] = []
 
-      # Add vpns to iconTable ordered by subnetid.
+      # Add vpns to subnetIconTable ordered by subnetid.
       vpns = self.data.getVPNGateways()
       if not vpns.empty:
          for vpnindex, vpnframe in vpns.iterrows():
             vpnid = vpnframe['id']
             vpnsubnetid = vpnframe['networkId']
 
-            if vpnsubnetid in self.iconTable:
-               self.iconTable[vpnsubnetid].append(vpnframe)
+            if vpnsubnetid in self.subnetIconTable:
+               self.subnetIconTable[vpnsubnetid].append(vpnframe)
             else:
                self.common.printInvalidSubnet(vpnsubnetid)
 
-      # Add vpes to iconTable ordered by subnetid.
+      # Add vpes to subnetIconTable ordered by subnetid.
       vpes = self.data.getVPEGateways()
       if not vpes.empty:
          for vpeindex, vpeframe in vpes.iterrows():
@@ -268,9 +269,9 @@ class Load:
                vpesubnetid = vpeip['networkId']
 
                addedVPE = False
-               if vpesubnetid in self.iconTable:
+               if vpesubnetid in self.subnetIconTable:
                    if addedVPE == False:
-                       self.iconTable[vpesubnetid].append(vpeframe)
+                       self.subnetIconTable[vpesubnetid].append(vpeframe)
                        addedVPE = True
                    else:
                        self.common.printInvalidSubnet(vpesubnetid)
@@ -280,6 +281,55 @@ class Load:
 
       return
 
+   def analyzeServiceIcons(self):
+      services = self.data.getServices()
+
+      # Create empty serviceIconTable.
+      if not subnets.empty:
+         for subnetindex, subnetframe in subnets.iterrows():
+            subnetid = subnetframe['id']
+            self.subnetIconTable[subnetid] = []
+
+      # Add vpns to subnetIconTable ordered by subnetid.
+      vpns = self.data.getVPNGateways()
+      if not vpns.empty:
+         for vpnindex, vpnframe in vpns.iterrows():
+            vpnid = vpnframe['id']
+            vpnsubnetid = vpnframe['networkId']
+
+            if vpnsubnetid in self.subnetIconTable:
+               self.subnetIconTable[vpnsubnetid].append(vpnframe)
+            else:
+               self.common.printInvalidSubnet(vpnsubnetid)
+
+      # Add vpes to subnetIconTable ordered by subnetid.
+      vpes = self.data.getVPEGateways()
+      if not vpes.empty:
+         for vpeindex, vpeframe in vpes.iterrows():
+            vpeips = vpeframe['ips']
+
+            for vpeip in vpeips:
+               if not 'id' in vpeip:
+                  # Readd message when vpe support is complete.
+                  #self.common.printInvalidVPE(vpeip)
+                  continue
+
+               vpeid = vpeip['id']
+               vpeaddress = vpeip['address']
+               vpesubnetid = vpeip['networkId']
+
+               addedVPE = False
+               if vpesubnetid in self.subnetIconTable:
+                   if addedVPE == False:
+                       self.subnetIconTable[vpesubnetid].append(vpeframe)
+                       addedVPE = True
+                   else:
+                       self.common.printInvalidSubnet(vpesubnetid)
+                       continue
+
+      self.analyzeInstances()
+
+      return
    def analyzeLoadBalancers(self):
       listenerdata = []
       pooldata = []
@@ -361,8 +411,8 @@ class Load:
    def getInstanceTable(self, subnetid):
       return self.instanceTable[subnetid]
 
-   def getIconTable(self, subnetid):
-      return self.iconTable[subnetid]
+   def getSubnetIconTable(self, subnetid):
+      return self.subnetIconTable[subnetid]
 
    def getLoadBalancerTable(self):
       return self.lbTable

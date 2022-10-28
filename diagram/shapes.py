@@ -55,6 +55,10 @@ class Shapes:
       node = self.types.buildNode('Subnet', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
+   def buildLocation(self, id, parentid, name, subname, type, x, y, width, height, meta):
+      node = self.types.buildNode(type, self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+      return node
+
    # Expanded Icons
 
    def buildInstanceExpanded(self, id, parentid, name, subname, x, y, width, height, meta):
@@ -83,8 +87,8 @@ class Shapes:
       node = self.types.buildNode('InstanceBastion', self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
-   def buildIcon(self, id, parentid, name, subname, icontype, x, y, width, height, meta):
-      node = self.types.buildNode(icontype, self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
+   def buildIcon(self, id, parentid, name, subname, type, x, y, width, height, meta):
+      node = self.types.buildNode(type, self.common.compress(id), self.common.compress(parentid), name, subname, '', x, y, width, height, meta)
       return node
 
    def buildFloatingIP(self, id, parentid, name, subname, x, y, width, height, meta):
