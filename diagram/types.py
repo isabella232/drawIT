@@ -16,9 +16,11 @@
 import random
 import time
 
-from diagram.elements import Elements
-from diagram.tables import ibmshapes
 from common.common import Common
+
+from diagram.constants import *
+from diagram.elements import Elements
+from diagram.icons import Icons
 
 class Types:
    common = None
@@ -80,20 +82,30 @@ class Types:
                          'as': 'geometry'}}
       return data
 
-   def buildNode(self, shapename, id, parentid, name, subname, badgetext, x, y, width, height, meta):
-      outputshapes = self.common.getOutputShapes().value
-      shape = ibmshapes[shapename]
-      shapetype = shape['format']
-      style = shapetype[outputshapes] + shape['layout'] + shape['color'] + shape['style']  
-      size = shape['size']
-      shapeicon = shape['icon']
-      iconname = shapeicon[outputshapes]
+   def buildNode(self, shapetype, shapekind, shapefill, id, parentid, name, subname, badgetext, x, y, width, height, meta):
+      icon = Icons[shapetype]
+
+      if self.common.isLogicalShapes():
+         iconname = icon[LOGICAL_KIND]
+         if shapekind == ACTOR_KIND:
+            style = ACTOR_STYLE
+         elif shapekind == NODE_KIND:
+            style = LOGICAL_NODE_STYLE
+         else:
+            style = LOGICAL_LOCATION_STYLE
+      else:
+         iconname = icon[PRESCRIBED_KIND]
+         if shapekind == ACTOR_KIND:
+            style = ACTOR_STYLE
+         elif shapekind == NODE_KIND:
+            style = PRESCRIBED_NODE_STYLE
+         else:
+            style = PRESCRIBED_LOCATION_STYLE
+
+      style += icon['color'] + shapefill
+
       shapelabel = "<b style='font-weight:600'>%Primary-Label%</b><br>%Secondary-Text%"
       labelsize = 30
-
-      if shapename == 'operatingSystem' or shapename == 'profileBalanced' or shapename == 'profileCompute' or shapename == 'profileMemory' or shapename == 'blockStorage':
-         shapelabel = "%Primary-Label%<br>%Secondary-Text%"
-         labelsize = 25
 
       if len(name) > 0:
          name = self.common.truncateText(name, labelsize, '<br>')
@@ -164,11 +176,6 @@ class Types:
               'cell1':  {'id': '1',
                          'parent': '0'}}
       return data
-
-   #def buildHeader(self):
-   #   data = {'header': {'type': 'device',
-   #                      'compressed': 'false'}}
-   #   return data
 
    def buildXML(self, vpcdata, pagedata):
       self.elements.buildXML(vpcdata, pagedata)

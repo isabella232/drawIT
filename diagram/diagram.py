@@ -22,8 +22,9 @@
 from math import isnan
 
 from common.common import Common
+
+from diagram.constants import *
 from diagram.shapes import Shapes
-from diagram.tables import names, points, zoneCIDRs 
 
 class Diagram:
    data = None
@@ -69,14 +70,14 @@ class Diagram:
       if self.common.isLinkLayout():
          publicx = 0
          publicy = 0
-         publicnode = self.shapes.buildPublicNetwork(names['PublicNetworkName'], '', names['PublicNetworkName'], '', publicx, publicy, points['PublicNetworkWidth'], points['PublicNetworkHeight'], None)
-         publicusernode = self.shapes.buildUser(names['PublicUserName'], names['PublicNetworkName'], names['PublicUserName'], '', points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
-         publicinternetnode = self.shapes.buildInternet(names['InternetName'], names['PublicNetworkName'], names['InternetName'], '', points['SecondIconX'], points['SecondIconY'], points['IconWidth'], points['IconHeight'], None)
+         publicnode = self.shapes.buildShape('PublicNetwork', LOCATION_KIND, WHITE_FILL, PUBLIC_NETWORK_NAME, '1', PUBLIC_NETWORK_NAME, '', '', publicx, publicy, PUBLIC_NETWORK_WIDTH, PUBLIC_NETWORK_HEIGHT, None)
+         publicusernode = self.shapes.buildShape('User', ACTOR_KIND, NO_FILL, PUBLIC_USER_NAME, PUBLIC_NETWORK_NAME, PUBLIC_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+         publicinternetnode = self.shapes.buildShape('Internet', NODE_KIND, NO_FILL, INTERNET_NAME, PUBLIC_NETWORK_NAME, INTERNET_NAME, '', '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
 
          enterprisex = 0
-         enterprisey = points['PublicNetworkHeight'] + points['GroupSpace']
-         enterprisenode = self.shapes.buildEnterpriseNetwork(names['EnterpriseNetworkName'], '', names['EnterpriseNetworkName'], '', enterprisex, enterprisey, points['EnterpriseNetworkWidth'], points['EnterpriseNetworkHeight'], None)
-         enterpriseusernode = self.shapes.buildUser(names['EnterpriseUserName'], names['EnterpriseNetworkName'], names['EnterpriseUserName'], '', points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
+         enterprisey = PUBLIC_NETWORK_HEIGHT + GROUP_SPACE
+         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', LOCATION_KIND, WHITE_FILL, ENTERPRISE_NETWORK_NAME, '1', ENTERPRISE_NETWORK_NAME, '', '', enterprisex, enterprisey, ENTERPRISE_NETWORK_WIDTH, ENTERPRISE_NETWORK_HEIGHT, None)
+         enterpriseusernode = self.shapes.buildShape('User', ACTOR_KIND, NO_FILL, ENTERPRISE_USER_NAME, ENTERPRISE_NETWORK_NAME, ENTERPRISE_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
 
       if self.common.isLogicalShapes():
          cloudname = "Cloud"
@@ -130,13 +131,13 @@ class Diagram:
                #SAVE publiclink = genlink(user, publicname, publicname, internetname)
                #SAVE links.append(publiclink)
 
-               publicuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['PublicUserName'], None)
+               publicuserlink = self.shapes.buildDoubleArrow('', INTERNET_NAME, PUBLIC_USER_NAME, None)
                links.append(publicuserlink)
 
                nodes.append(enterprisenode)
                nodes.append(enterpriseusernode)
 
-               enterpriseuserlink = self.shapes.buildDoubleArrow('', names['InternetName'], names['EnterpriseUserName'], None)
+               enterpriseuserlink = self.shapes.buildDoubleArrow('', INTERNET_NAME, ENTERPRISE_USER_NAME, None)
                links.append(enterpriseuserlink)
 
             zonenodes, zonelinks, zonevalues, zonesizes = self.buildZones(vpcname, vpcid, usercidrs)
@@ -144,49 +145,49 @@ class Diagram:
             links = links + zonelinks
             values = values + zonevalues
 
-            width = points['IconWidth']
-            height = points['IconHeight']
+            width = ICON_WIDTH
+            height = ICON_HEIGHT
 
             if self.common.isLinkLayout():
                routername = vpcname + '-router'
-               routernode = self.shapes.buildRouter(routername, vpcid, '', '', points['FirstIconX'], points['FirstIconY'], width, height, None)
+               routernode = self.shapes.buildShape('Router', NODE_KIND, NO_FILL, routername, vpcid, '', '', '', FIRST_ICON_X, FIRST_ICON_Y, width, height, None)
                nodes.append(routernode)
 
-               routerlink = self.shapes.buildDoubleArrow('', routername, names['InternetName'], None)
+               routerlink = self.shapes.buildDoubleArrow('', routername, INTERNET_NAME, None)
                links.append(routerlink)
 
             width = 0
             height = 0
 
-            #x = points['GroupSpace']
-            #y = points['TopSpace']
+            #x = GROUP_SPACE
+            #y = TOP_SPACE
 
             if self.common.isVerticalLayout():
                for size in zonesizes:
                   if size[0] > width:
                      width = size[0]
-                  height += size[1] + points['GroupSpace']
+                  height += size[1] + GROUP_SPACE
 
-               width += points['LeftSpace'] + points['GroupSpace']  # space after inner groups
-               height += points['TopSpace'] # space at top of outer group to top inner group
-               height -= points['GroupSpace']  # TODO Remove extra groupspace.
+               width += LEFT_SPACE + GROUP_SPACE  # space after inner groups
+               height += TOP_SPACE # space at top of outer group to top inner group
+               height -= GROUP_SPACE  # TODO Remove extra groupspace.
             else:
                for size in zonesizes:
                   if size[1] > height:
                      height = size[1]
-                  width += size[0] + points['GroupSpace']
+                  width += size[0] + GROUP_SPACE
 
-               #width += points['LeftSpace']  # space after inner groups
-               height += points['TopSpace'] # space at top of outer group to top inner group
-               height += points['GroupSpace']  # TODO Remove extra groupspace.
+               #width += LEFT_SPACE  # space after inner groups
+               height += TOP_SPACE # space at top of outer group to top inner group
+               height += GROUP_SPACE  # TODO Remove extra groupspace.
 
             #if count > 1:
             #   if self.common.isCombineSplit():
             #      if self.common.isVerticalLayout():
             #         x = savex
-            #         y = savey + height + points['GroupSpace']
+            #         y = savey + height + GROUP_SPACE
             #      else:
-            #         x = savex + width + points['GroupSpace']
+            #         x = savex + width + GROUP_SPACE
             #         y = savey
 
             #savex = x
@@ -203,52 +204,52 @@ class Diagram:
             #x = 30
             #y = 70
 
-            #width += points['GroupSpace'] * 2
-            #height += points['TopSpace'] + points['GroupSpace']
+            #width += GROUP_SPACE * 2
+            #height += TOP_SPACE + GROUP_SPACE
 
             if self.common.isCombineSplit():
                if self.common.isVerticalLayout():
                   if width > savewidth:
                      savewidth = width
-                  saveheight += height + points['GroupSpace']
+                  saveheight += height + GROUP_SPACE
                else:
                   if height > saveheight:
                      saveheight = height
-                  savewidth += width + points['GroupSpace']
+                  savewidth += width + GROUP_SPACE
 
                if count == 1:
-                  x = points['GroupSpace']
-                  y = points['TopSpace']
+                  x = GROUP_SPACE
+                  y = TOP_SPACE
                elif self.common.isVerticalLayout():
-                  #x = points['GroupSpace']
-                  #y = saveheight + points['GroupSpace']
-                  #x += points['GroupSpace']
-                  y += previousheight + points['GroupSpace']
+                  #x = GROUP_SPACE
+                  #y = saveheight + GROUP_SPACE
+                  #x += GROUP_SPACE
+                  y += previousheight + GROUP_SPACE
                else:
-                  #x = savewidth + points['GroupSpace']
-                  #y = points['TopSpace']
-                  x += previouswidth + points['GroupSpace']
-                  #y += points['TopSpace']
+                  #x = savewidth + GROUP_SPACE
+                  #y = TOP_SPACE
+                  x += previouswidth + GROUP_SPACE
+                  #y += TOP_SPACE
 
-               previousheight = height + points['GroupSpace']
+               previousheight = height + GROUP_SPACE
                previouswidth = width
 
-               vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
+               vpcnode = self.shapes.buildShape('VPC', LOCATION_KIND, WHITE_FILL, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
                nodes.append(vpcnode)
             else:
-               x = points['GroupSpace']
-               y = points['TopSpace']
+               x = GROUP_SPACE
+               y = TOP_SPACE
 
-               vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
+               vpcnode = self.shapes.buildShape('VPC', LOCATION_KIND, WHITE_FILL, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
                nodes.append(vpcnode)
 
                x = 30
                y = 70
 
-               width += points['GroupSpace'] * 2
-               height += points['TopSpace'] + points['GroupSpace']
+               width += GROUP_SPACE * 2
+               height += TOP_SPACE + GROUP_SPACE
 
-               regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height, None)
+               regionnode = self.shapes.buildShape('Region', LOCATION_KIND, BACKEND_FILL, regionname, cloudname, regionname, '', '', x, y, width, height, None)
                nodes.append(regionnode)
          
                lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
@@ -258,13 +259,13 @@ class Diagram:
 
                #publicwidth = (groupspace * 2) + (48 * 3)
                #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-               x = points['PublicNetworkWidth'] + points['GroupSpace']  # Allow space for public network.
+               x = PUBLIC_NETWORK_WIDTH + GROUP_SPACE  # Allow space for public network.
                y = 0
 
-               width += points['GroupSpace'] * 2
-               height += points['TopSpace'] + points['GroupSpace']
+               width += GROUP_SPACE * 2
+               height += TOP_SPACE + GROUP_SPACE
 
-               cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height, None)
+               cloudnode = self.shapes.buildShape('Cloud', LOCATION_KIND, WHITE_FILL, cloudname, '1', cloudname, '', '', x, y, width, height, None)
                nodes.append(cloudnode)
    
                data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
@@ -276,10 +277,10 @@ class Diagram:
          width = savewidth
          height = saveheight
 
-         width += points['GroupSpace'] * 2
-         height += points['TopSpace'] + points['GroupSpace']
+         width += GROUP_SPACE * 2
+         height += TOP_SPACE + GROUP_SPACE
 
-         regionnode = self.shapes.buildRegion(regionname, cloudname, regionname, '', x, y, width, height, None)
+         regionnode = self.shapes.buildShape('Region', LOCATION_KIND, BACKEND_FILL, regionname, cloudname, regionname, '', '', x, y, width, height, None)
          nodes.append(regionnode)
          
          #lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
@@ -289,13 +290,13 @@ class Diagram:
 
          #publicwidth = (groupspace * 2) + (48 * 3)
          #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-         x = points['PublicNetworkWidth'] + points['GroupSpace']  # Allow space for public network.
+         x = PUBLIC_NETWORK_WIDTH + GROUP_SPACE  # Allow space for public network.
          y = 0
 
-         width += points['GroupSpace'] * 2
-         height += points['TopSpace'] + points['GroupSpace']
+         width += GROUP_SPACE * 2
+         height += TOP_SPACE + GROUP_SPACE
 
-         cloudnode = self.shapes.buildCloud(cloudname, '', cloudname, '', x, y, width, height, None)
+         cloudnode = self.shapes.buildShape('Cloud', LOCATION_KIND, WHITE_FILL, cloudname, '', cloudname, '', '', x, y, width, height, None)
          nodes.append(cloudnode)
    
          data[regionname] = {'nodes': nodes, 'values': values, 'links': links}
@@ -332,19 +333,19 @@ class Diagram:
             if size[0] > width:
                width = size[0]
 
-            height = height + size[1] + points['GroupSpace']
+            height = height + size[1] + GROUP_SPACE
 
-         width = points['LeftSpace'] + width + points['GroupSpace']
-         height = height + points['TopSpace']  # space at top of outer group to top inner group
-         height = height - points['GroupSpace']
+         width = LEFT_SPACE + width + GROUP_SPACE
+         height = height + TOP_SPACE  # space at top of outer group to top inner group
+         height = height - GROUP_SPACE
 
          if self.common.isVerticalLayout():
-            x = (points['IconSpace'] * 2) + points['IconWidth']
-            y = points['TopSpace'] + saveheight + (points['GroupSpace'] * (count - 1))
+            x = (ICON_SPACE * 2) + ICON_WIDTH
+            y = TOP_SPACE + saveheight + (GROUP_SPACE * (count - 1))
             saveheight += height
          else:
-            x = (points['IconSpace'] * 2) + points['IconWidth'] + savewidth + (points['GroupSpace'] * (count - 1))
-            y = points['TopSpace']
+            x = (ICON_SPACE * 2) + ICON_WIDTH + savewidth + (GROUP_SPACE * (count - 1))
+            y = TOP_SPACE
             savewidth += width
 
          zonename = regionzonename.split(':')[1]
@@ -356,18 +357,16 @@ class Diagram:
                    break
                 else:
                    zonecidr = ''
-         elif zonename in zoneCIDRs:
-            zonecidr = zoneCIDRs[zonename]
          else:
-            zonecidr = ''
+            zonecidr = self.getZoneCIDR(zonename)
 
-         zonenode = self.shapes.buildZone(regionzonename, vpcid, regionzonename, zonecidr, x, y, width, height, None)
+         zonenode = self.shapes.buildShape('AvailabilityZone', LOCATION_KIND, BACKEND_FILL, regionzonename, vpcid, regionzonename, zonecidr, '', x, y, width, height, None)
          nodes.append(zonenode)
 
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([points['LeftSpace'] - points['GroupSpace'], 0])
+            sizes.append([LEFT_SPACE - GROUP_SPACE, 0])
 
       return nodes, links, values, sizes
 
@@ -446,7 +445,7 @@ class Diagram:
          #      vpngatename = vpngateframe['name']
          #      vpnsubnetid = subnetid
 
-         instancenodes, instancelinks, instancevalues, instancesizes = self.buildIcons(subnetid, subnetname, subnetvpcname, vpcname)
+         instancenodes, instancelinks, instancevalues, instancesizes = self.buildSubnetIcons(subnetid, subnetname, subnetvpcname, vpcname)
 
          nodes = nodes + instancenodes
          links = links + instancelinks
@@ -457,36 +456,36 @@ class Diagram:
             bastion = True
 
          if (len(instancesizes) == 0):
-            width = points['MinGroupWidth']
-            height = points['MinGroupHeight']
+            width = MIN_GROUP_WIDTH
+            height = MIN_GROUP_HEIGHT
          else:
-            width = points['GroupSpace']
+            width = GROUP_SPACE
             height = 0
 
          for size in instancesizes:
-            width = width + size[0] + points['GroupSpace']
+            width = width + size[0] + GROUP_SPACE
 
             if size[1] > height:
                height = size[1]
 
          # Leave height as groupheight if no instances.
          if (len(instancesizes) != 0):
-            height = height + points['TopSpace'] + points['GroupSpace']  # space at top and bottom of group
+            height = height + TOP_SPACE + GROUP_SPACE  # space at top and bottom of group
 
          #SAVE x = (iconspace * 2) + iconwidth
          #SAVE y = topspace + (height * (count - 1)) + (groupspace * (count - 1))
 
-         x = (points['IconSpace'] * 2) + points['IconWidth']
-         y = points['TopSpace'] + saveheight + (points['GroupSpace'] * (count - 1))
+         x = (ICON_SPACE * 2) + ICON_WIDTH
+         y = TOP_SPACE + saveheight + (GROUP_SPACE * (count - 1))
 
          saveheight += height
 
-         subnetnode = self.shapes.buildSubnet(subnetid, regionzonename, subnetname, subnetcidr, x, y, width, height, None) 
+         subnetnode = self.shapes.buildShape('Subnet', LOCATION_KIND, WHITE_FILL, subnetid, regionzonename, subnetname, subnetcidr, '', x, y, width, height, None) 
          nodes.append(subnetnode)
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([points['LeftSpace'] - points['GroupSpace'], 0])
+            sizes.append([LEFT_SPACE - GROUP_SPACE, 0])
 
          internetname = 'Internet'
 
@@ -495,7 +494,7 @@ class Diagram:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               publicnode = self.shapes.buildPublicGateway(subnetpubgateid, regionzonename, pubgatename, pubgatefipip, points['FirstIconX'], points['FirstIconY'], points['IconWidth'], points['IconHeight'], None)
+               publicnode = self.shapes.buildShape('PublicGateway', NODE_KIND, NO_FILL, subnetpubgateid, regionzonename, pubgatename, pubgatefipip, '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
                nodes.append(publicnode)
 
                if self.common.isLinkLayout():
@@ -538,7 +537,7 @@ class Diagram:
 
       return nodes, links, values, sizes
 
-   def buildIcons(self, subnetid, subnetname, subnetvpcname, vpcname):
+   def buildSubnetIcons(self, subnetid, subnetname, subnetvpcname, vpcname):
       nodes = []
       links = []
       values = []
@@ -572,6 +571,7 @@ class Diagram:
             nicfipid = None
             nicfipip = None
             nicfipname = None
+            nicfips = ''
 
             #for nicframe in nics:
             for nicframe in nics:
@@ -596,6 +596,10 @@ class Diagram:
                   nicfipid = fipframe['id']
                   nicfipip = fipframe['address']
                   nicfipname = fipframe['name']
+                  if nicfips == '':
+                     nicfips = nicfipip
+                  else:
+                     nicfips = nicfips + '<br>' + nicfipip
 
             secondarytext = nicips
 
@@ -645,25 +649,25 @@ class Diagram:
                if self.common.isLinkLayout():
                   routername = vpcname + '-router'
                   iplabel =  "fip:" + nicfipip
-                  #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
-                  fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
+                  fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername, None)
+                  #fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
                   links.append(fiplink)
          else:
             secondarytext = ''
             meta = None
 
          #if self.common.isLowDetail(): 
-         width = points['IconWidth']
-         height = points['IconHeight']
+         width = ICON_WIDTH
+         height = ICON_HEIGHT
          extrawidth = width * 3
          extraheight = height * 2
-         x = width + (extrawidth * (count - 1)) + (points['GroupSpace'] * count)
-         y = points['TopSpace']
+         x = width + (extrawidth * (count - 1)) + (GROUP_SPACE * count)
+         y = TOP_SPACE
          #else:
          #   width = 240
          #   height = 152
-         #   x = (width * (count - 1)) + (points['GroupSpace'] * count) 
-         #   y = points['TopSpace']
+         #   x = (width * (count - 1)) + (GROUP_SPACE * count) 
+         #   y = TOP_SPACE
 
          #SAVE x = (width * (count - 1)) + (groupspace * count) 
          #SAVE y = topspace
@@ -681,7 +685,7 @@ class Diagram:
          #   iconnode = self.shapes.buildIconExpandedStack(nicid, subnetid, instancename, nicips, icontype, x, y, width, height, meta)
          #   sizes.append([width, height])
 
-         iconnode = self.shapes.buildIcon(iconid, subnetid, iconname, secondarytext, icontype, x, y, width, height, meta)
+         iconnode = self.shapes.buildShape(icontype, NODE_KIND, NO_FILL, iconid, subnetid, iconname, secondarytext, icontype, x, y, width, height, meta)
          sizes.append([extrawidth, extraheight])
 
          nodes.append(iconnode)
@@ -812,7 +816,7 @@ class Diagram:
                            if not lbgenerated:
                               lbgenerated = True
                               # TODO Handle spacing for > 1 LBs.
-                              lbnode = self.shapes.buildLoadBalancer(lbid, vpcid, lbname, lbiplist, points['SecondIconX'], points['SecondIconY'], points['IconWidth'], points['IconHeight'], None)
+                              lbnode = self.shapes.buildShape('LoadBalancer', NODE_KIND, NO_FILL, lbid, vpcid, lbname, lbiplist, '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
                               nodes.append(lbnode)
 
                               if self.common.isLinkLayout():
@@ -826,3 +830,46 @@ class Diagram:
                               links.append(instancelink)
 
       return nodes, links
+
+   # Get zone CIDR.
+   def getZoneCIDR(self, zone):
+      match zone:
+         case 'au-syd-1': cidr = AU_SYD_1
+         case 'au-syd-2': cidr = AU_SYD_2
+         case 'au-syd-3': cidr = AU_SYD_3
+
+         case 'br-sao-1': cidr = BR_SAO_1
+         case 'br-sao-2': cidr = BR_SAO_2
+         case 'br-sao-3': cidr = BR_SAO_3
+
+         case 'ca-tor-1': cidr = CA_TOR_1
+         case 'ca-tor-2': cidr = CA_TOR_2
+         case 'ca-tor-3': cidr = CA_TOR_3
+
+         case 'eu-de-1': cidr = EU_DE_1
+         case 'eu-de-2': cidr = EU_DE_2
+         case 'eu-de-3': cidr = EU_DE_3
+
+         case 'eu-gb-1': cidr = EU_GB_1
+         case 'eu-gb-2': cidr = EU_GB_2
+         case 'eu-gb-3': cidr = EU_GB_3
+
+         case 'jp-osa-1': cidr = JP_OSA_1
+         case 'jp-osa-2': cidr = JP_OSA_2
+         case 'jp-osa-3': cidr = JP_OSA_3
+
+         case 'jp-tok-1': cidr = JP_TOK_1
+         case 'jp-tok-2': cidr = JP_TOK_2
+         case 'jp-tok-3': cidr = JP_TOK_3
+
+         case 'us-east-1': cidr = US_EAST_1
+         case 'us-east-2': cidr = US_EAST_2
+         case 'us-east-3': cidr = US_EAST_3
+
+         case 'us-south-1': cidr = US_SOUTH_1
+         case 'us-south-2': cidr = US_SOUTH_2
+         case 'us-south-3': cidr = US_SOUTH_3
+
+         case _: cidr = ''
+
+      return cidr

@@ -305,46 +305,47 @@
 
   "services": [
     {
-      "name": "Activity Tracker Object Storage",
-      "id": "activity-tracker-object-storage-id",
-      "type": "ObjectStorage",
-      "region": "Region"
-    },
-    {
-      "name": "Activity Tracker",
-      "id": "activity-tracker-id",
-      "type": "ActivityTracker",
-      "region": "Region"
-    },
-    {
-      "name": "Key Management",
-      "id": "key-management-id",
-      "type": "KeyProtect",
-      "region": "Region"
-    },
-    {
-      "name": "Transit Gateway",
-      "id": "transit-gateway-id",
-      "type": "TransitGateway",
-      "region": "Region"
-    },
-    {
-      "name": "Object Storage",
-      "id": "object-storage-id",
-      "type": "ObjectStorage",
-      "region": "Region"
-    },
-    {
-      "name": "Management VPC Flow Log Collector",
-      "id": "mgmt-flow-log-id",
-      "type": "FlowLogs",
-      "region": "Region"
-    },
-    {
-      "name": "Workload VPC Flow Log Collector",
-      "id": "work-flow-log-id",
-      "type": "FlowLogs",
-      "region": "Region"
+      "name": "Cloud Services",
+      "id": "cloud-services-id",
+      "type": "Services",
+      "region": "Region",
+      "services": [
+        {
+          "name": "Activity Tracker Object Storage",
+          "id": "activity-tracker-object-storage-id",
+          "type": "ObjectStorage"
+        },
+        {
+          "name": "Activity Tracker",
+          "id": "activity-tracker-id",
+          "type": "ActivityTracker"
+        },
+        {
+          "name": "Key Management",
+          "id": "key-management-id",
+          "type": "KeyProtect"
+        },
+        {
+          "name": "Transit Gateway",
+          "id": "transit-gateway-id",
+          "type": "TransitGateway"
+        },
+        {
+          "name": "Object Storage",
+          "id": "object-storage-id",
+          "type": "ObjectStorage"
+        },
+        {
+          "name": "Management VPC Flow Log Collector",
+          "id": "mgmt-flow-log-id",
+          "type": "FlowLogs"
+        },
+        {
+          "name": "Workload VPC Flow Log Collector",
+          "id": "work-flow-log-id",
+          "type": "FlowLogs"
+        }
+      ]
     }
   ],
 
