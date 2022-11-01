@@ -26,12 +26,14 @@ class Types:
    common = None
    data = None
    elements = None
+   icons = None
 
    def __init__(self, common):
       self.common = common
       self.data = {'header': {'type': 'device',
                               'compressed': 'false'}}
       self.elements = Elements(self.data)
+      self.icons = Icons(common)
       random.seed(time.time())
 
    def buildLink(self, label, source, target, meta):
@@ -83,18 +85,16 @@ class Types:
       return data
 
    def buildNode(self, shapetype, shapekind, shapefill, id, parentid, name, subname, badgetext, x, y, width, height, meta):
-      icon = Icons[shapetype]
+      iconname, iconcolor = self.icons.getIcon(shapetype)
 
       if self.common.isLogicalShapes():
-         iconname = icon[LOGICAL_KIND]
          if shapekind == ACTOR_KIND:
             style = ACTOR_STYLE
          elif shapekind == NODE_KIND:
             style = LOGICAL_NODE_STYLE
          else:
             style = LOGICAL_LOCATION_STYLE
-      else:
-         iconname = icon[PRESCRIBED_KIND]
+      else: # check prescribed
          if shapekind == ACTOR_KIND:
             style = ACTOR_STYLE
          elif shapekind == NODE_KIND:
@@ -102,7 +102,7 @@ class Types:
          else:
             style = PRESCRIBED_LOCATION_STYLE
 
-      style += icon['color'] + shapefill
+      style += iconcolor + shapefill
 
       shapelabel = "<b style='font-weight:600'>%Primary-Label%</b><br>%Secondary-Text%"
       labelsize = 30

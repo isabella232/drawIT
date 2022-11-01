@@ -70,13 +70,13 @@ class Diagram:
       if self.common.isLinkLayout():
          publicx = 0
          publicy = 0
-         publicnode = self.shapes.buildShape('PublicNetwork', LOCATION_KIND, WHITE_FILL, PUBLIC_NETWORK_NAME, '1', PUBLIC_NETWORK_NAME, '', '', publicx, publicy, PUBLIC_NETWORK_WIDTH, PUBLIC_NETWORK_HEIGHT, None)
+         publicnode = self.shapes.buildShape('PublicNetwork', LOCATION_KIND, WHITE_FILL, PUBLIC_NETWORK_NAME, NO_PARENT, PUBLIC_NETWORK_NAME, '', '', publicx, publicy, PUBLIC_NETWORK_WIDTH, PUBLIC_NETWORK_HEIGHT, None)
          publicusernode = self.shapes.buildShape('User', ACTOR_KIND, NO_FILL, PUBLIC_USER_NAME, PUBLIC_NETWORK_NAME, PUBLIC_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
          publicinternetnode = self.shapes.buildShape('Internet', NODE_KIND, NO_FILL, INTERNET_NAME, PUBLIC_NETWORK_NAME, INTERNET_NAME, '', '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
 
          enterprisex = 0
          enterprisey = PUBLIC_NETWORK_HEIGHT + GROUP_SPACE
-         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', LOCATION_KIND, WHITE_FILL, ENTERPRISE_NETWORK_NAME, '1', ENTERPRISE_NETWORK_NAME, '', '', enterprisex, enterprisey, ENTERPRISE_NETWORK_WIDTH, ENTERPRISE_NETWORK_HEIGHT, None)
+         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', LOCATION_KIND, WHITE_FILL, ENTERPRISE_NETWORK_NAME, NO_PARENT, ENTERPRISE_NETWORK_NAME, '', '', enterprisex, enterprisey, ENTERPRISE_NETWORK_WIDTH, ENTERPRISE_NETWORK_HEIGHT, None)
          enterpriseusernode = self.shapes.buildShape('User', ACTOR_KIND, NO_FILL, ENTERPRISE_USER_NAME, ENTERPRISE_NETWORK_NAME, ENTERPRISE_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
 
       if self.common.isLogicalShapes():
@@ -265,7 +265,7 @@ class Diagram:
                width += GROUP_SPACE * 2
                height += TOP_SPACE + GROUP_SPACE
 
-               cloudnode = self.shapes.buildShape('Cloud', LOCATION_KIND, WHITE_FILL, cloudname, '1', cloudname, '', '', x, y, width, height, None)
+               cloudnode = self.shapes.buildShape('Cloud', LOCATION_KIND, WHITE_FILL, cloudname, NO_PARENT, cloudname, '', '', x, y, width, height, None)
                nodes.append(cloudnode)
    
                data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
@@ -734,6 +734,104 @@ class Diagram:
          #   #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
          #   fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
          #   links.append(fiplink)
+
+      return nodes, links, values, sizes
+
+   def buildServices(self, regionname): 
+      nodes = []
+      links = []
+      values = []
+      sizes = []
+
+      saveheight = 0
+
+      serviceTable = self.data.getServiceTable()
+      count = 0
+
+      for serviceid in zoneTable[zonename]:
+         count = count + 1
+         pubgateid = None
+
+         width = 0
+         height = 0
+
+         #subnetframe = findrow(user, self.inputdata['subnets'], 'id', subnetid)
+         subnetframe = self.data.getSubnet(subnetid)
+         subnetname = subnetframe['name']
+         subnetid = subnetframe['id']
+
+         subnetzonename = subnetframe['zone.name']
+         subnetregion = 'us-south-1'
+         subnetvpcid = subnetframe['vpc.id']
+         subnetvpcname = subnetframe['vpc.name']
+         subnetcidr = subnetframe['ipv4_cidr_block']
+
+         #vpcframe = findrow(user, self.inputdata['vpcs'], 'id', subnetvpcid)
+         vpcframe = self.data.getVPC(subnetvpcid)
+         subnetvpcname = subnetframe['name']
+
+         regionname = zonename.split(':')[0]
+         regionzonename = regionname + ':' + subnetzonename;
+
+         if self.common.isLinkLayout():
+            zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname, None)
+            #SAVE links.append(zonelink)
+
+         if 'public_gateway.id' in subnetframe:
+            subnetpubgateid = subnetframe['public_gateway.id']
+         else:
+            subnetpubgateid = None
+
+         pubgatefipip = None
+         pubgatename = None
+         if subnetpubgateid != None:
+            #pubgateframe = findrow(user, self.inputdata['publicGateways'], 'id', subnetpubgateid)
+            pubgateframe = self.data.getPublicGateway(subnetpubgateid)
+            if len(pubgateframe) > 0:
+               if self.common.isInputRIAS(): 
+                  pubgatefipip = pubgateframe['floating_ip.address']
+               else: # yaml
+                  pubgatefipip = pubgateframe['floatingIP']
+               pubgatename = pubgateframe['name']
+
+         instancenodes, instancelinks, instancevalues, instancesizes = self.buildSubnetIcons(subnetid, subnetname, subnetvpcname, vpcname)
+
+         nodes = nodes + instancenodes
+         links = links + instancelinks
+         values = values + instancevalues
+
+         bastion = False
+         if subnetname.lower().find("bastion") != -1:
+            bastion = True
+
+         if (len(instancesizes) == 0):
+            width = MIN_GROUP_WIDTH
+            height = MIN_GROUP_HEIGHT
+         else:
+            width = GROUP_SPACE
+            height = 0
+
+         for size in instancesizes:
+            width = width + size[0] + GROUP_SPACE
+
+            if size[1] > height:
+               height = size[1]
+
+         # Leave height as groupheight if no instances.
+         if (len(instancesizes) != 0):
+            height = height + TOP_SPACE + GROUP_SPACE  # space at top and bottom of group
+
+         x = (ICON_SPACE * 2) + ICON_WIDTH
+         y = TOP_SPACE + saveheight + (GROUP_SPACE * (count - 1))
+
+         saveheight += height
+
+         subnetnode = self.shapes.buildShape('Subnet', LOCATION_KIND, WHITE_FILL, subnetid, regionzonename, subnetname, subnetcidr, '', x, y, width, height, None) 
+         nodes.append(subnetnode)
+         sizes.append([width, height])
+
+         if count == 1:
+            sizes.append([LEFT_SPACE - GROUP_SPACE, 0])
 
       return nodes, links, values, sizes
 

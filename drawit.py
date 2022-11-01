@@ -522,7 +522,7 @@ class drawit:
                 "Prescribed"]
             eOutputShape = StringVar(self.top)
             eOutputShape.set("Prescribed")
-            Label(frame, text="Diagram Type").grid(row=row)
+            Label(frame, text="Type").grid(row=row)
             #shapemenu = tkinter.OptionMenu(self.top, eOutputShape, *shapeoptions)
             shapemenu = OptionMenu(frame, eOutputShape, *shapeoptions).grid(row=row, column=1, sticky=W + E)
             #shapemenu.pack()
@@ -531,22 +531,22 @@ class drawit:
             shapelayout = [
                 "Horizontal", 
                 "Vertical",
-                "Horizontal No Links", 
-                "Vertical No Links"]
+                "Horizontal with no links", 
+                "Vertical with no links"]
             eOutputLayout = StringVar(self.top)
             eOutputLayout.set("Vertical")
-            Label(frame, text="Diagram Layout").grid(row=row)
+            Label(frame, text="Layout").grid(row=row)
             shapemenu = OptionMenu(frame, eOutputLayout, *shapelayout).grid(row=row, column=1, sticky=W + E)
             row = row + 1
 
             splitoptions = [
-                "Single", 
-                "Combine", 
-                "Region", 
-                "VPC"]
+                "One VPC per tab in one file", 
+                "Regional files with VPCs in one tab",
+                "Regional files with one VPC per tab", 
+                "One VPC per file"]
             eOutputSplit = StringVar(self.top)
-            eOutputSplit.set("Single")
-            Label(frame, text="File Organization").grid(row=row)
+            eOutputSplit.set("One VPC per tab in one file")
+            Label(frame, text="Organization").grid(row=row)
             #splitmenu = tkinter.OptionMenu(self.top, eOutputSplit, *splitoptions)
             splitmenu = OptionMenu(frame, eOutputSplit, *splitoptions).grid(row=row, column=1, sticky=W + E)
             #splitmenu.pack()
@@ -566,21 +566,21 @@ class drawit:
                     outputlayout = str(eOutputLayout.get()).lower()
                     if outputlayout == "horizontal":
                        self.common.setHorizontalLayout()
-                    elif outputlayout == "horizontalnolink":
+                    elif outputlayout == "horizontal with no links":
                        self.common.setHorizontalNoLinkLayout()
-                    elif outputlayout == "verticalnolink":
+                    elif outputlayout == "vertical with no links":
                        self.common.setVerticalNoLinkLayout()
                     else: # outputlayout == "vertical"
                        self.common.setVerticalLayout()
 
                     outputsplit = str(eOutputSplit.get()).lower()
-                    if outputsplit == "single":
+                    if outputsplit == "one vpc per tab in one file":
                        self.common.setSingleSplit()
-                    elif outputsplit == "combine":
+                    elif outputsplit == "regional files with vpcs in one tab":
                        self.common.setCombineSplit()
-                    elif outputsplit == "region":
+                    elif outputsplit == "regional files with one vpc per tab":
                        self.common.setRegionSplit()
-                    else: # outputsplit == "VPC"
+                    else: # outputsplit == "one vpc per file"
                        self.common.setVPCSplit()
 
                     region = str(eRegion.get()).lower()

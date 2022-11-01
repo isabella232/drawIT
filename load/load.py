@@ -53,6 +53,7 @@ class Load:
          self.analyzeContainers()
          #self.analyzeInstances()
          self.analyzeSubnetIcons()
+         #self.analyzeServiceIcons()
          self.analyzeLoadBalancers()
          return True
 
@@ -185,6 +186,20 @@ class Load:
          else:
             self.regionTable[subnetregion] = [subnetvpcid]
 
+      services = self.data.getServices()
+
+      # Add services to regionTable ordered by region.
+      for serviceindex, serviceframe in services.iterrows():
+         servicename = serviceframe['name']
+         serviceid = serviceframe['id']
+         serviceregion = serviceframe['region']
+
+         if serviceregion in self.regionTable:
+            if serviceid not in self.regionTable[serviceregion]:
+               self.regionTable[serviceregion].append(serviceid)
+         else:
+            self.regionTable[serviceregion] = [serviceid]
+
       return
 
    def analyzeInstances(self):
@@ -284,52 +299,22 @@ class Load:
    def analyzeServiceIcons(self):
       services = self.data.getServices()
 
-      # Create empty serviceIconTable.
-      if not subnets.empty:
-         for subnetindex, subnetframe in subnets.iterrows():
-            subnetid = subnetframe['id']
-            self.subnetIconTable[subnetid] = []
+      # Add services to serviceIconTable ordered by serviceid.
+      if not services.empty:
+         for serviceindex, serviceframe in services.iterrows():
+            servicename = serviceframe['name']
+            serviceid = serviceframe['id']
+            serviceregion = serviceframe['region']
 
-      # Add vpns to subnetIconTable ordered by subnetid.
-      vpns = self.data.getVPNGateways()
-      if not vpns.empty:
-         for vpnindex, vpnframe in vpns.iterrows():
-            vpnid = vpnframe['id']
-            vpnsubnetid = vpnframe['networkId']
+            self.serviceIconTable[serviceid] = []
 
-            if vpnsubnetid in self.subnetIconTable:
-               self.subnetIconTable[vpnsubnetid].append(vpnframe)
+            if serviceid in self.serviceIconTable:
+               self.serviceIconTable[serviceid].append(serviceframe)
             else:
-               self.common.printInvalidSubnet(vpnsubnetid)
-
-      # Add vpes to subnetIconTable ordered by subnetid.
-      vpes = self.data.getVPEGateways()
-      if not vpes.empty:
-         for vpeindex, vpeframe in vpes.iterrows():
-            vpeips = vpeframe['ips']
-
-            for vpeip in vpeips:
-               if not 'id' in vpeip:
-                  # Readd message when vpe support is complete.
-                  #self.common.printInvalidVPE(vpeip)
-                  continue
-
-               vpeid = vpeip['id']
-               vpeaddress = vpeip['address']
-               vpesubnetid = vpeip['networkId']
-
-               addedVPE = False
-               if vpesubnetid in self.subnetIconTable:
-                   if addedVPE == False:
-                       self.subnetIconTable[vpesubnetid].append(vpeframe)
-                       addedVPE = True
-                   else:
-                       self.common.printInvalidSubnet(vpesubnetid)
-                       continue
-
-      self.analyzeInstances()
+               self.serviceIconTable[serviceid] = [serviceframe]
 
       return
+
    def analyzeLoadBalancers(self):
       listenerdata = []
       pooldata = []
@@ -413,6 +398,9 @@ class Load:
 
    def getSubnetIconTable(self, subnetid):
       return self.subnetIconTable[subnetid]
+
+   def getServiceIconTable(self, serviceid):
+      return self.serviceIconTable[serviceid]
 
    def getLoadBalancerTable(self):
       return self.lbTable

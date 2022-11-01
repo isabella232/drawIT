@@ -138,6 +138,8 @@ PRESCRIBED_KIND = 'prescribed'
 
 # Positioning Constants
 
+NO_PARENT = '1'
+
 ICON_WIDTH = 48
 ICON_HEIGHT = 48
 
