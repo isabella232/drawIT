@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-python3 ../drawit.py -mode gui -input ../examples/vpc-web.json -output downloads
+python3 ../drawit.py -mode gui -input ~/Documents/drawIT/vpc-web.json -output ~/Documents/drawIT

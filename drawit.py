@@ -39,18 +39,23 @@ class Config:
             self.config.add_section("parameters")
 
         # platform specific...
-        if not self.has("inputFile"):
+        if not self.has("inputFolder"):
             if self.isWindows():
-                self.setInputFile("./" + appName)
+                self.setInputFolder("./" + appName)
             else:
-                self.setInputFile(path.expanduser('~') + '/' + appName)
+                self.setInputFolder(path.join(path.expanduser('~'), 'Documents', appName))
 
         # platform specific...
-        if not self.has("outputDirectory"):
+        #if not self.has("outputDirectory"):
+        #    if self.isWindows():
+        #        self.setOutputDirectory("./" + appName)
+        #    else:
+        #        self.setOutputDirectory(path.join(path.expanduser('~'), 'Documents', appName))
+        if not self.has("outputFolder"):
             if self.isWindows():
-                self.setOutputDirectory("./" + appName)
+                self.setOutputFolder("./" + appName)
             else:
-                self.setOutputDirectory(path.join(path.expanduser('~'), 'Documents', appName))
+                self.setOutputFolder(path.join(path.expanduser('~'), 'Documents', appName))
 
     def isWindows(self):
         #return hasattr(sys, 'getwindowsversion')
@@ -90,17 +95,23 @@ class Config:
     def setInputFile(self,inputFile):
         self.set("inputFile",inputFile)
 
+    def getInputFolder(self):
+        return self.get("inputFolder")
+    
+    def setInputFolder(self,inputFolder):
+        self.set("inputFolder",inputFolder)
+
     def getOutputFile(self):
         return self.get("outputFile")
     
     def setOutputFile(self,outputFile):
         self.set("outputFile",outputFile)
 
-    def getOutputDirectory(self):
-        return self.get("outputDirectory")
+    #def getOutputDirectory(self):
+    #    return self.get("outputDirectory")
     
-    def setOutputDirectory(self,outputDirectory):
-        self.set("outputDirectory",outputDirectory)
+    #def setOutputDirectory(self,outputDirectory):
+    #    self.set("outputDirectory",outputDirectory)
 
     def getOutputFolder(self):
         return self.get("outputFolder")
@@ -170,6 +181,8 @@ class drawit:
    diagram = None 
    common = None
    generate = None
+   inputFile = ''
+   outputFolder = ''
 
    def __init__(self):
       self.common = Common()
@@ -190,9 +203,9 @@ class drawit:
         apikey = config.getAPIKey()
         accountid = config.getAccountID()
         inputfile = config.getInputFile()
+        inputfolder = config.getInputFolder()
         outputfile = config.getOutputFile()
         outputfolder = config.getOutputFolder()
-        outputdirectory = config.getOutputDirectory()
         tablesfolder = config.getTablesFolder()
         outputsplit = config.getOutputSplit()
         outputshapes = config.getOutputShapes()
@@ -200,14 +213,23 @@ class drawit:
         runmode = config.getRunMode()
         cloudtype = config.getCloudType()
         region = config.getRegion()
-      
+
+        inputfile = path.join(inputfolder, self.common.getInputFile())
+        outputfolder = path.join(outputfolder, self.common.getOutputFolder())
+
+        self.common.setInputFile(inputfile)
+        self.common.setInputFolder(inputfolder)
+        self.common.setOutputFile(outputfile)
+        self.common.setOutputFolder(outputfolder)
+
         parser = ArgumentParser(description='drawIT')
 
         parser.add_argument('-key', dest='apikey', default=self.common.getAPIKey(), help='API Key')
         parser.add_argument('-account', dest='accountid', default=self.common.getAccountID(), help='Account ID')
         parser.add_argument('-input', dest='inputfile', default=self.common.getInputFile(), help='JSON/YAML')
         parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
-        parser.add_argument('-output', dest='outputfolder', default=path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
+        #parser.add_argument('-output', dest='outputfolder', default=path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
+        parser.add_argument('-output', dest='outputfolder', default=self.common.getOutputFolder(), help='output folder')
         parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, combine, region, vpc, or vpc:vpcid')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
         parser.add_argument('-layout', dest='outputlayout', default=self.common.getOutputLayout().value, help='horizontal, vertical, horizontalnolink, verticalnolink')
@@ -368,6 +390,13 @@ class drawit:
             self.top.title(self.title)
             self.statusText = StringVar()
 
+            apikey = self.common.getAPIKey()
+            accountid = self.common.getAccountID()
+            region = self.common.getRegion().value
+            inputfile = self.common.getInputFile()
+            outputfolder = self.common.getOutputFolder()
+            outputtype = 'xml'
+
             frame = Frame(self.top)
             frame.pack(fill=X, side=TOP)
             frame.grid_columnconfigure(1, weight=1)            
@@ -446,20 +475,20 @@ class drawit:
             row = row + 1
 
             def onClickSelectOutputDirectory():
-                folder_selected = filedialog.askdirectory(initialdir = self.outputDirectory,title = "Select Directory")
+                folder_selected = filedialog.askdirectory(initialdir = outputfolder,title = "Select Directory")
                 if folder_selected != None and len(folder_selected) > 0:
-                    self.outputDirectory = folder_selected
+                    self.outputfolder = folder_selected
                     lOutputDirectory.delete(0, 'end')
-                    lOutputDirectory.insert(0, self.outputDirectory)
-                    lOutputDirectory.configure(text=self.outputDirectory)
-                    config.set("outputDirectory",self.outputDirectory)
+                    lOutputDirectory.insert(0, self.outputfolder)
+                    lOutputDirectory.configure(text=self.outputfolder)
+                    config.set("outputDirectory",self.outputfolder)
                     config.write()
-                    self.common.setOutputFolder(self.outputDirectory)
+                    self.common.setOutputFolder(self.outputfolder)
                     
             outputbutton = Frame(frame)
-            eSelectOutputDirectory = Button(outputbutton, text="Select Directory", fg="blue", command=lambda: onClickSelectOutputDirectory())
+            eSelectOutputFolder = Button(outputbutton, text="Select Folder", fg="blue", command=lambda: onClickSelectOutputFolder())
             outputbutton.grid(row=row, columnspan=2, sticky=E)
-            eSelectOutputDirectory.pack(side=RIGHT)
+            eSelectOutputFolder.pack(side=RIGHT)
             row = row + 2
 
             Label(frame, text="").grid(row=row, columnspan=2)
@@ -623,6 +652,8 @@ class drawit:
 
                     self.statusText.set("Starting")
 
+                    print(self.common.getInputFile())
+
                     if len(apikey) > 0:
                         self.common.setInputRIAS()
                         inputbase = apikey
@@ -632,8 +663,8 @@ class drawit:
                            self.common.printStartRIASwithAccount(apikey, accountid, region)
                         else:
                            self.common.printStartRIASwithKey(apikey, region)
-                    elif len(inputfile) > 0:
-                        basename = path.basename(self.inputFile)
+                    elif len(self.common.getInputFile()) > 0:
+                        basename = path.basename(self.common.getInputFile())
                         inputbase = path.splitext(basename)[0]
                         inputtype = path.splitext(basename)[1][1:]
                         if inputtype == 'yaml' or inputtype == 'yml':

@@ -65,8 +65,9 @@ class Options:
    inputType = None
    accountID = ''
    apiKey = ''
-   inputFile = ''
    region = None
+   inputFile = ''
+   inputFolder = ''
    outputFile = ''
    outputFolder = ''
    tablesFolder = ''
@@ -80,7 +81,10 @@ class Options:
       self.runMode = RunMode.BATCH
       self.inputType = InputType.JSON
       self.region = Regions.ALL
-      self.outputFile = 'output'
+
+      self.inputFile = 'input.json'
+      self.inputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
+      self.outputFile = 'output.xml'
       self.outputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
       self.tablesFolder ='tables'
       self.outputSplit = OutputSplit.SINGLE
@@ -106,6 +110,12 @@ class Options:
 
    def setInputFile(self, value):
       self.inputFile = value
+
+   def getInputFolder(self):
+      return self.outputFile
+
+   def setInputFolder(self, value):
+      self.inputFolder = value
 
    def getOutputFile(self):
       return self.outputFile

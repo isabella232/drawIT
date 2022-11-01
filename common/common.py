@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.47'
+   toolVersion = '0.5.49'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -122,6 +122,12 @@ class Common:
 
    def setInputFile(self, value):
       self.options.setInputFile(value)
+
+   def getInputFolder(self):
+      return self.options.getInputFolder()
+
+   def setInputFolder(self, value):
+      self.options.setInputFolder(value)
 
    def getOutputFile(self):
       return self.options.getOutputFile()

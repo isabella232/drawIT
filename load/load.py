@@ -189,16 +189,16 @@ class Load:
       services = self.data.getServices()
 
       # Add services to regionTable ordered by region.
-      for serviceindex, serviceframe in services.iterrows():
-         servicename = serviceframe['name']
-         serviceid = serviceframe['id']
-         serviceregion = serviceframe['region']
+      #for serviceindex, serviceframe in services.iterrows():
+      #   servicename = serviceframe['name']
+      #   serviceid = serviceframe['id']
+      #   serviceregion = serviceframe['region']
 
-         if serviceregion in self.regionTable:
-            if serviceid not in self.regionTable[serviceregion]:
-               self.regionTable[serviceregion].append(serviceid)
-         else:
-            self.regionTable[serviceregion] = [serviceid]
+      #   if serviceregion in self.regionTable:
+      #      if serviceid not in self.regionTable[serviceregion]:
+      #         self.regionTable[serviceregion].append(serviceid)
+      #   else:
+      #      self.regionTable[serviceregion] = [serviceid]
 
       return
 
