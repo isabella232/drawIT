@@ -419,6 +419,12 @@ class RIAS:
    def setSubnets(self, subnets):
       self.subnets = subnets
 
+   def getServices(self):
+      return self.services
+
+   def setServices(self, services):
+      self.services = services
+
    def getVolumes(self):
       return self.volumes
 

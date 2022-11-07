@@ -75,6 +75,7 @@ class Options:
    outputShapes = None
    outputLayout = None
    designatedVPC = None
+   allicons = False
 
    def __init__(self, toolName):
       self.cloudType = CloudType.IBM
@@ -206,6 +207,12 @@ class Options:
 
    #def setInputType(self, value):
    #   self.inputType = value
+
+   def setAllIcons(self):
+      self.allicons = True
+
+   def isAllIcons(self):
+      return self.allicons == True
 
    def getDesignatedVPC(self):
       return self.designatedVPC

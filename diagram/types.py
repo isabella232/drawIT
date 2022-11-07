@@ -85,24 +85,24 @@ class Types:
       return data
 
    def buildNode(self, shapetype, shapekind, shapefill, id, parentid, name, subname, badgetext, x, y, width, height, meta):
-      iconname, iconcolor = self.icons.getIcon(shapetype)
+      iconname, iconcolor = self.icons.getIcon(name, shapetype)
 
       if self.common.isLogicalShapes():
-         if shapekind == ACTOR_KIND:
+         if shapekind == ShapeKind.ACTOR:
             style = ACTOR_STYLE
-         elif shapekind == NODE_KIND:
+         elif shapekind == ShapeKind.NODE:
             style = LOGICAL_NODE_STYLE
          else:
             style = LOGICAL_LOCATION_STYLE
       else: # check prescribed
-         if shapekind == ACTOR_KIND:
+         if shapekind == ShapeKind.ACTOR:
             style = ACTOR_STYLE
-         elif shapekind == NODE_KIND:
+         elif shapekind == ShapeKind.NODE:
             style = PRESCRIBED_NODE_STYLE
          else:
             style = PRESCRIBED_LOCATION_STYLE
 
-      style += iconcolor + shapefill
+      style += iconcolor.value + shapefill.value
 
       shapelabel = "<b style='font-weight:600'>%Primary-Label%</b><br>%Secondary-Text%"
       labelsize = 30

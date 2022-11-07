@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from enum import Enum
+
 # Format Properties
 
 ACTOR_FORMAT = 'shape=mxgraph.ibm.base;ibmType=actor;'
@@ -78,49 +80,62 @@ PRESCRIBED_LOCATION_STYLE = PRESCRIBED_LOCATION_FORMAT + LOCATION_LAYOUT + LOCAT
 
 # Color Properties
 
-BLACK_COLOR = 'strokeColor=#000000;'
-BLUE_COLOR = 'strokeColor=#0f62fe;'
-CYAN_COLOR = 'strokeColor=#1192e8;'
-GRAY_COLOR = 'strokeColor=#878d96;'
-GREEN_COLOR = 'strokeColor=#198038;'
-MAGENTA_COLOR = 'strokeColor=#ee5396;'
-PURPLE_COLOR = 'strokeColor=#a56eff'
-RED_COLOR = 'strokeColor=#fa4d56;'
-TEAL_COLOR = 'strokeColor=#009d9a;'
+class ColorPalette(Enum):
+   BLACK = 'strokeColor=#000000;'
+   BLUE = 'strokeColor=#0f62fe;'
+   CYAN = 'strokeColor=#1192e8;'
+   GRAY = 'strokeColor=#878d96;'
+   GREEN = 'strokeColor=#198038;'
+   MAGENTA = 'strokeColor=#ee5396;'
+   PURPLE = 'strokeColor=#a56eff'
+   RED = 'strokeColor=#fa4d56;'
+   TEAL = 'strokeColor=#009d9a;'
 
-BLACK_FILL = 'fillColor=#f2f4f8;'
-BLUE_FILL = 'fillColor=#edf5ff;'
-CYAN_FILL = 'fillColor=#e5f6ff;'
-GRAY_FILL = 'fillColor=#f2f4f8;'
-GREEN_FILL = 'fillColor=#defbe6;'
-MAGENTA_FILL = 'fillColor=#fff0f7;'
-PURPLE_FILL = 'fillColor=#f6f2ff'
-TEAL_FILL = 'fillColor=#d9fbfb;'
-RED_FILL = 'fillColor=#fff1f1;'
-WHITE_FILL = 'fillColor=#ffffff;'
-NO_FILL = 'fillColor=none;'
+class FillPalette(Enum):
+   BLACK = 'fillColor=#f2f4f8;'
+   BLUE = 'fillColor=#edf5ff;'
+   CYAN = 'fillColor=#e5f6ff;'
+   GRAY = 'fillColor=#f2f4f8;'
+   GREEN = 'fillColor=#defbe6;'
+   MAGENTA = 'fillColor=#fff0f7;'
+   PURPLE = 'fillColor=#f6f2ff'
+   TEAL = 'fillColor=#d9fbfb;'
+   RED = 'fillColor=#fff1f1;'
+   WHITE = 'fillColor=#ffffff;'
+   NONE = 'fillColor=none;'
 
-APPLICATION_COLOR = PURPLE_COLOR
-BACKEND_COLOR = GRAY_COLOR
-COMPUTE_COLOR = GREEN_COLOR
-DATA_COLOR = BLUE_COLOR
-DEVOP_COLOR = MAGENTA_COLOR
-MANAGEMENT_COLOR = TEAL_COLOR
-NETWORK_COLOR = CYAN_COLOR
-SECURITY_COLOR = RED_COLOR
-STORAGE_COLOR = BLUE_COLOR
-USER_COLOR = BLACK_COLOR
+class ComponentColor(Enum): 
+   APPLICATION = ColorPalette.PURPLE.value
+   BACKEND = ColorPalette.GRAY.value
+   COMPUTE = ColorPalette.GREEN.value
+   DATA = ColorPalette.BLUE.value
+   DEVOP = ColorPalette.MAGENTA.value
+   MANAGEMENT = ColorPalette.TEAL.value
+   NETWORK = ColorPalette.CYAN.value
+   SECURITY = ColorPalette.RED.value
+   STORAGE = ColorPalette.BLUE.value
+   USER = ColorPalette.BLACK.value
 
-APPLICATION_FILL = PURPLE_FILL
-BACKEND_FILL = GRAY_FILL
-COMPUTE_FILL = GREEN_FILL
-DATA_FILL = BLUE_FILL
-DEVOP_FILL = MAGENTA_FILL
-MANAGEMENT_FILL = TEAL_FILL
-NETWORK_FILL = CYAN_FILL
-SECURITY_FILL = RED_FILL
-STORAGE_FILL = BLUE_FILL
-USER_FILL = BLACK_FILL
+class ComponentFill(Enum):
+   APPLICATION = FillPalette.PURPLE.value
+   BACKEND = FillPalette.GRAY.value
+   COMPUTE = FillPalette.GREEN.value
+   DATA = FillPalette.BLUE.value
+   DEVOP = FillPalette.MAGENTA.value
+   MANAGEMENT = FillPalette.TEAL.value
+   NETWORKL = FillPalette.CYAN.value
+   SECURITY = FillPalette.RED.value
+   STORAGE = FillPalette.BLUE.value
+   USER = FillPalette.BLACK.value
+
+class ShapeKind(Enum):
+   ACTOR = 'actor'
+   NODE = 'node'
+   COMPONENT = 'component'
+   LOCATION = 'location'
+   ZONE = 'zone'
+#   LOGICAL = 'logical'
+#   PRESCRIBED = 'prescribed'
 
 # Name Constants
 
@@ -129,12 +144,6 @@ PUBLIC_NETWORK_NAME = 'Public<br>Network'
 PUBLIC_USER_NAME = 'User'
 ENTERPRISE_NETWORK_NAME = 'Enterprise<br>Network'
 ENTERPRISE_USER_NAME = 'Enterprise User'
-
-ACTOR_KIND = 'actor'
-LOCATION_KIND = 'location'
-NODE_KIND = 'node'
-LOGICAL_KIND = 'logical'
-PRESCRIBED_KIND = 'prescribed'
 
 # Positioning Constants
 

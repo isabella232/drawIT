@@ -569,12 +569,12 @@ class drawit:
             row = row + 1
 
             splitoptions = [
-                "One VPC per tab in one file", 
-                "Regional files with VPCs in one tab",
+                "Single file with one VPC per tab",
+                "Single file with all VPCs in one tab",
                 "Regional files with one VPC per tab", 
-                "One VPC per file"]
+                "Multiple files with one VPC per file"]
             eOutputSplit = StringVar(self.top)
-            eOutputSplit.set("One VPC per tab in one file")
+            eOutputSplit.set("Single file with one VPC per tab")
             Label(frame, text="Organization").grid(row=row)
             #splitmenu = tkinter.OptionMenu(self.top, eOutputSplit, *splitoptions)
             splitmenu = OptionMenu(frame, eOutputSplit, *splitoptions).grid(row=row, column=1, sticky=W + E)
@@ -603,13 +603,13 @@ class drawit:
                        self.common.setVerticalLayout()
 
                     outputsplit = str(eOutputSplit.get()).lower()
-                    if outputsplit == "one vpc per tab in one file":
+                    if outputsplit == "single vpc with one vpc per tab":
                        self.common.setSingleSplit()
-                    elif outputsplit == "regional files with vpcs in one tab":
+                    elif outputsplit == "single file with all vpcs in one tab":
                        self.common.setCombineSplit()
                     elif outputsplit == "regional files with one vpc per tab":
                        self.common.setRegionSplit()
-                    else: # outputsplit == "one vpc per file"
+                    else: # outputsplit == "multiple files with one vpc per file"
                        self.common.setVPCSplit()
 
                     region = str(eRegion.get()).lower()

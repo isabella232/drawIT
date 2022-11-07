@@ -13,450 +13,450 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from diagram.constants import *
+from enum import Enum
+
+from diagram.constants import ComponentColor, ShapeKind
 
 class Icons:
    iconDictionary = { 
       'Undefined': 	        
-            {'icon': 'undefined', 'color': NETWORK_COLOR},
-      'Collaborate': 	        
-            {'icon': 'collaborate', 'color': NETWORK_COLOR},
+            {'icon': 'undefined', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'UserCollaboration': 	        
+            {'icon': 'collaborate', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR},
       'Credentials': 	        
-            {'icon': 'credentials', 'color': NETWORK_COLOR},
+            {'icon': 'credentials', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'Devices': 	        
-            {'icon': 'devices', 'color': NETWORK_COLOR},
-      'Events': 	        
-            {'icon': 'events', 'color': NETWORK_COLOR},
+            {'icon': 'devices', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR},
+      'Meeting': 	        
+            {'icon': 'events', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR},
       'AuthorizationBoundary': 	        
-            {'icon': 'flag', 'color': NETWORK_COLOR},
+            {'icon': 'flag', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'Cloud-prescribed': 	        
-            {'icon': 'ibm-cloud', 'color': NETWORK_COLOR},
+            {'icon': 'ibm-cloud', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION},
       'User':  	        
-            {'icon': 'user', 'color': USER_COLOR}, 
+            {'icon': 'user', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR}, 
       'Instance-logical': 	        
-            {'icon': 'virtual-machine', 'color': NETWORK_COLOR},
+            {'icon': 'virtual-machine', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'VPC-logical':  	        
-            {'icon': 'virtual-private-cloud', 'color': NETWORK_COLOR}, 
+            {'icon': 'virtual-private-cloud', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION}, 
       'VPC-prescribed':  	        
-            {'icon': 'virtual-private-cloud--alt', 'color': NETWORK_COLOR}, 
+            {'icon': 'virtual-private-cloud--alt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION}, 
       'Region': 	        
-            {'icon': 'location', 'color': NETWORK_COLOR},
+            {'icon': 'location', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION},
       'Security': 	        
-            {'icon': 'security', 'color': SECURITY_COLOR},
+            {'icon': 'security', 'color': ComponentColor.SECURITY, 'kind': ShapeKind.NODE},
       'FingerprintRecognition': 	        
-            {'icon': 'fingerprint-recognition', 'color': NETWORK_COLOR},
+            {'icon': 'fingerprint-recognition', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'Network2':  	        
-            {'icon': 'network--2', 'color': NETWORK_COLOR}, 
-      'VPN': 	        
-            {'icon': 'VPN', 'color': NETWORK_COLOR},
+            {'icon': 'network--2', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'EdgeNode':  	        
-            {'icon': 'edge-node', 'color': NETWORK_COLOR}, 
+            {'icon': 'edge-node', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'Group':  	        
-            {'icon': 'group', 'color': NETWORK_COLOR}, 
+            {'icon': 'group', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR}, 
       'Mobile':  	        
-            {'icon': 'mobile', 'color': NETWORK_COLOR}, 
+            {'icon': 'mobile', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR}, 
       'Policy':  	        
-            {'icon': 'policy', 'color': SECURITY_COLOR}, 
+            {'icon': 'policy', 'color': ComponentColor.SECURITY, 'kind': ShapeKind.NODE}, 
       'Rule':  	        
-            {'icon': 'rule', 'color': SECURITY_COLOR}, 
+            {'icon': 'rule', 'color': ComponentColor.SECURITY, 'kind': ShapeKind.NODE}, 
       'Terminal':  	        
-            {'icon': 'terminal', 'color': NETWORK_COLOR}, 
+            {'icon': 'terminal', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ObjectStorage-prescribed':  	        
-            {'icon': 'object-storage', 'color': STORAGE_COLOR}, 
+            {'icon': 'object-storage', 'color': ComponentColor.STORAGE, 'kind': ShapeKind.NODE}, 
       'Laptop':  	        
-            {'icon': 'laptop', 'color': NETWORK_COLOR}, 
+            {'icon': 'laptop', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR}, 
       'Tablet':  	        
-            {'icon': 'tablet', 'color': NETWORK_COLOR}, 
+            {'icon': 'tablet', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR}, 
       'Archive':  	        
-            {'icon': 'archive', 'color': NETWORK_COLOR}, 
-      'data--base--alt':  	        
-            {'icon': 'data--base--alt', 'color': NETWORK_COLOR}, 
+            {'icon': 'archive', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
+      'DataCenter':  	        
+            {'icon': 'data--base--alt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'Internet':  	        
-            {'icon': 'wikis', 'color': NETWORK_COLOR}, 
-      'data--base':  	        
-            {'icon': 'data--base', 'color': NETWORK_COLOR}, 
+            {'icon': 'wikis', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
+      'Database':  	        
+            {'icon': 'data--base', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'Subnet-logical':  	        
-            {'icon': 'locked', 'color': NETWORK_COLOR}, 
+            {'icon': 'locked', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION}, 
       'application':  	        
-            {'icon': 'application', 'color': NETWORK_COLOR}, 
+            {'icon': 'application', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'arrows--horizontal': 	        
-            {'icon': 'arrows--horizontal', 'color': NETWORK_COLOR},
+            {'icon': 'arrows--horizontal', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'Cloud-logical': 
-            {'icon': 'cloud', 'color': NETWORK_COLOR},
-      'function': 	        
-            {'icon': 'function', 'color': NETWORK_COLOR},
+            {'icon': 'cloud', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION},
+      'ServerlessApplication': 	        
+            {'icon': 'function', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'OpenShift-prescribed':  	        
-            {'icon': 'logo--openshift', 'color': NETWORK_COLOR}, 
+            {'icon': 'logo--openshift', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'password': 	        
-            {'icon': 'password', 'color': NETWORK_COLOR},
+            {'icon': 'password', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'script': 	        
-            {'icon': 'script', 'color': NETWORK_COLOR},
-      'user--admin': 	        
-            {'icon': 'user--admin', 'color': NETWORK_COLOR},
-      'cloud-foundry--1': 	        
-            {'icon': 'cloud-foundry--1', 'color': NETWORK_COLOR},
+            {'icon': 'script', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'Administrator': 	        
+            {'icon': 'user--admin', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR},
+      'CloudFoundry': 	        
+            {'icon': 'cloud-foundry--1', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'cloud-satellite':  	        
-            {'icon': 'cloud-satellite', 'color': NETWORK_COLOR}, 
+            {'icon': 'cloud-satellite', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'timer':  	        
-            {'icon': 'timer', 'color': NETWORK_COLOR}, 
+            {'icon': 'timer', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'deploy':  	        
-            {'icon': 'deploy', 'color': NETWORK_COLOR}, 
+            {'icon': 'deploy', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'shuffle': 	        
-            {'icon': 'shuffle', 'color': NETWORK_COLOR},
+            {'icon': 'shuffle', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'wifi--controller': 	        
-            {'icon': 'wifi--controller', 'color': NETWORK_COLOR},
+            {'icon': 'wifi--controller', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'switch-layer-3': 	        
-            {'icon': 'switch-layer-3', 'color': NETWORK_COLOR},
+            {'icon': 'switch-layer-3', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'VPNGateway': 	        
-            {'icon': 'gateway--vpn', 'color': NETWORK_COLOR},
+            {'icon': 'gateway--vpn', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'BareMetalServer': 	        
-            {'icon': 'bare-metal-server', 'color': COMPUTE_COLOR},
+            {'icon': 'bare-metal-server', 'color': ComponentColor.COMPUTE, 'kind': ShapeKind.NODE},
       'switch-layer-2': 	        
-            {'icon': 'switch-layer-2', 'color': NETWORK_COLOR},
+            {'icon': 'switch-layer-2', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'LoadBalancer-prescribed': 	        
-            {'icon': 'load-balancer--vpc', 'color': NETWORK_COLOR},
+            {'icon': 'load-balancer--vpc', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'ACLRules': 	        
-            {'icon': 'subnet-acl-rules', 'color': SECURITY_COLOR},
+            {'icon': 'subnet-acl-rules', 'color': ComponentColor.SECURITY, 'kind': ShapeKind.NODE},
       'VPNConnection': 	        
-            {'icon': 'vpn--connection', 'color': NETWORK_COLOR},
+            {'icon': 'vpn--connection', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'EnterpriseNetwork': 	        
-            {'icon': 'network--enterprise', 'color': NETWORK_COLOR},
+            {'icon': 'network--enterprise', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'direct-link': 	        
-            {'icon': 'direct-link', 'color': NETWORK_COLOR},
+            {'icon': 'direct-link', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'SecurityServices-prescribed': 	        
-            {'icon': 'ibm-security--services', 'color': NETWORK_COLOR},
-      'group--resource': 	        
-            {'icon': 'group--resource', 'color': NETWORK_COLOR},
-      'user--service-desk': 	        
-            {'icon': 'user--service-desk', 'color': NETWORK_COLOR},
+            {'icon': 'ibm-security--services', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'ResourceGroup': 	        
+            {'icon': 'group--resource', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.ZONE},
+      'ServiceDeskUser': 	        
+            {'icon': 'user--service-desk', 'color': ComponentColor.USER, 'kind': ShapeKind.ACTOR},
       'document--protected': 	        
-            {'icon': 'document--protected', 'color': NETWORK_COLOR},
-      'group--security': 	        
-            {'icon': 'group--security', 'color': NETWORK_COLOR},
+            {'icon': 'document--protected', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'SecurityGroup': 	        
+            {'icon': 'group--security', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.ZONE},
       'application--virtual': 	        
-            {'icon': 'application--virtual', 'color': NETWORK_COLOR},
+            {'icon': 'application--virtual', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'load-balancer--pool': 	        
-            {'icon': 'load-balancer--pool', 'color': NETWORK_COLOR},
+            {'icon': 'load-balancer--pool', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'vehicle--services': 	        
-            {'icon': 'vehicle--services', 'color': NETWORK_COLOR},
+            {'icon': 'vehicle--services', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'security-services': 	        
-            {'icon': 'security-services', 'color': NETWORK_COLOR},
+            {'icon': 'security-services', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'user--military': 	        
-            {'icon': 'user--military', 'color': NETWORK_COLOR},
+            {'icon': 'user--military', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'message-queue': 	        
-            {'icon': 'message-queue', 'color': NETWORK_COLOR},
-      'data-backup': 	        
-            {'icon': 'data-backup', 'color': NETWORK_COLOR},
-      'gui': 	        
-            {'icon': 'gui', 'color': NETWORK_COLOR},
+            {'icon': 'message-queue', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'DataBackup': 	        
+            {'icon': 'data-backup', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'GUI': 	        
+            {'icon': 'gui', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'CloudMonitoring': 	        
-            {'icon': 'cloud--monitoring', 'color': MANAGEMENT_COLOR},
+            {'icon': 'cloud--monitoring', 'color': ComponentColor.MANAGEMENT, 'kind': ShapeKind.NODE},
       'Firewall': 	        
-            {'icon': 'firewall', 'color': SECURITY_COLOR},
+            {'icon': 'firewall', 'color': ComponentColor.SECURITY, 'kind': ShapeKind.NODE},
       'wifi--not-secure': 	        
-            {'icon': 'wifi--not-secure', 'color': NETWORK_COLOR},
+            {'icon': 'wifi--not-secure', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'CDN': 	        
-            {'icon': 'content-delivery-network', 'color': NETWORK_COLOR},
+            {'icon': 'content-delivery-network', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'CloudAlerting': 	        
-            {'icon': 'cloud--alerting', 'color': MANAGEMENT_COLOR},
+            {'icon': 'cloud--alerting', 'color': ComponentColor.MANAGEMENT, 'kind': ShapeKind.NODE},
       'FlowLogs-prescribed': 	        
-            {'icon': 'flow-logs-vpc', 'color': NETWORK_COLOR},
+            {'icon': 'flow-logs-vpc', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'cloud--service-management': 	        
-            {'icon': 'cloud--service-management', 'color': NETWORK_COLOR},
+            {'icon': 'cloud--service-management', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'load-balancer--network': 	        
-            {'icon': 'load-balancer--network', 'color': NETWORK_COLOR},
+            {'icon': 'load-balancer--network', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'PublicNetwork': 	        
-            {'icon': 'network--public', 'color': NETWORK_COLOR},
+            {'icon': 'network--public', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'server--dns': 	        
-            {'icon': 'server--dns', 'color': NETWORK_COLOR},
+            {'icon': 'server--dns', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'vehicle--api': 	        
-            {'icon': 'vehicle--api', 'color': NETWORK_COLOR},
-      'infrastructure--classic': 	        
-            {'icon': 'infrastructure--classic', 'color': NETWORK_COLOR},
-      'instance--classic': 	        
-            {'icon': 'instance--classic', 'color': NETWORK_COLOR},
+            {'icon': 'vehicle--api', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'ClassicInfrastructure': 	        
+            {'icon': 'infrastructure--classic', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'ClassicInstance': 	        
+            {'icon': 'instance--classic', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'load-balancer--application': 	        
-            {'icon': 'load-balancer--application', 'color': NETWORK_COLOR},
+            {'icon': 'load-balancer--application', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'ibm-cloud--dedicated-host': 	        
-            {'icon': 'ibm-cloud--dedicated-host', 'color': NETWORK_COLOR},
-      'ibm-cloud--internet-services': 	        
-            {'icon': 'ibm-cloud--internet-services', 'color': NETWORK_COLOR},
+            {'icon': 'ibm-cloud--dedicated-host', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'InternetServices-prescribed': 	        
+            {'icon': 'ibm-cloud--internet-services', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'radio--push-to-talk': 	        
-            {'icon': 'radio--push-to-talk', 'color': NETWORK_COLOR},
+            {'icon': 'radio--push-to-talk', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'load-balancer--global': 	        
-            {'icon': 'load-balancer--global', 'color': NETWORK_COLOR},
+            {'icon': 'load-balancer--global', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'firewall--classic': 	        
-            {'icon': 'firewall--classic', 'color': NETWORK_COLOR},
-      'block-storage--alt': 	        
-            {'icon': 'block-storage--alt', 'color': NETWORK_COLOR},
-      'group--access': 	        
-            {'icon': 'group--access', 'color': NETWORK_COLOR},
+            {'icon': 'firewall--classic', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'BlockStorage-logical': 	        
+            {'icon': 'block-storage--alt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'AccessGroup': 	        
+            {'icon': 'group--access', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.ZONE},
       'vpn--policy': 	        
-            {'icon': 'vpn--policy', 'color': NETWORK_COLOR},
+            {'icon': 'vpn--policy', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'code-signing-service': 	        
-            {'icon': 'code-signing-service', 'color': NETWORK_COLOR},
+            {'icon': 'code-signing-service', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'MemoryProfile': 	        
-            {'icon': 'instance--mx', 'color': COMPUTE_COLOR},
+            {'icon': 'instance--mx', 'color': ComponentColor.COMPUTE, 'kind': ShapeKind.NODE},
       'hybrid-networking--alt': 	        
-            {'icon': 'hybrid-networking--alt', 'color': NETWORK_COLOR},
+            {'icon': 'hybrid-networking--alt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'document--unprotected': 	        
-            {'icon': 'document--unprotected', 'color': NETWORK_COLOR},
+            {'icon': 'document--unprotected', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'bastion-host': 	        
-            {'icon': 'bastion-host', 'color': NETWORK_COLOR},
-      'data-blob': 	        
-            {'icon': 'data-blob', 'color': NETWORK_COLOR},
+            {'icon': 'bastion-host', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'BLOB': 	        
+            {'icon': 'data-blob', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'ObjectStorage-logical': 	        
-            {'icon': 'object-storage--alt', 'color': STORAGE_COLOR},
+            {'icon': 'object-storage--alt', 'color': ComponentColor.STORAGE, 'kind': ShapeKind.NODE},
       'server--proxy': 	        
-            {'icon': 'server--proxy', 'color': NETWORK_COLOR},
+            {'icon': 'server--proxy', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'application--mobile': 	        
-            {'icon': 'application--mobile', 'color': NETWORK_COLOR},
+            {'icon': 'application--mobile', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'mobility--services': 	        
-            {'icon': 'mobility--services', 'color': NETWORK_COLOR},
-      'file-storage': 	        
-            {'icon': 'file-storage', 'color': NETWORK_COLOR},
+            {'icon': 'mobility--services', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'FileStorage': 	        
+            {'icon': 'file-storage', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'router--wifi': 	        
-            {'icon': 'router--wifi', 'color': NETWORK_COLOR},
+            {'icon': 'router--wifi', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'intrusion-prevention': 	        
-            {'icon': 'intrusion-prevention', 'color': NETWORK_COLOR},
+            {'icon': 'intrusion-prevention', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'edge-node--alt': 	        
-            {'icon': 'edge-node--alt', 'color': NETWORK_COLOR},
-      'vlan--ibm': 	        
-            {'icon': 'vlan--ibm', 'color': NETWORK_COLOR},
+            {'icon': 'edge-node--alt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'VLAN-prescribed': 	        
+            {'icon': 'vlan--ibm', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'CloudServices': 	        
-            {'icon': 'cloud-services', 'color': NETWORK_COLOR},
-      'BlockStorage': 	        
-            {'icon': 'block-storage', 'color': STORAGE_COLOR},
+            {'icon': 'cloud-services', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION},
+      'BlockStorage-prescribed': 	        
+            {'icon': 'block-storage', 'color': ComponentColor.STORAGE, 'kind': ShapeKind.NODE},
       'FloatingIP': 	        
-            {'icon': 'floating-ip', 'color': NETWORK_COLOR},
+            {'icon': 'floating-ip', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'vehicle--connected': 	        
-            {'icon': 'vehicle--connected', 'color': NETWORK_COLOR},
-      'group--account': 	        
-            {'icon': 'group--account', 'color': NETWORK_COLOR},
+            {'icon': 'vehicle--connected', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'AccountGroup': 	        
+            {'icon': 'group--account', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.ZONE},
       'image-service': 	        
-            {'icon': 'image-service', 'color': NETWORK_COLOR},
+            {'icon': 'image-service', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'BalancedProfile': 	        
-            {'icon': 'instance--bx', 'color': NETWORK_COLOR},
-      'data-accessor': 	        
-            {'icon': 'data-accessor', 'color': NETWORK_COLOR},
+            {'icon': 'instance--bx', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'ObjectStorageAccessor': 	        
+            {'icon': 'data-accessor', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'gateway--user-access': 	        
-            {'icon': 'gateway--user-access', 'color': NETWORK_COLOR},
+            {'icon': 'gateway--user-access', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'document--signed': 	        
-            {'icon': 'document--signed', 'color': NETWORK_COLOR},
+            {'icon': 'document--signed', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'application--web': 	        
-            {'icon': 'application--web', 'color': NETWORK_COLOR},
-      'autoscaling': 	        
-            {'icon': 'autoscaling', 'color': NETWORK_COLOR},
+            {'icon': 'application--web', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'InstanceGroup': 	        
+            {'icon': 'autoscaling', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.ZONE},
       'load-balancer--listener': 	        
-            {'icon': 'load-balancer--listener', 'color': NETWORK_COLOR},
+            {'icon': 'load-balancer--listener', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'radio--combat': 	        
-            {'icon': 'radio--combat', 'color': NETWORK_COLOR},
+            {'icon': 'radio--combat', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'user--settings': 	        
-            {'icon': 'user--settings', 'color': NETWORK_COLOR},
+            {'icon': 'user--settings', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'wifi-bridge--alt': 	        
-            {'icon': 'wifi-bridge--alt', 'color': NETWORK_COLOR},
-      'point-of-presence': 	        
-            {'icon': 'point-of-presence', 'color': NETWORK_COLOR},
+            {'icon': 'wifi-bridge--alt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'POP': 	        
+            {'icon': 'point-of-presence', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'AvailabilityZone': 	        
-            {'icon': 'data--center', 'color': NETWORK_COLOR},
+            {'icon': 'data--center', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION},
       'sim-card': 	        
-            {'icon': 'sim-card', 'color': NETWORK_COLOR},
+            {'icon': 'sim-card', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'chat--operational': 	        
-            {'icon': 'chat--operational', 'color': NETWORK_COLOR},
+            {'icon': 'chat--operational', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'VPE-prescribed': 	        
-            {'icon': 'ibm-cloud--vpc-endpoints', 'color': NETWORK_COLOR},
+            {'icon': 'ibm-cloud--vpc-endpoints', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'id-management': 	        
-            {'icon': 'id-management', 'color': NETWORK_COLOR},
+            {'icon': 'id-management', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'Instance-prescribed': 	        
-            {'icon': 'instance--virtual', 'color': COMPUTE_COLOR},
+            {'icon': 'instance--virtual', 'color': ComponentColor.COMPUTE, 'kind': ShapeKind.NODE},
       'gui--management': 	        
-            {'icon': 'gui--management', 'color': NETWORK_COLOR},
+            {'icon': 'gui--management', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'virtual-desktop': 	        
-            {'icon': 'virtual-desktop', 'color': NETWORK_COLOR},
+            {'icon': 'virtual-desktop', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'ComputeProfile': 	        
-            {'icon': 'instance--cx', 'color': COMPUTE_COLOR},
+            {'icon': 'instance--cx', 'color': ComponentColor.COMPUTE, 'kind': ShapeKind.NODE},
       'phone--settings': 	        
-            {'icon': 'phone--settings', 'color': NETWORK_COLOR},
-      'network--overlay': 	        
-            {'icon': 'network--overlay', 'color': NETWORK_COLOR},
+            {'icon': 'phone--settings', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'OverlayNetwork': 	        
+            {'icon': 'network--overlay', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'Gateway': 	        
-            {'icon': 'gateway', 'color': NETWORK_COLOR},
+            {'icon': 'gateway', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'document--security': 	        
-            {'icon': 'document--security', 'color': NETWORK_COLOR},
+            {'icon': 'document--security', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'Router': 	        
-            {'icon': 'router', 'color': NETWORK_COLOR},
+            {'icon': 'router', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'router--voice':  	        
-            {'icon': 'router--voice', 'color': NETWORK_COLOR}, 
+            {'icon': 'router--voice', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'dns-services': 	        
-            {'icon': 'dns-services', 'color': NETWORK_COLOR},
-      'vlan': 	        
-            {'icon': 'vlan', 'color': NETWORK_COLOR},
+            {'icon': 'dns-services', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'VLAN-logical': 	        
+            {'icon': 'vlan', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'server--time': 	        
-            {'icon': 'server--time', 'color': NETWORK_COLOR},
+            {'icon': 'server--time', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'gateway--api': 	        
-            {'icon': 'gateway--api', 'color': NETWORK_COLOR},
+            {'icon': 'gateway--api', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'wifi--secure': 	        
-            {'icon': 'wifi--secure', 'color': NETWORK_COLOR},
+            {'icon': 'wifi--secure', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'gateway--mail': 	        
-            {'icon': 'gateway--mail', 'color': NETWORK_COLOR},
+            {'icon': 'gateway--mail', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'PublicGateway': 	        
-            {'icon': 'gateway--public', 'color': NETWORK_COLOR},
+            {'icon': 'gateway--public', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'phone--application': 	        
-            {'icon': 'phone--application', 'color': NETWORK_COLOR},
+            {'icon': 'phone--application', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'transmission-lte': 	        
-            {'icon': 'transmission-lte', 'color': NETWORK_COLOR},
+            {'icon': 'transmission-lte', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'vehicle--insights': 	        
-            {'icon': 'vehicle--insights', 'color': NETWORK_COLOR},
+            {'icon': 'vehicle--insights', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'ActivityTracker': 	        
-            {'icon': 'cloud--auditing', 'color': NETWORK_COLOR},
+            {'icon': 'cloud--auditing', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'hardware-security-module': 	        
-            {'icon': 'hardware-security-module', 'color': NETWORK_COLOR},
+            {'icon': 'hardware-security-module', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'two-factor-authentication': 	        
-            {'icon': 'two-factor-authentication', 'color': NETWORK_COLOR},
+            {'icon': 'two-factor-authentication', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'wifi-bridge': 	        
-            {'icon': 'wifi-bridge', 'color': NETWORK_COLOR},
+            {'icon': 'wifi-bridge', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'load-balancer--classic': 	        
-            {'icon': 'load-balancer--classic', 'color': NETWORK_COLOR},
+            {'icon': 'load-balancer--classic', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'load-balancer--local': 	        
-            {'icon': 'load-balancer--local', 'color': NETWORK_COLOR},
+            {'icon': 'load-balancer--local', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'cloud--logging': 	        
-            {'icon': 'cloud--logging', 'color': NETWORK_COLOR},
+            {'icon': 'cloud--logging', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'Subnet-prescribed': 	        
-            {'icon': 'ibm-cloud--subnets', 'color': NETWORK_COLOR},
+            {'icon': 'ibm-cloud--subnets', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION},
       'data-diode': 	        
-            {'icon': 'data-diode', 'color': NETWORK_COLOR},
-      'folder--details': 	        
-            {'icon': 'folder--details', 'color': NETWORK_COLOR},
+            {'icon': 'data-diode', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'FileStorage': 	        
+            {'icon': 'folder--details', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'gateway--security': 	        
-            {'icon': 'gateway--security', 'color': NETWORK_COLOR},
-      'bare-metal-server--01': 	        
-            {'icon': 'bare-metal-server--01', 'color': NETWORK_COLOR},
-      'bare-metal-server--02':  	        
-            {'icon': 'bare-metal-server--02', 'color': NETWORK_COLOR}, 
+            {'icon': 'gateway--security', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'BareMetalServer1': 	        
+            {'icon': 'bare-metal-server--01', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'BareMetalServer2':  	        
+            {'icon': 'bare-metal-server--02', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'boot':  	        
-            {'icon': 'boot', 'color': NETWORK_COLOR}, 
+            {'icon': 'boot', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'box--extra-large': 	        
-            {'icon': 'box--extra-large', 'color': NETWORK_COLOR},
+            {'icon': 'box--extra-large', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'box--large': 	        
-            {'icon': 'box--large', 'color': NETWORK_COLOR},
+            {'icon': 'box--large', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'box--medium': 	        
-            {'icon': 'box--medium', 'color': NETWORK_COLOR},
+            {'icon': 'box--medium', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'box--small': 	        
-            {'icon': 'box--small', 'color': NETWORK_COLOR},
+            {'icon': 'box--small', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'cloud-satellite--config':  	        
-            {'icon': 'cloud-satellite--config', 'color': NETWORK_COLOR}, 
+            {'icon': 'cloud-satellite--config', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'cloud-satellite--link':  	        
-            {'icon': 'cloud-satellite--link', 'color': NETWORK_COLOR}, 
+            {'icon': 'cloud-satellite--link', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'cloud-satellite--services':  	        
-            {'icon': 'cloud-satellite--services', 'color': NETWORK_COLOR}, 
+            {'icon': 'cloud-satellite--services', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'communication--unified': 	        
-            {'icon': 'communication--unified', 'color': NETWORK_COLOR},
-      'database--datastax': 	        
-            {'icon': 'database--datastax', 'color': NETWORK_COLOR},
-      'database--elastic': 	        
-            {'icon': 'database--elastic', 'color': NETWORK_COLOR},
-      'database--enterprisedb': 	        
-            {'icon': 'database--enterprisedb', 'color': NETWORK_COLOR},
-      'database--etcd': 	        
-            {'icon': 'database--etcd', 'color': NETWORK_COLOR},
-      'database--mongodb': 	        
-            {'icon': 'database--mongodb', 'color': NETWORK_COLOR},
-      'database--postgresql': 	        
-            {'icon': 'database--postgresql', 'color': NETWORK_COLOR},
-      'database--rabbit': 	        
-            {'icon': 'database--rabbit', 'color': NETWORK_COLOR},
-      'database--redis': 	        
-            {'icon': 'database--redis', 'color': NETWORK_COLOR},
+            {'icon': 'communication--unified', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'DataStax': 	        
+            {'icon': 'database--datastax', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'ElasticDB': 	        
+            {'icon': 'database--elastic', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'EnterpriseDB': 	        
+            {'icon': 'database--enterprisedb', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'Etcd': 	        
+            {'icon': 'database--etcd', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'MongoDB': 	        
+            {'icon': 'database--mongodb', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'PostgreSQL': 	        
+            {'icon': 'database--postgresql', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'RabbitDB':	        
+            {'icon': 'database--rabbit', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'Redis': 	        
+            {'icon': 'database--redis', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'directory-domain':  	        
-            {'icon': 'directory-domain', 'color': NETWORK_COLOR}, 
+            {'icon': 'directory-domain', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'encryption': 	        
-            {'icon': 'encryption', 'color': NETWORK_COLOR},
+            {'icon': 'encryption', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'ibm-cloud-pak--applications':  	        
-            {'icon': 'ibm-cloud-pak--applications', 'color': NETWORK_COLOR}, 
+            {'icon': 'ibm-cloud-pak--applications', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--data':  	        
-            {'icon': 'ibm-cloud-pak--data', 'color': NETWORK_COLOR}, 
+            {'icon': 'ibm-cloud-pak--data', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--integration':  	        
-            {'icon': 'ibm-cloud-pak--integration', 'color': NETWORK_COLOR}, 
+            {'icon': 'ibm-cloud-pak--integration', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--multicloud-mgmt':  	        
-            {'icon': 'ibm-cloud-pak--multicloud-mgmt', 'color': NETWORK_COLOR}, 
+            {'icon': 'ibm-cloud-pak--multicloud-mgmt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--security':  	        
-            {'icon': 'ibm-cloud-pak--security', 'color': NETWORK_COLOR}, 
+            {'icon': 'ibm-cloud-pak--security', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--system':  	        
-            {'icon': 'ibm-cloud-pak--system', 'color': NETWORK_COLOR}, 
+            {'icon': 'ibm-cloud-pak--system', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--network-automation':  	        
-            {'icon': 'ibm-cloud-pak--network-automation', 'color': NETWORK_COLOR}, 
+            {'icon': 'ibm-cloud-pak--network-automation', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--watson-aiops':  	        
-            {'icon': 'ibm-cloud-pak--watson-aiops', 'color': NETWORK_COLOR}, 
+            {'icon': 'ibm-cloud-pak--watson-aiops', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'military-camp': 	        
-            {'icon': 'military-camp', 'color': NETWORK_COLOR},
+            {'icon': 'military-camp', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'network--admin-control': 	        
-            {'icon': 'network--admin-control', 'color': NETWORK_COLOR},
+            {'icon': 'network--admin-control', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'pcn--e-node': 	        
-            {'icon': 'pcn--e-node', 'color': NETWORK_COLOR},
+            {'icon': 'pcn--e-node', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'pcn--military': 	        
-            {'icon': 'pcn--military', 'color': NETWORK_COLOR},
+            {'icon': 'pcn--military', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'pcn--p-node': 	        
-            {'icon': 'pcn--p-node', 'color': NETWORK_COLOR},
+            {'icon': 'pcn--p-node', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'pcn--z-node': 	        
-            {'icon': 'pcn--z-node', 'color': NETWORK_COLOR},
+            {'icon': 'pcn--z-node', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'session-border-control': 	        
-            {'icon': 'session-border-control', 'color': NETWORK_COLOR},
+            {'icon': 'session-border-control', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'tank': 	        
-            {'icon': 'tank', 'color': NETWORK_COLOR},
-      'volume--block-storage': 	        
-            {'icon': 'volume--block-storage', 'color': NETWORK_COLOR},
-      'volume--file-storage': 	        
-            {'icon': 'volume--file-storage', 'color': NETWORK_COLOR},
-      'volume--object-storage': 	        
-            {'icon': 'volume--object-storage', 'color': NETWORK_COLOR},
-      'ibm-cloud--transit-gateway': 	        
-            {'icon': 'ibm-cloud--transit-gateway', 'color': NETWORK_COLOR},
-      'enterprise': 	        
-            {'icon': 'enterprise', 'color': NETWORK_COLOR},
-      'linux':  	        
-            {'icon': 'linux', 'color': NETWORK_COLOR}, 
-      'linux--alt':  	        
-            {'icon': 'linux--alt', 'color': NETWORK_COLOR}, 
-      'slicestor': 	        
-            {'icon': 'slicestor', 'color': NETWORK_COLOR},
+            {'icon': 'tank', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'BlockStorageVolume': 	        
+            {'icon': 'volume--block-storage', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'FileStorageVolume': 	        
+            {'icon': 'volume--file--storage', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'ObjectStorageVolume': 	        
+            {'icon': 'volume--object-storage', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'TransitGateway-prescribed': 	        
+            {'icon': 'ibm-cloud--transit-gateway', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'Enterprise': 	        
+            {'icon': 'enterprise', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
+      'Linux-prescribed':  	        
+            {'icon': 'linux', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
+      'Linux--logical':  	        
+            {'icon': 'linux--alt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
+      'ObjectStorageSlicestor': 	        
+            {'icon': 'slicestor', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'concept': 	        
-            {'icon': 'concept', 'color': NETWORK_COLOR},
+            {'icon': 'concept', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'deployment-unit--data': 	        
-            {'icon': 'deployment-unit--data', 'color': NETWORK_COLOR},
+            {'icon': 'deployment-unit--data', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'deployment-unit--execution': 	        
-            {'icon': 'deployment-unit--execution', 'color': NETWORK_COLOR},
+            {'icon': 'deployment-unit--execution', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'deployment-unit--installation': 	        
-            {'icon': 'deployment-unit--installation', 'color': NETWORK_COLOR},
+            {'icon': 'deployment-unit--installation', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'deployment-unit--presentation': 	        
-            {'icon': 'deployment-unit--presentation', 'color': NETWORK_COLOR},
+            {'icon': 'deployment-unit--presentation', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'deployment-unit--technical--data': 	        
-            {'icon': 'deployment-unit--technical--data', 'color': NETWORK_COLOR},
+            {'icon': 'deployment-unit--technical--data', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'deployment-unit--technical--execution': 	        
-            {'icon': 'deployment-unit--technical--execution', 'color': NETWORK_COLOR},
+            {'icon': 'deployment-unit--technical--execution', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'deployment-unit--technical--installation': 	        
-            {'icon': 'deployment-unit--technical--installation', 'color': NETWORK_COLOR},
+            {'icon': 'deployment-unit--technical--installation', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'deployment-unit--technical--presentation': 	        
-            {'icon': 'deployment-unit--technical--presentation', 'color': NETWORK_COLOR},
+            {'icon': 'deployment-unit--technical--presentation', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'API': 	        
-            {'icon': 'api', 'color': APPLICATION_COLOR},
+            {'icon': 'api', 'color': ComponentColor.APPLICATION, 'kind': ShapeKind.NODE},
       'BuildTool':  	        
-            {'icon': 'build-tool', 'color': APPLICATION_COLOR}, 
+            {'icon': 'build-tool', 'color': ComponentColor.APPLICATION, 'kind': ShapeKind.NODE}, 
       'CD':  	        
-            {'icon': 'continuous-deployment', 'color': MANAGEMENT_COLOR}, 
+            {'icon': 'continuous-deployment', 'color': ComponentColor.MANAGEMENT, 'kind': ShapeKind.NODE}, 
       'CI': 	        
-            {'icon': 'continuous-integration', 'color': MANAGEMENT_COLOR},
+            {'icon': 'continuous-integration', 'color': ComponentColor.MANAGEMENT, 'kind': ShapeKind.NODE},
       'KeyProtect--prescribed':  	        
-            {'icon': 'ibm-cloud--key-protect', 'color': SECURITY_COLOR}, 
+            {'icon': 'ibm-cloud--key-protect', 'color': ComponentColor.SECURITY, 'kind': ShapeKind.NODE}, 
       'SecretsManager': 	        
-            {'icon': 'ibm-cloud--secrets-manager', 'color': SECURITY_COLOR},
+            {'icon': 'ibm-cloud--secrets-manager', 'color': ComponentColor.SECURITY, 'kind': ShapeKind.NODE},
       'ArtifactRepository': 	        
-            {'icon': 'repo--artifact', 'color': STORAGE_COLOR},
+            {'icon': 'repo--artifact', 'color': ComponentColor.STORAGE, 'kind': ShapeKind.NODE},
       'SourceCodeRepository': 	        
-            {'icon': 'repo--source-code', 'color': STORAGE_COLOR},
+            {'icon': 'repo--source-code', 'color': ComponentColor.STORAGE, 'kind': ShapeKind.NODE},
       'ServiceID':  	        
-            {'icon': 'service-id', 'color': SECURITY_COLOR}, 
+            {'icon': 'service-id', 'color': ComponentColor.SECURITY, 'kind': ShapeKind.NODE}, 
       'TestTool': 	        
-            {'icon': 'test-tool', 'color': APPLICATION_COLOR}
+            {'icon': 'test-tool', 'color': ComponentColor.APPLICATION, 'kind': ShapeKind.NODE}
    }
 
    common = None
@@ -464,8 +464,14 @@ class Icons:
    def __init__(self, common):   
       self.common = common
 
-   def getIcon(self, shapetype):
-      if self.common.isLogicalShapes():
+   def getIconDictionary(self):
+      return self.iconDictionary
+
+   def getIcon(self, name, shapetype):
+      if self.common.isAllIcons():
+         iconname = name
+         iconcolor = ComponentColor.NETWORK
+      elif self.common.isLogicalShapes():
          if shapetype in self.iconDictionary:
             icon = self.iconDictionary[shapetype]
             iconname = icon['icon']

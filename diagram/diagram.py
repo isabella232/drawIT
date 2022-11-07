@@ -70,14 +70,14 @@ class Diagram:
       if self.common.isLinkLayout():
          publicx = 0
          publicy = 0
-         publicnode = self.shapes.buildShape('PublicNetwork', LOCATION_KIND, WHITE_FILL, PUBLIC_NETWORK_NAME, NO_PARENT, PUBLIC_NETWORK_NAME, '', '', publicx, publicy, PUBLIC_NETWORK_WIDTH, PUBLIC_NETWORK_HEIGHT, None)
-         publicusernode = self.shapes.buildShape('User', ACTOR_KIND, NO_FILL, PUBLIC_USER_NAME, PUBLIC_NETWORK_NAME, PUBLIC_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
-         publicinternetnode = self.shapes.buildShape('Internet', NODE_KIND, NO_FILL, INTERNET_NAME, PUBLIC_NETWORK_NAME, INTERNET_NAME, '', '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+         publicnode = self.shapes.buildShape('PublicNetwork', ShapeKind.LOCATION, FillPalette.WHITE, PUBLIC_NETWORK_NAME, NO_PARENT, PUBLIC_NETWORK_NAME, '', '', publicx, publicy, PUBLIC_NETWORK_WIDTH, PUBLIC_NETWORK_HEIGHT, None)
+         publicusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, PUBLIC_USER_NAME, PUBLIC_NETWORK_NAME, PUBLIC_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+         publicinternetnode = self.shapes.buildShape('Internet', ShapeKind.NODE, FillPalette.NONE, INTERNET_NAME, PUBLIC_NETWORK_NAME, INTERNET_NAME, '', '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
 
          enterprisex = 0
          enterprisey = PUBLIC_NETWORK_HEIGHT + GROUP_SPACE
-         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', LOCATION_KIND, WHITE_FILL, ENTERPRISE_NETWORK_NAME, NO_PARENT, ENTERPRISE_NETWORK_NAME, '', '', enterprisex, enterprisey, ENTERPRISE_NETWORK_WIDTH, ENTERPRISE_NETWORK_HEIGHT, None)
-         enterpriseusernode = self.shapes.buildShape('User', ACTOR_KIND, NO_FILL, ENTERPRISE_USER_NAME, ENTERPRISE_NETWORK_NAME, ENTERPRISE_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ENTERPRISE_NETWORK_NAME, NO_PARENT, ENTERPRISE_NETWORK_NAME, '', '', enterprisex, enterprisey, ENTERPRISE_NETWORK_WIDTH, ENTERPRISE_NETWORK_HEIGHT, None)
+         enterpriseusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ENTERPRISE_USER_NAME, ENTERPRISE_NETWORK_NAME, ENTERPRISE_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
 
       if self.common.isLogicalShapes():
          cloudname = "Cloud"
@@ -150,7 +150,7 @@ class Diagram:
 
             if self.common.isLinkLayout():
                routername = vpcname + '-router'
-               routernode = self.shapes.buildShape('Router', NODE_KIND, NO_FILL, routername, vpcid, '', '', '', FIRST_ICON_X, FIRST_ICON_Y, width, height, None)
+               routernode = self.shapes.buildShape('Router', ShapeKind.NODE, FillPalette.NONE, routername, vpcid, '', '', '', FIRST_ICON_X, FIRST_ICON_Y, width, height, None)
                nodes.append(routernode)
 
                routerlink = self.shapes.buildDoubleArrow('', routername, INTERNET_NAME, None)
@@ -234,13 +234,13 @@ class Diagram:
                previousheight = height + GROUP_SPACE
                previouswidth = width
 
-               vpcnode = self.shapes.buildShape('VPC', LOCATION_KIND, WHITE_FILL, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
+               vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
                nodes.append(vpcnode)
             else:
                x = GROUP_SPACE
                y = TOP_SPACE
 
-               vpcnode = self.shapes.buildShape('VPC', LOCATION_KIND, WHITE_FILL, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
+               vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
                nodes.append(vpcnode)
 
                x = 30
@@ -249,7 +249,7 @@ class Diagram:
                width += GROUP_SPACE * 2
                height += TOP_SPACE + GROUP_SPACE
 
-               regionnode = self.shapes.buildShape('Region', LOCATION_KIND, BACKEND_FILL, regionname, cloudname, regionname, '', '', x, y, width, height, None)
+               regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionname, cloudname, regionname, '', '', x, y, width, height, None)
                nodes.append(regionnode)
          
                lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
@@ -265,7 +265,7 @@ class Diagram:
                width += GROUP_SPACE * 2
                height += TOP_SPACE + GROUP_SPACE
 
-               cloudnode = self.shapes.buildShape('Cloud', LOCATION_KIND, WHITE_FILL, cloudname, NO_PARENT, cloudname, '', '', x, y, width, height, None)
+               cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, NO_PARENT, cloudname, '', '', x, y, width, height, None)
                nodes.append(cloudnode)
    
                data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
@@ -280,7 +280,7 @@ class Diagram:
          width += GROUP_SPACE * 2
          height += TOP_SPACE + GROUP_SPACE
 
-         regionnode = self.shapes.buildShape('Region', LOCATION_KIND, BACKEND_FILL, regionname, cloudname, regionname, '', '', x, y, width, height, None)
+         regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionname, cloudname, regionname, '', '', x, y, width, height, None)
          nodes.append(regionnode)
          
          #lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
@@ -296,7 +296,7 @@ class Diagram:
          width += GROUP_SPACE * 2
          height += TOP_SPACE + GROUP_SPACE
 
-         cloudnode = self.shapes.buildShape('Cloud', LOCATION_KIND, WHITE_FILL, cloudname, '', cloudname, '', '', x, y, width, height, None)
+         cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, '', cloudname, '', '', x, y, width, height, None)
          nodes.append(cloudnode)
    
          data[regionname] = {'nodes': nodes, 'values': values, 'links': links}
@@ -360,7 +360,7 @@ class Diagram:
          else:
             zonecidr = self.getZoneCIDR(zonename)
 
-         zonenode = self.shapes.buildShape('AvailabilityZone', LOCATION_KIND, BACKEND_FILL, regionzonename, vpcid, regionzonename, zonecidr, '', x, y, width, height, None)
+         zonenode = self.shapes.buildShape('AvailabilityZone', ShapeKind.LOCATION, ComponentFill.BACKEND, regionzonename, vpcid, regionzonename, zonecidr, '', x, y, width, height, None)
          nodes.append(zonenode)
 
          sizes.append([width, height])
@@ -480,7 +480,7 @@ class Diagram:
 
          saveheight += height
 
-         subnetnode = self.shapes.buildShape('Subnet', LOCATION_KIND, WHITE_FILL, subnetid, regionzonename, subnetname, subnetcidr, '', x, y, width, height, None) 
+         subnetnode = self.shapes.buildShape('Subnet', ShapeKind.LOCATION, FillPalette.WHITE, subnetid, regionzonename, subnetname, subnetcidr, '', x, y, width, height, None) 
          nodes.append(subnetnode)
          sizes.append([width, height])
 
@@ -494,7 +494,7 @@ class Diagram:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               publicnode = self.shapes.buildShape('PublicGateway', NODE_KIND, NO_FILL, subnetpubgateid, regionzonename, pubgatename, pubgatefipip, '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+               publicnode = self.shapes.buildShape('PublicGateway', ShapeKind.NODE, FillPalette.NONE, subnetpubgateid, regionzonename, pubgatename, pubgatefipip, '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
                nodes.append(publicnode)
 
                if self.common.isLinkLayout():
@@ -685,7 +685,7 @@ class Diagram:
          #   iconnode = self.shapes.buildIconExpandedStack(nicid, subnetid, instancename, nicips, icontype, x, y, width, height, meta)
          #   sizes.append([width, height])
 
-         iconnode = self.shapes.buildShape(icontype, NODE_KIND, NO_FILL, iconid, subnetid, iconname, secondarytext, icontype, x, y, width, height, meta)
+         iconnode = self.shapes.buildShape(icontype, ShapeKind.NODE, FillPalette.NONE, iconid, subnetid, iconname, secondarytext, icontype, x, y, width, height, meta)
          sizes.append([extrawidth, extraheight])
 
          nodes.append(iconnode)
@@ -826,7 +826,7 @@ class Diagram:
 
          saveheight += height
 
-         subnetnode = self.shapes.buildShape('Subnet', LOCATION_KIND, WHITE_FILL, subnetid, regionzonename, subnetname, subnetcidr, '', x, y, width, height, None) 
+         subnetnode = self.shapes.buildShape('Subnet', ShapeKind.LOCATION, FillPalette.WHITE, subnetid, regionzonename, subnetname, subnetcidr, '', x, y, width, height, None) 
          nodes.append(subnetnode)
          sizes.append([width, height])
 
@@ -914,7 +914,7 @@ class Diagram:
                            if not lbgenerated:
                               lbgenerated = True
                               # TODO Handle spacing for > 1 LBs.
-                              lbnode = self.shapes.buildShape('LoadBalancer', NODE_KIND, NO_FILL, lbid, vpcid, lbname, lbiplist, '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+                              lbnode = self.shapes.buildShape('LoadBalancer', ShapeKind.NODE, FillPalette.NONE, lbid, vpcid, lbname, lbiplist, '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
                               nodes.append(lbnode)
 
                               if self.common.isLinkLayout():

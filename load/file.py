@@ -18,9 +18,10 @@ from sys import exit
 from json import loads as json_load
 from yaml import load as yaml_load
 from yaml import FullLoader as yaml_FullLoader
-from pandas import json_normalize, DataFrame
+from pandas import concat, DataFrame, json_normalize
 
 from common.common import Common
+from diagram.icons import Icons
 
 class File:
    floatingIPs = {}
@@ -44,10 +45,12 @@ class File:
    types = []
    data = {}
    common = None
+   icons = None
 
    def __init__(self, common):
       self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
       self.common = common
+      self.icons = Icons(common)
       return
 
    def loadJSON(self):
@@ -122,6 +125,12 @@ class File:
                      'cpuCount': 'vcpu.count',
                      'profile': 'profile.name',
                      'osVersion': 'image.name'}, inplace=True)
+         if len(self.instances) == 1:
+            for instanceindex, instanceframe in self.instances.iterrows():
+               if instanceframe['name'] == '*':
+                  self.addAllIcons()
+                  self.common.setAllIcons()
+                  break
 
       if not self.networkInterfaces.empty:
          self.networkInterfaces.rename(
@@ -132,6 +141,29 @@ class File:
       if not self.vpnGateways.empty:
          self.vpnGateways.rename(
             columns={'floatingIP': 'floating_ip.address'}, inplace=True)
+
+      return
+
+   def addAllIcons(self):
+      iconDictionary = self.icons.getIconDictionary()
+      iconCount = len(iconDictionary)
+      newinstances = concat([self.instances]*iconCount, ignore_index=True)
+      iconIndex = 0
+
+      for iconkey, iconvalue in iconDictionary.items():
+         icon = iconvalue['icon']
+         newinstances.at[iconIndex, 'name'] =  icon
+         newinstances.at[iconIndex, 'id'] = icon + '-id'
+         newinstances.at[iconIndex, 'networkInterfaces.id'] = icon + '-eth0-id'
+         iconIndex += 1
+
+      self.instances = newinstances
+
+      for instanceindex, instanceframe in self.instances.iterrows():
+         instanceid = instanceframe['id']
+         niclist = instanceframe['networkInterfaces']
+         nic = niclist[0]
+         nic['id'] = instanceid + '-eth0'
 
       return
 
