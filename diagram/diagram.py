@@ -23,7 +23,7 @@ from math import isnan
 
 from common.common import Common
 
-from diagram.constants import ComponentFill, FillPalette, ShapeKind, ShapeMisc, ShapeName, ShapePos, ZoneCIDR
+from diagram.constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
 from diagram.shapes import Shapes
 
 class Diagram:
@@ -70,13 +70,13 @@ class Diagram:
       if self.common.isLinkLayout():
          publicx = 0
          publicy = 0
-         publicnode = self.shapes.buildShape('PublicNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.PUBLIC_NETWORK.value, ShapeMisc.NO_PARENT.value, ShapeName.PUBLIC_NETWORK.value, '', '', publicx, publicy, ShapePos.PUBLIC_NETWORK_WIDTH.value, ShapePos.PUBLIC_NETWORK_HEIGHT.value, None)
+         publicnode = self.shapes.buildShape('PublicNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.PUBLIC_NETWORK.value, ShapeName.NO_PARENT.value, ShapeName.PUBLIC_NETWORK.value, '', '', publicx, publicy, ShapePos.PUBLIC_NETWORK_WIDTH.value, ShapePos.PUBLIC_NETWORK_HEIGHT.value, None)
          publicusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.PUBLIC_USER.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.PUBLIC_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
          publicinternetnode = self.shapes.buildShape('Internet', ShapeKind.NODE, FillPalette.NONE, ShapeName.INTERNET.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.INTERNET.value, '', '', ShapePos.SECOND_ICON_X.value, ShapePos.SECOND_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
 
          enterprisex = 0
          enterprisey = ShapePos.PUBLIC_NETWORK_HEIGHT.value + ShapePos.GROUP_SPACE.value
-         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.ENTERPRISE_NETWORK.value, ShapeMisc.NO_PARENT.value, ShapeName.ENTERPRISE_NETWORK.value, '', '', enterprisex, enterprisey, ShapePos.ENTERPRISE_NETWORK_WIDTH.value, ShapePos.ENTERPRISE_NETWORK_HEIGHT.value, None)
+         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.NO_PARENT.value, ShapeName.ENTERPRISE_NETWORK.value, '', '', enterprisex, enterprisey, ShapePos.ENTERPRISE_NETWORK_WIDTH.value, ShapePos.ENTERPRISE_NETWORK_HEIGHT.value, None)
          enterpriseusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.ENTERPRISE_USER.value, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.ENTERPRISE_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
 
       if self.common.isLogicalShapes():
@@ -265,7 +265,7 @@ class Diagram:
                width += ShapePos.GROUP_SPACE.value * 2
                height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
-               cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, ShapeMisc.NO_PARENT.value, cloudname, '', '', x, y, width, height, None)
+               cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, ShapeName.NO_PARENT.value, cloudname, '', '', x, y, width, height, None)
                nodes.append(cloudnode)
    
                data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}

@@ -153,10 +153,6 @@ class ShapeName(Enum):
    PUBLIC_USER = 'User'
    ENTERPRISE_NETWORK = 'Enterprise<br>Network'
    ENTERPRISE_USER = 'Enterprise User'
-
-# Misc Constants
-
-class ShapeMisc(Enum):
    NO_PARENT = '1'
 
 # Positioning Constants
