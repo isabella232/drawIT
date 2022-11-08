@@ -57,7 +57,7 @@ class Elements:
                self.addLink(link)
 
    def dumpXML(self, file, folder):
-      pathname = path.join(folder, file)
+      pathname = path.join(folder, file.replace(" ", ""))
       filepath, filename = path.split(pathname)
 
       if not path.exists(filepath):
