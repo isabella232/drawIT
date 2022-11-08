@@ -18,7 +18,7 @@ import time
 
 from common.common import Common
 
-from diagram.constants import *
+from diagram.constants import ShapeKind, ShapeStyle
 from diagram.elements import Elements
 from diagram.icons import Icons
 
@@ -89,18 +89,18 @@ class Types:
 
       if self.common.isLogicalShapes():
          if shapekind == ShapeKind.ACTOR:
-            style = ACTOR_STYLE
+            style = ShapeStyle.ACTOR.value
          elif shapekind == ShapeKind.NODE:
-            style = LOGICAL_NODE_STYLE
+            style = ShapeStyle.LOGICAL_NODE.value
          else:
-            style = LOGICAL_LOCATION_STYLE
+            style = ShapeStyle.LOGICAL_LOCATION.value
       else: # check prescribed
          if shapekind == ShapeKind.ACTOR:
-            style = ACTOR_STYLE
+            style = ShapeStyle.ACTOR.value
          elif shapekind == ShapeKind.NODE:
-            style = PRESCRIBED_NODE_STYLE
+            style = ShapeStyle.PRESCRIBED_NODE.value
          else:
-            style = PRESCRIBED_LOCATION_STYLE
+            style = ShapeStyle.PRESCRIBED_LOCATION.value
 
       style += iconcolor.value + shapefill.value
 

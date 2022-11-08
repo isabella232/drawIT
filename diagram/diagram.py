@@ -23,7 +23,7 @@ from math import isnan
 
 from common.common import Common
 
-from diagram.constants import *
+from diagram.constants import ComponentFill, FillPalette, ShapeKind, ShapeMisc, ShapeName, ShapePos, ZoneCIDR
 from diagram.shapes import Shapes
 
 class Diagram:
@@ -70,14 +70,14 @@ class Diagram:
       if self.common.isLinkLayout():
          publicx = 0
          publicy = 0
-         publicnode = self.shapes.buildShape('PublicNetwork', ShapeKind.LOCATION, FillPalette.WHITE, PUBLIC_NETWORK_NAME, NO_PARENT, PUBLIC_NETWORK_NAME, '', '', publicx, publicy, PUBLIC_NETWORK_WIDTH, PUBLIC_NETWORK_HEIGHT, None)
-         publicusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, PUBLIC_USER_NAME, PUBLIC_NETWORK_NAME, PUBLIC_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
-         publicinternetnode = self.shapes.buildShape('Internet', ShapeKind.NODE, FillPalette.NONE, INTERNET_NAME, PUBLIC_NETWORK_NAME, INTERNET_NAME, '', '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+         publicnode = self.shapes.buildShape('PublicNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.PUBLIC_NETWORK.value, ShapeMisc.NO_PARENT.value, ShapeName.PUBLIC_NETWORK.value, '', '', publicx, publicy, ShapePos.PUBLIC_NETWORK_WIDTH.value, ShapePos.PUBLIC_NETWORK_HEIGHT.value, None)
+         publicusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.PUBLIC_USER.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.PUBLIC_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
+         publicinternetnode = self.shapes.buildShape('Internet', ShapeKind.NODE, FillPalette.NONE, ShapeName.INTERNET.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.INTERNET.value, '', '', ShapePos.SECOND_ICON_X.value, ShapePos.SECOND_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
 
          enterprisex = 0
-         enterprisey = PUBLIC_NETWORK_HEIGHT + GROUP_SPACE
-         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ENTERPRISE_NETWORK_NAME, NO_PARENT, ENTERPRISE_NETWORK_NAME, '', '', enterprisex, enterprisey, ENTERPRISE_NETWORK_WIDTH, ENTERPRISE_NETWORK_HEIGHT, None)
-         enterpriseusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ENTERPRISE_USER_NAME, ENTERPRISE_NETWORK_NAME, ENTERPRISE_USER_NAME, '', '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+         enterprisey = ShapePos.PUBLIC_NETWORK_HEIGHT.value + ShapePos.GROUP_SPACE.value
+         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.ENTERPRISE_NETWORK.value, ShapeMisc.NO_PARENT.value, ShapeName.ENTERPRISE_NETWORK.value, '', '', enterprisex, enterprisey, ShapePos.ENTERPRISE_NETWORK_WIDTH.value, ShapePos.ENTERPRISE_NETWORK_HEIGHT.value, None)
+         enterpriseusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.ENTERPRISE_USER.value, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.ENTERPRISE_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
 
       if self.common.isLogicalShapes():
          cloudname = "Cloud"
@@ -131,13 +131,13 @@ class Diagram:
                #SAVE publiclink = genlink(user, publicname, publicname, internetname)
                #SAVE links.append(publiclink)
 
-               publicuserlink = self.shapes.buildDoubleArrow('', INTERNET_NAME, PUBLIC_USER_NAME, None)
+               publicuserlink = self.shapes.buildDoubleArrow('', ShapeName.INTERNET.value, ShapeName.PUBLIC_USER.value, None)
                links.append(publicuserlink)
 
                nodes.append(enterprisenode)
                nodes.append(enterpriseusernode)
 
-               enterpriseuserlink = self.shapes.buildDoubleArrow('', INTERNET_NAME, ENTERPRISE_USER_NAME, None)
+               enterpriseuserlink = self.shapes.buildDoubleArrow('', ShapeName.INTERNET.value, ShapeName.ENTERPRISE_USER.value, None)
                links.append(enterpriseuserlink)
 
             zonenodes, zonelinks, zonevalues, zonesizes = self.buildZones(vpcname, vpcid, usercidrs)
@@ -145,49 +145,49 @@ class Diagram:
             links = links + zonelinks
             values = values + zonevalues
 
-            width = ICON_WIDTH
-            height = ICON_HEIGHT
+            width = ShapePos.ICON_WIDTH.value
+            height = ShapePos.ICON_HEIGHT.value
 
             if self.common.isLinkLayout():
                routername = vpcname + '-router'
-               routernode = self.shapes.buildShape('Router', ShapeKind.NODE, FillPalette.NONE, routername, vpcid, '', '', '', FIRST_ICON_X, FIRST_ICON_Y, width, height, None)
+               routernode = self.shapes.buildShape('Router', ShapeKind.NODE, FillPalette.NONE, routername, vpcid, '', '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y, width, height, None)
                nodes.append(routernode)
 
-               routerlink = self.shapes.buildDoubleArrow('', routername, INTERNET_NAME, None)
+               routerlink = self.shapes.buildDoubleArrow('', routername, ShapeName.INTERNET.value, None)
                links.append(routerlink)
 
             width = 0
             height = 0
 
-            #x = GROUP_SPACE
-            #y = TOP_SPACE
+            #x = ShapePos.GROUP_SPACE.value
+            #y = ShapePos.TOP_SPACE.value
 
             if self.common.isVerticalLayout():
                for size in zonesizes:
                   if size[0] > width:
                      width = size[0]
-                  height += size[1] + GROUP_SPACE
+                  height += size[1] + ShapePos.GROUP_SPACE.value
 
-               width += LEFT_SPACE + GROUP_SPACE  # space after inner groups
-               height += TOP_SPACE # space at top of outer group to top inner group
-               height -= GROUP_SPACE  # TODO Remove extra groupspace.
+               width += ShapePos.LEFT_SPACE.value + ShapePos.GROUP_SPACE.value  # space after inner groups
+               height += ShapePos.TOP_SPACE.value # space at top of outer group to top inner group
+               height -= ShapePos.GROUP_SPACE.value  # TODO Remove extra groupspace.
             else:
                for size in zonesizes:
                   if size[1] > height:
                      height = size[1]
-                  width += size[0] + GROUP_SPACE
+                  width += size[0] + ShapePos.GROUP_SPACE.value
 
-               #width += LEFT_SPACE  # space after inner groups
-               height += TOP_SPACE # space at top of outer group to top inner group
-               height += GROUP_SPACE  # TODO Remove extra groupspace.
+               #width += ShapePos.LEFT_SPACE.value  # space after inner groups
+               height += ShapePos.TOP_SPACE.value # space at top of outer group to top inner group
+               height += ShapePos.GROUP_SPACE.value  # TODO Remove extra groupspace.
 
             #if count > 1:
             #   if self.common.isCombineSplit():
             #      if self.common.isVerticalLayout():
             #         x = savex
-            #         y = savey + height + GROUP_SPACE
+            #         y = savey + height + ShapePos.GROUP_SPACE.value
             #      else:
-            #         x = savex + width + GROUP_SPACE
+            #         x = savex + width + ShapePos.GROUP_SPACE.value
             #         y = savey
 
             #savex = x
@@ -204,41 +204,41 @@ class Diagram:
             #x = 30
             #y = 70
 
-            #width += GROUP_SPACE * 2
-            #height += TOP_SPACE + GROUP_SPACE
+            #width += ShapePos.GROUP_SPACE.value * 2
+            #height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
             if self.common.isCombineSplit():
                if self.common.isVerticalLayout():
                   if width > savewidth:
                      savewidth = width
-                  saveheight += height + GROUP_SPACE
+                  saveheight += height + ShapePos.GROUP_SPACE.value
                else:
                   if height > saveheight:
                      saveheight = height
-                  savewidth += width + GROUP_SPACE
+                  savewidth += width + ShapePos.GROUP_SPACE.value
 
                if count == 1:
-                  x = GROUP_SPACE
-                  y = TOP_SPACE
+                  x = ShapePos.GROUP_SPACE.value
+                  y = ShapePos.TOP_SPACE.value
                elif self.common.isVerticalLayout():
-                  #x = GROUP_SPACE
-                  #y = saveheight + GROUP_SPACE
-                  #x += GROUP_SPACE
-                  y += previousheight + GROUP_SPACE
+                  #x = ShapePos.GROUP_SPACE.value
+                  #y = saveheight + ShapePos.GROUP_SPACE.value
+                  #x += ShapePos.GROUP_SPACE.value
+                  y += previousheight + ShapePos.GROUP_SPACE.value
                else:
-                  #x = savewidth + GROUP_SPACE
-                  #y = TOP_SPACE
-                  x += previouswidth + GROUP_SPACE
-                  #y += TOP_SPACE
+                  #x = savewidth + ShapePos.GROUP_SPACE.value
+                  #y = ShapePos.TOP_SPACE.value
+                  x += previouswidth + ShapePos.GROUP_SPACE.value
+                  #y += ShapePos.TOP_SPACE.value
 
-               previousheight = height + GROUP_SPACE
+               previousheight = height + ShapePos.GROUP_SPACE.value
                previouswidth = width
 
                vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
                nodes.append(vpcnode)
             else:
-               x = GROUP_SPACE
-               y = TOP_SPACE
+               x = ShapePos.GROUP_SPACE.value
+               y = ShapePos.TOP_SPACE.value
 
                vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
                nodes.append(vpcnode)
@@ -246,8 +246,8 @@ class Diagram:
                x = 30
                y = 70
 
-               width += GROUP_SPACE * 2
-               height += TOP_SPACE + GROUP_SPACE
+               width += ShapePos.GROUP_SPACE.value * 2
+               height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
                regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionname, cloudname, regionname, '', '', x, y, width, height, None)
                nodes.append(regionnode)
@@ -259,13 +259,13 @@ class Diagram:
 
                #publicwidth = (groupspace * 2) + (48 * 3)
                #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-               x = PUBLIC_NETWORK_WIDTH + GROUP_SPACE  # Allow space for public network.
+               x = ShapePos.PUBLIC_NETWORK_WIDTH.value + ShapePos.GROUP_SPACE.value  # Allow space for public network.
                y = 0
 
-               width += GROUP_SPACE * 2
-               height += TOP_SPACE + GROUP_SPACE
+               width += ShapePos.GROUP_SPACE.value * 2
+               height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
-               cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, NO_PARENT, cloudname, '', '', x, y, width, height, None)
+               cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, ShapeMisc.NO_PARENT.value, cloudname, '', '', x, y, width, height, None)
                nodes.append(cloudnode)
    
                data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
@@ -277,8 +277,8 @@ class Diagram:
          width = savewidth
          height = saveheight
 
-         width += GROUP_SPACE * 2
-         height += TOP_SPACE + GROUP_SPACE
+         width += ShapePos.GROUP_SPACE.value * 2
+         height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
          regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionname, cloudname, regionname, '', '', x, y, width, height, None)
          nodes.append(regionnode)
@@ -290,11 +290,11 @@ class Diagram:
 
          #publicwidth = (groupspace * 2) + (48 * 3)
          #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-         x = PUBLIC_NETWORK_WIDTH + GROUP_SPACE  # Allow space for public network.
+         x = ShapePos.PUBLIC_NETWORK_WIDTH.value + ShapePos.GROUP_SPACE.value  # Allow space for public network.
          y = 0
 
-         width += GROUP_SPACE * 2
-         height += TOP_SPACE + GROUP_SPACE
+         width += ShapePos.GROUP_SPACE.value * 2
+         height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
          cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, '', cloudname, '', '', x, y, width, height, None)
          nodes.append(cloudnode)
@@ -333,19 +333,19 @@ class Diagram:
             if size[0] > width:
                width = size[0]
 
-            height = height + size[1] + GROUP_SPACE
+            height = height + size[1] + ShapePos.GROUP_SPACE.value
 
-         width = LEFT_SPACE + width + GROUP_SPACE
-         height = height + TOP_SPACE  # space at top of outer group to top inner group
-         height = height - GROUP_SPACE
+         width = ShapePos.LEFT_SPACE.value + width + ShapePos.GROUP_SPACE.value
+         height = height + ShapePos.TOP_SPACE.value  # space at top of outer group to top inner group
+         height = height - ShapePos.GROUP_SPACE.value
 
          if self.common.isVerticalLayout():
-            x = (ICON_SPACE * 2) + ICON_WIDTH
-            y = TOP_SPACE + saveheight + (GROUP_SPACE * (count - 1))
+            x = (ShapePos.ICON_SPACE.value * 2) + ShapePos.ICON_WIDTH.value
+            y = ShapePos.TOP_SPACE.value + saveheight + (ShapePos.GROUP_SPACE.value * (count - 1))
             saveheight += height
          else:
-            x = (ICON_SPACE * 2) + ICON_WIDTH + savewidth + (GROUP_SPACE * (count - 1))
-            y = TOP_SPACE
+            x = (ShapePos.ICON_SPACE.value * 2) + ShapePos.ICON_WIDTH.value + savewidth + (ShapePos.GROUP_SPACE.value * (count - 1))
+            y = ShapePos.TOP_SPACE.value
             savewidth += width
 
          zonename = regionzonename.split(':')[1]
@@ -360,13 +360,13 @@ class Diagram:
          else:
             zonecidr = self.getZoneCIDR(zonename)
 
-         zonenode = self.shapes.buildShape('AvailabilityZone', ShapeKind.LOCATION, ComponentFill.BACKEND, regionzonename, vpcid, regionzonename, zonecidr, '', x, y, width, height, None)
+         zonenode = self.shapes.buildShape('AvailabilityZone', ShapeKind.LOCATION, ComponentFill.BACKEND, regionzonename, vpcid, zonename, zonecidr, '', x, y, width, height, None)
          nodes.append(zonenode)
 
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([LEFT_SPACE - GROUP_SPACE, 0])
+            sizes.append([ShapePos.LEFT_SPACE.value - ShapePos.GROUP_SPACE.value, 0])
 
       return nodes, links, values, sizes
 
@@ -456,27 +456,27 @@ class Diagram:
             bastion = True
 
          if (len(instancesizes) == 0):
-            width = MIN_GROUP_WIDTH
-            height = MIN_GROUP_HEIGHT
+            width = ShapePos.MIN_GROUP_WIDTH.value
+            height = ShapePos.MIN_GROUP_HEIGHT.value
          else:
-            width = GROUP_SPACE
+            width = ShapePos.GROUP_SPACE.value
             height = 0
 
          for size in instancesizes:
-            width = width + size[0] + GROUP_SPACE
+            width = width + size[0] + ShapePos.GROUP_SPACE.value
 
             if size[1] > height:
                height = size[1]
 
          # Leave height as groupheight if no instances.
          if (len(instancesizes) != 0):
-            height = height + TOP_SPACE + GROUP_SPACE  # space at top and bottom of group
+            height = height + ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value  # space at top and bottom of group
 
          #SAVE x = (iconspace * 2) + iconwidth
          #SAVE y = topspace + (height * (count - 1)) + (groupspace * (count - 1))
 
-         x = (ICON_SPACE * 2) + ICON_WIDTH
-         y = TOP_SPACE + saveheight + (GROUP_SPACE * (count - 1))
+         x = (ShapePos.ICON_SPACE.value * 2) + ShapePos.ICON_WIDTH.value
+         y = ShapePos.TOP_SPACE.value + saveheight + (ShapePos.GROUP_SPACE.value * (count - 1))
 
          saveheight += height
 
@@ -485,7 +485,7 @@ class Diagram:
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([LEFT_SPACE - GROUP_SPACE, 0])
+            sizes.append([ShapePos.LEFT_SPACE.value - ShapePos.GROUP_SPACE.value, 0])
 
          internetname = 'Internet'
 
@@ -494,7 +494,7 @@ class Diagram:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               publicnode = self.shapes.buildShape('PublicGateway', ShapeKind.NODE, FillPalette.NONE, subnetpubgateid, regionzonename, pubgatename, pubgatefipip, '', FIRST_ICON_X, FIRST_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+               publicnode = self.shapes.buildShape('PublicGateway', ShapeKind.NODE, FillPalette.NONE, subnetpubgateid, regionzonename, pubgatename, pubgatefipip, '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
                nodes.append(publicnode)
 
                if self.common.isLinkLayout():
@@ -657,17 +657,17 @@ class Diagram:
             meta = None
 
          #if self.common.isLowDetail(): 
-         width = ICON_WIDTH
-         height = ICON_HEIGHT
+         width = ShapePos.ICON_WIDTH.value
+         height = ShapePos.ICON_HEIGHT.value
          extrawidth = width * 3
          extraheight = height * 2
-         x = width + (extrawidth * (count - 1)) + (GROUP_SPACE * count)
-         y = TOP_SPACE
+         x = width + (extrawidth * (count - 1)) + (ShapePos.GROUP_SPACE.value * count)
+         y = ShapePos.TOP_SPACE.value
          #else:
          #   width = 240
          #   height = 152
-         #   x = (width * (count - 1)) + (GROUP_SPACE * count) 
-         #   y = TOP_SPACE
+         #   x = (width * (count - 1)) + (ShapePos.GROUP_SPACE.value * count) 
+         #   y = ShapePos.TOP_SPACE.value
 
          #SAVE x = (width * (count - 1)) + (groupspace * count) 
          #SAVE y = topspace
@@ -808,21 +808,21 @@ class Diagram:
             width = MIN_GROUP_WIDTH
             height = MIN_GROUP_HEIGHT
          else:
-            width = GROUP_SPACE
+            width = ShapePos.GROUP_SPACE.value
             height = 0
 
          for size in instancesizes:
-            width = width + size[0] + GROUP_SPACE
+            width = width + size[0] + ShapePos.GROUP_SPACE.value
 
             if size[1] > height:
                height = size[1]
 
          # Leave height as groupheight if no instances.
          if (len(instancesizes) != 0):
-            height = height + TOP_SPACE + GROUP_SPACE  # space at top and bottom of group
+            height = height + ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value  # space at top and bottom of group
 
-         x = (ICON_SPACE * 2) + ICON_WIDTH
-         y = TOP_SPACE + saveheight + (GROUP_SPACE * (count - 1))
+         x = (ShapePos.ICON_SPACE.value * 2) + ShapePos.ICON_WIDTH.value
+         y = ShapePos.TOP_SPACE.value + saveheight + (ShapePos.GROUP_SPACE.value * (count - 1))
 
          saveheight += height
 
@@ -831,7 +831,7 @@ class Diagram:
          sizes.append([width, height])
 
          if count == 1:
-            sizes.append([LEFT_SPACE - GROUP_SPACE, 0])
+            sizes.append([LEFT_SPACE - ShapePos.GROUP_SPACE.value, 0])
 
       return nodes, links, values, sizes
 
@@ -914,7 +914,7 @@ class Diagram:
                            if not lbgenerated:
                               lbgenerated = True
                               # TODO Handle spacing for > 1 LBs.
-                              lbnode = self.shapes.buildShape('LoadBalancer', ShapeKind.NODE, FillPalette.NONE, lbid, vpcid, lbname, lbiplist, '', SECOND_ICON_X, SECOND_ICON_Y, ICON_WIDTH, ICON_HEIGHT, None)
+                              lbnode = self.shapes.buildShape('LoadBalancer', ShapeKind.NODE, FillPalette.NONE, lbid, vpcid, lbname, lbiplist, '', ShapePos.SECOND_ICON_X.value, ShapePos.SECOND_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
                               nodes.append(lbnode)
 
                               if self.common.isLinkLayout():
@@ -932,42 +932,42 @@ class Diagram:
    # Get zone CIDR.
    def getZoneCIDR(self, zone):
       match zone:
-         case 'au-syd-1': cidr = AU_SYD_1
-         case 'au-syd-2': cidr = AU_SYD_2
-         case 'au-syd-3': cidr = AU_SYD_3
+         case 'au-syd-1': cidr = ZoneCIDR.AU_SYD_1
+         case 'au-syd-2': cidr = ZoneCIDR.AU_SYD_2
+         case 'au-syd-3': cidr = ZoneCIDR.AU_SYD_3
 
-         case 'br-sao-1': cidr = BR_SAO_1
-         case 'br-sao-2': cidr = BR_SAO_2
-         case 'br-sao-3': cidr = BR_SAO_3
+         case 'br-sao-1': cidr = ZoneCIDR.BR_SAO_1
+         case 'br-sao-2': cidr = ZoneCIDR.BR_SAO_2
+         case 'br-sao-3': cidr = ZoneCIDR.BR_SAO_3
 
-         case 'ca-tor-1': cidr = CA_TOR_1
-         case 'ca-tor-2': cidr = CA_TOR_2
-         case 'ca-tor-3': cidr = CA_TOR_3
+         case 'ca-tor-1': cidr = ZoneCIDR.CA_TOR_1
+         case 'ca-tor-2': cidr = ZoneCIDR.CA_TOR_2
+         case 'ca-tor-3': cidr = ZoneCIDR.CA_TOR_3
 
-         case 'eu-de-1': cidr = EU_DE_1
-         case 'eu-de-2': cidr = EU_DE_2
-         case 'eu-de-3': cidr = EU_DE_3
+         case 'eu-de-1': cidr = ZoneCIDR.EU_DE_1
+         case 'eu-de-2': cidr = ZoneCIDR.EU_DE_2
+         case 'eu-de-3': cidr = ZoneCIDR.EU_DE_3
 
-         case 'eu-gb-1': cidr = EU_GB_1
-         case 'eu-gb-2': cidr = EU_GB_2
-         case 'eu-gb-3': cidr = EU_GB_3
+         case 'eu-gb-1': cidr = ZoneCIDR.EU_GB_1
+         case 'eu-gb-2': cidr = ZoneCIDR.EU_GB_2
+         case 'eu-gb-3': cidr = ZoneCIDR.EU_GB_3
 
-         case 'jp-osa-1': cidr = JP_OSA_1
-         case 'jp-osa-2': cidr = JP_OSA_2
-         case 'jp-osa-3': cidr = JP_OSA_3
+         case 'jp-osa-1': cidr = ZoneCIDR.JP_OSA_1
+         case 'jp-osa-2': cidr = ZoneCIDR.JP_OSA_2
+         case 'jp-osa-3': cidr = ZoneCIDR.JP_OSA_3
 
-         case 'jp-tok-1': cidr = JP_TOK_1
-         case 'jp-tok-2': cidr = JP_TOK_2
-         case 'jp-tok-3': cidr = JP_TOK_3
+         case 'jp-tok-1': cidr = ZoneCIDR.JP_TOK_1
+         case 'jp-tok-2': cidr = ZoneCIDR.JP_TOK_2
+         case 'jp-tok-3': cidr = ZoneCIDR.JP_TOK_3
 
-         case 'us-east-1': cidr = US_EAST_1
-         case 'us-east-2': cidr = US_EAST_2
-         case 'us-east-3': cidr = US_EAST_3
+         case 'us-east-1': cidr = ZoneCIDR.US_EAST_1
+         case 'us-east-2': cidr = ZoneCIDR.US_EAST_2
+         case 'us-east-3': cidr = ZoneCIDR.US_EAST_3
 
-         case 'us-south-1': cidr = US_SOUTH_1
-         case 'us-south-2': cidr = US_SOUTH_2
-         case 'us-south-3': cidr = US_SOUTH_3
+         case 'us-south-1': cidr = ZoneCIDR.US_SOUTH_1
+         case 'us-south-2': cidr = ZoneCIDR.US_SOUTH_2
+         case 'us-south-3': cidr = ZoneCIDR.US_SOUTH_3
 
-         case _: cidr = ''
+         case _: cidr = ZoneCIDR.NONE
 
-      return cidr
+      return cidr.value
