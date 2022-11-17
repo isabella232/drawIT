@@ -30,63 +30,201 @@ class Diagram:
    data = None
    common = None
    shapes = None
+   cloudname = ""
 
    def __init__(self, common, data):
       self.common = common
       self.data = data
       self.shapes = Shapes(common)
+      self.cloudname = ShapeName.CLOUD.value if self.common.isLogicalShapes() else ShapeName.IBM_CLOUD.value
 
    def buildDiagrams(self):
       outputFolder = self.common.getOutputFolder()
       if outputFolder[-1] != '/':
          self.common.setOutputFolder(outputFolder + '/')
 
-      regiondata = {}
+      clouddata = self.buildAll()
 
-      for regionname, regionvalues in self.data.getRegionTable().items():
-         vpcdata = self.buildVPCs(regionname, regionvalues)
-         regiondata[regionname] = vpcdata
-
-      for regionname, regionvalues in regiondata.items():
-         #if self.userregion != "all" and self.userregion != regionname:
+      for regionname, regionvalues in clouddata.items():
          if self.common.getRegion().value != "all" and self.common.getRegion().value != regionname:
             # Covers the case for Yaml data which includes all regions whereas RIAS data can include single or all regions.
             continue
-         for vpcname, vpcvalues in regionvalues.items():
-            self.shapes.buildXML(vpcvalues, regionname + ':' + vpcname)
-            if self.common.isVPCSplit():
-               self.shapes.dumpXML(regionname + "_" + vpcname + "_" + self.common.getOutputFile(), self.common.getOutputFolder())
-               self.shapes.resetXML()
-         if self.common.isRegionSplit():
-            self.shapes.dumpXML(regionname + "_" + self.common.getOutputFile(), self.common.getOutputFolder())
-            self.shapes.resetXML()
+         if self.common.isCombineSplit():
+            self.shapes.buildXML(regionvalues, regionname)
+         else:
+            for vpcid, vpcvalues in regionvalues.items():
+              vpcnames = vpcid.split(':')
+              self.shapes.buildXML(vpcvalues, vpcnames[1])
 
-         if self.common.isSingleSplit():
-            self.shapes.dumpXML(self.common.getOutputFile(), self.common.getOutputFolder())
+         self.shapes.dumpXML(self.common.getOutputFile(), self.common.getOutputFolder())
+         self.shapes.resetXML()
 
-   def buildVPCs(self, regionname, regionvalues):
-      data = {}
+      return
 
-      if self.common.isLinkLayout():
-         publicx = 0
-         publicy = 0
-         publicnode = self.shapes.buildShape('PublicNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.PUBLIC_NETWORK.value, ShapeName.NO_PARENT.value, ShapeName.PUBLIC_NETWORK.value, '', '', publicx, publicy, ShapePos.PUBLIC_NETWORK_WIDTH.value, ShapePos.PUBLIC_NETWORK_HEIGHT.value, None)
-         publicusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.PUBLIC_USER.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.PUBLIC_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
-         publicinternetnode = self.shapes.buildShape('Internet', ShapeKind.NODE, FillPalette.NONE, ShapeName.INTERNET.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.INTERNET.value, '', '', ShapePos.SECOND_ICON_X.value, ShapePos.SECOND_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
+   def buildAll(self):
+      newvpcdata = {}
+      regiondata = {}
 
-         enterprisex = 0
-         enterprisey = ShapePos.PUBLIC_NETWORK_HEIGHT.value + ShapePos.GROUP_SPACE.value
-         enterprisenode = self.shapes.buildShape('EnterpriseNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.NO_PARENT.value, ShapeName.ENTERPRISE_NETWORK.value, '', '', enterprisex, enterprisey, ShapePos.ENTERPRISE_NETWORK_WIDTH.value, ShapePos.ENTERPRISE_NETWORK_HEIGHT.value, None)
-         enterpriseusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.ENTERPRISE_USER.value, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.ENTERPRISE_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
+      regionx = 30
+      regiony = 70
 
-      if self.common.isLogicalShapes():
-         cloudname = "Cloud"
-      else:
-         cloudname = "IBM Cloud"
+      cloudx = 30
+      cloudy = 70
+
+      cloudwidth = 0
+      cloudheight = 0
 
       nodes = []
       links = []
       values = []
+
+      count = 0
+
+      for regionname, regionvalues in self.data.getRegionTable().items():
+         count += 1
+         regionwidth = 0
+         regionheight = 0
+
+         vpcdata = self.buildVPCs(regionname, regionvalues)
+
+         if self.common.isCombineSplit():
+            # Loop thru all vpcs in region adding a region that contains all VPCs in that region.
+
+            for vpcid, vpcvalues in vpcdata.items():
+               nodes += vpcvalues['nodes']
+               links += vpcvalues['links']
+               values += vpcvalues['values']
+               size = vpcvalues['sizes']
+
+               regionwidth += size[0] + ShapePos.GROUP_SPACE.value
+               if size[1] > regionheight:
+                  regionheight = size[1]
+
+            regionwidth += ShapePos.GROUP_SPACE.value
+            regionheight += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
+
+            if regionwidth > cloudwidth:
+               cloudwidth = regionwidth
+            cloudheight += regionheight
+
+            if count > 1:
+              regiony += regionheight + ShapePos.GROUP_SPACE.value
+
+            nodes, links, values = self.buildRegion(regionname, None, nodes, links, values, regionx, regiony, regionwidth, regionheight)
+         else:
+            # Loop thru all vpcs in region adding a region to each VPC in that region.
+
+            regionwidth = ShapePos.GROUP_SPACE.value * 2
+            regionheight = ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
+
+            for vpcid, vpcvalues in vpcdata.items():
+               nodes = vpcvalues['nodes']
+               links = vpcvalues['links']
+               values = vpcvalues['values']
+               size = vpcvalues['sizes']
+               if size[0] > regionwidth:
+                  regionwidth += size[0]
+                  regionheight += size[1] + ShapePos.GROUP_SPACE.value
+
+               vpcnames = vpcid.split(':')
+
+               nodes, links, values = self.buildRegion(regionname, vpcnames[0], nodes, links, values, regionx, regiony, regionwidth, regionheight)
+
+
+               if regionwidth > cloudwidth:
+                  cloudwidth = regionwidth
+               cloudheight = regionheight
+
+               cloudwidth += ShapePos.GROUP_SPACE.value * 2
+               cloudheight += ShapePos.TOP_SPACE.value + (ShapePos.GROUP_SPACE.value * count)
+
+               nodes, links, values = self.buildCloud(self.cloudname, vpcnames[0], nodes, links, values, cloudx, cloudy, cloudwidth, cloudheight)
+               newvpcdata[vpcid] = {'nodes': nodes, 'links': links, 'values': values}
+
+            regiondata[regionname] = newvpcdata
+
+      if self.common.isCombineSplit():
+         cloudx = 30
+         cloudy = 70
+
+         cloudwidth += ShapePos.GROUP_SPACE.value * 2
+         cloudheight += ShapePos.TOP_SPACE.value + (ShapePos.GROUP_SPACE.value * count)
+
+         nodes, links, values = self.buildCloud(self.cloudname, None, nodes, links, values, cloudx, cloudy, cloudwidth, cloudheight)
+
+         regiondata[self.cloudname] = {'nodes': nodes, 'links': links, 'values': values}
+
+      return regiondata
+
+   def buildCloud(self, cloudname, vpcid, nodes, links, values, x, y, width, height):
+      if vpcid == None:
+         cloudid = cloudname.replace(" ", "")
+      else:
+         cloudid = cloudname.replace(" ", "") + ':' + vpcid
+
+      x = ShapePos.PUBLIC_NETWORK_WIDTH.value + ShapePos.GROUP_SPACE.value  # Allow space for public network.
+      y = 0
+
+      cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudid, ShapeName.NO_PARENT.value, cloudname, '', '', x, y, width, height, None)
+      nodes.append(cloudnode)
+
+      if self.common.isLinks():
+         nodes, links, values  = self.buildPublic(nodes, links, values)
+         nodes, links, values  = self.buildEnterprise(nodes, links, values)
+
+      return nodes, links, values
+
+   def buildRegion(self, regionname, vpcid, nodes, links, values, x, y, width, height):
+      if vpcid == None:
+         regionid = regionname.replace(" ", "")
+         cloudid = self.cloudname.replace(" ", "")
+      else:
+         regionid = regionname.replace(" ", "") + ':' + vpcid
+         cloudid = self.cloudname.replace(" ", "") + ':' + vpcid
+
+      regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionid, cloudid, regionname, '', '', x, y, width, height, None)
+      nodes.append(regionnode)
+
+      return nodes, links, values
+
+   def buildPublic(self, nodes, links, values):
+      publicx = 0
+      publicy = 0
+
+      publicnode = self.shapes.buildShape('PublicNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.PUBLIC_NETWORK.value, ShapeName.NO_PARENT.value, ShapeName.PUBLIC_NETWORK.value, '', '', publicx, publicy, ShapePos.PUBLIC_NETWORK_WIDTH.value, ShapePos.PUBLIC_NETWORK_HEIGHT.value, None)
+      publicusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.PUBLIC_USER.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.PUBLIC_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
+      publicinternetnode = self.shapes.buildShape('Internet', ShapeKind.NODE, FillPalette.NONE, ShapeName.INTERNET.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.INTERNET.value, '', '', ShapePos.SECOND_ICON_X.value, ShapePos.SECOND_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
+      
+      nodes.append(publicnode)
+      nodes.append(publicusernode)
+      nodes.append(publicinternetnode)
+      publicuserlink = self.shapes.buildDoubleArrow('', ShapeName.INTERNET.value, ShapeName.PUBLIC_USER.value, None)
+      links.append(publicuserlink)
+
+      return nodes, links, values
+
+   def buildEnterprise(self, nodes, links, values):
+      enterprisex = 0
+      enterprisey = ShapePos.PUBLIC_NETWORK_HEIGHT.value + ShapePos.GROUP_SPACE.value
+
+      enterprisenode = self.shapes.buildShape('EnterpriseNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.NO_PARENT.value, ShapeName.ENTERPRISE_NETWORK.value, '', '', enterprisex, enterprisey, ShapePos.ENTERPRISE_NETWORK_WIDTH.value, ShapePos.ENTERPRISE_NETWORK_HEIGHT.value, None)
+      enterpriseusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.ENTERPRISE_USER.value, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.ENTERPRISE_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
+
+      nodes.append(enterprisenode)
+      nodes.append(enterpriseusernode)
+
+      enterpriseuserlink = self.shapes.buildDoubleArrow('', ShapeName.INTERNET.value, ShapeName.ENTERPRISE_USER.value, None)
+      links.append(enterpriseuserlink)
+
+      return nodes, links, values
+
+   def buildVPCs(self, regionname, regionvalues):
+      vpcdata = {}
+
+      nodes = []
+      links = []
+      values = []
+      sizes = []
 
       saveheight = 0
       savewidth = 0
@@ -94,12 +232,14 @@ class Diagram:
       previousheight = 0
       previouswidth = 0
 
-      #savex = 0
-      #savey = 0
-
       count = 0
 
       for vpcid in regionvalues:
+         nodes = []
+         links = []
+         values = []
+         sizes = []
+
          #vpcframe = findrow(user, self.inputdata['vpcs'], 'id', vpcid)
          vpcframe = self.data.getVPC(vpcid)
          if len(vpcframe) == 0:
@@ -118,39 +258,22 @@ class Diagram:
             else:
                usercidrs = None
 
-            if not self.common.isCombineSplit():
-               nodes = []
-               links = []
-               values = []
-            
-            if self.common.isLinkLayout():
-               nodes.append(publicnode)
-               nodes.append(publicusernode)
-               nodes.append(publicinternetnode)
+            #if not self.common.isCombineSplit():
+            #   nodes = []
+            #   links = []
+            #   values = []
 
-               #SAVE publiclink = genlink(user, publicname, publicname, internetname)
-               #SAVE links.append(publiclink)
-
-               publicuserlink = self.shapes.buildDoubleArrow('', ShapeName.INTERNET.value, ShapeName.PUBLIC_USER.value, None)
-               links.append(publicuserlink)
-
-               nodes.append(enterprisenode)
-               nodes.append(enterpriseusernode)
-
-               enterpriseuserlink = self.shapes.buildDoubleArrow('', ShapeName.INTERNET.value, ShapeName.ENTERPRISE_USER.value, None)
-               links.append(enterpriseuserlink)
-
-            zonenodes, zonelinks, zonevalues, zonesizes = self.buildZones(vpcname, vpcid, usercidrs)
-            nodes = nodes + zonenodes
-            links = links + zonelinks
-            values = values + zonevalues
+            zonenodes, zonelinks, zonevalues, zonesizes = self.buildAZs(vpcname, vpcid, usercidrs)
+            nodes += zonenodes
+            links += zonelinks
+            values += zonevalues
 
             width = ShapePos.ICON_WIDTH.value
             height = ShapePos.ICON_HEIGHT.value
 
-            if self.common.isLinkLayout():
+            if self.common.isLinks():
                routername = vpcname + '-router'
-               routernode = self.shapes.buildShape('Router', ShapeKind.NODE, FillPalette.NONE, routername, vpcid, '', '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y, width, height, None)
+               routernode = self.shapes.buildShape('Router', ShapeKind.NODE, FillPalette.NONE, routername, vpcid, '', '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, width, height, None)
                nodes.append(routernode)
 
                routerlink = self.shapes.buildDoubleArrow('', routername, ShapeName.INTERNET.value, None)
@@ -192,11 +315,6 @@ class Diagram:
 
             #savex = x
             #savey = y
-            #print(vpcname)
-            #print(x)
-            #print(y)
-            #print(width)
-            #print(height)
 
             #vpcnode = self.shapes.buildVPC(vpcid, regionname, vpcname, '', x, y, width, height, None) 
             #nodes.append(vpcnode)
@@ -207,103 +325,112 @@ class Diagram:
             #width += ShapePos.GROUP_SPACE.value * 2
             #height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
-            if self.common.isCombineSplit():
-               if self.common.isVerticalLayout():
-                  if width > savewidth:
-                     savewidth = width
-                  saveheight += height + ShapePos.GROUP_SPACE.value
-               else:
-                  if height > saveheight:
-                     saveheight = height
-                  savewidth += width + ShapePos.GROUP_SPACE.value
-
-               if count == 1:
-                  x = ShapePos.GROUP_SPACE.value
-                  y = ShapePos.TOP_SPACE.value
-               elif self.common.isVerticalLayout():
-                  #x = ShapePos.GROUP_SPACE.value
-                  #y = saveheight + ShapePos.GROUP_SPACE.value
-                  #x += ShapePos.GROUP_SPACE.value
-                  y += previousheight + ShapePos.GROUP_SPACE.value
-               else:
-                  #x = savewidth + ShapePos.GROUP_SPACE.value
-                  #y = ShapePos.TOP_SPACE.value
-                  x += previouswidth + ShapePos.GROUP_SPACE.value
-                  #y += ShapePos.TOP_SPACE.value
-
-               previousheight = height + ShapePos.GROUP_SPACE.value
-               previouswidth = width
-
-               vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
-               nodes.append(vpcnode)
+            #if self.common.isCombineSplit():
+            if self.common.isVerticalLayout():
+               if width > savewidth:
+                  savewidth = width
+               saveheight += height + ShapePos.GROUP_SPACE.value
             else:
+               if height > saveheight:
+                  saveheight = height
+               savewidth += width + ShapePos.GROUP_SPACE.value
+
+            if count == 1 or not self.common.isCombineSplit():
                x = ShapePos.GROUP_SPACE.value
                y = ShapePos.TOP_SPACE.value
+            elif self.common.isVerticalLayout():
+               #x = ShapePos.GROUP_SPACE.value
+               #y = saveheight + ShapePos.GROUP_SPACE.value
+               #x += ShapePos.GROUP_SPACE.value
+               y += previousheight + ShapePos.GROUP_SPACE.value
+            else:
+               #x = savewidth + ShapePos.GROUP_SPACE.value
+               #y = ShapePos.TOP_SPACE.value
+               x += previouswidth + ShapePos.GROUP_SPACE.value
+               #y += ShapePos.TOP_SPACE.value
 
-               vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
-               nodes.append(vpcnode)
+            previousheight = height + ShapePos.GROUP_SPACE.value
+            previouswidth = width
 
-               x = 30
-               y = 70
+            if self.common.isCombineSplit():
+               regionid = regionname.replace(" ", "")
+            else:
+               regionid = regionname.replace(" ", "") + ':' + vpcid
 
-               width += ShapePos.GROUP_SPACE.value * 2
-               height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
+            vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionid, vpcname, '', '', x, y, width, height, None) 
+            nodes.append(vpcnode)
 
-               regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionname, cloudname, regionname, '', '', x, y, width, height, None)
-               nodes.append(regionnode)
+            vpcdata[vpcid + ':' + vpcname] = {'nodes': nodes, 'links': links, 'values': values, 'sizes': [width, height]}
+            #vpcdata[vpcid] = {'nodes': nodes, 'values': values, 'links': links}
+
+            #else:
+            #   x = ShapePos.GROUP_SPACE.value
+            #   y = ShapePos.TOP_SPACE.value
+
+            #   vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionname, vpcname, '', '', x, y, width, height, None) 
+            #   nodes.append(vpcnode)
+
+            #   x = 30
+            #   y = 70
+
+            #   width += ShapePos.GROUP_SPACE.value * 2
+            #   height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
+
+            #   regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionname, cloudname, regionname, '', '', x, y, width, height, None)
+            #   nodes.append(regionnode)
          
-               lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
-               if len(lbnodes) > 0:
-                  nodes = nodes + lbnodes
-                  links = links + lblinks
+            #SAVE   lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
+            #SAVE   if len(lbnodes) > 0:
+            #SAVE      nodes = nodes + lbnodes
+            #SAVE      links = links + lblinks
 
-               #publicwidth = (groupspace * 2) + (48 * 3)
-               #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-               x = ShapePos.PUBLIC_NETWORK_WIDTH.value + ShapePos.GROUP_SPACE.value  # Allow space for public network.
-               y = 0
+            #   #publicwidth = (groupspace * 2) + (48 * 3)
+            #   #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
+            #   x = ShapePos.PUBLIC_NETWORK_WIDTH.value + ShapePos.GROUP_SPACE.value  # Allow space for public network.
+            #   y = 0
 
-               width += ShapePos.GROUP_SPACE.value * 2
-               height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
+            #   width += ShapePos.GROUP_SPACE.value * 2
+            #   height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
-               cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, ShapeName.NO_PARENT.value, cloudname, '', '', x, y, width, height, None)
-               nodes.append(cloudnode)
+            #   cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, ShapeName.NO_PARENT.value, cloudname, '', '', x, y, width, height, None)
+            #   nodes.append(cloudnode)
    
-               data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
+            #   data[vpcname] = {'nodes': nodes, 'values': values, 'links': links}
 
-      if self.common.isCombineSplit():
-         x = 30
-         y = 70
+      #if self.common.isCombineSplit():
+      #   x = 30
+      #   y = 70
 
-         width = savewidth
-         height = saveheight
+      #   width = savewidth
+      #   height = saveheight
 
-         width += ShapePos.GROUP_SPACE.value * 2
-         height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
+      #   width += ShapePos.GROUP_SPACE.value * 2
+      #   height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
-         regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionname, cloudname, regionname, '', '', x, y, width, height, None)
-         nodes.append(regionnode)
+      #   regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionname, cloudname, regionname, '', '', x, y, width, height, None)
+      #   nodes.append(regionnode)
          
-         #lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
-         #if len(lbnodes) > 0:
-         #   nodes = nodes + lbnodes
-         #   links = links + lblinks
+      #   #lbnodes, lblinks  = self.buildLoadBalancers(vpcname, vpcid)
+      #   #if len(lbnodes) > 0:
+      #   #   nodes = nodes + lbnodes
+      #   #   links = links + lblinks
 
-         #publicwidth = (groupspace * 2) + (48 * 3)
-         #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
-         x = ShapePos.PUBLIC_NETWORK_WIDTH.value + ShapePos.GROUP_SPACE.value  # Allow space for public network.
-         y = 0
+      #   #publicwidth = (groupspace * 2) + (48 * 3)
+      #   #x  = (groupspace * 4) + (48 * 3)  # Allow space for public network.
+      #   x = ShapePos.PUBLIC_NETWORK_WIDTH.value + ShapePos.GROUP_SPACE.value  # Allow space for public network.
+      #   y = 0
 
-         width += ShapePos.GROUP_SPACE.value * 2
-         height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
+      #   width += ShapePos.GROUP_SPACE.value * 2
+      #   height += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
 
-         cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, '', cloudname, '', '', x, y, width, height, None)
-         nodes.append(cloudnode)
+      #   cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudname, '', cloudname, '', '', x, y, width, height, None)
+      #   nodes.append(cloudnode)
    
-         data[regionname] = {'nodes': nodes, 'values': values, 'links': links}
+      #   data[regionname] = {'nodes': nodes, 'values': values, 'links': links}
 
-      return data
+      return vpcdata
 
-   def buildZones(self, vpcname, vpcid, usercidrs):
+   def buildAZs(self, vpcname, vpcid, usercidrs):
       nodes = []
       links = []
       values = []
@@ -315,16 +442,16 @@ class Diagram:
       vpcTable = self.data.getVPCTable() 
       count = 0
       for regionzonename in vpcTable[vpcid]:
-         count = count + 1
+         count += 1
 
-         if self.common.isLinkLayout():
+         if self.common.isLinks():
             zonelink = self.shapes.buildLink(regionzonename + ':' + vpcname, regionzonename, vpcname, None)
             #SAVE links.append(zonelink)
 
          subnetnodes, subnetlinks, subnetvalues, subnetsizes = self.buildSubnets(regionzonename, vpcname)
-         nodes = nodes + subnetnodes
-         links = links + subnetlinks
-         values = values + subnetvalues
+         nodes += subnetnodes
+         links += subnetlinks
+         values += subnetvalues
 
          width = 0
          height = 0
@@ -407,7 +534,7 @@ class Diagram:
          regionname = zonename.split(':')[0]
          regionzonename = regionname + ':' + subnetzonename;
 
-         if self.common.isLinkLayout():
+         if self.common.isLinks():
             zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname, None)
             #SAVE links.append(zonelink)
 
@@ -447,9 +574,9 @@ class Diagram:
 
          instancenodes, instancelinks, instancevalues, instancesizes = self.buildSubnetIcons(subnetid, subnetname, subnetvpcname, vpcname)
 
-         nodes = nodes + instancenodes
-         links = links + instancelinks
-         values = values + instancevalues
+         nodes += instancenodes
+         links += instancelinks
+         values += instancevalues
 
          bastion = False
          if subnetname.lower().find("bastion") != -1:
@@ -494,10 +621,10 @@ class Diagram:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               publicnode = self.shapes.buildShape('PublicGateway', ShapeKind.NODE, FillPalette.NONE, subnetpubgateid, regionzonename, pubgatename, pubgatefipip, '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
+               publicnode = self.shapes.buildShape('PublicGateway', ShapeKind.NODE, FillPalette.NONE, subnetpubgateid, regionzonename, pubgatename, pubgatefipip, '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
                nodes.append(publicnode)
 
-               if self.common.isLinkLayout():
+               if self.common.isLinks():
                   routername = vpcname + '-router'
                   publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
                   links.append(publiclink1)
@@ -508,7 +635,7 @@ class Diagram:
                self.common.printInvalidPublicGateway(subnetpubgateid)
 
             else:
-               if self.common.isLinkLayout():
+               if self.common.isLinks():
                   publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
                   links.append(publiclink1)
 
@@ -646,7 +773,7 @@ class Diagram:
                #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
                #SAVE links.append(fiplink2)
 
-               if self.common.isLinkLayout():
+               if self.common.isLinks():
                   routername = vpcname + '-router'
                   iplabel =  "fip:" + nicfipip
                   fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername, None)
@@ -685,7 +812,7 @@ class Diagram:
          #   iconnode = self.shapes.buildIconExpandedStack(nicid, subnetid, instancename, nicips, icontype, x, y, width, height, meta)
          #   sizes.append([width, height])
 
-         iconnode = self.shapes.buildShape(icontype, ShapeKind.NODE, FillPalette.NONE, iconid, subnetid, iconname, secondarytext, icontype, x, y, width, height, meta)
+         iconnode = self.shapes.buildShape(icontype, ShapeKind.NODE, FillPalette.NONE, iconid, subnetid, iconname, secondarytext, '', x, y, width, height, meta)
          sizes.append([extrawidth, extraheight])
 
          nodes.append(iconnode)
@@ -773,7 +900,7 @@ class Diagram:
          regionname = zonename.split(':')[0]
          regionzonename = regionname + ':' + subnetzonename;
 
-         if self.common.isLinkLayout():
+         if self.common.isLinks():
             zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname, None)
             #SAVE links.append(zonelink)
 
@@ -796,9 +923,12 @@ class Diagram:
 
          instancenodes, instancelinks, instancevalues, instancesizes = self.buildSubnetIcons(subnetid, subnetname, subnetvpcname, vpcname)
 
-         nodes = nodes + instancenodes
-         links = links + instancelinks
-         values = values + instancevalues
+         nodes += instancenodes
+         links += instancelinks
+         values += instancevalues
+         #nodes.append(instancenodes)
+         #links.append(instancelinks)
+         #values.append(instancevalues)
 
          bastion = False
          if subnetname.lower().find("bastion") != -1:
@@ -917,12 +1047,12 @@ class Diagram:
                               lbnode = self.shapes.buildShape('LoadBalancer', ShapeKind.NODE, FillPalette.NONE, lbid, vpcid, lbname, lbiplist, '', ShapePos.SECOND_ICON_X.value, ShapePos.SECOND_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
                               nodes.append(lbnode)
 
-                              if self.common.isLinkLayout():
+                              if self.common.isLinks():
                                  routername = vpcname + '-router'
                                  lblink = self.shapes.buildDoubleArrow('', lbid, routername, None)
                                  links.append(lblink)
                  
-                           if self.common.isLinkLayout():
+                           if self.common.isLinks():
                               # label, source, target
                               instancelink = self.shapes.buildDoubleArrow('', nicid, lbid, None)
                               links.append(instancelink)

@@ -143,6 +143,12 @@ class Config:
     def setOutputLayout(self,outputLayout):
         self.set("outputLayout",outputLayout)
 
+    def getOutputLinks(self):
+        return self.get("outputLinks")
+    
+    def setOutputLinks(self,outputLinks):
+        self.set("outputLinks",outputLinks)
+
     def getRegion(self):
         return self.get("region")
     
@@ -230,9 +236,10 @@ class drawit:
         parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
         #parser.add_argument('-output', dest='outputfolder', default=path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
         parser.add_argument('-output', dest='outputfolder', default=self.common.getOutputFolder(), help='output folder')
-        parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='single, combine, region, vpc, or vpc:vpcid')
+        parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='combine or separate')
         parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
-        parser.add_argument('-layout', dest='outputlayout', default=self.common.getOutputLayout().value, help='horizontal, vertical, horizontalnolink, verticalnolink')
+        parser.add_argument('-layout', dest='outputlayout', default=self.common.getOutputLayout().value, help='horizontal or vertical')
+        parser.add_argument('-links', dest='outputlinks', default=self.common.getOutputLinks().value, help='no or yes')
         parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
 
         parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, web, or terraform")
@@ -262,6 +269,7 @@ class drawit:
         outputsplit = args.outputsplit.lower()
         outputshapes = args.outputshapes.lower()
         outputlayout = args.outputlayout.lower()
+        outputlinks = args.outputlinks.lower()
         runmode = args.runmode.lower()
         cloudtype = args.cloudtype.lower()
 
@@ -283,24 +291,23 @@ class drawit:
 
         if outputlayout == "horizontal":
             self.common.setHorizontalLayout()
-        elif outputlayout == "horizontalnolink":
-            self.common.setHorizontalNoLinkLayout()
-        elif outputlayout == "verticalnolink":
-            self.common.setVerticalNoLinkLayout()
-        else: # outputlayout == "vertical"
+        else:
             self.common.setVerticalLayout()
 
-        if outputsplit == "single":
-            self.common.setSingleSplit()
-        elif outputsplit == "combine":
+        if outputlinks == "no":
+            self.common.setNoLinks()
+        else:
+            self.common.setLinks()
+
+        if outputsplit == "combine":
             self.common.setCombineSplit()
-        elif outputsplit == "region":
-            self.common.setRegionSplit()
-        else: # outputsplit == "vpc" or "vpc:vpcname"
-            outputvpc = outputsplit.split(':')
-            if outputvpc[0] == 'vpc' and len(outputvpc) > 1:
-                self.common.setDesignatedVPC(outputvpc[1])
-            self.common.setVPCSplit()
+        else:
+            self.common.setSeparateSplit()
+        #else: # outputsplit == "vpc" or "vpc:vpcname"
+        #    outputvpc = outputsplit.split(':')
+        ##    if outputvpc[0] == 'vpc' and len(outputvpc) > 1:
+        #        self.common.setDesignatedVPC(outputvpc[1])
+        #    self.common.setVPCSplit()
 
         if region == "eu-de":
             self.common.setGermanyRegion()
@@ -376,7 +383,7 @@ class drawit:
                 if self.data.loadData():
                     self.diagram = Diagram(self.common, self.data)
                     self.diagram.buildDiagrams()
-                    self.common.printDone(outputfolder)
+                    self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().upper())
                 else:
                     self.common.printExit()
 
@@ -559,22 +566,27 @@ class drawit:
 
             shapelayout = [
                 "Horizontal", 
-                "Vertical",
-                "Horizontal with no links", 
-                "Vertical with no links"]
+                "Vertical"]
             eOutputLayout = StringVar(self.top)
             eOutputLayout.set("Vertical")
             Label(frame, text="Layout").grid(row=row)
             shapemenu = OptionMenu(frame, eOutputLayout, *shapelayout).grid(row=row, column=1, sticky=W + E)
             row = row + 1
 
+            shapelinks = [
+                "No", 
+                "Yes"]
+            eOutputLinks = StringVar(self.top)
+            eOutputLinks.set("Yes")
+            Label(frame, text="Links").grid(row=row)
+            shapemenu = OptionMenu(frame, eOutputLinks, *shapelinks).grid(row=row, column=1, sticky=W + E)
+            row = row + 1
+
             splitoptions = [
-                "Single file with one VPC per tab",
-                "Single file with all VPCs in one tab",
-                "Regional files with one VPC per tab", 
-                "Multiple files with one VPC per file"]
+                "Combine VPCs",
+                "Separate VPCs"]
             eOutputSplit = StringVar(self.top)
-            eOutputSplit.set("Single file with one VPC per tab")
+            eOutputSplit.set("Separate VPCs")
             Label(frame, text="Organization").grid(row=row)
             #splitmenu = tkinter.OptionMenu(self.top, eOutputSplit, *splitoptions)
             splitmenu = OptionMenu(frame, eOutputSplit, *splitoptions).grid(row=row, column=1, sticky=W + E)
@@ -595,22 +607,20 @@ class drawit:
                     outputlayout = str(eOutputLayout.get()).lower()
                     if outputlayout == "horizontal":
                        self.common.setHorizontalLayout()
-                    elif outputlayout == "horizontal with no links":
-                       self.common.setHorizontalNoLinkLayout()
-                    elif outputlayout == "vertical with no links":
-                       self.common.setVerticalNoLinkLayout()
-                    else: # outputlayout == "vertical"
+                    else:
                        self.common.setVerticalLayout()
 
+                    outputlinks = str(eOutputLinks.get()).lower()
+                    if outputlinks == "yes":
+                       self.common.setLinks()
+                    else:
+                       self.common.setNoLinks()
+
                     outputsplit = str(eOutputSplit.get()).lower()
-                    if outputsplit == "single vpc with one vpc per tab":
-                       self.common.setSingleSplit()
-                    elif outputsplit == "single file with all vpcs in one tab":
+                    if outputsplit == "combine vpcs":
                        self.common.setCombineSplit()
-                    elif outputsplit == "regional files with one vpc per tab":
-                       self.common.setRegionSplit()
-                    else: # outputsplit == "multiple files with one vpc per file"
-                       self.common.setVPCSplit()
+                    else:
+                       self.common.setSeparateSplit()
 
                     region = str(eRegion.get()).lower()
                     if region == "eu-de":
@@ -685,7 +695,7 @@ class drawit:
                     if self.data.loadData():
                         self.diagram = Diagram(self.common, self.data)
                         self.diagram.buildDiagrams()
-                        self.common.printDone(outputfolder)
+                        self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().upper())
                     else:
                         self.common.printExit()
 

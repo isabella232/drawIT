@@ -32,16 +32,16 @@ class InputType(Enum):
    YAML = 'yaml'
 
 class OutputSplit(Enum):
-   SINGLE = 'single'
    COMBINE = 'combine'
-   REGION = 'region'
-   VPC = 'vpc'
+   SEPARATE = 'separate'
 
 class OutputLayout(Enum):
    HORIZONTAL = 'horizontal'
    VERTICAL = 'vertical'
-   HORIZONTAL_NOLINK = 'horizontalnolink'
-   VERTICAL_NOLINK = 'verticalnolink'
+
+class OutputLinks(Enum):
+   YES = 'yes'
+   NO = 'no'
 
 class OutputShapes(Enum):
    LOGICAL = 'logical'
@@ -74,6 +74,7 @@ class Options:
    outputSplit = None
    outputShapes = None
    outputLayout = None
+   outputLinks = None
    designatedVPC = None
    allicons = False
 
@@ -88,9 +89,10 @@ class Options:
       self.outputFile = 'output.xml'
       self.outputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
       self.tablesFolder ='tables'
-      self.outputSplit = OutputSplit.SINGLE
+      self.outputSplit = OutputSplit.SEPARATE
       self.outputShapes = OutputShapes.PRESCRIBED
       self.outputLayout = OutputLayout.VERTICAL
+      self.outputLinks = OutputLinks.YES
       self.designatedVPC = '*'
       return
 
@@ -223,29 +225,17 @@ class Options:
    def isDesignatedVPC(self, name):
       return self.designatedVPC == '*' or self.designatedVPC == name
 
-   def setSingleSplit(self):
-      self.outputSplit = OutputSplit.SINGLE
-
    def setCombineSplit(self):
       self.outputSplit = OutputSplit.COMBINE
 
-   def setRegionSplit(self):
-      self.outputSplit = OutputSplit.REGION
-
-   def setVPCSplit(self):
-      self.outputSplit = OutputSplit.VPC
-
-   def isSingleSplit(self):
-      return self.outputSplit == OutputSplit.SINGLE
+   def setSeparateSplit(self):
+      self.outputSplit = OutputSplit.SEPARATE
 
    def isCombineSplit(self):
       return self.outputSplit == OutputSplit.COMBINE
 
-   def isRegionSplit(self):
-      return self.outputSplit == OutputSplit.REGION or self.outputSplit == OutputSplit.COMBINE
-
-   def isVPCSplit(self):
-      return self.outputSplit == OutputSplit.VPC
+   def isSeparateSplit(self):
+      return self.outputSplit == OutputSplit.SEPARATE
 
    def getOutputSplit(self):
       return self.outputSplit
@@ -277,26 +267,35 @@ class Options:
    def setVerticalLayout(self):
       self.outputLayout = OutputLayout.VERTICAL
 
-   def setHorizontalNoLinkLayout(self):
-      self.outputLayout = OutputLayout.HORIZONTAL_NOLINK
-
-   def setVerticalNoLinkLayout(self):
-      self.outputLayout = OutputLayout.VERTICAL_NOLINK
-
    def isHorizontalLayout(self):
-      return self.outputLayout == OutputLayout.HORIZONTAL or self.outputLayout == OutputLayout.HORIZONTAL_NOLINK
+      return self.outputLayout == OutputLayout.HORIZONTAL
 
    def isVerticalLayout(self):
-      return self.outputLayout == OutputLayout.VERTICAL or self.outputLayout == OutputLayout.VERTICAL_NOLINK
-
-   def isLinkLayout(self):
-      return self.outputLayout != OutputLayout.HORIZONTAL_NOLINK and self.outputLayout != OutputLayout.VERTICAL_NOLINK
+      return self.outputLayout == OutputLayout.VERTICAL
 
    def getOutputLayout(self):
       return self.outputLayout
 
    def setOutputLayout(self, value):
       self.outputLayout = value
+
+   def setLinks(self):
+      self.outputLinks = OutputLinks.YES
+
+   def setNoLinks(self):
+      self.outputLinks = OutputLinks.NO
+
+   def isLinks(self):
+      return self.outputLinks == OutputLinks.YES
+
+   def isNoLinks(self):
+      return self.outputLinks == OutputLinks.NO
+
+   def getOutputLinks(self):
+      return self.outputLinks
+
+   def setOutputLinks(self, value):
+      self.outputLinks = value
 
    def setAllRegion(self):
       self.region = Regions.ALL

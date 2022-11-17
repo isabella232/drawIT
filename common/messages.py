@@ -21,7 +21,7 @@ class Messages:
    startFileMessage = 'Starting with input from %s for %s Cloud'
    startRIASKeyMessage = 'Starting with input from RIAS for API Key %s in %s'
    startRIASAccountMessage = 'Starting with input from RIAS for API Key %s and Account ID %s in %s'
-   doneMessage = 'Completed with output to %s'
+   doneMessage = 'Completed with output to %s for %s Cloud'
    exitMessage = 'Completed with no output'
    startProviderMessage = 'Generating Resource for provider'
    backupDirectoryMessage = 'Backed up existing output directory %s to %s'
@@ -113,8 +113,8 @@ class Messages:
    def printStartRIASwithAccount(self, apikey, accountid, region):
       self.printError(self.startRIASAccountMessage % (apikey, accountid, region))
 
-   def printDone(self, outputfolder):
-      self.printError(self.doneMessage % outputfolder)
+   def printDone(self, filename, cloud):
+      self.printError(self.doneMessage % (filename, cloud))
 
    def printExit(self):
       self.printError(self.exitMessage)

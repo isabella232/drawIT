@@ -148,6 +148,8 @@ class ShapeKind(Enum):
 # Name Constants
 
 class ShapeName(Enum):
+   CLOUD = "Cloud"
+   IBM_CLOUD = "IBM Cloud"
    INTERNET = 'Internet'
    PUBLIC_NETWORK = 'Public<br>Network'
    PUBLIC_USER = 'User'

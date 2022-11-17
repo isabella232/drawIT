@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.56'
+   toolVersion = '0.5.60'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -234,29 +234,17 @@ class Common:
    def isDesignatedVPC(self, name):
       return self.options.isDesignatedVPC(name)
 
-   def setSingleSplit(self):
-      self.options.setSingleSplit()
-
    def setCombineSplit(self):
       self.options.setCombineSplit()
 
-   def setRegionSplit(self):
-      self.options.setRegionSplit()
-
-   def setVPCSplit(self):
-      self.options.setVPCSplit()
-
-   def isSingleSplit(self):
-      return self.options.isSingleSplit()
+   def setSeparateSplit(self):
+      self.options.setSeparateSplit()
 
    def isCombineSplit(self):
       return self.options.isCombineSplit()
 
-   def isRegionSplit(self):
-      return self.options.isRegionSplit()
-
-   def isVPCSplit(self):
-      return self.options.isVPCSplit()
+   def isSeparateSplit(self):
+      return self.options.isSeparateSplit()
 
    def getOutputSplit(self):
       return self.options.getOutputSplit()
@@ -288,26 +276,35 @@ class Common:
    def setVerticalLayout(self):
       self.options.setVerticalLayout()
 
-   def setHorizontalNoLinkLayout(self):
-      self.options.setHorizontalNoLinkLayout()
-
-   def setVerticalNoLinkLayout(self):
-      self.options.setVerticalNoLinkLayout()
-
    def isHorizontalLayout(self):
       return self.options.isHorizontalLayout()
 
    def isVerticalLayout(self):
       return self.options.isVerticalLayout()
 
-   def isLinkLayout(self):
-      return self.options.isLinkLayout()
-
    def getOutputLayout(self):
       return self.options.getOutputLayout()
 
    def setOutputLayout(self, value):
       self.options.setOutputLayout(value)
+
+   def setLinks(self):
+      self.options.setLinks()
+
+   def setNoLinks(self):
+      self.options.setNoLinks()
+
+   def isLinks(self):
+      return self.options.isLinks()
+
+   def isNoLinks(self):
+      return self.options.isNoLinks()
+
+   def getOutputLinks(self):
+      return self.options.getOutputLinks()
+
+   def setOutputLinks(self, value):
+      self.options.setOutputLinks(value)
 
    # Messages
 
@@ -320,8 +317,8 @@ class Common:
    def printStartRIASwithAccount(self, apikey, accountid, region):
       self.messages.printStartRIASwithAccount(apikey, accountid, region)
 
-   def printDone(self, outputfolder):
-      self.messages.printDone(outputfolder)
+   def printDone(self, filename, cloud):
+      self.messages.printDone(filename, cloud)
 
    def printExit(self):
       self.messages.printExit()
