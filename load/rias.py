@@ -25,6 +25,7 @@ from common.common import Common
 class RIAS:
    floatingIPs = {}
    instances = {}
+   clusters = {}
    keys = {}
    networkInterfaces = {}
    loadBalancers = {}
@@ -46,7 +47,7 @@ class RIAS:
 
    def __init__(self, common):
       #self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'endpoint_gateways', 'load_balancers']
-      self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips']
+      self.types = ['vpcs', 'subnets', 'instances', 'clusters', 'public_gateways', 'floating_ips']
       self.common = common
       return
 
@@ -364,6 +365,7 @@ class RIAS:
       #self.loadBalancerListeners = json_normalize(self.data['load_balancer_listeners'] if ('load_balancer_listeners' in self.data) else json_normalize({}))
       #self.loadBalancerPools = json_normalize(self.data['load_balancer_pools'] if ('load_balancer_pools' in self.data) else json_normalize({}))
       #self.loadBalancerMembers = json_normalize(self.data['load_balancer_members'] if ('load_balancer_members' in self.data) else json_normalize({}))
+      self.clusters = json_normalize({})
       self.volumes = json_normalize({})
       self.networkACLs = json_normalize({})
       self.securityGroups = json_normalize({})
@@ -373,6 +375,7 @@ class RIAS:
       self.vpcs['type'] = 'VPC'
       self.subnets['type'] = 'Network'
       self.instances['type'] = 'Instance'
+      self.clusters['type'] = 'OpenShift'
       self.networkInterfaces['type'] = 'NetworkInterface'
       self.publicGateways['type'] = 'PublicGateway'
       self.floatingIPs['type'] = 'FloatingIP'
@@ -385,6 +388,9 @@ class RIAS:
 
    def getInstances(self):
       return self.instances
+
+   def getClusters(self):
+      return self.clusters
 
    def getKeys(self):
       return self.keys
@@ -445,6 +451,9 @@ class RIAS:
 
    def getInstance(self, id):
       return self.findRow(self.instances, 'id', id)
+
+   def getCluster(self, id):
+      return self.findRow(self.clusters, 'id', id)
 
    def getSubnet(self, id):
       return self.findRow(self.subnets, 'id', id)

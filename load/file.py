@@ -26,6 +26,7 @@ from diagram.icons import Icons
 class File:
    floatingIPs = {}
    instances = {}
+   clusters = {}
    keys = {}
    networkInterfaces = {} # Used to match NICs referenced in LB members.
    loadBalancers = {}
@@ -48,7 +49,7 @@ class File:
    icons = None
 
    def __init__(self, common):
-      self.types = ['vpcs', 'subnets', 'instances', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
+      self.types = ['vpcs', 'subnets', 'instances', 'clusters', 'public_gateways', 'floating_ips', 'vpn_gateways', 'load_balancers']
       self.common = common
       self.icons = Icons(common)
       return
@@ -89,6 +90,7 @@ class File:
       self.vpcs = json_normalize(self.data['vpcs'] if ('vpcs' in self.data) else json_normalize({}))
       self.subnets = json_normalize(self.data['subnets'] if ('subnets' in self.data) else json_normalize({}))
       self.instances = json_normalize(self.data['instances'] if ('instances' in self.data) else json_normalize({}))
+      self.clusters = json_normalize(self.data['clusters'] if ('clusters' in self.data) else json_normalize({}))
       self.networkInterfaces = json_normalize(self.data['networkInterfaces'] if ('networkInterfaces' in self.data) else json_normalize({}))
       self.publicGateways = json_normalize(self.data['publicGateways'] if ('publicGateways' in self.data) else json_normalize({}))
       self.floatingIPs = json_normalize(self.data['floatingIPs'] if ('floatingIPs' in self.data) else json_normalize({}))
@@ -172,6 +174,9 @@ class File:
 
    def getInstances(self):
       return self.instances
+
+   def getClusters(self):
+      return self.clusters
 
    def getKeys(self):
       return self.keys

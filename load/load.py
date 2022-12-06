@@ -292,6 +292,18 @@ class Load:
                        self.common.printInvalidSubnet(vpesubnetid)
                        continue
 
+      # Add clusters to subnetIconTable ordered by subnetid.
+      clusters = self.data.getClusters()
+      if not clusters.empty:
+         for clusterindex, clusterframe in clusters.iterrows():
+            clusterid = clusterframe['id']
+            clustersubnetid = clusterframe['networkId']
+
+            if clustersubnetid in self.subnetIconTable:
+               self.subnetIconTable[clustersubnetid].append(clusterframe)
+            else:
+               self.common.printInvalidCluster(clustersubnetid)
+
       self.analyzeInstances()
 
       return

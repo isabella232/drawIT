@@ -85,8 +85,8 @@ class Icons:
             {'icon': 'cloud', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.LOCATION},
       'ServerlessApplication': 	        
             {'icon': 'function', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
-      'OpenShift-prescribed':  	        
-            {'icon': 'logo--openshift', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
+      'OpenShift':  	        
+            {'icon': 'logo--openshift', 'color': ComponentColor.COMPUTE, 'kind': ShapeKind.NODE}, 
       'password': 	        
             {'icon': 'password', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE},
       'script': 	        
@@ -379,12 +379,12 @@ class Icons:
             {'icon': 'ibm-cloud-pak--integration', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--multicloud-mgmt':  	        
             {'icon': 'ibm-cloud-pak--multicloud-mgmt', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
+      'ibm-cloud-pak--network-automation':  	        
+            {'icon': 'ibm-cloud-pak--network-automation', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--security':  	        
             {'icon': 'ibm-cloud-pak--security', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--system':  	        
             {'icon': 'ibm-cloud-pak--system', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
-      'ibm-cloud-pak--network-automation':  	        
-            {'icon': 'ibm-cloud-pak--network-automation', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'ibm-cloud-pak--watson-aiops':  	        
             {'icon': 'ibm-cloud-pak--watson-aiops', 'color': ComponentColor.NETWORK, 'kind': ShapeKind.NODE}, 
       'military-camp': 	        
