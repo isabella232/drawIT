@@ -8,11 +8,11 @@ drawIT accepts input from JSON, YAML, or RIAS, and creates diagrams that can be 
 ## Running drawIT
 
 - Prereqs:
--- Python 3.10.5
--- pandas 1.4.2
--- PyYAML 6.0
--- requests 2.28.0
--- urllib3 1.26.9
+  - Python 3.10.5
+  - pandas 1.4.2
+  - PyYAML 6.0
+  - requests 2.28.0
+  - urllib3 1.26.9
 - Examples folder contain diagram-as-code examples.
 - Scripts folder contains run scripts (e.g. rungui.sh starts GUI).
 
