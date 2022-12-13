@@ -242,7 +242,7 @@ class drawit:
         parser.add_argument('-links', dest='outputlinks', default=self.common.getOutputLinks().value, help='no or yes')
         parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
 
-        parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, web, or terraform")
+        parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, or web")
         parser.add_argument('-cloud', dest='cloudtype', default=self.common.getCloudType().value, help="ibm")
         parser.add_argument('--version', action='version', version='drawIT ' + self.common.getToolTitle().split(' ')[1])
         
@@ -740,20 +740,20 @@ class drawit:
                 self.diagram = Diagram(self.common, self.data)
                 self.diagram.buildDiagrams()
 
-        elif self.common.isTerraformMode(args.runmode):
-            from terraform.common.common import Common
-            from terraform.generate.generate import Generate
+        #elif self.common.isTerraformMode(args.runmode):
+        #    from terraform.common.common import Common
+        #    from terraform.generate.generate import Generate
 
-            buildcommon = Common()
+        #    buildcommon = Common()
 
-            outputfolder = self.common.getOutputFolder()
-            buildcommon.setInputType('xlsx')
-            buildcommon.setInputDirectory(tablesfolder)
-            basename = path.basename(outputfolder)
-            buildcommon.setOutputDirectory(path.join(outputfolder, basename + '.resources'))
+        #    outputfolder = self.common.getOutputFolder()
+        #    buildcommon.setInputType('xlsx')
+        #    buildcommon.setInputDirectory(tablesfolder)
+        #    basename = path.basename(outputfolder)
+        #    buildcommon.setOutputDirectory(path.join(outputfolder, basename + '.resources'))
 
-            self.generate = Generate(buildcommon)
-            self.generate.all()
+        #    self.generate = Generate(buildcommon)
+        #    self.generate.all()
    
         else:
             self.common.printInvalidMode(args.runmode)
