@@ -48,6 +48,7 @@ class Messages:
    invalidVPEReferenceMessage = '(Error) Invalid VPE reference: %s'
    invalidLBReferenceMessage = '(Error) Invalid Load Balancer reference: %s'
    invalidLBPrivateMessage = '(Warning) Private Load Balancer not implemented: %s'
+   invalidInstanceMemberMessage = '(Error) Invalid member for Load Balancer: %s, Pool: %s, Instance: %s'
    missingInputMessage = '(Error) No input files found: %s'
    missingImageMessage = '(Error) Image %s not found'
    missingRegionMessage = '(Error) Region %s not found'
@@ -166,6 +167,9 @@ class Messages:
 
    def printMissingMember(self, lbname, lbpoolname):
       self.printError(self.warningMissingMemberMessage % (lbname, lbpoolname))
+
+   def printInvalidInstanceMember(self, lbname, lbpoolname, instanceid):
+      self.printError(self.invalidInstanceMemberMessage % (lbname, lbpoolname, instanceid))
 
    def printRequestMessage(self, code, message, href):
       self.printError(self.invalidRequestMessage % (code, message, href))

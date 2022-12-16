@@ -20,7 +20,7 @@ from common.messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.64'
+   toolVersion = '0.5.65'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -370,6 +370,9 @@ class Common:
 
    def printMissingMember(self, lbname, lbpoolname):
       self.messages.printMissingMember(lbname, lbpoolname)
+
+   def printInvalidInstanceMember(self, lbname, lbpoolname, instanceid):
+      self.messages.printInvalidInstanceMember(lbname, lbpoolname, instanceid)
 
    def printRequestMessage(self, code, message, href):
       self.messages.printRequestMessage(code, message, href)

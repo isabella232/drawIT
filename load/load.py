@@ -378,6 +378,12 @@ class Load:
                                  instanceId = lbmember['instanceId']
                                  if instanceId != None:
                                     instance = self.getInstance(instanceId)
+
+                                    if len(instance) == 0:
+                                       vpcid = None
+                                       self.common.printInvalidInstanceMember(lbname, lbpoolname, instanceId)
+                                       continue
+
                                     vpcid = instance['vpcId']
 
                   if poolmemberdata and vpcid != None:

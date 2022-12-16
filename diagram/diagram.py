@@ -914,8 +914,13 @@ class Diagram:
                         instanceid = member['instanceId']
                         instance = self.data.getInstance(instanceid)
                         if len(instance) > 0:
-                           addressarray = instance['ipAddresses']
-                           address = addressarray[0]
+                           nics = instance['networkInterfaces']
+                           if nics:
+                              for nic in nics:
+                                 address = nic['ip']
+                                 break
+                           else:
+                              return nodes, links, values
                         else:
                            return nodes, links, values
 
