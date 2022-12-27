@@ -1,9 +1,9 @@
 # drawIT
-Create IT architecture diagrams from code or tooling.
+Automate creation of diagrams.
 
 ## Overview
 
-drawIT creates diagrams that can be viewed in IBM2 on diagrams.net.
+Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 Use cases:
 - Code-to-Diagram: 
