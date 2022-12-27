@@ -3,7 +3,12 @@ Create IT architecture diagrams from code or tooling.
 
 ## Overview
 
-drawIT accepts input from JSON, YAML, or RIAS, and creates diagrams that can be viewed in IBM2 on diagrams.net.
+drawIT creates diagrams that can be viewed in IBM2 on diagrams.net.
+
+Use cases:
+- Code-to-Diagram: Input is python code, refer to examples folder. 
+- RIAS-to-Diagram: Input is RIAS APIs, refer to rungui.sh or runrias.sh in scripts folder.
+- JSON-to-Diagram: Input is tool-generated JSON/YAML, refer to rungui.sh or run.sh in scripts folder.
 
 ## Running drawIT
 
@@ -13,8 +18,9 @@ drawIT accepts input from JSON, YAML, or RIAS, and creates diagrams that can be 
   - PyYAML 6.0
   - requests 2.28.0
   - urllib3 1.26.9
-- Examples folder contain diagram-as-code examples.
-- Scripts folder contains run scripts (e.g. rungui.sh starts GUI).
+- Scripts folder contains scripts for input of JSON, YAML, or RIAS.
+- Examples folder contain input examples.
+- Scripts folder contains scripts for input of JSON, YAML, or RIAS.
 
 <!--
 2. Using NodeJS: 
