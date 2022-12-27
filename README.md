@@ -6,9 +6,22 @@ Create IT architecture diagrams from code or tooling.
 drawIT creates diagrams that can be viewed in IBM2 on diagrams.net.
 
 Use cases:
-- Code-to-Diagram: Input is python code, refer to examples folder. 
-- RIAS-to-Diagram: Input is RIAS APIs, refer to rungui.sh or runrias.sh in scripts folder.
-- JSON-to-Diagram: Input is tool-generated JSON/YAML, refer to rungui.sh or run.sh in scripts folder.
+- Code-to-Diagram: 
+  - Refer to examples folder.
+  - Input is python code.
+  - Output is diagrams.net xml file.
+- RIAS-to-Diagram:
+  - Refer to rungui.sh or runrias.sh in scripts folder.
+  - Input is from RIAS APIs.
+  - Output is diagrams.net xml file.
+- JSON-to-Diagram:
+  - Refer to rungui.sh or run.sh in scripts folder.
+  - Input is tool-generated JSON/YAML.
+  - Output is diagrams.net xml file.
+
+Notes:
+  - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
+  - Future: Export diagram to jpg, pdf, png, or svg directly from drawIT using diagrams.net CLI.
 
 ## Running drawIT
 
