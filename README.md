@@ -23,17 +23,12 @@ Notes:
   - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
   - Future: Export diagrams to jpg, pdf, png, or svg directly from drawIT using diagrams.net CLI.
 
-## Running drawIT
-
-- Prereqs:
+Prereqs:
   - Python 3.10.5
   - pandas 1.4.2
   - PyYAML 6.0
   - requests 2.28.0
   - urllib3 1.26.9
-- Scripts folder contains scripts for input of JSON, YAML, or RIAS.
-- Examples folder contain input examples.
-- Scripts folder contains scripts for input of JSON, YAML, or RIAS.
 
 <!--
 2. Using NodeJS: 
