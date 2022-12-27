@@ -21,7 +21,7 @@ Use cases:
 
 Notes:
   - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
-  - Future: Export diagram to jpg, pdf, png, or svg directly from drawIT using diagrams.net CLI.
+  - Future: Export diagrams to jpg, pdf, png, or svg directly from drawIT using diagrams.net CLI.
 
 ## Running drawIT
 
