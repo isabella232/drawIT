@@ -19,9 +19,7 @@ from os import path
 from platform import system as platform_system
 from sys import exit as sys_exit
 
-from common.common import Common
-from diagram.diagram import Diagram
-from load.load import Load
+from drawit import Build, Common, Load
 
 class Config:
     def __init__(self, appName):
@@ -381,7 +379,7 @@ class drawit:
 
                 self.data = Load(self.common)
                 if self.data.loadData():
-                    self.diagram = Diagram(self.common, self.data)
+                    self.diagram = Build(self.common, self.data)
                     self.diagram.buildDiagrams()
                     self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().upper())
                 else:
@@ -693,7 +691,7 @@ class drawit:
 
                     self.data = Load(self.common)
                     if self.data.loadData():
-                        self.diagram = Diagram(self.common, self.data)
+                        self.diagram = Build(self.common, self.data)
                         self.diagram.buildDiagrams()
                         self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().upper())
                     else:
@@ -737,7 +735,7 @@ class drawit:
 
             self.data = Load(self.common)
             if self.data.loadData():
-                self.diagram = Diagram(self.common, self.data)
+                self.diagram = Build(self.common, self.data)
                 self.diagram.buildDiagrams()
 
         #elif self.common.isTerraformMode(args.runmode):

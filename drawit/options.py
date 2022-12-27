@@ -86,7 +86,7 @@ class Options:
 
       self.inputFile = 'input.json'
       self.inputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
-      self.outputFile = 'output.xml'
+      self.outputFile = 'diagram.xml'
       self.outputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
       self.tablesFolder ='tables'
       self.outputSplit = OutputSplit.SEPARATE

@@ -1,4 +1,4 @@
-# @file types.py
+# @file typesdac.py
 #
 # Copyright contributors to the drawIT project
 #
@@ -16,11 +16,11 @@
 import random
 import time
 
-from common.common import Common
+from .common import Common
 
-from diagram.constants import ShapeKind, ShapeStyle
-from diagram.elements import Elements
-from diagram.icons import Icons
+from .constants import ShapeKind, ShapeStyle
+from .elements import Elements
+from .icons import Icons
 
 class Types:
    common = None
@@ -84,25 +84,48 @@ class Types:
                          'as': 'geometry'}}
       return data
 
-   def buildNode(self, shapetype, shapekind, shapefill, id, parentid, name, subname, badgetext, x, y, width, height, meta):
-      iconname, iconcolor = self.icons.getIcon(name, shapetype)
+   def buildNode(self, id, node, x, y, width, height, meta):
+      shape = node["shape"].lower()
+      if shape == "actor":
+         style = ShapeStyle.ACTOR.value
+      elif shape == "compl":
+         style = ShapeStyle.LOGICAL_COMPONENT.value
+      elif shape == "compp":
+         style = ShapeStyle.PRESCRIBED_COMPONENT.value
+      elif shape == "nodel":
+         style = ShapeStyle.LOGICAL_NODE.value
+      elif shape == "nodep":
+         style = ShapeStyle.PRESCRIBED_NODE.value
+      elif shape == "locl":
+         style = ShapeStyle.LOGICAL_LOCATION.value
+      elif shape == "locp":
+         style = ShapeStyle.PRESCRIBED_LOCATION.value
+      elif shape == "zone":
+         style = ShapeStyle.ZONE.value
+      else:
+         style = ShapeStyle.PRESCRIBED_NODE.value
 
-      if self.common.isLogicalShapes():
-         if shapekind == ShapeKind.ACTOR:
-            style = ShapeStyle.ACTOR.value
-         elif shapekind == ShapeKind.NODE:
-            style = ShapeStyle.LOGICAL_NODE.value
-         else:
-            style = ShapeStyle.LOGICAL_LOCATION.value
-      else: # check prescribed
-         if shapekind == ShapeKind.ACTOR:
-            style = ShapeStyle.ACTOR.value
-         elif shapekind == ShapeKind.NODE:
-            style = ShapeStyle.PRESCRIBED_NODE.value
-         else:
-            style = ShapeStyle.PRESCRIBED_LOCATION.value
+      pencolor = node["pencolor"]
+      style += "strokeColor=" + pencolor + ';' 
 
-      style += iconcolor.value + shapefill.value
+      bgcolor = node["bgcolor"]
+      if bgcolor:
+         style += "fillColor=" + bgcolor + ';' 
+      else:
+         style += "fillColor=none;" 
+
+      name = node["label"]
+      subname = node["sublabel"]
+
+      badgetext = node["badgetext"]
+      badgeshape = node["badgeshape"]
+      badgepencolor = node["badgepencolor"]
+      badgebgcolor = node["badgebgcolor"]
+
+      parentid = node["parentid"]
+      parentid = '1' if parentid == None else parentid
+
+      iconname = node["icon"]
 
       shapelabel = "<b style='font-weight:600'>%Primary-Label%</b><br>%Secondary-Text%"
       labelsize = 30

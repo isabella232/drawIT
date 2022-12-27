@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from diagram.types import Types
+from .types import Types
 
 class Shapes:
    common = None

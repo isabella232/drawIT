@@ -6,4 +6,3 @@ then
 else
    python3 ../drawit.py -mode batch -split combine -links no -layout horizontal -input ~/Documents/drawIT/slz-vsi.json -output ~/Documents/drawIT
 fi
-

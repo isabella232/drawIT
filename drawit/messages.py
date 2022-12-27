@@ -15,7 +15,7 @@
 
 from sys import stderr
 
-from common.options import Options
+from .options import Options
 
 class Messages:
    startFileMessage = 'Starting with input from %s for %s Cloud'
@@ -64,6 +64,14 @@ class Messages:
 
    missingVPCsMessage = '(Error) No VPCs were found'
    missingSubnetsMessage = '(Error) No Subnets were found'
+
+   invalidDirectionMessage = '(Error) Invalid direction: %s'
+   invalidOutputFormatMessage = '(Error) Invalid output format: %s'
+   invalidFontMessage = '(Error) Invalid font: %s'
+   invalidIconMessage = '(Error) Invalid icon: %s'
+   invalidShapeMessage = '(Error) Invalid shape: %s'
+   invalidLineColorMessage = '(Error) Invalid line color: %s'
+   invalidFillColorMessage = '(Error) Invalid fill color: %s'
 
    options = None
 
@@ -176,3 +184,24 @@ class Messages:
 
    def printResponseMessage(self, code, message):
       self.printError(self.invalidResponseMessage % (code, message))
+
+   def printInvalidDirection(self, direction):
+      self.printError(self.invalidDirectionMessage % direction)
+
+   def printInvalidOutputFormat(self, outputformat):
+      self.printError(self.invalidOutputFormateMessage % outputformat)
+
+   def printInvalidFont(self, font):
+      self.printError(self.invalidFontMessage % font)
+
+   def printInvalidIcon(self, icon):
+      self.printError(self.invalidIconMessage % icon)
+
+   def printInvalidShape(self, shape):
+      self.printError(self.invalidShapeMessage % shape)
+
+   def printInvalidLineColor(self, color):
+      self.printError(self.invalidLineColorMessage % color)
+
+   def printInvalidFillColor(self, color):
+      self.printError(self.invalidFillColorMessage % color)

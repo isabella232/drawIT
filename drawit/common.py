@@ -15,12 +15,12 @@
 
 from hashlib import md5
 
-from common.options import Options
-from common.messages import Messages
+from .options import Options
+from .messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.5.65'
+   toolVersion = '0.6.0'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -379,6 +379,27 @@ class Common:
 
    def printResponseMessage(self, code, message):
       self.messages.printResponseMessage(code, message)
+
+   def printInvalidDirection(self, direction):
+      self.messages.printInvalidDirection(direction)
+
+   def printInvalidOutputFormat(self, outputformat):
+      self.messages.printInvalidOutputFormat(outputformat)
+
+   def printInvalidFont(self, font):
+      self.messages.printInvalidFont(font)
+
+   def printInvalidIcon(self, icon):
+      self.messages.printInvalidIcon(icon)
+
+   def printInvalidShape(self, shape):
+      self.messages.printInvalidShape(shape)
+
+   def printInvalidFillColor(self, color):
+      self.messages.printInvalidFillColor(color)
+
+   def printInvalidLineColor(self, color):
+      self.messages.printInvalidLineColor(color)
 
   # Constants
 

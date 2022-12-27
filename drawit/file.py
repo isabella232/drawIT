@@ -20,8 +20,8 @@ from yaml import load as yaml_load
 from yaml import FullLoader as yaml_FullLoader
 from pandas import concat, DataFrame, json_normalize
 
-from common.common import Common
-from diagram.icons import Icons
+from .common import Common
+from .icons import Icons
 
 class File:
    floatingIPs = {}

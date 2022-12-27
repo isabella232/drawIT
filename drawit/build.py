@@ -1,4 +1,4 @@
-# @file diagram.py
+# @file build.py
 #
 # Copyright contributors to the drawIT project
 #
@@ -14,19 +14,21 @@
 # limitations under the License.
 
 # Hierarchy:
-#   diagrams.py - iterate diagram objects, invokes shapes.py
+#   diagram.py - optional diagram-as-code in python, invokes draw.py 
+#   colors.py - optional colors for use by diagram-as-code in python
+#   draw.py - iterate diagram objects, invokes shapes.py
 #   shapes.py - build ibm types, invokes types.py
 #   types.py - build drawio types, invokes xml.py with tables.py
 #   elements.py - build drawio objects  
 
 from math import isnan
 
-from common.common import Common
+from .common import Common
 
-from diagram.constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
-from diagram.shapes import Shapes
+from .constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
+from .shapes import Shapes
 
-class Diagram:
+class Build:
    data = None
    common = None
    shapes = None

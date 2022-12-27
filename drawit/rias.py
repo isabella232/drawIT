@@ -20,7 +20,7 @@ from sys import exit as sys_exit
 from urllib3 import disable_warnings 
 from pandas import json_normalize
 
-from common.common import Common
+from .common import Common
 
 class RIAS:
    floatingIPs = {}

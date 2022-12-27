@@ -15,7 +15,7 @@
 
 from enum import Enum
 
-from diagram.constants import ComponentColor, ShapeKind
+from .constants import ComponentColor, ShapeKind
 
 class Icons:
    iconDictionary = { 
@@ -476,7 +476,7 @@ class Icons:
             icon = self.iconDictionary[shapetype]
             iconname = icon['icon']
             iconcolor = icon['color']
-         elif shapetype + '-logical'  in self.iconDictionary:
+         elif shapetype + '-logical' in self.iconDictionary:
             icon = self.iconDictionary[shapetype + '-logical']
             iconname = icon['icon']
             iconcolor = icon['color']
@@ -493,7 +493,7 @@ class Icons:
             icon = self.iconDictionary[shapetype]
             iconname = icon['icon']
             iconcolor = icon['color']
-         elif shapetype + '-prescribed'  in self.iconDictionary:
+         elif shapetype + '-prescribed' in self.iconDictionary:
             icon = self.iconDictionary[shapetype + '-prescribed']
             iconname = icon['icon']
             iconcolor = icon['color']
@@ -507,3 +507,9 @@ class Icons:
             iconcolor = icon['color']
 
       return iconname, iconcolor    
+
+   def validIcon(self, iconname):
+      for name, values in self.iconDictionary.items():
+         if iconname == values['icon']:
+            return True
+      return False

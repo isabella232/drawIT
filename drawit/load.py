@@ -15,9 +15,9 @@
 
 from math import isnan
 
-from common.common import Common
-from load.file import File
-from load.rias import RIAS
+from .common import Common
+from .file import File
+from .rias import RIAS
 
 class Load:
    #instanceTable = {}   # Table of instances ordered by subnet that shows instances within each subnet.
