@@ -28,13 +28,13 @@ Notes:
 
 1. Structure:
 
-    `from drawit import Diagram, Cluster, Node
+     from drawit import Diagram, Cluster, Node
 
          with Diagram(...):
 
              with Cluster(...):
 
-                 node = Node(...)`
+                 node = Node(...)
 
 2. Diagram Parameters:
 
