@@ -40,7 +40,7 @@ with Diagram(...):
 
 - name
 - filename
-- direction = h, v (horizontal or vertical) - not currently enabled
+- direction = horizontal or vertical - not currently enabled
 - outformat = jpg, pdf, png, svg, xml - not currently enabled
 
 3. Cluster Parameters:
