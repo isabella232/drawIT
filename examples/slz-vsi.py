@@ -5,9 +5,6 @@ with Diagram("slz-vsi"):
       with Cluster("Region", icon="location", pencolor="location"):
          with Cluster("Management VPC", icon="virtual-private-cloud--alt", pencolor="network"):
             with Cluster("Zone 1", icon="data--base--alt", pencolor="location"):
-               vsi2 = Node("Virtual Server", icon="instance--virtual", pencolor="compute") 
-               vsi3 = Node("Virtual Server", icon="instance--virtual", pencolor="compute") 
-               vsi4 = Node("Virtual Server", icon="instance--virtual", pencolor="compute") 
                with Cluster("10.10.10.0/24 : VSI", icon="ibm-cloud--subnets", pencolor="network"):
                   vsi = Node("Virtual Server", icon="instance--virtual", pencolor="compute") 
                with Cluster("10.10.20.0/24 : VPE", icon="ibm-cloud--subnets", pencolor="network"):

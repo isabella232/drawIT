@@ -90,6 +90,7 @@ class Diagram:
       return
 
    def __enter__(self):
+      self.common.printStartFile(self.filename + ".py", self.common.getCloudType().value.upper())
       setDiagram(self)
       return self
 
@@ -98,7 +99,7 @@ class Diagram:
       self.diagram.buildDiagrams()
       outputfolder = self.common.getOutputFolder()
       outputfile = self.common.getOutputFile()
-      self.common.printDone(path.join(outputfolder, outputfile), "IBM")
+      self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().value.upper())
       setDiagram(None)
       setCluster(None)
       return
