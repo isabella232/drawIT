@@ -37,7 +37,7 @@ Notes:
                  `node = Node(...)
 
 Notes:
-- Until direction parameter is enabled all shapes are aligned horizontally. 
+- All shapes are aligned horizontally until direction parameter is enabled.
 - Use shape parameter default as shape names are subject to change until final names are available.
 - Connectors are not currently enabled.
 
