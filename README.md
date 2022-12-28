@@ -20,18 +20,17 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
   - Input is from tool-generated JSON/YAML.
   - Output is diagrams.net xml file.
 
-Notes:
-- Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
-- Future: Export diagrams to jpg, pdf, png, or svg directly from drawIT using diagrams.net CLI.
-
 ## Code-to-Diagram Guide
 
 1. Notes:
 
-- All shapes are aligned horizontally until direction parameter is enabled.
+- Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change until final names are available.
-- Fill colors are automatically alternated between white and light fills for consecutive nested clusters which can be overridden - overriding is not completely enabled. 
-- Connectors are not currently enabled.
+- Fill colors if not specified are automatically alternated between white and light fills.
+- Future: Enable diagram export to jpg, pdf, png, or svg directly from drawIT.
+- Future: Enable direction parameter (shapes are currently aligned horizontally which can be extensive).
+- Future: Enable specifying fill colors to override default alternation.
+- Future: Enable connectors.
 
 2. Structure:
 
