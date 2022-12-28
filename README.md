@@ -26,10 +26,12 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change until final names are available.
-- Fill colors if not specified are automatically alternated between white and light fills.
+- Use component names for line color (pencolor) and fill color (bgcolor) in case color names change.
+- Fill colors (bgcolor) if not specified are automatically alternated between white and light fills.
 - Planned: Enable diagram export to jpg, pdf, png, or svg directly from drawIT.
 - Planned: Enable direction parameter (shapes are currently aligned horizontally which can be extensive).
 - Planned: Enable specifying fill colors to override default alternation.
+- Planned: Enable badge-related parameters.
 - Planned: Enable connectors.
 
 2. Structure:
