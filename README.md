@@ -24,7 +24,59 @@ Notes:
   - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
   - Future: Export diagrams to jpg, pdf, png, or svg directly from drawIT using diagrams.net CLI.
 
-Prereqs:
+## Code-to-Diagram Guide
+
+1. Structure:
+
+from drawit import Diagram, Cluster, Node
+
+with Diagram(...):
+
+   with Cluster(...):
+
+      node = Node(...)
+
+2. Diagram Parameters:
+
+- name
+- filename
+- direction = h, v (horizontal or vertical) - not currently enabled
+- outformat = jpg, pdf, png, svg, xml - not currently enabled
+
+3. Cluster Parameters:
+
+- label = primary label
+- sublabel = secondary text
+- shape = collapsed node (logical/prescribed), collapsed component (logical/prescribed)
+- pencolor = medium and dark line colors from IBM Color Palette, can be component name (recommended) or color name or hex value
+- bgcolor = light fill colors from IBM Color Palette or white or transparent, can be component name (recommended) or color name or hex value
+- badgetext = not currently enabled
+- badgeshape = not currently enabled
+- badgepencolor = not currently enabled 
+- badgebgcolor = not currently enabled
+- icon = name of icon as defined in IBM Design Center
+- direction = h, v (horizontal or vertical) - not currently enabled
+- fontname = IBM Plex Sans, IBM Plex Sans Arabic, IBM Plex Sans Devanagari, IBM Plex Sans Hebrew, IBM Plex Sans JP, IBM Plex Sans KR, IBM Plex Sans Thai
+- fontsize = numeric value, defaults to 14
+
+4. Node Parameters:
+
+- label = primary label
+- sublabel = secondary text
+- shape = expanded node (logical/prescribed), expanded component (logical/prescribed), location (logical/prescribed), zone
+- pencolor = medium and dark line colors from IBM Color Palette, can be component name (recommended) or color name or hex value
+- bgcolor = light fill colors from IBM Color Palette or white or transparent, can be component name (recommended) or color name or hex value
+- badgetext = not currently enabled, fontsize is 12
+- badgeshape = not currently enabled
+- badgepencolor = not currently enabled 
+- badgebgcolor = not currently enabled
+- icon = name of icon as defined in IBM Design Center
+- direction = h, v (horizontal or vertical) - not currently enabled
+- fontname = IBM Plex Sans, IBM Plex Sans Arabic, IBM Plex Sans Devanagari, IBM Plex Sans Hebrew, IBM Plex Sans JP, IBM Plex Sans KR, IBM Plex Sans Thai
+- fontsize = numeric value, defaults to 14
+
+## Prereqs
+
   - Python 3.10.5
   - pandas 1.4.2
   - PyYAML 6.0
