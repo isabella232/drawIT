@@ -47,33 +47,57 @@ with Diagram(...):
 
 - label = primary label
 - sublabel = secondary text
-- shape = collapsed node (logical/prescribed), collapsed component (logical/prescribed)
-- pencolor = medium and dark line colors from IBM Color Palette, can be component name (recommended) or color name or hex value
-- bgcolor = light fill colors from IBM Color Palette or white or transparent, can be component name (recommended) or color name or hex value
-- badgetext = not currently enabled
+- shape = expanded node/component either logical/prescribed, location either logical/prescribed, or zone
+- pencolor = medium and dark line colors from IBM Color Palette
+- bgcolor = light fill colors from IBM Color Palette or white or transparent
+- badgetext = not currently enabled, fontsize is 12
 - badgeshape = not currently enabled
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
 - icon = name of icon as defined in IBM Design Center
-- direction = h, v (horizontal or vertical) - not currently enabled
-- fontname = IBM Plex Sans, IBM Plex Sans Arabic, IBM Plex Sans Devanagari, IBM Plex Sans Hebrew, IBM Plex Sans JP, IBM Plex Sans KR, IBM Plex Sans Thai
+- direction = horizontal or vertical - not currently enabled
+- fontname = IBM Plex Sans fonts
 - fontsize = numeric value, defaults to 14
 
 4. Node Parameters:
 
 - label = primary label
 - sublabel = secondary text
-- shape = expanded node (logical/prescribed), expanded component (logical/prescribed), location (logical/prescribed), zone
-- pencolor = medium and dark line colors from IBM Color Palette, can be component name (recommended) or color name or hex value
-- bgcolor = light fill colors from IBM Color Palette or white or transparent, can be component name (recommended) or color name or hex value
+- shape = collapsed node/component either logical/prescribed
+- pencolor = medium and dark line colors from IBM Color Palette
+- bgcolor = light fill colors from IBM Color Palette or white or transparent
 - badgetext = not currently enabled, fontsize is 12
 - badgeshape = not currently enabled
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
 - icon = name of icon as defined in IBM Design Center
-- direction = h, v (horizontal or vertical) - not currently enabled
-- fontname = IBM Plex Sans, IBM Plex Sans Arabic, IBM Plex Sans Devanagari, IBM Plex Sans Hebrew, IBM Plex Sans JP, IBM Plex Sans KR, IBM Plex Sans Thai
+- direction = horizontal or vertical - not currently enabled
+- fontname = IBM Plex Sans fonts
 - fontsize = numeric value, defaults to 14
+
+5. Line Colors (pencolor):
+
+- Component name (recommended)
+- Color name
+- Hex value
+
+6. Fill Colors (bgcolor):
+
+- Component name (recommended)
+- Color name
+- Hex value
+
+Note: Fill colors are automatically alternated between white and light fills for consecutive nested clusters which can be overridden - overriding is not completely enabled. 
+
+7. Font Names:
+
+- IBM Plex Sans
+- IBM Plex Sans Arabic
+- IBM Plex Sans Devanagari
+- IBM Plex Sans Hebrew
+- IBM Plex Sans JP
+- IBM Plex Sans KR
+- IBM Plex Sans Thai
 
 ## Prereqs
 
