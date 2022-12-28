@@ -21,8 +21,8 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
   - Output is diagrams.net xml file.
 
 Notes:
-  - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
-  - Future: Export diagrams to jpg, pdf, png, or svg directly from drawIT using diagrams.net CLI.
+- Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
+- Future: Export diagrams to jpg, pdf, png, or svg directly from drawIT using diagrams.net CLI.
 
 ## Code-to-Diagram Guide
 
@@ -35,6 +35,10 @@ Notes:
              with Cluster(...):
 
                  `node = Node(...)
+
+Notes:
+- Until direction parameter is enabled all shapes are aligned horizontally. 
+- Connectors are not currently enabled.
 
 2. Diagram Parameters:
 
@@ -101,11 +105,11 @@ Note: Fill colors are automatically alternated between white and light fills for
 
 ## Prereqs
 
-  - Python 3.10.5
-  - pandas 1.4.2
-  - PyYAML 6.0
-  - requests 2.28.0
-  - urllib3 1.26.9
+- Python 3.10.5
+- pandas 1.4.2
+- PyYAML 6.0
+- requests 2.28.0
+- urllib3 1.26.9
 
 ## References
 
