@@ -26,7 +26,14 @@ Notes:
 
 ## Code-to-Diagram Guide
 
-1. Structure:
+1. Notes:
+
+- All shapes are aligned horizontally until direction parameter is enabled.
+- Use shape parameter default as shape names are subject to change until final names are available.
+- Fill colors are automatically alternated between white and light fills for consecutive nested clusters which can be overridden - overriding is not completely enabled. 
+- Connectors are not currently enabled.
+
+2. Structure:
 
      `from drawit import Diagram, Cluster, Node`
 
@@ -36,19 +43,14 @@ Notes:
 
                  `node = Node(...)
 
-Notes:
-- All shapes are aligned horizontally until direction parameter is enabled.
-- Use shape parameter default as shape names are subject to change until final names are available.
-- Connectors are not currently enabled.
-
-2. Diagram Parameters:
+3. Diagram Parameters:
 
 - name
 - filename
 - direction = horizontal or vertical - not currently enabled
 - outformat = jpg, pdf, png, svg, xml - not currently enabled
 
-3. Cluster Parameters:
+4. Cluster Parameters:
 
 - label = primary label
 - sublabel = secondary text
@@ -64,7 +66,7 @@ Notes:
 - fontname = IBM Plex Sans fonts
 - fontsize = numeric value, defaults to 14
 
-4. Node Parameters:
+5. Node Parameters:
 
 - label = primary label
 - sublabel = secondary text
@@ -80,19 +82,17 @@ Notes:
 - fontname = IBM Plex Sans fonts
 - fontsize = numeric value, defaults to 14
 
-5. Line Colors (pencolor):
+6. Line Colors (pencolor):
 
 - Component name (recommended)
 - Color name
 - Hex value
 
-6. Fill Colors (bgcolor):
+7. Fill Colors (bgcolor):
 
 - Component name (recommended)
 - Color name
 - Hex value
-
-Note: Fill colors are automatically alternated between white and light fills for consecutive nested clusters which can be overridden - overriding is not completely enabled. 
 
 7. Font Names:
 
