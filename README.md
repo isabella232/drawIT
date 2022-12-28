@@ -38,6 +38,7 @@ Notes:
 
 Notes:
 - Until direction parameter is enabled all shapes are aligned horizontally. 
+- Shape names are subject to change until final names are available - use shape parameter default.
 - Connectors are not currently enabled.
 
 2. Diagram Parameters:
