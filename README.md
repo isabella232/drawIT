@@ -47,7 +47,7 @@ with Diagram(...):
 
 - label = primary label
 - sublabel = secondary text
-- shape = expanded node/component either logical/prescribed, location either logical/prescribed, or zone
+- shape = expanded node/component/location either logical/prescribed or zone
 - pencolor = medium and dark line colors from IBM Color Palette
 - bgcolor = light fill colors from IBM Color Palette or white or transparent
 - badgetext = not currently enabled, fontsize is 12
