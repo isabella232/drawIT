@@ -49,9 +49,9 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
                   node1 - node2   # No arrow line connecting node1 and node2.
 
-                  node1 >> node2  # Single arrow line pointing from node1 to node2.
+                  node1 >> node2  # Single arrow line from node1 to node2.
 
-                  node1 << node2  # Single arrow line pointing from node2 to node1.
+                  node1 << node2  # Single arrow line from node2 to node1.
 
 3. Diagram Parameters:
 
