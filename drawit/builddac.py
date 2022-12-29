@@ -35,13 +35,15 @@ class BuildDAC:
    cloudname = ""
    clusters = {}
    nodes = {}
+   links = {}
    tops = []
    bottoms = []
 
-   def __init__(self, common, clusters, nodes):
+   def __init__(self, common, clusters, nodes, edges):
       self.common = common
       self.clusters = clusters
       self.nodes = nodes
+      self.edges = edges
 
       self.shapes = Shapes(common)
 
@@ -84,6 +86,12 @@ class BuildDAC:
          links += clusterlinks
          values += clustervalues
 
+      for edgeid, attributes in self.edges.items():
+         edgenodes, edgelinks, edgevalues = self.buildEdgeShape(edgeid, attributes)
+         nodes += edgenodes
+         links += edgelinks
+         values += edgevalues
+
       regiondata["IBM Cloud"] = {'nodes': nodes, 'links': links, 'values': values}
 
       return regiondata
@@ -125,6 +133,24 @@ class BuildDAC:
 
       shapenode = self.shapes.buildShape(clusterid, attributes, x, y, width, height, meta)
       nodes.append(shapenode)
+
+      return nodes, links, values
+
+   def buildEdgeShape(self, edgeid, attributes):
+      nodes = []
+      links = []
+      values = []
+
+      sourceid = attributes["sourceid"]
+      targetid = attributes["targetid"]
+      operator = attributes["operator"]
+
+      if operator == "sub":
+         edgenode = self.shapes.buildSolidLink(edgeid, '', sourceid, targetid, None)
+      else:  # "lshift" or "rshift"
+         edgenode = self.shapes.buildSingleArrow(edgeid, '', sourceid, targetid, None)
+
+      links.append(edgenode)
 
       return nodes, links, values
 

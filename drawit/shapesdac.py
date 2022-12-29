@@ -27,14 +27,17 @@ class Shapes:
       node = self.types.buildNode(id, attributes, x, y, width, height, meta)
       return node
 
-   def buildLink(self, label, source, target, meta):
-       return self.types.buildLink(label, source, target, meta)
+   def buildLink(self, id, label, source, target, meta):
+       return self.types.buildLink(id, label, source, target, meta)
 
-   def buildDoubleArrow(self, label, source, target, meta):
+   def buildSolidLink(self, id, label, source, target, meta):
+       return self.types.buildSolidLink(id, label, source, target, meta)
+
+   def buildDoubleArrow(self, id, label, source, target, meta):
        return self.types.buildSolidLinkDoubleArrow(label, source, target, meta)
 
-   def buildSingleArrow(self, label, source, target, meta):
-       return self.types.buildSolidLinkSingleArrow(label, source, target, meta)
+   def buildSingleArrow(self, id, label, source, target, meta):
+       return self.types.buildSolidLinkSingleArrow(id, label, source, target, meta)
 
    def buildXML(self, vpcdata, pagename):
       self.types.buildXML(vpcdata, self.types.buildPage(pagename))

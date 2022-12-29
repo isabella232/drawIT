@@ -36,50 +36,50 @@ class Types:
       self.icons = Icons(common)
       random.seed(time.time())
 
-   def buildLink(self, label, source, target, meta):
-      data = {'header': {'id': self.common.compress(str(random.random())),
+   def buildLink(self, id, label, source, target, meta):
+      data = {'header': {'id': id,
                          'label': ''},
               'cell':   {'style': 'endArrow=none;dashed=1;',
                          'edge': '1',
                          'parent': '1',
-                         'source': self.common.compress(source),
-                         'target': self.common.compress(target)},
+                         'source': source,
+                         'target': target},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data
 
-   def buildSolidLink(self, label, source, target, meta):
-      data = {'header': {'id': self.common.compress(str(random.random())),
+   def buildSolidLink(self, id, label, source, target, meta):
+      data = {'header': {'id': id,
                          'label': label},
               'cell':   {'style': 'endArrow=none;dashed=0;',
                          'edge': '1',
                          'parent': '1',
-                         'source': self.common.compress(source),
-                         'target': iself.common.compress(target)},
+                         'source': source,
+                         'target': target},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data
 
-   def buildSolidLinkSingleArrow(self, label, source, target, meta):
-         data = {'header': {'id': self.common.compress(str(random.random())),
+   def buildSolidLinkSingleArrow(self, id, label, source, target, meta):
+         data = {'header': {'id': id,
                             'label': label},
                  'cell':   {'style': 'endArrow=block;endFill=1;dashed=0;',
                             'edge': '1',
                             'parent': '1',
-                            'source': self.common.compress(source),
-                            'target': self.common.compress(target)},
+                            'source': source,
+                            'target': target},
                   'geo':   {'relative': '1',
                             'as': 'geometry'}}
          return data
 
-   def buildSolidLinkDoubleArrow(self, label, source, target, meta):
-      data = {'header': {'id': self.common.compress(str(random.random())),
+   def buildSolidLinkDoubleArrow(self, id, label, source, target, meta):
+      data = {'header': {'id': id,
                          'label': label},
               'cell':   {'style': 'endArrow=block;endFill=1;startArrow=block;startFill=1;dashed=0;',
                          'edge': '1',
                          'parent': '1',
-                         'source': self.common.compress(source),
-                         'target': self.common.compress(target)},
+                         'source': source,
+                         'target': target},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data

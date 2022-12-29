@@ -20,7 +20,7 @@ from .messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.6.0'
+   toolVersion = '0.6.1'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -392,8 +392,14 @@ class Common:
    def printInvalidIcon(self, icon):
       self.messages.printInvalidIcon(icon)
 
-   def printInvalidShape(self, shape):
-      self.messages.printInvalidShape(shape)
+   def printInvalidClusterShape(self, shape):
+      self.messages.printInvalidClusterShape(shape)
+
+   def printInvalidNodeShape(self, shape):
+      self.messages.printInvalidNodeShape(shape)
+
+   def printInvalidEdgeStyle(self, style):
+      self.messages.printInvalidEdgeStyle(style)
 
    def printInvalidFillColor(self, color):
       self.messages.printInvalidFillColor(color)

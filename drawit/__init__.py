@@ -19,4 +19,4 @@ from .build import Build
 from .builddac import BuildDAC
 
 from .colors import Colors
-from .diagram import Diagram, Cluster, Node
+from .diagram import Diagram, Cluster, Node, Edge

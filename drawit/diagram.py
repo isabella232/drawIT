@@ -29,12 +29,22 @@ _cluster = ContextVar("cluster")
 
 _clusters = {} # Dictionary of clusters.
 _nodes = {}    # Dictionary of nodes.
+_edges = {}    # Dictionary of edges.
 
 DIRECTIONS = ("TB", "BT", "LR", "RL")
 OUTPUTFORMAT = ("jpg", "pdf", "png", "svg", "xml")
 NODESHAPES = ("nodel", "nodep", "compl", "compp")
 CLUSTERSHAPES = ("locl", "locp", "nodel-expanded", "nodep-expanded", "compl-expanded", "compp-expanded", "zone")
 FONTS = ("ibm plex sans", "ibm plex sans arabic", "ibm plex sans devanagari", "ibm plex sans hebrew", "ibm plex sans jp", "ibm plex sans kr", "ibm plex sans thai")
+
+EDGESTYLES = ("solid", "dashed")
+EXTENDED_EDGESTYLES = {  
+   # Allows customization of lines and arrows.
+   "solidline": "dashed=0;",
+   "dashedline": "dashed=1;",
+   "noarrow": "endArrow=none;", 
+   "singlearrow": "endArrow=block;endFill=1;", 
+   "doublearrow": "endArrow=block;endFill=1;startArrow=block;startFill=1;"} 
 
 def getDiagram():
    try:
@@ -54,9 +64,61 @@ def getCluster():
 def setCluster(cluster):
    _cluster.set(cluster)
 
+
+# Return a unique id for clusterid and nodeid.
 @staticmethod
 def randomid():
    return uuid4().hex
+
+# Valid direction must be one of the supported directions.
+def validDirection(direction):
+   return direction.upper() in DIRECTIONS
+
+# Valid font must be and an IBM Plex Sans font.
+def validFont(font):
+   return font.lower() in FONTS
+
+# Valid cluster shape must be a valid IBM2 expanded shape.
+def validClusterShape(shape):
+   return shape.lower() in CLUSTERSHAPES
+
+# Valid node shape must be a valid IBM2 collapsed shape.
+def validNodeShape(shape):
+   return shape.lower() in NODESHAPES
+
+# Valid edge style must be one of the basic or extended edge styles (planned). 
+def validEdgeStyle(style):
+   return style.lower() in EDGESTYLES
+
+# Valid line color must be from IBM Color Palette and can be component name, color name, or hex value.
+def validLineColor(pencolor):
+   hexvalue = None 
+   if pencolor.lower() in Colors.lines:
+      hexvalue = Colors.lines[pencolor.lower()]
+   return hexvalue
+
+# Valid family color ensures that fill color is from same family as line color or transparent or white..
+def validFamilyColor(hexpencolor, hexbgcolor):
+   bgcolor = Colors.names[hexbgcolor]
+   if bgcolor == "white" or bgcolor == "none":
+      return hexbgcolor
+
+   pencolor = Colors.names[hexpencolor]
+   lightpencolor = "light" + pencolor
+
+   if bgcolor == lightpencolor:
+      return hexbgcolor
+
+   return None
+
+# Valid fill color must be from IBM Color Palette and can be transparent, white, or light color from same family as line color.
+def validFillColor(hexpencolor, bgcolor):
+   hexbgvalue = None 
+   if bgcolor.lower() in Colors.fills:
+      hexbgvalue = Colors.fills[bgcolor.lower()]
+      hexbgvalue = validFamilyColor(hexpencolor, hexbgcolor) 
+   return hexbgvalue
+
 
 class Diagram:
    common = None
@@ -95,7 +157,7 @@ class Diagram:
       return self
 
    def __exit__(self, exception_type, exception_value, traceback):
-      self.diagram  = BuildDAC(self.common, _clusters, _nodes)
+      self.diagram  = BuildDAC(self.common, _clusters, _nodes, _edges)
       self.diagram.buildDiagrams()
       outputfolder = self.common.getOutputFolder()
       outputfile = self.common.getOutputFile()
@@ -110,12 +172,15 @@ class Diagram:
    def validOutputFormat(self, outformat):
       return outformat.lower() in OUTPUTFORMAT
 
+
 class Cluster:
    common = None
    icons = None
    clusterid = None
    parentid = None
    parent = None
+   fontname = None
+   fontsize = 14
 
    def __init__(self, 
                 label: str = "cluster", 
@@ -135,33 +200,36 @@ class Cluster:
       self.common = Common()
       self.icons = Icons(self.common)
 
-      if not self.validDirection(direction):
+      if not validDirection(direction):
          self.common.printInvalidDirection(direction)
          sys_exit()
 
-      if not self.validFont(fontname):
+      if not validFont(fontname):
          self.common.printInvalidFont(fontname)
          sys_exit()
 
-      if not self.validShape(shape):
-         self.common.printInvalidShape(shape)
+      if not validClusterShape(shape):
+         self.common.printInvalidClusterShape(shape)
          sys_exit()
 
       if not self.icons.validIcon(icon):
          self.common.printInvalidIcon(icon)
          sys_exit()
 
-      hexpencolor = self.validLineColor(pencolor)
+      hexpencolor = validLineColor(pencolor)
       if hexpencolor == None:
          self.common.printInvalidLineColor(pencolor)
          sys_exit()
 
       hexbgcolor = "#ffffff"
       if bgcolor != None:
-         hexbgcolor = self.validFillColor(hexpencolor, bgcolor)
+         hexbgcolor = validFillColor(hexpencolor, bgcolor)
          if hexbgcolor == None:
             self.common.printInvalidFillColor(bgcolor)
             sys_exit()
+
+      self.fontname = fontname
+      self.fontsize = fontsize
 
       self.clusterid = randomid()
 
@@ -180,51 +248,11 @@ class Cluster:
       return self
 
    def __exit__(self, exception_type, exception_value, traceback):
-      #if self.parent:
-      #   setCluster(self.parent)
       _clusters[self.clusterid] = self.attributes
       if self.parent:
          setCluster(self.parent)
       return
 
-   def validDirection(self, direction):
-      return direction.upper() in DIRECTIONS
-
-   def validFont(self, font):
-      return font.lower() in FONTS
-
-   def validShape(self, shape):
-      return shape.lower() in CLUSTERSHAPES
-
-   # Line color can be component name, color name, or hex value.
-   def validLineColor(self, pencolor):
-      hexpenvalue = None 
-      if pencolor.lower() in Colors.lines:
-         hexpenvalue = Colors.lines[pencolor.lower()]
-      return hexpenvalue
-
-   # Fill color can be transparent, white, or light color from same family as line color.
-   def validFamilyColor(self, hexpencolor, hexbgcolor):
-      bgcolor = Colors.names[hexbgcolor]
-      if bgcolor == "white" or bgcolor == "none":
-         return hexbgcolor
-
-      pencolor = Colors.names[hexpencolor]
-      lightpencolor = "light" + pencolor
-
-      if bgcolor == lightpencolor:
-         return hexbgcolor
-
-      return None
-
-   # Fill color can be transparent, white, or light color from same family as line color.
-   def validFillColor(self, hexpencolor, bgcolor):
-      hexbgvalue = None 
-      if bgcolor.lower() in Colors.fills:
-         hexbgvalue = Colors.fills[bgcolor.lower()]
-         hexbgvalue = validFamilyColor(hexpencolor, hexbgcolor) 
-
-      return hexbgvalue
 
 class Node:
    common = None
@@ -232,7 +260,11 @@ class Node:
    nodeid = None
    parentid = None
    parent = None
-
+   operator = None
+   node = None
+   edge = None
+   fontname = None
+   fontsize = 14
    attributes = {}
 
    def __init__(self, 
@@ -248,38 +280,41 @@ class Node:
                 icon: str = "undefined",
                 direction: str = "LR",
                 fontname: str = "IBM Plex Sans",
-                fontsize = 14):
+                fontsize: int = 14):
 
       self.common = Common()
       self.icons = Icons(self.common)
 
-      if not self.validDirection(direction):
+      if not validDirection(direction):
          self.common.printInvalidDirection(direction)
          sys_exit()
 
-      if not self.validFont(fontname):
+      if not validFont(fontname):
          self.common.printInvalidFont(fontname)
          sys_exit()
 
-      if not self.validShape(shape):
-         self.common.printInvalidShape(shape)
+      if not validNodeShape(shape):
+         self.common.printInvalidNodeShape(shape)
          sys_exit()
 
       if not self.icons.validIcon(icon):
          self.common.printInvalidIcon(icon)
          sys_exit()
 
-      hexpencolor = self.validLineColor(pencolor)
+      hexpencolor = validLineColor(pencolor)
       if hexpencolor == None:
          self.common.printInvalidLineColor(pencolor)
          sys_exit()
 
       hexbgcolor = ""
       if bgcolor != None:
-         hexbgcolor = self.validFillColor(hexpencolor, bgcolor)
+         hexbgcolor = validFillColor(hexpencolor, bgcolor)
          if hexbgcolor == None:
             self.common.printInvalidFillColor(bgcolor)
             sys_exit()
+
+      self.fontname = fontname
+      self.fontsize = fontsize
 
       self.nodeid = randomid()
 
@@ -296,41 +331,108 @@ class Node:
 
       return
 
-   def validDirection(self, direction):
-      return direction.upper() in DIRECTIONS
+   #def __repr__(self):
+   #   print("repr:")
+   #   print(self.attributes)
 
-   def validFont(self, font):
-      return font.lower() in FONTS
+   #def __str__(self):
+   #   print("str:")
+   #   return self.attributes["label"]
 
-   def validShape(self, shape):
-      return shape.lower() in NODESHAPES
+   def __sub__(self, node = None):
+      print("node sub:")
+      print(self.attributes["label"])
+      print(node.attributes["label"])
+      edge = Edge(source=self.nodeid, target=node.nodeid, operator="sub", fontname=self.fontname, fontsize=12)
+      return node
 
-   # Line color can be component name, color name, or hex value.
-   def validLineColor(self, pencolor):
-      hexvalue = None 
-      if pencolor.lower() in Colors.lines:
-         hexvalue = Colors.lines[pencolor.lower()]
-      return hexvalue
+   def __lshift__(self, node = None):
+      print("node lshift:")
+      print(self.attributes["label"])
+      print(node.attributes["label"])
+      self.node = node
+      self.node.operator = "lshift"
+      node.node = self
+      node.operator = "lshift"
+      edge = Edge(source=node.nodeid, target=self.nodeid, operator="lshift", fontname=self.fontname, fontsize=12)
+      return node
 
-   # Fill color can be transparent, white, or light color from same family as line color.
-   def validFamilyColor(self, hexpencolor, hexbgcolor):
-      bgcolor = Colors.names[hexbgcolor]
-      if bgcolor == "white" or bgcolor == "none":
-         return hexbgcolor
+   def __rshift__(self, node = None):
+      print("node rshift:")
+      print(self.attributes["label"])
+      print(node.attributes["label"])
+      self.node = node
+      self.node.operator = "rshift"
+      edge = Edge(source=self.nodeid, target=node.nodeid, operator="rshift", fontname=self.fontname, fontsize=12)
+      return node
 
-      pencolor = Colors.names[hexpencolor]
-      lightpencolor = "light" + pencolor
 
-      if bgcolor == lightpencolor:
-         return hexbgcolor
+class Edge:
+   common = None
+   edgeid = None
+   sourceid = None
+   targetid = None
+   operator = None
+   style = ""
+   attributes = {}
 
-      return None
+   def __init__(self, 
+                label: str = "", 
+                node: "Node" = None,
+                source: "Node" = None,
+                target: "Node" = None,
+                style: str = "solid",
+                operator: str = "",
+                fontname: str = "IBM Plex Sans",
+                fontsize: int = 12):
 
-   # Fill color can be transparent, white, or light color from same family as line color.
-   def validFillColor(self, hexpencolor, bgcolor):
-      hexbgvalue = None 
-      if bgcolor.lower() in Colors.fills:
-         hexbgvalue = Colors.fills[bgcolor.lower()]
-         hexbgvalue = validFamilyColor(hexpencolor, hexbgcolor) 
+      self.common = Common()
 
-      return hexbgvalue
+      if not validEdgeStyle(style):
+         self.common.printInvalidEdgeStyle(style)
+         sys_exit()
+
+      if not validFont(fontname):
+         self.common.printInvalidFont(fontname)
+         sys_exit()
+
+      self.sourceid = source
+      self.targetid = target
+      self.style = style
+      self.operator = operator
+
+      self.edgeid = randomid()
+
+      self.attributes = {"label": label, "sourceid": self.sourceid, "targetid": self.targetid, "style": self.style, "operator": self.operator, "fontname": fontname, "fontsize": fontsize}
+
+      _edges[self.edgeid] = self.attributes
+
+      return
+
+   #def setSourceID(sourceid):
+   #   self.setSourceID(sourceid)
+   #   return
+
+   #def setTargetID(targetid):
+   #   self.setTargetID(targetid)
+   #   return
+
+   """
+   def __lshift__(self, node):
+      print("edge lshift3:")
+      print(self.attributes["label"])
+      print(node.attributes["label"])
+      print(node.operator)
+      self.operator = "lshift"
+      return node
+
+   def __rshift__(self, node):
+      print("edge rshift3:")
+      print(self.attributes["label"])
+      print(self.node.attributes["label"])
+      print(self.operator)
+      print(node.attributes["label"])
+      print(node.operator)
+      self.operator = "rshift"
+      return node
+   """
