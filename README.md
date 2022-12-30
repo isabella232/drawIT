@@ -47,11 +47,23 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
                   node2 = Node(...)
 
-                  node1 - node2   # No arrow line connecting nodes.
+                  # No arrow line between nodes.
+                  node1 - node2
 
-                  node1 >> node2  # Single arrow pointing to node2.
+                  # Single arrow pointing to node1.
+                  node1 << node2
 
-                  node1 << node2  # Single arrow pointing to node1.
+                  # Single arrow pointing to node2.
+                  node1 >> node2
+
+                   # Single arrow with label pointing to node1.
+                  node1 << Edge(label="arrow") << node2  
+
+                   # Single arrow with label pointing to node2.
+                  node1 >> Edge(label="arrow") >> node2  
+
+                   # Double arrow with label between nodes..
+                  node1 << Edge(label="arrow") >> node2  
 
 3. Diagram Parameters:
 

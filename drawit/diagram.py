@@ -260,7 +260,8 @@ class Node:
    nodeid = None
    parentid = None
    parent = None
-   operator = None
+   arrow = ""
+   operator = ""
    node = None
    edge = None
    fontname = None
@@ -340,48 +341,59 @@ class Node:
    #   return self.attributes["label"]
 
    def __sub__(self, node = None):
-      print("node sub:")
-      print(self.attributes["label"])
-      print(node.attributes["label"])
-      edge = Edge(source=self.nodeid, target=node.nodeid, operator="sub", fontname=self.fontname, fontsize=12)
+      # node - node or node - edge
+      if isinstance(node, Node):
+         edge = Edge(source=self.nodeid, target=node.nodeid, arrow="noarrow", operator="sub", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(node, Edge)
+         edge = node
+         edge.nodeid = self.nodeid
+         edge.arrow = "noarrow"
+         edge.operator = "sub"
       return node
 
    def __lshift__(self, node = None):
-      print("node lshift:")
-      print(self.attributes["label"])
-      print(node.attributes["label"])
-      self.node = node
-      self.node.operator = "lshift"
-      node.node = self
-      node.operator = "lshift"
-      edge = Edge(source=node.nodeid, target=self.nodeid, operator="lshift", fontname=self.fontname, fontsize=12)
+      # node << node or node << edge
+      if isinstance(node, Node):
+         edge = Edge(source=node.nodeid, target=self.nodeid, arrow="singlearrow", operator="lshift", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(node, Edge)
+         edge = node
+         edge.nodeid = self.nodeid
+         edge.arrow = "unknown"
+         edge.operator = "lshift"
       return node
 
    def __rshift__(self, node = None):
-      print("node rshift:")
-      print(self.attributes["label"])
-      print(node.attributes["label"])
-      self.node = node
-      self.node.operator = "rshift"
-      edge = Edge(source=self.nodeid, target=node.nodeid, operator="rshift", fontname=self.fontname, fontsize=12)
+      # node >> node or node >> edge
+      if isinstance(node, Node):
+         edge = Edge(source=self.nodeid, target=node.nodeid, arrow="singlearrow", operator="rshift", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(node, Edge)
+         edge = node
+         edge.nodeid = self.nodeid
+         edge.arrow = "unknown"
+         edge.operator = "rshift"
       return node
 
 
 class Edge:
    common = None
    edgeid = None
+   nodeid = None
    sourceid = None
    targetid = None
-   operator = None
+   node = None
+   nodeid = None
+   arrow = None
+   operator = ""
    style = ""
    attributes = {}
 
    def __init__(self, 
                 label: str = "", 
-                node: "Node" = None,
+                #node: "Node" = None,
                 source: "Node" = None,
                 target: "Node" = None,
                 style: str = "solid",
+                arrow: str = "singlearrow",
                 operator: str = "",
                 fontname: str = "IBM Plex Sans",
                 fontsize: int = 12):
@@ -399,40 +411,68 @@ class Edge:
       self.sourceid = source
       self.targetid = target
       self.style = style
+      self.arrow = arrow
       self.operator = operator
 
       self.edgeid = randomid()
 
-      self.attributes = {"label": label, "sourceid": self.sourceid, "targetid": self.targetid, "style": self.style, "operator": self.operator, "fontname": fontname, "fontsize": fontsize}
+      self.attributes = {"label": label, "sourceid": self.sourceid, "targetid": self.targetid, "style": self.style, "arrow": self.arrow, "fontname": fontname, "fontsize": fontsize}
 
       _edges[self.edgeid] = self.attributes
 
       return
 
-   #def setSourceID(sourceid):
-   #   self.setSourceID(sourceid)
-   #   return
+   def __sub__(self, node = None):
+      # edge - node
+      if isinstance(node, Node):
+         if self.nodeid != None:
+            selfnodeid = self.nodeid
+            selfarrow = self.arrow
+            selfoperator = self.operator
 
-   #def setTargetID(targetid):
-   #   self.setTargetID(targetid)
-   #   return
+            _edges[self.edgeid]["sourceid"] = node.nodeid
+            _edges[self.edgeid]["targetid"] = selfnodeid
+            _edges[self.edgeid]["arrow"] = selfarrow
+         else:
+            # Minus has precedence over << so nodeid hasn't been set yet.
+            print("Edge.__sub__: node << edge - node not supported")
+            sys_exit()
+      else:
+         print("Edge.__sub__: edge - node not supported")
+         sys_exit()
 
-   """
+      return node
+
    def __lshift__(self, node):
-      print("edge lshift3:")
-      print(self.attributes["label"])
-      print(node.attributes["label"])
-      print(node.operator)
-      self.operator = "lshift"
+      # edge << node
+      if isinstance(node, Node):
+         #self.operator = "lshift"
+         selfnodeid = self.nodeid
+         selfarrow = self.arrow
+         selfoperator = self.operator
+
+         _edges[self.edgeid]["sourceid"] = node.nodeid
+         _edges[self.edgeid]["targetid"] = selfnodeid
+         arrow = "doublearrow" if selfoperator == "rshift" else "singlearrow" 
+         _edges[self.edgeid]["arrow"] = arrow
+      else:
+         print("Edge.__lshift__: edge << node not supported")
+         sys_exit()
       return node
 
    def __rshift__(self, node):
-      print("edge rshift3:")
-      print(self.attributes["label"])
-      print(self.node.attributes["label"])
-      print(self.operator)
-      print(node.attributes["label"])
-      print(node.operator)
-      self.operator = "rshift"
+      # edge >> node
+      if isinstance(node, Node):
+         #self.operator = "rshift"
+         selfnodeid = self.nodeid
+         selfarrow = self.arrow
+         selfoperator = self.operator
+
+         _edges[self.edgeid]["sourceid"] = selfnodeid
+         _edges[self.edgeid]["targetid"] = node.nodeid
+         arrow = "doublearrow" if selfoperator == "lshift" else "singlearrow" 
+         _edges[self.edgeid]["arrow"] = arrow
+      else:
+         print("Edge.__rshift__: edge >> node not supported")
+         sys_exit()
       return node
-   """

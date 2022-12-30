@@ -143,12 +143,15 @@ class BuildDAC:
 
       sourceid = attributes["sourceid"]
       targetid = attributes["targetid"]
-      operator = attributes["operator"]
+      arrow = attributes["arrow"]
+      label = attributes["label"]
 
-      if operator == "sub":
-         edgenode = self.shapes.buildSolidLink(edgeid, '', sourceid, targetid, None)
-      else:  # "lshift" or "rshift"
-         edgenode = self.shapes.buildSingleArrow(edgeid, '', sourceid, targetid, None)
+      if arrow == "noarrow":
+         edgenode = self.shapes.buildSolidLink(edgeid, label, sourceid, targetid, None)
+      elif arrow == "singlearrow":
+         edgenode = self.shapes.buildSingleArrow(edgeid, label, sourceid, targetid, None)
+      else:  # "doublearrow"
+         edgenode = self.shapes.buildDoubleArrow(edgeid, label, sourceid, targetid, None)
 
       links.append(edgenode)
 

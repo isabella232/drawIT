@@ -34,7 +34,7 @@ class Shapes:
        return self.types.buildSolidLink(id, label, source, target, meta)
 
    def buildDoubleArrow(self, id, label, source, target, meta):
-       return self.types.buildSolidLinkDoubleArrow(label, source, target, meta)
+       return self.types.buildSolidLinkDoubleArrow(id, label, source, target, meta)
 
    def buildSingleArrow(self, id, label, source, target, meta):
        return self.types.buildSolidLinkSingleArrow(id, label, source, target, meta)
