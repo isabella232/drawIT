@@ -28,12 +28,12 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Use shape parameter default as shape names are subject to change until final names are available.
 - Use component names for line color (pencolor) and fill color (bgcolor) in case color names change.
 - Fill colors (bgcolor) if not specified are automatically alternated between white and light fills.
-- Solid line connectors with no arrow and single arrow.
+- Solid line connectors with no arrow, single arrow, or double arrow between Nodes.
 - Planned: Enable diagram export to jpg, pdf, png, or svg directly from drawIT.
 - Planned: Enable direction parameter (shapes are currently aligned horizontally which can be extensive).
 - Planned: Enable specifying fill colors to override default alternation.
 - Planned: Enable badge-related parameters.
-- Planned: Enable connectors with double arrows and dashed lines.
+- Planned: Enable connectors between Clusters and Nodes.
 
 2. Structure:
 
@@ -62,7 +62,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
                    # Single arrow with label pointing to node2.
                   node1 >> Edge(label="arrow") >> node2  
 
-                   # Double arrow with label between nodes..
+                   # Double arrow with label between nodes.
                   node1 << Edge(label="arrow") >> node2  
 
 3. Diagram Parameters:
