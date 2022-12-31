@@ -110,7 +110,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 6. Medium Line Colors (pencolor):
 
 | Name | Number | Hex | Components |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | red | red50 | #fa4d56 | security |
 | magenta | magenta50 | #ee5396 | devops |
 | purple | purple50 | #a56eff | applications |
