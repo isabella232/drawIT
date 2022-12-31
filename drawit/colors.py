@@ -48,7 +48,7 @@ class Colors:
    }
 
    lines = {
-      # Line colors by component name.
+      # Component line colors (recommended).
       "applications": names["purple"],
       "backend": names["coolgray"],
       "compute": names["green"],
@@ -63,7 +63,7 @@ class Colors:
       "storage": names["blue"],
       "user": names["black"],
 
-      # Line colors by medium color name.
+      # Medium line colors by name.
       "red": names["red"],
       "magenta": names["magenta"],
       "purple": names["purple"],
@@ -78,21 +78,21 @@ class Colors:
       "warmgray": names["warmgray"],
       "black": names["black"],
 
-      # Line colors by dark color name.
-      "darkred": names["darkred"],
-      "darkmagenta": names["darkmagenta"],
-      "darkpurple": names["darkpurple"],
-      "darkblue": names["darkblue"],
-      "darkcyan": names["darkcyan"],
-      "darkteal": names["darkteal"],
-      "darkgreen": names["darkgreen"],
-      "darkyellow": names["darkyellow"],
-      "darkorange": names["darkorange"],
-      "darkcoolgray": names["darkcoolgray"],
-      "darkgray": names["darkgray"],
-      "darkwarmgray": names["darkwarmgray"],
+      # Medium line colors by number.
+      "red50": names["red"],
+      "magenta50": names["magenta"],
+      "purple50": names["purple"],
+      "blue60": names["blue"],
+      "cyan50": names["cyan"],
+      "teal50": names["teal"],
+      "green60": names["green"],
+      "yellow50": names["yellow"],
+      "orange50": names["orange"],
+      "coolgray50": names["coolgray"],
+      "gray50": names["gray"],
+      "warmgray50": names["warmgray"],
 
-      # Line colors by medium hex values.
+      # Medium line colors by hex.
       names["red"]: names["red"],
       names["magenta"]: names["magenta"],
       names["purple"]: names["purple"],
@@ -107,7 +107,35 @@ class Colors:
       names["warmgray"]: names["warmgray"],
       names["black"]: names["black"],
 
-      # Line colors by dark hex values.
+      # Dark line colors by name.
+      "darkred": names["darkred"],
+      "darkmagenta": names["darkmagenta"],
+      "darkpurple": names["darkpurple"],
+      "darkblue": names["darkblue"],
+      "darkcyan": names["darkcyan"],
+      "darkteal": names["darkteal"],
+      "darkgreen": names["darkgreen"],
+      "darkyellow": names["darkyellow"],
+      "darkorange": names["darkorange"],
+      "darkcoolgray": names["darkcoolgray"],
+      "darkgray": names["darkgray"],
+      "darkwarmgray": names["darkwarmgray"],
+
+      # Dark line colors by number.
+      "red70": names["red"],
+      "magenta70": names["magenta"],
+      "purple70": names["purple"],
+      "blue80": names["blue"],
+      "cyan70": names["cyan"],
+      "teal70": names["teal"],
+      "green80": names["green"],
+      "yellow70": names["yellow"],
+      "orange70": names["orange"],
+      "coolgray70": names["coolgray"],
+      "gray70": names["gray"],
+      "warmgray70": names["warmgray"],
+
+      # Dark line colors by hex.
       names["darkred"]: names["darkred"],
       names["darkmagenta"]: names["darkmagenta"],
       names["darkpurple"]: names["darkpurple"],
@@ -123,7 +151,7 @@ class Colors:
    }
 
    fills = {
-      # Fill colors by component.
+      # Component fill colors (recommended).
       "applications": names["lightpurple"],
       "backend": names["lightcoolgray"],
       "compute": names["lightgreen"],
@@ -138,7 +166,7 @@ class Colors:
       "storage": names["lightblue"],
       "user": names["lightcoolgray"],
 
-      # Fill colors by light color name, white, and transparent.
+      # Light fill colors by name plus white and transparent.
       "lightred": names["lightred"],
       "lightmagenta": names["lightmagenta"],
       "lightpurple": names["lightpurple"],
@@ -155,7 +183,21 @@ class Colors:
       "white" : names["white"],
       "none" : names["none"],
 
-      # Fill colors by light hex values.
+      # Light fill colors by number.
+      "red10": names["lightred"],
+      "magenta10": names["lightmagenta"],
+      "purple10": names["lightpurple"],
+      "blue10": names["lightblue"],
+      "cyan10": names["lightcyan"],
+      "teal10": names["lightteal"],
+      "green10": names["lightgreen"],
+      "yellow10": names["lightyellow"],
+      "orange10": names["lightorange"],
+      "coolgray10": names["lightcoolgray"],
+      "gray10": names["lightgray"],
+      "warmgray10": names["lightwarmgray"],
+
+      # Light fill colors by hex.
       names["lightred"]: names["lightred"],
       names["lightmagenta"]: names["lightmagenta"],
       names["lightpurple"]: names["lightpurple"],
