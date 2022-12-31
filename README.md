@@ -118,8 +118,8 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 | cyan | cyan50 | #1192e8 | network |
 | teal | teal50 | #009d9a | management |
 | green | green60 #198038 | compute, services |
-| yellow | yellow50 | #b28600 |
-| orange | orange50 | #eb6200 |
+| yellow | yellow50 | #b28600 | |
+| orange | orange50 | #eb6200 | |
 | coolgray | coolgray50 | #878d96 | backend, industry, location |
 | gray | gray50 |  #8d8d8d | |
 | warmgray | warmgray50 | #8f8b8b | |
