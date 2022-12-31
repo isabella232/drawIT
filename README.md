@@ -24,6 +24,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 1. Notes:
 
+- Parameters and shapes are subject to change until finalized.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change until final names are available.
 - Use component names for line color (pencolor) and fill color (bgcolor) in case color names change.
