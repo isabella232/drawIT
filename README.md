@@ -28,42 +28,42 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Use shape parameter default as shape names are subject to change until final names are available.
 - Use component names for line color (pencolor) and fill color (bgcolor) in case color names change.
 - Fill colors (bgcolor) if not specified are automatically alternated between white and light fills.
-- Solid line connectors with no arrow, single arrow, or double arrow between Nodes.
+- Connectors between nodes and clusters with no arrow, single arrow, or double arrow.
 - Planned: Enable diagram export to jpg, pdf, png, or svg directly from drawIT.
-- Planned: Enable direction parameter (shapes are currently aligned horizontally which can be extensive).
+- Planned: Enable direction parameter (shapes are currently aligned horizontally).
 - Planned: Enable specifying fill colors to override default alternation.
 - Planned: Enable badge-related parameters.
-- Planned: Enable connectors between Clusters and Nodes.
 
 2. Structure:
 
-     `from drawit import Diagram, Cluster, Node, Edge
+from drawit import Diagram, Cluster, Node, Edge
+  with Diagram(...):
+    with Cluster(...) as cluster1:
+      node1 = Node(...)
 
-         with Diagram(...):
+      with Cluster(...) as cluster2:
+        node2 = Node(...)
 
-             with Cluster(...):
+      with Cluster(...) as cluster3:
+        node3 = Node(...)
+        node4 = Node(...)
 
-                  node1 = Node(...)
+        # No arrow line between node3 and node4.
+        node3 - node4
+  
+        # Single arrow line from node4 to node3.
+        node3 << node4
+        node3 << Edge(label="arrow") << node4  
 
-                  node2 = Node(...)
+        # Single arrow line from node3 to node4.
+        node3 >> node4
+        node3 >> Edge(label="arrow") >> node4  
 
-                  # No arrow line between nodes.
-                  node1 - node2
+        # Double arrow line between node3 and node4.
+        node3 << Edge(label="arrow") >> node4  
 
-                  # Single arrow pointing to node1.
-                  node1 << node2
-
-                  # Single arrow pointing to node2.
-                  node1 >> node2
-
-                   # Single arrow with label pointing to node1.
-                  node1 << Edge(label="arrow") << node2  
-
-                   # Single arrow with label pointing to node2.
-                  node1 >> Edge(label="arrow") >> node2  
-
-                   # Double arrow with label between nodes.
-                  node1 << Edge(label="arrow") >> node2  
+      # Single arrow line from cluster2 to node1.
+      node1 << cluster2
 
 3. Diagram Parameters:
 
