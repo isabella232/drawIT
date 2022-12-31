@@ -176,11 +176,19 @@ class Diagram:
 class Cluster:
    common = None
    icons = None
-   clusterid = None
+   shapeid = None
    parentid = None
+   sourceid = None
+   targetid = None
    parent = None
+   arrow = ""
+   operator = ""
+   style = ""
+   node = None
+   edge = None
    fontname = None
    fontsize = 14
+   attributes = {}
 
    def __init__(self, 
                 label: str = "cluster", 
@@ -231,11 +239,11 @@ class Cluster:
       self.fontname = fontname
       self.fontsize = fontsize
 
-      self.clusterid = randomid()
+      self.shapeid = randomid()
 
       self.parent = getCluster()
       if self.parent:
-         self.parentid = self.parent.clusterid
+         self.parentid = self.parent.shapeid
       else:
          self.parent = None
 
@@ -248,20 +256,52 @@ class Cluster:
       return self
 
    def __exit__(self, exception_type, exception_value, traceback):
-      _clusters[self.clusterid] = self.attributes
+      _clusters[self.shapeid] = self.attributes
       if self.parent:
          setCluster(self.parent)
       return
 
+   def __sub__(self, shape = None):
+      # cluster - cluster or cluster - node or cluster - edge
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         edge = Edge(sourceid=self.shapeid, targetid=shape.shapeid, arrow="noarrow", operator="sub", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(shape, Edge)
+         shape.sourceid = self.shapeid
+         shape.arrow = "noarrow"
+         shape.operator = "sub"
+      return shape
+
+   def __lshift__(self, shape = None):
+      # shape << shape or shape << edge
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         edge = Edge(sourceid=shape.shapeid, targetid=self.shapeid, arrow="singlearrow", operator="lshift", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(shape, Edge)
+         shape.sourceid = self.shapeid
+         shape.arrow = "unknown"
+         shapee.operator = "lshift"
+      return shape
+
+   def __rshift__(self, shape = None):
+      # shape >> shape or shape >> edge
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         edge = Edge(sourceid=self.shapeid, targetid=shape.shapeid, arrow="singlearrow", operator="rshift", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(shape, Edge)
+         shape.sourceid = self.shapeid
+         shape.arrow = "unknown"
+         shape.operator = "rshift"
+      return shape
 
 class Node:
    common = None
    icons = None
-   nodeid = None
+   shapeid = None
    parentid = None
+   sourceid = None
+   targetid = None
    parent = None
    arrow = ""
    operator = ""
+   style = ""
    node = None
    edge = None
    fontname = None
@@ -317,18 +357,15 @@ class Node:
       self.fontname = fontname
       self.fontsize = fontsize
 
-      self.nodeid = randomid()
+      self.shapeid = randomid()
 
       self.parent = getCluster()
-      #if self.parent:
-      self.parentid = self.parent.clusterid
+      self.parentid = self.parent.shapeid
       setCluster(self.parent)
-      #else:
-      #   self.parent = None
 
       self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": hexpencolor, "bgcolor": hexbgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
-      _nodes[self.nodeid] = self.attributes
+      _nodes[self.shapeid] = self.attributes
 
       return
 
@@ -340,63 +377,64 @@ class Node:
    #   print("str:")
    #   return self.attributes["label"]
 
-   def __sub__(self, node = None):
+   def __sub__(self, shape = None):
       # node - node or node - edge
-      if isinstance(node, Node):
-         edge = Edge(source=self.nodeid, target=node.nodeid, arrow="noarrow", operator="sub", fontname=self.fontname, fontsize=12)
-      else:  # isinstance(node, Edge)
-         edge = node
-         edge.nodeid = self.nodeid
-         edge.arrow = "noarrow"
-         edge.operator = "sub"
-      return node
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         edge = Edge(sourceid=self.shapeid, targetid=shape.shapeid, arrow="noarrow", operator="sub", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(shape, Edge)
+         shape.sourceid = self.shapeid
+         shape.arrow = "noarrow"
+         shape.operator = "sub"
+      return shape
 
-   def __lshift__(self, node = None):
-      # node << node or node << edge
-      if isinstance(node, Node):
-         edge = Edge(source=node.nodeid, target=self.nodeid, arrow="singlearrow", operator="lshift", fontname=self.fontname, fontsize=12)
-      else:  # isinstance(node, Edge)
-         edge = node
-         edge.nodeid = self.nodeid
-         edge.arrow = "unknown"
-         edge.operator = "lshift"
-      return node
+   def __lshift__(self, shape = None):
+      # shape << shape or shape << edge
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         edge = Edge(sourceid=shape.shapeid, targetid=self.shapeid, arrow="singlearrow", operator="lshift", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(shape, Edge)
+         shape.sourceid = self.shapeid
+         shape.arrow = "singlearrow"
+         shape.operator = "lshift"
+      return shape
 
-   def __rshift__(self, node = None):
-      # node >> node or node >> edge
-      if isinstance(node, Node):
-         edge = Edge(source=self.nodeid, target=node.nodeid, arrow="singlearrow", operator="rshift", fontname=self.fontname, fontsize=12)
-      else:  # isinstance(node, Edge)
-         edge = node
-         edge.nodeid = self.nodeid
-         edge.arrow = "unknown"
-         edge.operator = "rshift"
-      return node
+   def __rshift__(self, shape = None):
+      # shape >> shape or shape >> edge
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         edge = Edge(sourceid=self.shapeid, targetid=shape.shapeid, arrow="singlearrow", operator="rshift", fontname=self.fontname, fontsize=12)
+      else:  # isinstance(shape, Edge)
+         shape.sourceid = self.shapeid
+         shape.arrow = "singlearrow"
+         shape.operator = "rshift"
+      return shape
 
 
 class Edge:
    common = None
-   edgeid = None
-   nodeid = None
+   icons = None
+   shapeid = None
+   parentid = None
    sourceid = None
    targetid = None
-   node = None
-   nodeid = None
-   arrow = None
+   parent = None
+   arrow = ""
    operator = ""
    style = ""
+   node = None
+   edge = None
+   fontname = None
+   fontsize = 14
    attributes = {}
 
    def __init__(self, 
                 label: str = "", 
                 #node: "Node" = None,
-                source: "Node" = None,
-                target: "Node" = None,
                 style: str = "solid",
-                arrow: str = "singlearrow",
-                operator: str = "",
                 fontname: str = "IBM Plex Sans",
-                fontsize: int = 12):
+                fontsize: int = 12,
+                arrow = "",
+                operator = "",
+                sourceid = None,
+                targetid = None):
 
       self.common = Common()
 
@@ -408,71 +446,65 @@ class Edge:
          self.common.printInvalidFont(fontname)
          sys_exit()
 
-      self.sourceid = source
-      self.targetid = target
+      self.sourceid = sourceid
+      self.targetid = targetid
       self.style = style
       self.arrow = arrow
       self.operator = operator
 
-      self.edgeid = randomid()
+      self.shapeid = randomid()
 
       self.attributes = {"label": label, "sourceid": self.sourceid, "targetid": self.targetid, "style": self.style, "arrow": self.arrow, "fontname": fontname, "fontsize": fontsize}
 
-      _edges[self.edgeid] = self.attributes
+      _edges[self.shapeid] = self.attributes
 
       return
 
-   def __sub__(self, node = None):
-      # edge - node
-      if isinstance(node, Node):
-         if self.nodeid != None:
-            selfnodeid = self.nodeid
-            selfarrow = self.arrow
-            selfoperator = self.operator
-
-            _edges[self.edgeid]["sourceid"] = node.nodeid
-            _edges[self.edgeid]["targetid"] = selfnodeid
-            _edges[self.edgeid]["arrow"] = selfarrow
+   def __sub__(self, shape = None):
+      # edge - shape
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         if self.sourceid != None:
+            _edges[self.shapeid]["sourceid"] = self.sourceid
+            _edges[self.shapeid]["targetid"] = shape.shapeid
+            _edges[self.shapeid]["arrow"] = self.arrow
+            _edges[self.shapeid]["operator"] = self.operator
          else:
-            # Minus has precedence over << so nodeid hasn't been set yet.
-            print("Edge.__sub__: node << edge - node not supported")
+            # Minus has precedence over << and sourceid hasn't been set.
+            # Set dummy value for source to prevent serialization error in dumpXML.
+            _edges[self.shapeid]["sourceid"] = shape.shapeid
+            _edges[self.shapeid]["targetid"] = shape.shapeid
+            _edges[self.shapeid]["arrow"] = self.arrow
+            _edges[self.shapeid]["operator"] = self.operator
+            print("Edge.__sub__: shape << edge - shape not supported")
             sys_exit()
       else:
-         print("Edge.__sub__: edge - node not supported")
+         print("Edge.__sub__: edge - shape not supported")
          sys_exit()
 
-      return node
+      return shape
 
-   def __lshift__(self, node):
-      # edge << node
-      if isinstance(node, Node):
-         #self.operator = "lshift"
-         selfnodeid = self.nodeid
-         selfarrow = self.arrow
-         selfoperator = self.operator
-
-         _edges[self.edgeid]["sourceid"] = node.nodeid
-         _edges[self.edgeid]["targetid"] = selfnodeid
-         arrow = "doublearrow" if selfoperator == "rshift" else "singlearrow" 
-         _edges[self.edgeid]["arrow"] = arrow
+   def __lshift__(self, shape = None):
+      # edge << shape
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         _edges[self.shapeid]["sourceid"] = shape.shapeid
+         _edges[self.shapeid]["targetid"] = self.sourceid
+         _edges[self.shapeid]["operator"] = self.operator
+         arrow = "doublearrow" if self.operator == "rshift" else "singlearrow" 
+         _edges[self.shapeid]["arrow"] = arrow
       else:
-         print("Edge.__lshift__: edge << node not supported")
+         print("Edge.__lshift__: edge << shape not supported")
          sys_exit()
-      return node
+      return shape
 
-   def __rshift__(self, node):
-      # edge >> node
-      if isinstance(node, Node):
-         #self.operator = "rshift"
-         selfnodeid = self.nodeid
-         selfarrow = self.arrow
-         selfoperator = self.operator
-
-         _edges[self.edgeid]["sourceid"] = selfnodeid
-         _edges[self.edgeid]["targetid"] = node.nodeid
-         arrow = "doublearrow" if selfoperator == "lshift" else "singlearrow" 
-         _edges[self.edgeid]["arrow"] = arrow
+   def __rshift__(self, shape = None):
+      # edge >> shape
+      if isinstance(shape, Cluster) or isinstance(shape, Node):
+         _edges[self.shapeid]["sourceid"] = self.sourceid
+         _edges[self.shapeid]["targetid"] = shape.shapeid 
+         _edges[self.shapeid]["operator"] = self.operator 
+         arrow = "doublearrow" if self.operator == "lshift" else "singlearrow" 
+         _edges[self.shapeid]["arrow"] = arrow
       else:
-         print("Edge.__rshift__: edge >> node not supported")
+         print("Edge.__rshift__: edge >> shape not supported")
          sys_exit()
-      return node
+      return shape
