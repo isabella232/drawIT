@@ -37,14 +37,15 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 2. Structure:
 
 from drawit import Diagram, Cluster, Node, Edge
+
   with Diagram(...):
-    with Cluster(...) as cluster1:
+    with Cluster(...):
       node1 = Node(...)
 
       with Cluster(...) as cluster2:
         node2 = Node(...)
 
-      with Cluster(...) as cluster3:
+      with Cluster(...):
         node3 = Node(...)
         node4 = Node(...)
 
