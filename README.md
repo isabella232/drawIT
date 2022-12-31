@@ -39,34 +39,34 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 from drawit import Diagram, Cluster, Node, Edge
 
-  with Diagram(...):
-
-    with Cluster(...):
-      node1 = Node(...)
-
-      with Cluster(...) as cluster2:
-        node2 = Node(...)
+    with Diagram(...):
 
       with Cluster(...):
-        node3 = Node(...)
-        node4 = Node(...)
+          node1 = Node(...)
 
-        # No arrow line between node3 and node4.
-        node3 - node4
+        with Cluster(...) as cluster2:
+            node2 = Node(...)
+
+        with Cluster(...):
+            node3 = Node(...)
+            node4 = Node(...)
+
+            # No arrow line between node3 and node4.
+            node3 - node4
   
-        # Single arrow line from node4 to node3.
-        node3 << node4
-        node3 << Edge(label="arrow") << node4  
+            # Single arrow line from node4 to node3.
+            node3 << node4
+            node3 << Edge(label="arrow") << node4  
 
-        # Single arrow line from node3 to node4.
-        node3 >> node4
-        node3 >> Edge(label="arrow") >> node4  
+            # Single arrow line from node3 to node4.
+            node3 >> node4
+            node3 >> Edge(label="arrow") >> node4  
 
-        # Double arrow line between node3 and node4.
-        node3 << Edge(label="arrow") >> node4  
+            # Double arrow line between node3 and node4.
+            node3 << Edge(label="arrow") >> node4  
 
-      # Single arrow line from cluster2 to node1.
-      node1 << cluster2
+        # Single arrow line from cluster2 to node1.
+        node1 << cluster2
 
 3. Diagram Parameters:
 
