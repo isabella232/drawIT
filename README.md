@@ -122,7 +122,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 | orange | orange50 | #eb6200 | (limited use) |
 | coolgray | coolgray50 | #878d96 | backend, industry, location |
 | gray | gray50 |  #8d8d8d | (not currently used) |
-| warmgray | warmgray50 | #8f8b8b | (notbackend, industry, location |
+| warmgray | warmgray50 | #8f8b8b | (not currently used) |
 | black | black | #000000 | user |
 
 Note: Colors can be specified by name, number, hex, or component (recommended).
