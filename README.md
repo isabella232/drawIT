@@ -29,11 +29,10 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Use shape parameter default as shape names are subject to change.
 - Use component names for line color (pencolor) and fill color (bgcolor).
 - Colors can be specified by name, number, hex, or component (recommended).
-- Fill colors (bgcolor) are automatically alternated between white and light fills.
+- Nested fill colors (bgcolor) are alternated between white and light fills.
+- Direction defaults to left-to-right (LR) changable to top-to-bottom (TB). 
 - Connectors between nodes and clusters with single or double arror or no arrow.
 - Planned: Enable diagram export to jpg, pdf, png, or svg directly from drawIT.
-- Planned: Enable direction parameter (shapes are currently aligned horizontally).
-- Planned: Enable specifying fill colors to override default alternation.
 - Planned: Enable badge-related parameters.
 
 2. Structure:

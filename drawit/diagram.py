@@ -31,7 +31,7 @@ _clusters = {} # Dictionary of clusters.
 _nodes = {}    # Dictionary of nodes.
 _edges = {}    # Dictionary of edges.
 
-DIRECTIONS = ("TB", "BT", "LR", "RL")
+DIRECTIONS = ("LR", "TB")
 OUTPUTFORMAT = ("jpg", "pdf", "png", "svg", "xml")
 NODESHAPES = ("nodel", "nodep", "compl", "compp")
 CLUSTERSHAPES = ("locl", "locp", "nodel-expanded", "nodep-expanded", "compl-expanded", "compp-expanded", "zone")
@@ -195,7 +195,7 @@ class Cluster:
                 sublabel: str = "", 
                 shape: str = "locp",
                 pencolor: str = "#1192e8",
-                bgcolor: str = None,
+                #bgcolor: str = None,
                 badgetext: str = "", 
                 badgeshape: str = None,
                 badgepencolor: str = None,
@@ -207,6 +207,8 @@ class Cluster:
 
       self.common = Common()
       self.icons = Icons(self.common)
+
+      bgcolor = None
 
       if not validDirection(direction):
          self.common.printInvalidDirection(direction)

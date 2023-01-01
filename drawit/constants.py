@@ -46,7 +46,8 @@ class ShapeSize(Enum):
 # Base Properties
 
 class BaseStyle(Enum):
-   BASIC = 'html=1;metaEdit=1;whiteSpace=wrap;image=;'
+   #BASIC = 'html=1;metaEdit=1;whiteSpace=wrap;image=;'
+   BASIC = 'html=1;metaEdit=1;image=;'
    FONT = 'fontFamily=IBM Plex Sans;fontSize=14;fontColor=#000000;'
    CONTAINER = 'container=1;collapsible=0;expand=0;recursiveResize=0;'
 

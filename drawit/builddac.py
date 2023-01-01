@@ -218,25 +218,30 @@ class BuildDAC:
    def calculateNodeGeometry(self):
       mintopspace = 60
       minshapespace = 20
-      minnodespace = 30
+      minnodespace = 60
       minnodewidth = 48
       minnodeheight = 48
       minclusterwidth = 240
       minclusterheight = 152
 
       for clusterid, attributes in self.clusters.items():
+         direction = attributes["direction"]
          childids = attributes["children"]
          childcount = len(childids)
          nodeids = attributes["nodes"]
          nodecount = len(nodeids)
          if nodecount > 0:
-            # Set node geometry.
-            if nodecount == 1 and childcount == 0:
-               # Center single node in cluster.
-               x = (minclusterwidth / 2) - (minnodewidth / 2)
-            else:
-               # Left justify first of multiple nodes in cluster.
-               x = minnodespace
+            if direction == "LR":
+               # Set node geometry.
+               if nodecount == 1 and childcount == 0:
+                  # Center single node in cluster.
+                  x = (minclusterwidth / 2) - (minnodewidth / 2)
+               else:
+                  # Left justify first of multiple nodes in cluster.
+                  x = minnodespace
+            elif direction == "TB":
+                  # Center nodes in cluster.
+                  x = (minclusterwidth / 2) - (minnodewidth / 2)
             y = mintopspace
             width = minnodewidth
             height = minnodeheight
@@ -244,14 +249,22 @@ class BuildDAC:
             for nodeid in nodeids:
                self.nodes[nodeid]["geometry"] = [x, y, width, height]
                # Future: Put long list of nodes on multiple rows.
-               x += width + minnodespace
+               if direction == "LR":
+                  x += width + minnodespace
+               elif direction == "TB":
+                  y += height + minnodespace + minshapespace
 
             # Set cluster geometry of node's parent.
             geometry = attributes["geometry"]
             x = minshapespace
             y = mintopspace
-            width = (nodecount * minnodewidth) + (nodecount * minnodespace) + minnodespace
-            height = minclusterheight + minnodeheight 
+            if direction == "LR":
+               width = (nodecount * minnodewidth) + (nodecount * minnodespace) + minnodespace
+               height = minclusterheight 
+            elif direction == "TB":
+               width = minclusterwidth  
+               height = (nodecount * minnodeheight) + (nodecount * (minnodespace + minshapespace)) + minnodespace
+
             width = max(width, minclusterwidth)
             height = max(height, minclusterheight)
             self.clusters[clusterid]["geometry"] = [x, y, width, height]
@@ -279,53 +292,82 @@ class BuildDAC:
             cluster = self.clusters[clusterid]
 
             parentid = cluster["parentid"]
+            direction = cluster["direction"]
 
             nodeids = cluster["nodes"]
             nodecount = len(nodeids)
             nodewidth = 0
-            if nodecount > 0:
-               nodewidth = (nodecount * minnodewidth) + (nodecount * minnodespace) + minnodespace
 
+            if direction == "LR":
+               saveheight = 0
+               totalwidth = 0
+               if nodecount > 0:
+                  nodewidth = (nodecount * minnodewidth) + (nodecount * minnodespace) + minnodespace
+
+            elif direction == "TB":
+               savewidth = 0
+               totalheight = 0
+               if nodecount > 0:
+                  nodeheight = (nodecount * minnodeheight) + (nodecount * minnodespace) + minnodespace
+            
             childids = cluster["children"]
             childcount = len(childids)
 
             count = 0
-            saveheight = 0
-            totalwidth = 0
 
             # Reset starting position of cluster's children.
             for childid in childids:
                count += 1
 
                child = self.clusters[childid] 
+               label = child["label"]
                geometry = child["geometry"]
                x = geometry[0]
                y = geometry[1]
                width = geometry[2]
                height = geometry[3]
 
-               if count == 1:
-                  if nodecount > 0:
-                     # Reset start position of clusters accounting for nodes.
-                     x = nodewidth
-                     self.clusters[childid]["geometry"] = [x, y, width, height]
-                     totalwidth += nodewidth + width
+               if direction == "LR":
+                  if count == 1:
+                     if nodecount > 0:
+                        # Reset start position of clusters accounting for nodes.
+                        x = nodewidth
+                        totalwidth += nodewidth + width
+                        self.clusters[childid]["geometry"] = [x, y, width, height]
+                     else:
+                        totalwidth += width + minshapespace
                   else:
+                     # Reset start position of clusters after first cluster.
+                     x = totalwidth + minshapespace
                      totalwidth += width + minshapespace
-               else:
-                  # Reset start position of clusters after first cluster.
-                  x = totalwidth + minshapespace
-                  self.clusters[childid]["geometry"] = [x, y, width, height]
-                  totalwidth += width + minshapespace
-
-               saveheight = max(height, saveheight)
+                     self.clusters[childid]["geometry"] = [x, y, width, height]
+                  saveheight = max(height, saveheight)
+               elif direction == "TB":
+                  if count == 1:
+                     if nodecount > 0:
+                        # Reset start position of clusters accounting for nodes.
+                        y = nodeheight
+                        totalheight += nodeheight + height
+                        self.clusters[childid]["geometry"] = [x, y, width, height]
+                     else:
+                        totalheight += height + minshapespace
+                  else:
+                     # Reset start position of clusters after first cluster.
+                     y = totalheight + (3 * minshapespace)
+                     totalheight += height + minshapespace
+                     self.clusters[childid]["geometry"] = [x, y, width, height]
+                  savewidth = max(width, savewidth)
 
             if childcount > 0:
                geometry = self.clusters[clusterid]["geometry"]
                x = minshapespace
                y = mintopspace
-               width = totalwidth + minshapespace 
-               height = saveheight + mintopspace + minshapespace
+               if direction == "LR":
+                  width = totalwidth + minshapespace 
+                  height = saveheight + mintopspace + minshapespace
+               elif direction =="TB":
+                  width = savewidth + (2 * minshapespace)
+                  height = totalheight + mintopspace
                width = max(width, minclusterwidth)
                height = max(height, minclusterheight)
                self.clusters[clusterid]["geometry"] = [x, y, width, height]
@@ -337,8 +379,12 @@ class BuildDAC:
                clusterid = parentid
                x = minshapespace
                y = mintopspace
-               width = totalwidth 
-               height = saveheight + mintopspace + minshapespace
+               if direction == "LR":
+                  width = totalwidth 
+                  height = saveheight + mintopspace + minshapespace
+               elif direction =="TB":
+                  width = savewidth + minshapespace + minshapespace 
+                  height = totalheight + mintopspace + minshapespace
                width = max(width, minclusterwidth)
                height = max(height, minclusterheight)
                self.clusters[clusterid]["geometry"] = [x, y, width, height]

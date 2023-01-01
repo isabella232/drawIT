@@ -1,6 +1,6 @@
 from drawit import Diagram, Cluster, Node, Edge
 
-with Diagram("slz-vsi"):
+with Diagram("slz-mixed"):
    with Cluster("IBM Cloud", icon="ibm-cloud", pencolor="network"):
       with Cluster("Region", icon="location", pencolor="location"):
          with Cluster("Management VPC", icon="virtual-private-cloud--alt", pencolor="network"):
@@ -25,17 +25,17 @@ with Diagram("slz-vsi"):
          with Cluster("Workload VPC", icon="virtual-private-cloud--alt", pencolor="network"):
             with Cluster("Zone 1", icon="data--base--alt", pencolor="location", direction="TB"):
                with Cluster("10.40.10.0/24 : VSI", icon="ibm-cloud--subnets", pencolor="network"):
-                  vsi = Node("Virtual Server", icon="instance--virtual", pencolor="compute") 
+                  vsi = Node("OpenShift Cluster", icon="logo--openshift", pencolor="compute") 
                with Cluster("10.40.20.0/24 : VPE", icon="ibm-cloud--subnets", pencolor="network"):
                   vpe = Node("Virtual Private Endpoint", icon="ibm-cloud--vpc-endpoints", pencolor="network") 
             with Cluster("Zone 2", icon="data--base--alt", pencolor="location", direction="TB"):
                with Cluster("10.50.10.0/24 : VSI", icon="ibm-cloud--subnets", pencolor="network"):
-                  vsi = Node("Virtual Server", icon="instance--virtual", pencolor="compute") 
+                  vsi = Node("OpenShift Cluster", icon="logo--openshift", pencolor="compute") 
                with Cluster("10.50.20.0/24 : VPE", icon="ibm-cloud--subnets", pencolor="network"):
                   vpe = Node("Virtual Private Endpoint", icon="ibm-cloud--vpc-endpoints", pencolor="network") 
             with Cluster("Zone 3", icon="data--base--alt", pencolor="location", direction="TB"):
                with Cluster("10.60.10.0/24 : VSI", icon="ibm-cloud--subnets", pencolor="network"):
-                  vsi = Node("Virtual Server", icon="instance--virtual", pencolor="compute") 
+                  vsi = Node("OpenShift Cluster", icon="logo--openshift", pencolor="compute") 
                with Cluster("10.60.20.0/24 : VPE", icon="ibm-cloud--subnets", pencolor="network"):
                   vpe = Node("Virtual Private Endpoint", icon="ibm-cloud--vpc-endpoints", pencolor="network") 
 
