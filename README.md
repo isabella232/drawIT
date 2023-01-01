@@ -109,7 +109,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 6. Medium Line Colors (pencolor):
 
-| Name | Number | Hex | Components |
+| Name | Number | Hex | Component |
 | --- | --- | --- | --- |
 | red | red50 | #fa4d56 | security |
 | magenta | magenta50 | #ee5396 | devops |
@@ -118,18 +118,57 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 | cyan | cyan50 | #1192e8 | network |
 | teal | teal50 | #009d9a | management |
 | green | green60 | #198038 | compute, services |
-| yellow | yellow50 | #b28600 | |
-| orange | orange50 | #eb6200 | |
+| yellow | yellow50 | #b28600 | (limited use) |
+| orange | orange50 | #eb6200 | (limited use) |
 | coolgray | coolgray50 | #878d96 | backend, industry, location |
-| gray | gray50 |  #8d8d8d | |
-| warmgray | warmgray50 | #8f8b8b | |
+| gray | gray50 |  #8d8d8d | (not currently used) |
+| warmgray | warmgray50 | #8f8b8b | (notbackend, industry, location |
 | black | black | #000000 | user |
+
+Note: Colors can be specified by name, number, hex, or component (recommended).
+
+7. Dark Line Colors (pencolor):
+
+Note: Colors can be specified by name, number, hex, or component (recommended).
+
+| Name | Number | Hex | Component |
+| --- | --- | --- | --- |
+| darkred | red70 | #a2191f |  (not currently used) |
+| darkmagenta | magenta70 | #9f1853 | (not currently used) |
+| darkpurple | purple70 | #6929c4 | (not currently used) |
+| darkblue | blue80 | #002d9c | (not currently used) |
+| darkcyan | cyan70 | #00539a | (not currently used) |
+| darkteal | teal70 | #005d5d | (not currently used) |
+| darkgreen | grean80 | #044317 | (not currently used) |
+| darkyellow | yellow70 | #684e00 | (limited use) |
+| darkorange | orange70 | #8a3800 | (limited use) |
+| darkcoolgray | coolgray70 | #4d5358 | (not currently used) |
+| darkgray | gray70 | #525252 | (not currently used) |
+| darkwarmgray | warmgray70 | #565151 | (not currently used) |
+
+Note: Colors can be specified by name, number, hex, or component (recommended).
 
 7. Fill Colors (bgcolor):
 
-- Component name (recommended)
-- Color name
-- Hex value
+| Name | Number | Hex | Component |
+| --- | --- | --- | --- |
+
+| lightred | red10 | #fff1f1 | security |
+| lightmagenta | magenta10 | #fff0f7 | devops |
+| lightpurple | purple10 | #f6f2ff | applications |
+| lightblue | blue10 | #edf5ff | data, storage |
+| lightcyan | cyan10 | #e5f6ff | network |
+| lightteal | teal10 | #d9fbfb | management |
+| lightgreen | green10 | #defbe6 | compute, services |
+| lightyellow | yellow10 | #fcf4d6 | (limited use) |
+| lightorange | orange10 | #fff2e8 | (limited use) |
+| lightcoolgray | coolgray10 | #f2f4f8 | backend, industry, location |
+| lightgray | gray10 | #f4f4f4 | (not currently used) |
+| lightwarmgray | warmgray10 | #f7f3f2 | (not currently used) |
+| white | white | #ffffff | (alternate fills) |
+| none | none | none | zone shapes |
+
+Note: Colors can be specified by name, number, hex, or component (recommended).
 
 7. Font Names:
 
