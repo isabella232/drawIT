@@ -28,6 +28,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change.
 - Use component names for line color (pencolor) and fill color (bgcolor).
+- Colors can be specified by name, number, hex, or component (recommended).
 - Fill colors (bgcolor) are automatically alternated between white and light fills.
 - Connectors between nodes and clusters with single or double arror or no arrow.
 - Planned: Enable diagram export to jpg, pdf, png, or svg directly from drawIT.
@@ -125,8 +126,6 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 | warmgray | warmgray50 | #8f8b8b | (not currently used) |
 | black | black | #000000 | user |
 
-Note: Colors can be specified by name, number, hex, or component (recommended).
-
 7. Dark Line Colors (pencolor):
 
 | Name | Number | Hex | Component |
@@ -143,8 +142,6 @@ Note: Colors can be specified by name, number, hex, or component (recommended).
 | darkcoolgray | coolgray70 | #4d5358 | (not currently used) |
 | darkgray | gray70 | #525252 | (not currently used) |
 | darkwarmgray | warmgray70 | #565151 | (not currently used) |
-
-Note: Colors can be specified by name, number, hex, or component (recommended).
 
 7. Fill Colors (bgcolor):
 
@@ -164,8 +161,6 @@ Note: Colors can be specified by name, number, hex, or component (recommended).
 | lightwarmgray | warmgray10 | #f7f3f2 | (not currently used) |
 | white | white | #ffffff | (alternating fills) |
 | none | none | none | (zone fills) |
-
-Note: Colors can be specified by name, number, hex, or component (recommended).
 
 7. Font Names:
 
