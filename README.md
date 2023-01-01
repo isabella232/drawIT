@@ -129,8 +129,6 @@ Note: Colors can be specified by name, number, hex, or component (recommended).
 
 7. Dark Line Colors (pencolor):
 
-Note: Colors can be specified by name, number, hex, or component (recommended).
-
 | Name | Number | Hex | Component |
 | --- | --- | --- | --- |
 | darkred | red70 | #a2191f |  (not currently used) |
@@ -152,7 +150,6 @@ Note: Colors can be specified by name, number, hex, or component (recommended).
 
 | Name | Number | Hex | Component |
 | --- | --- | --- | --- |
-
 | lightred | red10 | #fff1f1 | security |
 | lightmagenta | magenta10 | #fff0f7 | devops |
 | lightpurple | purple10 | #f6f2ff | applications |
@@ -165,8 +162,8 @@ Note: Colors can be specified by name, number, hex, or component (recommended).
 | lightcoolgray | coolgray10 | #f2f4f8 | backend, industry, location |
 | lightgray | gray10 | #f4f4f4 | (not currently used) |
 | lightwarmgray | warmgray10 | #f7f3f2 | (not currently used) |
-| white | white | #ffffff | (alternate fills) |
-| none | none | none | zone shapes |
+| white | white | #ffffff | (alternating fills) |
+| none | none | none | (zone fills) |
 
 Note: Colors can be specified by name, number, hex, or component (recommended).
 
