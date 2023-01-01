@@ -110,7 +110,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 6. Medium Line Colors (pencolor):
 
-| Name | Number | Hex | Component |
+| Name | Number | Hex | Component (Recommended) |
 | --- | --- | --- | --- |
 | red | red50 | #fa4d56 | security |
 | magenta | magenta50 | #ee5396 | devops |
@@ -145,7 +145,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 7. Fill Colors (bgcolor):
 
-| Name | Number | Hex | Component |
+| Name | Number | Hex | Component (Recommended) |
 | --- | --- | --- | --- |
 | lightred | red10 | #fff1f1 | security |
 | lightmagenta | magenta10 | #fff0f7 | devops |
