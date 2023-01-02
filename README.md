@@ -75,7 +75,6 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 - name
 - filename
-- direction = horizontal or vertical - not currently enabled
 - outformat = jpg, pdf, png, svg, xml - not currently enabled
 
 4. Cluster Parameters:
@@ -90,7 +89,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
 - icon = name of icon as defined in IBM Design Center
-- direction = horizontal or vertical - not currently enabled
+- direction = left-to-right (LR) or top-to-bottom (TB)
 - fontname = IBM Plex Sans fonts
 - fontsize = numeric value, defaults to 14
 
@@ -106,7 +105,6 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
 - icon = name of icon as defined in IBM Design Center
-- direction = horizontal or vertical - not currently enabled
 - fontname = IBM Plex Sans fonts
 - fontsize = numeric value, defaults to 14
 
