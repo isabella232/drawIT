@@ -35,6 +35,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Icon names are defined in IBM Design Center
 - Planned: Direct export to jpg, pdf, png, or svg.
 - Planned: Support icons not from IBM Design Center.
+- Planned: Improve support for long labels and sublabels.
 - Planned: Badges.
 
 2. Structure:
