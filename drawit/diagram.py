@@ -16,12 +16,13 @@
 from os import path
 from sys import exit as sys_exit
 from contextvars import ContextVar
+from enum import Enum
 from uuid import uuid4
 #from typing import List, Union, Dict
 
 from .colors import Colors
 from .common import Common
-from .icons import Icons
+from .iconsdac import Icons
 from .builddac import BuildDAC
 
 _diagram = ContextVar("diagram")
@@ -31,10 +32,12 @@ _clusters = {} # Dictionary of clusters.
 _nodes = {}    # Dictionary of nodes.
 _edges = {}    # Dictionary of edges.
 
-DIRECTIONS = ("LR", "TB")
+DIRECTIONS = ("LR", "TB")  # left-to-right, top-to-bottom
+ALTERNATEFILLS = ("WL", "LW", "UD")  # white-to-light, light-to-white, user-defined with bgcolor
+NODESHAPES = ("component", "node")
+CLUSTERSHAPES = ("component", "location", "node", "zone")
+SHAPETYPES = ("logical", "prescribed")
 OUTPUTFORMAT = ("jpg", "pdf", "png", "svg", "xml")
-NODESHAPES = ("nodel", "nodep", "compl", "compp")
-CLUSTERSHAPES = ("locl", "locp", "nodel-expanded", "nodep-expanded", "compl-expanded", "compp-expanded", "zone")
 FONTS = ("ibm plex sans", "ibm plex sans arabic", "ibm plex sans devanagari", "ibm plex sans hebrew", "ibm plex sans jp", "ibm plex sans kr", "ibm plex sans thai")
 
 EDGESTYLES = ("solid", "dashed")
@@ -74,6 +77,10 @@ def randomid():
 def validDirection(direction):
    return direction.upper() in DIRECTIONS
 
+# Valid output format must be one of the supported formats.
+def validOutputFormat(outformat):
+   return outformat.lower() in OUTPUTFORMAT
+
 # Valid font must be and an IBM Plex Sans font.
 def validFont(font):
    return font.lower() in FONTS
@@ -85,6 +92,14 @@ def validClusterShape(shape):
 # Valid node shape must be a valid IBM2 collapsed shape.
 def validNodeShape(shape):
    return shape.lower() in NODESHAPES
+
+# Valid shape type must be logical or prescribed.
+def validShapeType(shapetype):
+   return shapetype.lower() in SHAPETYPES
+
+# Valid alternate fill must be a valid alternating fill or user-defined.
+def validAlternateFill(alternate):
+   return alternate.upper() in ALTERNATEFILLS
 
 # Valid edge style must be one of the basic or extended edge styles (planned). 
 def validEdgeStyle(style):
@@ -126,12 +141,15 @@ class Diagram:
    data = {}
    diagramid = None
    diagram = None
+   outformat = None
    name = ""
 
    def __init__(self, 
                 name: str = "",
                 filename: str = "",
                 direction: str = "LR",
+                alternate: str = "WL",
+                shapetype: str = "prescribed",
                 outformat: str = "png"):
       self.name = name if name else "diagram"
       self.filename = filename if filename else self.name
@@ -141,13 +159,38 @@ class Diagram:
 
       self.diagramid = randomid()
 
-      if not self.validDirection(direction):
+      if not validDirection(direction):
          self.common.printInvalidDirection(direction)
          sys_exit()
 
-      if not self.validOutputFormat(outformat):
+      if not validAlternateFill(alternate):
+         self.common.printInvalidAlternateFill(alternate)
+         sys_exit()
+
+      if not validShapeType(shapetype):
+         self.common.printInvalidShapeType(shapetype)
+         sys_exit()
+
+      if not validOutputFormat(outformat):
          self.common.printInvalidOutputFormat(outformat)
          sys_exit()
+
+      if direction == "LR":
+         self.common.setDirectionLR()
+      elif direction == "TB":
+         self.common.setDirectionTB()
+
+      if alternate == "WL":
+         self.common.setAlternateWL()
+      elif alternate == "LW":
+         self.common.setAlternateLW()
+      elif alternate == "UD":
+         self.common.setAlternateUD()
+
+      if shapetype == "logical":
+         self.common.setLogicalShapes()
+      elif shapetype == "prescribed":
+         self.common.setPrescribedShapes()
 
       return
 
@@ -165,12 +208,6 @@ class Diagram:
       setDiagram(None)
       setCluster(None)
       return
-
-   def validDirection(self, direction):
-      return direction.upper() in DIRECTIONS
-
-   def validOutputFormat(self, outformat):
-      return outformat.lower() in OUTPUTFORMAT
 
 
 class Cluster:
@@ -193,22 +230,20 @@ class Cluster:
    def __init__(self, 
                 label: str = "cluster", 
                 sublabel: str = "", 
-                shape: str = "locp",
-                pencolor: str = "#1192e8",
-                #bgcolor: str = None,
-                badgetext: str = "", 
-                badgeshape: str = None,
-                badgepencolor: str = None,
-                badgebgcolor: str = None,
+                shape: str = "location",
+                pencolor: str = "",
+                bgcolor: str = "",
                 icon: str = "undefined",
                 direction: str = "LR", 
                 fontname: str = "IBM Plex Sans",
-                fontsize: int = 14):
+                fontsize: int = 14,
+                badgetext: str = "", 
+                badgeshape: str = None,
+                badgepencolor: str = None,
+                badgebgcolor: str = None):
 
       self.common = Common()
       self.icons = Icons(self.common)
-
-      bgcolor = None
 
       if not validDirection(direction):
          self.common.printInvalidDirection(direction)
@@ -226,13 +261,17 @@ class Cluster:
          self.common.printInvalidIcon(icon)
          sys_exit()
 
+      if pencolor == "":
+         iconname, pencolor = self.icons.getIcon(icon)
+         # Ignore iconname, getIcon doesn't have the logical/prescribed setting from Diagram.
+
       hexpencolor = validLineColor(pencolor)
       if hexpencolor == None:
          self.common.printInvalidLineColor(pencolor)
          sys_exit()
 
       hexbgcolor = "#ffffff"
-      if bgcolor != None:
+      if self.common.isAlternateUD() and bgcolor != "":
          hexbgcolor = validFillColor(hexpencolor, bgcolor)
          if hexbgcolor == None:
             self.common.printInvalidFillColor(bgcolor)
@@ -313,17 +352,17 @@ class Node:
    def __init__(self, 
                 label: str = "node", 
                 sublabel: str = "", 
-                shape: str = "nodep",
-                pencolor: str = "#1192e8",
-                bgcolor: str = None,
-                badgetext: str = "", 
-                badgeshape: str = None,
-                badgepencolor: str = None,
-                badgebgcolor: str = None,
+                shape: str = "node",
+                pencolor: str = "",
+                bgcolor: str = "",
                 icon: str = "undefined",
                 direction: str = "LR",
                 fontname: str = "IBM Plex Sans",
-                fontsize: int = 14):
+                fontsize: int = 14,
+                badgetext: str = "", 
+                badgeshape: str = None,
+                badgepencolor: str = None,
+                badgebgcolor: str = None):
 
       self.common = Common()
       self.icons = Icons(self.common)
@@ -344,13 +383,17 @@ class Node:
          self.common.printInvalidIcon(icon)
          sys_exit()
 
+      if pencolor == "":
+         iconname, pencolor = self.icons.getIcon(icon)
+         # Ignore iconname, getIcon doesn't have the logical/prescribed setting from Diagram.
+
       hexpencolor = validLineColor(pencolor)
       if hexpencolor == None:
          self.common.printInvalidLineColor(pencolor)
          sys_exit()
 
       hexbgcolor = ""
-      if bgcolor != None:
+      if bgcolor != "":
          hexbgcolor = validFillColor(hexpencolor, bgcolor)
          if hexbgcolor == None:
             self.common.printInvalidFillColor(bgcolor)

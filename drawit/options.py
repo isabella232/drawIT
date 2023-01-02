@@ -31,6 +31,15 @@ class InputType(Enum):
    JSON = 'json'
    YAML = 'yaml'
 
+class AlternateFills(Enum):
+   WL = 'white-to-light'
+   LW = 'light-to-white'
+   UD = 'user-defined'
+
+class Directions(Enum):
+   LR = 'left-to-right'
+   TB = 'top-to-bottom'
+
 class OutputSplit(Enum):
    COMBINE = 'combine'
    SEPARATE = 'separate'
@@ -76,6 +85,7 @@ class Options:
    outputLayout = None
    outputLinks = None
    designatedVPC = None
+   alternateFills = None
    allicons = False
 
    def __init__(self, toolName):
@@ -83,6 +93,7 @@ class Options:
       self.runMode = RunMode.BATCH
       self.inputType = InputType.JSON
       self.region = Regions.ALL
+      self.alternateFills = AlternateFills.WL
 
       self.inputFile = 'input.json'
       self.inputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
@@ -254,6 +265,36 @@ class Options:
 
    def isPrescribedShapes(self):
       return self.outputShapes == OutputShapes.PRESCRIBED
+
+   def setAlternateWL(self):
+      self.alternateFills = AlternateFills.WL 
+
+   def setAlternateLW(self):
+      self.alternateFills = AlternateFills.LW 
+
+   def setAlternateUD(self):
+      self.alternateFills = AlternateFills.UD 
+
+   def isAlternateWL(self):
+      return self.alternateFills == AlternateFills.WL 
+
+   def isAlternateLW(self):
+      return self.alternateFills == AlternateFills.LW 
+
+   def isAlternateUD(self):
+      self.alternateFills == AlternateFills.UD 
+
+   def setDirectionLR(self):
+      self.direction = Directions.LR 
+
+   def setDirectionTB(self):
+      self.direction = Directions.TB 
+
+   def isDirectionLR(self):
+      return self.direction == Directions.LR 
+
+   def isDirectionTB(self):
+      return self.direction == Directions.TB 
 
    def getOutputShapes(self):
       return self.outputShapes

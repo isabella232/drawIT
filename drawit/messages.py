@@ -71,6 +71,8 @@ class Messages:
    invalidIconMessage = '(Error) Invalid icon: %s'
    invalidClusterShapeMessage = '(Error) Invalid cluster shape: %s'
    invalidNodeShapeMessage = '(Error) Invalid node shape: %s'
+   invalidShapeFormMessage = '(Error) Invalid shape form: %s'
+   invalidAlternateFillMessage = '(Error) Invalid alternate fill: %s'
    invalidEdgeStyleMessage = '(Error) Invalid edge style: %s'
    invalidLineColorMessage = '(Error) Invalid line color: %s'
    invalidFillColorMessage = '(Error) Invalid fill color: %s'
@@ -204,6 +206,12 @@ class Messages:
 
    def printInvalidNodeShape(self, shape):
       self.printError(self.invalidNodeShapeMessage % shape)
+
+   def printInvalidShapeForm(self, form):
+      self.printError(self.invalidShapeFormMessage % form)
+
+   def printInvalidAlternateFill(self, alternate):
+      self.printError(self.invalidAlternateFillMessage % alternate)
 
    def printInvalidEdgeStyle(self, style):
       self.printError(self.invalidEdgeStyleMessage % style)

@@ -20,7 +20,7 @@ from .common import Common
 
 from .constants import ShapeKind, ShapeStyle
 from .elements import Elements
-from .icons import Icons
+from .iconsdac import Icons
 
 class Types:
    common = None
@@ -88,18 +88,21 @@ class Types:
       shape = node["shape"].lower()
       if shape == "actor":
          style = ShapeStyle.ACTOR.value
-      elif shape == "compl":
-         style = ShapeStyle.LOGICAL_COMPONENT.value
-      elif shape == "compp":
-         style = ShapeStyle.PRESCRIBED_COMPONENT.value
-      elif shape == "nodel":
-         style = ShapeStyle.LOGICAL_NODE.value
-      elif shape == "nodep":
-         style = ShapeStyle.PRESCRIBED_NODE.value
-      elif shape == "locl":
-         style = ShapeStyle.LOGICAL_LOCATION.value
-      elif shape == "locp":
-         style = ShapeStyle.PRESCRIBED_LOCATION.value
+      elif shape == "component":
+         if self.common.isLogicalShapes():
+            style = ShapeStyle.LOGICAL_COMPONENT.value
+         else:
+            style = ShapeStyle.PRESCRIBED_COMPONENT.value
+      elif shape == "node":
+         if self.common.isLogicalShapes():
+            style = ShapeStyle.LOGICAL_NODE.value
+         else:
+            style = ShapeStyle.PRESCRIBED_NODE.value
+      elif shape == "location":
+         if self.common.isLogicalShapes():
+            style = ShapeStyle.LOGICAL_LOCATION.value
+         else:
+             style = ShapeStyle.PRESCRIBED_LOCATION.value
       elif shape == "zone":
          style = ShapeStyle.ZONE.value
       else:
@@ -125,7 +128,9 @@ class Types:
       parentid = node["parentid"]
       parentid = '1' if parentid == None else parentid
 
-      iconname = node["icon"]
+      #iconname = node["icon"]
+      tempname = node["icon"]
+      iconname, tempcolor = self.icons.getIcon(tempname)
 
       shapelabel = "<b style='font-weight:600'>%Primary-Label%</b><br>%Secondary-Text%"
       labelsize = 30

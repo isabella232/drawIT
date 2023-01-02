@@ -35,9 +35,12 @@ class BuildDAC:
    cloudname = ""
    clusters = {}
    nodes = {}
-   links = {}
+   edges = {}
+   #links = {}
    tops = []
    bottoms = []
+   direction = ""
+   alternatebg = ""
 
    def __init__(self, common, clusters, nodes, edges):
       self.common = common
@@ -49,7 +52,10 @@ class BuildDAC:
 
       self.addKeys()
       self.addChildren()
-      self.alternateFills()
+
+      if not self.common.isAlternateUD():
+         self.alternateFills()
+
       self.addNodes()
       self.calculateNodeGeometry()
       self.calculateClusterGeometry()
@@ -396,14 +402,25 @@ class BuildDAC:
       if flag:
          if attributes["shape"].upper() == "ZONE":
             attributes["bgcolor"] = "none"
+            flag = False
          else:
+            if self.common.isAlternateWL():
+               pencolor = attributes["pencolor"]
+               hexvalue = Colors.lines[pencolor]
+               fillname = "light" + Colors.names[hexvalue]
+               hexvalue = Colors.names[fillname]
+               attributes["bgcolor"] = hexvalue
+            elif self.common.isAlternateLW():
+               attributes["bgcolor"] = "#ffffff"
+      else:
+         if self.common.isAlternateLW():
             pencolor = attributes["pencolor"]
             hexvalue = Colors.lines[pencolor]
             fillname = "light" + Colors.names[hexvalue]
             hexvalue = Colors.names[fillname]
             attributes["bgcolor"] = hexvalue
-      else:
-         attributes["bgcolor"] = "#ffffff"
+         elif self.common.isAlternateWL():
+            attributes["bgcolor"] = "#ffffff"
 
       children = attributes["children"]
       for child in children:
@@ -414,6 +431,16 @@ class BuildDAC:
    def alternateFills(self):
       for top in self.tops:
          attributes = self.clusters[top]
+
+         if self.common.isAlternateLW():
+            pencolor = attributes["pencolor"]
+            hexvalue = Colors.lines[pencolor]
+            fillname = "light" + Colors.names[hexvalue]
+            hexvalue = Colors.names[fillname]
+            attributes["bgcolor"] = hexvalue
+         elif self.common.isAlternateWL():
+            attributes["bgcolor"] = "#ffffff"
+
          children = attributes["children"]
          for child in children:
             self.alternateChild(child, True)

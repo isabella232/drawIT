@@ -262,7 +262,37 @@ class Common:
       return self.options.isLogicalShapes()
 
    def isPrescribedShapes(self):
-      return self.options.isPrescribedtShapes()
+      return self.options.isPrescribedShapes()
+
+   def setAlternateWL(self):
+      self.options.setAlternateWL()
+
+   def setAlternateLW(self):
+      self.options.setAlternateLW()
+
+   def setAlternateUD(self):
+      self.options.setAlternateUD()
+
+   def isAlternateWL(self):
+      return self.options.isAlternateWL()
+
+   def isAlternateLW(self):
+      return self.options.isAlternateLW()
+
+   def isAlternateUD(self):
+      return self.options.isAlternateUD()
+
+   def setDirectionLR(self):
+      self.options.setDirectionLR()
+
+   def setDirectionTB(self):
+      self.options.setDirectionTB()
+
+   def isDirectionLR(self):
+      return self.options.isDirectionLR()
+
+   def isDirectionTB(self):
+      return self.options.isDirectionTB()
 
    def getOutputShapes(self):
       return self.options.getOutputShapes()
@@ -397,6 +427,12 @@ class Common:
 
    def printInvalidNodeShape(self, shape):
       self.messages.printInvalidNodeShape(shape)
+
+   def printInvalidShapeForm(self, form):
+      self.messages.printInvalidShapeForm(form)
+
+   def printInvalidAlternateFill(self, alternate):
+      self.messages.printInvalidAlternateFill(alternate)
 
    def printInvalidEdgeStyle(self, style):
       self.messages.printInvalidEdgeStyle(style)
