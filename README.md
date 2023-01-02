@@ -27,11 +27,11 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Externals are subject to change until finalized.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change.
-- Use component names for line color (pencolor) and fill color (bgcolor).
-- Colors can be specified by name, number, hex, or component (recommended).
-- Nested fill colors (bgcolor) are alternated between white and light fills.
-- Direction defaults to left-to-right (LR) changable to top-to-bottom (TB). 
-- Connectors between nodes and clusters with single or double arrow or no arrow.
+- Use component names for line (pencolor)  and fill (bgcolor) colors.
+- Colors can be specified by name, number, hex, or component.
+- Alternating nested fill colors (bgcolor) bbetween white and light.
+- Direction of default left-to-right (LR) or top-to-bottom (TB). 
+- Connectors between nodes and clusters with or without arrows.
 - Icon names are defined in IBM Design Center
 - Planned: Direct export to jpg, pdf, png, or svg.
 - Planned: Support icons not from IBM Design Center.
