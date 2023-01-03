@@ -7,7 +7,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 ## Use Cases
 
-1. Code-to-Diagram: 
+1. Code-to-Diagram (subject to change): 
   - Refer to examples folder.
   - Input is python code.
   - Output is diagrams.net xml file.
@@ -27,11 +27,12 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Externals are subject to change until finalized.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change.
-- Use component names for line (pencolor)  and fill (bgcolor) colors.
-- Colors can be specified by name, number, hex, or component.
-- Alternating nested fill colors (bgcolor) between white and light.
-- Direction of default left-to-right (LR) or top-to-bottom (TB). 
-- Connectors between nodes and clusters with or without arrows.
+- Line colors (pencolor) are derived from the icon used for simplicity.
+- Specifying line color (pencolor) overrides the derived color.
+- Colors are specified by name, number, hex, or component (recommended).
+- Nested fill colors alternate between white and light starting with white which is changable to start with light or user-defined.
+- Direction is left-to-right changable to top-to-bottom. 
+- Connectors between nodes and clusters with or without arrowheads.
 - Planned: Direct export to jpg, pdf, png, or svg.
 - Planned: Support icons not from IBM Design Center.
 - Planned: Improve support for long labels and sublabels.
@@ -114,7 +115,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 6. Medium Line Colors (pencolor):
 
-| Name | Number | Hex | Component (Recommended) |
+| Name | Number | Hex | Component |
 | --- | --- | --- | --- |
 | red | red50 | #fa4d56 | security |
 | magenta | magenta50 | #ee5396 | devops |
@@ -149,7 +150,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 7. Fill Colors (bgcolor):
 
-| Name | Number | Hex | Component (Recommended) |
+| Name | Number | Hex | Component |
 | --- | --- | --- | --- |
 | lightred | red10 | #fff1f1 | security |
 | lightmagenta | magenta10 | #fff0f7 | devops |
