@@ -32,7 +32,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Colors are specified by name, number, hex, or component (recommended).
 - Nested fill colors alternate between white and light starting with white which is changable to start with light or user-defined.
 - Direction is left-to-right changable to top-to-bottom. 
-- Connectors between nodes and clusters with or without arrowheads.
+- Connectors can be defined between nodes and clusters with or without arrowheads.
 - Planned: Direct export to jpg, pdf, png, or svg.
 - Planned: Support icons not from IBM Design Center.
 - Planned: Improve support for long labels and sublabels.
