@@ -1,7 +1,7 @@
 from drawit import Diagram, Cluster, Node, Edge
 
 with Diagram("slz-vsi"):
-   with Cluster("IBM Cloud", icon="cloud"):
+   with Cluster("Cloud", icon="cloud"):
       with Cluster("Region", icon="region"):
          with Cluster("Management VPC", icon="vpc"):
             with Cluster("Zone 1", icon="zone", direction="TB"):

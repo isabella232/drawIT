@@ -32,7 +32,6 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Alternating nested fill colors (bgcolor) between white and light.
 - Direction of default left-to-right (LR) or top-to-bottom (TB). 
 - Connectors between nodes and clusters with or without arrows.
-- Icon names are as defined in IBM Design Center
 - Planned: Direct export to jpg, pdf, png, or svg.
 - Planned: Support icons not from IBM Design Center.
 - Planned: Improve support for long labels and sublabels.
@@ -75,41 +74,43 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 - name
 - filename
-- direction = set direction for all shapes - not currently enabled
-- alternate = white-to-light (WL), light-to-white (LW), user-defined (UD)
-- shapetype = logical or prescribed
-- outformat = jpg, pdf, png, svg, xml - not currently enabled
+- direction = LR (left-to-right), TB (top-to-bottom) for all shapes - not currently enabled
+- alternate = WHITE (white-to-light), LIGHT (light-to-white, USER (user-defined)
+- provider = ANY (logical), IBM (prescribed)
+- outformat = JPG, PDF, PNG, SVG, XML - not currently enabled
 
 4. Cluster Parameters:
 
 - label = primary label
 - sublabel = secondary text
-- shape = expanded node/component/location either logical/prescribed or zone
+- icon = name of icon
+- shape = COMPONENT, LOCATION, NODE, ZONE
 - pencolor = medium and dark line colors from IBM Color Palette
 - bgcolor = light fill colors from IBM Color Palette or white or transparent
+- direction = LR, TB - for nested shapes
+- alternate = WHITE, LIGHT, USER - for nested clusters, not currently enabled
+- provider = ANY, IBM - for nested shapes, not currently enabled
+- fontname = IBM Plex Sans fonts
+- fontsize = numeric value, defaults to 14
 - badgetext = not currently enabled, fontsize is 12
 - badgeshape = not currently enabled
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
-- icon = name of icon as defined in IBM Design Center
-- direction = left-to-right (LR) or top-to-bottom (TB)
-- fontname = IBM Plex Sans fonts
-- fontsize = numeric value, defaults to 14
 
 5. Node Parameters:
 
 - label = primary label
 - sublabel = secondary text
-- shape = collapsed node/component either logical/prescribed
+- icon = name of icon
+- shape = COMPONENT, NODE
 - pencolor = medium and dark line colors from IBM Color Palette
 - bgcolor = light fill colors from IBM Color Palette or white or transparent
+- fontname = IBM Plex Sans fonts
+- fontsize = numeric value, defaults to 14
 - badgetext = not currently enabled, fontsize is 12
 - badgeshape = not currently enabled
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
-- icon = name of icon as defined in IBM Design Center
-- fontname = IBM Plex Sans fonts
-- fontsize = numeric value, defaults to 14
 
 6. Medium Line Colors (pencolor):
 

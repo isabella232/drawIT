@@ -35,11 +35,10 @@ _edges = {}    # Dictionary of edges.
 DIRECTIONS = ("LR", "TB")  # left-to-right, top-to-bottom
 ALTERNATES = ("WHITE", "LIGHT", "USER")  # white-to-light, light-to-white, user-defined with bgcolor
 PROVIDERS = {"ANY", "IBM"}  # ANY corresponds to Logical, all others are Prescribed.
-NODESHAPES = ("component", "node")
-CLUSTERSHAPES = ("component", "location", "node", "zone")
-SHAPETYPES = ("logical", "prescribed")
-OUTPUTFORMAT = ("jpg", "pdf", "png", "svg", "xml")
-FONTS = ("ibm plex sans", "ibm plex sans arabic", "ibm plex sans devanagari", "ibm plex sans hebrew", "ibm plex sans jp", "ibm plex sans kr", "ibm plex sans thai")
+NODESHAPES = ("COMPONENT", "NODE")
+CLUSTERSHAPES = ("COMPONENT", "LOCATION", "NODE", "ZONE")
+OUTPUTFORMAT = ("JPG", "PDF", "PNG", "SVG", "XML")
+FONTS = ("IBM PLEX SANS", "IBM PLEX SANS ARABIC", "IBM PLEX SANS DEVANAGARI", "IBM PLEX SANS HEBREW", "IBM PLEX SANS JP", "IBM PLEX SANS KR", "IBM PLEX SANS THAI")
 
 EDGESTYLES = ("solid", "dashed")
 EXTENDED_EDGESTYLES = {  
@@ -88,27 +87,23 @@ def validProvider(provider):
 
 # Valid output format must be one of the supported formats.
 def validOutputFormat(outformat):
-   return outformat.lower() in OUTPUTFORMAT
+   return outformat.upper() in OUTPUTFORMAT
 
 # Valid font must be and an IBM Plex Sans font.
 def validFont(font):
-   return font.lower() in FONTS
+   return font.upper() in FONTS
 
 # Valid cluster shape must be a valid IBM2 expanded shape.
 def validClusterShape(shape):
-   return shape.lower() in CLUSTERSHAPES
+   return shape.upper() in CLUSTERSHAPES
 
 # Valid node shape must be a valid IBM2 collapsed shape.
 def validNodeShape(shape):
-   return shape.lower() in NODESHAPES
-
-# Valid shape type must be logical or prescribed.
-def validShapeType(shapetype):
-   return shapetype.lower() in SHAPETYPES
+   return shape.upper() in NODESHAPES
 
 # Valid edge style must be one of the basic or extended edge styles (planned). 
 def validEdgeStyle(style):
-   return style.lower() in EDGESTYLES
+   return style.upper() in EDGESTYLES
 
 # Valid line color must be from IBM Color Palette and can be component name, color name, or hex value.
 def validLineColor(pencolor):
@@ -155,7 +150,7 @@ class Diagram:
                 direction: str = "LR",
                 alternate: str = "WHITE",
                 provider: str = "IBM",
-                outformat: str = "png"):
+                outformat: str = "PNG"):
       self.name = name if name else "diagram"
       self.filename = filename if filename else self.name
 
@@ -233,9 +228,9 @@ class Cluster:
    attributes = {}
 
    def __init__(self, 
-                label: str = "cluster", 
+                label: str = "Cluster", 
                 sublabel: str = "", 
-                shape: str = "location",
+                shape: str = "LOCATION",
                 pencolor: str = "",
                 bgcolor: str = "",
                 icon: str = "undefined",
@@ -365,9 +360,9 @@ class Node:
    attributes = {}
 
    def __init__(self, 
-                label: str = "node", 
+                label: str = "Node", 
                 sublabel: str = "", 
-                shape: str = "node",
+                shape: str = "NODE",
                 pencolor: str = "",
                 bgcolor: str = "",
                 icon: str = "undefined",
