@@ -32,15 +32,15 @@ class Icons:
             {'icon': 'events', 'color': Colors.lines["user"]},
       'authorizationBoundary': 	        
             {'icon': 'flag', 'color': Colors.lines["network"]},
-      'cloud-prescribed': 	        
+      'cloud-ibm': 	        
             {'icon': 'ibm-cloud', 'color': Colors.lines["network"]},
       'user':  	        
             {'icon': 'user', 'color': Colors.lines["user"]}, 
-      'vsi-logical': 	        
+      'vsi-any': 	        
             {'icon': 'virtual-machine', 'color': Colors.lines["network"]},
-      'vpc-logical':  	        
+      'vpc-any':  	        
             {'icon': 'virtual-private-cloud', 'color': Colors.lines["network"]}, 
-      'vpc-prescribed':  	        
+      'vpc-ibm':  	        
             {'icon': 'virtual-private-cloud--alt', 'color': Colors.lines["network"]}, 
       'region': 	        
             {'icon': 'location', 'color': Colors.lines["location"]},
@@ -62,7 +62,7 @@ class Icons:
             {'icon': 'rule', 'color': Colors.lines["security"]}, 
       'terminal':  	        
             {'icon': 'terminal', 'color': Colors.lines["network"]}, 
-      'objectstorage-prescribed':  	        
+      'objectstorage-ibm':  	        
             {'icon': 'object-storage', 'color': Colors.lines["storage"]}, 
       'laptop':  	        
             {'icon': 'laptop', 'color': Colors.lines["user"]}, 
@@ -76,13 +76,13 @@ class Icons:
             {'icon': 'wikis', 'color': Colors.lines["network"]}, 
       'database':  	        
             {'icon': 'data--base', 'color': Colors.lines["network"]}, 
-      'subnet-logical':  	        
+      'subnet-any':  	        
             {'icon': 'locked', 'color': Colors.lines["network"]}, 
       'application':  	        
             {'icon': 'application', 'color': Colors.lines["network"]}, 
       'arrows--horizontal': 	        
             {'icon': 'arrows--horizontal', 'color': Colors.lines["network"]},
-      'cloud-logical': 
+      'cloud-any': 
             {'icon': 'cloud', 'color': Colors.lines["network"]},
       'serverlessapplication': 	        
             {'icon': 'function', 'color': Colors.lines["network"]},
@@ -114,7 +114,7 @@ class Icons:
             {'icon': 'bare-metal-server', 'color': Colors.lines["compute"]},
       'switch-layer-2': 	        
             {'icon': 'switch-layer-2', 'color': Colors.lines["network"]},
-      'loadbalancer-prescribed': 	        
+      'loadbalancer-ibm': 	        
             {'icon': 'load-balancer--vpc', 'color': Colors.lines["network"]},
       'aclrules': 	        
             {'icon': 'subnet-acl-rules', 'color': Colors.lines["security"]},
@@ -124,7 +124,7 @@ class Icons:
             {'icon': 'network--enterprise', 'color': Colors.lines["network"]},
       'direct-link': 	        
             {'icon': 'direct-link', 'color': Colors.lines["network"]},
-      'securityservices-prescribed': 	        
+      'securityservices-ibm': 	        
             {'icon': 'ibm-security--services', 'color': Colors.lines["network"]},
       'resourcegroup': 	        
             {'icon': 'group--resource', 'color': Colors.lines["network"]},
@@ -160,7 +160,7 @@ class Icons:
             {'icon': 'content-delivery-network', 'color': Colors.lines["network"]},
       'cloudalerting': 	        
             {'icon': 'cloud--alerting', 'color': Colors.lines["management"]},
-      'flowlogs-prescribed': 	        
+      'flowlogs-ibm': 	        
             {'icon': 'flow-logs-vpc', 'color': Colors.lines["management"]},
       'servicemanagement': 	        
             {'icon': 'cloud--service-management', 'color': Colors.lines["management"]},
@@ -180,7 +180,7 @@ class Icons:
             {'icon': 'load-balancer--application', 'color': Colors.lines["network"]},
       'ibm-cloud--dedicated-host': 	        
             {'icon': 'ibm-cloud--dedicated-host', 'color': Colors.lines["network"]},
-      'internetservices-prescribed': 	        
+      'internetservices-ibm': 	        
             {'icon': 'ibm-cloud--internet-services', 'color': Colors.lines["network"]},
       'radio--push-to-talk': 	        
             {'icon': 'radio--push-to-talk', 'color': Colors.lines["network"]},
@@ -188,7 +188,7 @@ class Icons:
             {'icon': 'load-balancer--global', 'color': Colors.lines["network"]},
       'firewall--classic': 	        
             {'icon': 'firewall--classic', 'color': Colors.lines["network"]},
-      'blockstorage-logical': 	        
+      'blockstorage-any': 	        
             {'icon': 'block-storage--alt', 'color': Colors.lines["network"]},
       'accessgroup': 	        
             {'icon': 'group--access', 'color': Colors.lines["network"]},
@@ -206,7 +206,7 @@ class Icons:
             {'icon': 'bastion-host', 'color': Colors.lines["network"]},
       'blob': 	        
             {'icon': 'data-blob', 'color': Colors.lines["network"]},
-      'objectstorage-logical': 	        
+      'objectstorage-any': 	        
             {'icon': 'object-storage--alt', 'color': Colors.lines["storage"]},
       'server--proxy': 	        
             {'icon': 'server--proxy', 'color': Colors.lines["network"]},
@@ -222,11 +222,11 @@ class Icons:
             {'icon': 'intrusion-prevention', 'color': Colors.lines["network"]},
       'edge-node--alt': 	        
             {'icon': 'edge-node--alt', 'color': Colors.lines["network"]},
-      'vlan-prescribed': 	        
+      'vlan-ibm': 	        
             {'icon': 'vlan--ibm', 'color': Colors.lines["network"]},
       'cloudservices': 	        
             {'icon': 'cloud-services', 'color': Colors.lines["network"]},
-      'blockstorage-prescribed': 	        
+      'blockstorage-ibm': 	        
             {'icon': 'block-storage', 'color': Colors.lines["storage"]},
       'floatingip': 	        
             {'icon': 'floating-ip', 'color': Colors.lines["network"]},
@@ -264,11 +264,11 @@ class Icons:
             {'icon': 'sim-card', 'color': Colors.lines["network"]},
       'chat--operational': 	        
             {'icon': 'chat--operational', 'color': Colors.lines["network"]},
-      'vpe-prescribed': 	        
+      'vpe-ibm': 	        
             {'icon': 'ibm-cloud--vpc-endpoints', 'color': Colors.lines["network"]},
       'id-management': 	        
             {'icon': 'id-management', 'color': Colors.lines["network"]},
-      'vsi-prescribed': 	        
+      'vsi-ibm': 	        
             {'icon': 'instance--virtual', 'color': Colors.lines["compute"]},
       'gui--management': 	        
             {'icon': 'gui--management', 'color': Colors.lines["network"]},
@@ -290,7 +290,7 @@ class Icons:
             {'icon': 'router--voice', 'color': Colors.lines["network"]}, 
       'dns-services': 	        
             {'icon': 'dns-services', 'color': Colors.lines["network"]},
-      'vlan-logical': 	        
+      'vlan-any': 	        
             {'icon': 'vlan', 'color': Colors.lines["network"]},
       'server--time': 	        
             {'icon': 'server--time', 'color': Colors.lines["network"]},
@@ -322,7 +322,7 @@ class Icons:
             {'icon': 'load-balancer--local', 'color': Colors.lines["network"]},
       'cloud--logging': 	        
             {'icon': 'cloud--logging', 'color': Colors.lines["network"]},
-      'subnet-prescribed': 	        
+      'subnet-ibm': 	        
             {'icon': 'ibm-cloud--subnets', 'color': Colors.lines["network"]},
       'data-diode': 	        
             {'icon': 'data-diode', 'color': Colors.lines["network"]},
@@ -410,13 +410,13 @@ class Icons:
             {'icon': 'volume--file--storage', 'color': Colors.lines["storage"]},
       'objectstoragevolume': 	        
             {'icon': 'volume--object-storage', 'color': Colors.lines["storage"]},
-      'transitgateway-prescribed': 	        
+      'transitgateway-ibm': 	        
             {'icon': 'ibm-cloud--transit-gateway', 'color': Colors.lines["network"]},
       'enterprise': 	        
             {'icon': 'enterprise', 'color': Colors.lines["network"]},
-      'linux-prescribed':  	        
+      'linux-ibm':  	        
             {'icon': 'linux', 'color': Colors.lines["network"]}, 
-      'linux--logical':  	        
+      'linux--any':  	        
             {'icon': 'linux--alt', 'color': Colors.lines["network"]}, 
       'objectstorageslicestor': 	        
             {'icon': 'slicestor', 'color': Colors.lines["network"]},
@@ -446,7 +446,7 @@ class Icons:
             {'icon': 'continuous-deployment', 'color': Colors.lines["management"]}, 
       'ci': 	        
             {'icon': 'continuous-integration', 'color': Colors.lines["management"]},
-      'keyprotect-prescribed':  	        
+      'keyprotect-ibm':  	        
             {'icon': 'ibm-cloud--key-protect', 'color': Colors.lines["security"]}, 
       'secretsmanager': 	        
             {'icon': 'ibm-cloud--secrets-manager', 'color': Colors.lines["security"]},
@@ -474,17 +474,17 @@ class Icons:
       #   iconname = name
       #   iconcolor = Colors.lines["network"]
       #elif self.common.isLogicalShapes():
-      if self.common.isLogicalShapes():
+      if self.common.isProviderAny():
          if shapetype in self.iconDictionary:
             icon = self.iconDictionary[shapetype]
             iconname = icon['icon']
             iconcolor = icon['color']
-         elif shapetype + '-logical' in self.iconDictionary:
-            icon = self.iconDictionary[shapetype + '-logical']
+         elif shapetype + '-any' in self.iconDictionary:
+            icon = self.iconDictionary[shapetype + '-any']
             iconname = icon['icon']
             iconcolor = icon['color']
-         elif shapetype + '-prescribed' in self.iconDictionary:
-            icon = self.iconDictionary[shapetype + '-prescribed']
+         elif shapetype + '-ibm' in self.iconDictionary:
+            icon = self.iconDictionary[shapetype + '-ibm']
             iconname = icon['icon']
             iconcolor = icon['color']
          else:
@@ -496,12 +496,12 @@ class Icons:
             icon = self.iconDictionary[shapetype]
             iconname = icon['icon']
             iconcolor = icon['color']
-         elif shapetype + '-prescribed' in self.iconDictionary:
-            icon = self.iconDictionary[shapetype + '-prescribed']
+         elif shapetype + '-ibm' in self.iconDictionary:
+            icon = self.iconDictionary[shapetype + '-ibm']
             iconname = icon['icon']
             iconcolor = icon['color']
-         elif shapetype + '-logical' in self.iconDictionary:
-            icon = self.iconDictionary[shapetype + '-logical']
+         elif shapetype + '-any' in self.iconDictionary:
+            icon = self.iconDictionary[shapetype + '-any']
             iconname = icon['icon']
             iconcolor = icon['color']
          else:
@@ -517,8 +517,8 @@ class Icons:
       #      return True
       if iconname in self.iconDictionary:
          return True
-      if iconname + '-logical' in self.iconDictionary:
+      if iconname + '-any' in self.iconDictionary:
          return True
-      if iconname + '-prescribed' in self.iconDictionary:
+      if iconname + '-ibm' in self.iconDictionary:
          return True
       return False

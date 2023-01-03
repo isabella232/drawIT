@@ -89,17 +89,17 @@ class Types:
       if shape == "actor":
          style = ShapeStyle.ACTOR.value
       elif shape == "component":
-         if self.common.isLogicalShapes():
+         if self.common.isProviderAny():
             style = ShapeStyle.LOGICAL_COMPONENT.value
          else:
             style = ShapeStyle.PRESCRIBED_COMPONENT.value
       elif shape == "node":
-         if self.common.isLogicalShapes():
+         if self.common.isProviderAny():
             style = ShapeStyle.LOGICAL_NODE.value
          else:
             style = ShapeStyle.PRESCRIBED_NODE.value
       elif shape == "location":
-         if self.common.isLogicalShapes():
+         if self.common.isProviderAny():
             style = ShapeStyle.LOGICAL_LOCATION.value
          else:
              style = ShapeStyle.PRESCRIBED_LOCATION.value

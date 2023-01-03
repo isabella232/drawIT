@@ -53,7 +53,7 @@ class BuildDAC:
       self.addKeys()
       self.addChildren()
 
-      if not self.common.isAlternateUD():
+      if not self.common.isAlternateUser():
          self.alternateFills()
 
       self.addNodes()
@@ -404,22 +404,22 @@ class BuildDAC:
             attributes["bgcolor"] = "none"
             flag = False
          else:
-            if self.common.isAlternateWL():
+            if self.common.isAlternateWhite():
                pencolor = attributes["pencolor"]
                hexvalue = Colors.lines[pencolor]
                fillname = "light" + Colors.names[hexvalue]
                hexvalue = Colors.names[fillname]
                attributes["bgcolor"] = hexvalue
-            elif self.common.isAlternateLW():
+            elif self.common.isAlternateLight():
                attributes["bgcolor"] = "#ffffff"
       else:
-         if self.common.isAlternateLW():
+         if self.common.isAlternateLight():
             pencolor = attributes["pencolor"]
             hexvalue = Colors.lines[pencolor]
             fillname = "light" + Colors.names[hexvalue]
             hexvalue = Colors.names[fillname]
             attributes["bgcolor"] = hexvalue
-         elif self.common.isAlternateWL():
+         elif self.common.isAlternateWhite():
             attributes["bgcolor"] = "#ffffff"
 
       children = attributes["children"]
@@ -432,13 +432,13 @@ class BuildDAC:
       for top in self.tops:
          attributes = self.clusters[top]
 
-         if self.common.isAlternateLW():
+         if self.common.isAlternateLight():
             pencolor = attributes["pencolor"]
             hexvalue = Colors.lines[pencolor]
             fillname = "light" + Colors.names[hexvalue]
             hexvalue = Colors.names[fillname]
             attributes["bgcolor"] = hexvalue
-         elif self.common.isAlternateWL():
+         elif self.common.isAlternateWhite():
             attributes["bgcolor"] = "#ffffff"
 
          children = attributes["children"]

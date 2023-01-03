@@ -33,7 +33,8 @@ _nodes = {}    # Dictionary of nodes.
 _edges = {}    # Dictionary of edges.
 
 DIRECTIONS = ("LR", "TB")  # left-to-right, top-to-bottom
-ALTERNATEFILLS = ("WL", "LW", "UD")  # white-to-light, light-to-white, user-defined with bgcolor
+ALTERNATES = ("WHITE", "LIGHT", "USER")  # white-to-light, light-to-white, user-defined with bgcolor
+PROVIDERS = {"ANY", "IBM"}  # ANY corresponds to Logical, all others are Prescribed.
 NODESHAPES = ("component", "node")
 CLUSTERSHAPES = ("component", "location", "node", "zone")
 SHAPETYPES = ("logical", "prescribed")
@@ -77,6 +78,14 @@ def randomid():
 def validDirection(direction):
    return direction.upper() in DIRECTIONS
 
+# Valid alternate must be a valid alternating fill or user-defined.
+def validAlternate(alternate):
+   return alternate.upper() in ALTERNATES
+
+# Valid provider must be one of the supported providers or ANY.
+def validProvider(provider):
+   return provider.upper() in PROVIDERS
+
 # Valid output format must be one of the supported formats.
 def validOutputFormat(outformat):
    return outformat.lower() in OUTPUTFORMAT
@@ -96,10 +105,6 @@ def validNodeShape(shape):
 # Valid shape type must be logical or prescribed.
 def validShapeType(shapetype):
    return shapetype.lower() in SHAPETYPES
-
-# Valid alternate fill must be a valid alternating fill or user-defined.
-def validAlternateFill(alternate):
-   return alternate.upper() in ALTERNATEFILLS
 
 # Valid edge style must be one of the basic or extended edge styles (planned). 
 def validEdgeStyle(style):
@@ -148,8 +153,8 @@ class Diagram:
                 name: str = "",
                 filename: str = "",
                 direction: str = "LR",
-                alternate: str = "WL",
-                shapetype: str = "prescribed",
+                alternate: str = "WHITE",
+                provider: str = "IBM",
                 outformat: str = "png"):
       self.name = name if name else "diagram"
       self.filename = filename if filename else self.name
@@ -163,34 +168,34 @@ class Diagram:
          self.common.printInvalidDirection(direction)
          sys_exit()
 
-      if not validAlternateFill(alternate):
-         self.common.printInvalidAlternateFill(alternate)
+      if not validAlternate(alternate):
+         self.common.printInvalidAlternate(alternate)
          sys_exit()
 
-      if not validShapeType(shapetype):
-         self.common.printInvalidShapeType(shapetype)
+      if not validProvider(provider):
+         self.common.printInvalidProvider(provider)
          sys_exit()
 
       if not validOutputFormat(outformat):
          self.common.printInvalidOutputFormat(outformat)
          sys_exit()
 
-      if direction == "LR":
+      if direction.upper() == "LR":
          self.common.setDirectionLR()
-      elif direction == "TB":
+      elif direction.upper() == "TB":
          self.common.setDirectionTB()
 
-      if alternate == "WL":
-         self.common.setAlternateWL()
-      elif alternate == "LW":
-         self.common.setAlternateLW()
-      elif alternate == "UD":
-         self.common.setAlternateUD()
+      if alternate.upper() == "WHITE":
+         self.common.setAlternateWhite()
+      elif alternate.upper() == "LIGHT":
+         self.common.setAlternateLight()
+      elif alternate.upper() == "USER":
+         self.common.setAlternateUser()
 
-      if shapetype == "logical":
-         self.common.setLogicalShapes()
-      elif shapetype == "prescribed":
-         self.common.setPrescribedShapes()
+      if provider.upper() == "ANY":
+         self.common.setProviderAny()
+      elif provider.upper() == "IBM":
+         self.common.setProviderIBM()
 
       return
 
@@ -235,6 +240,8 @@ class Cluster:
                 bgcolor: str = "",
                 icon: str = "undefined",
                 direction: str = "LR", 
+                alternate: str = "WHITE",
+                provider: str = "IBM",
                 fontname: str = "IBM Plex Sans",
                 fontsize: int = 14,
                 badgetext: str = "", 
@@ -247,6 +254,14 @@ class Cluster:
 
       if not validDirection(direction):
          self.common.printInvalidDirection(direction)
+         sys_exit()
+
+      if not validAlternate(alternate):
+         self.common.printInvalidAlternate(alternate)
+         sys_exit()
+
+      if not validProvider(provider):
+         self.common.printInvalidProvider(provider)
          sys_exit()
 
       if not validFont(fontname):
@@ -271,7 +286,7 @@ class Cluster:
          sys_exit()
 
       hexbgcolor = "#ffffff"
-      if self.common.isAlternateUD() and bgcolor != "":
+      if self.common.isAlternateUser() and bgcolor != "":
          hexbgcolor = validFillColor(hexpencolor, bgcolor)
          if hexbgcolor == None:
             self.common.printInvalidFillColor(bgcolor)

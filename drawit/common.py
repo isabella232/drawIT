@@ -20,7 +20,7 @@ from .messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.7.5'
+   toolVersion = '0.7.6'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -264,24 +264,6 @@ class Common:
    def isPrescribedShapes(self):
       return self.options.isPrescribedShapes()
 
-   def setAlternateWL(self):
-      self.options.setAlternateWL()
-
-   def setAlternateLW(self):
-      self.options.setAlternateLW()
-
-   def setAlternateUD(self):
-      self.options.setAlternateUD()
-
-   def isAlternateWL(self):
-      return self.options.isAlternateWL()
-
-   def isAlternateLW(self):
-      return self.options.isAlternateLW()
-
-   def isAlternateUD(self):
-      return self.options.isAlternateUD()
-
    def setDirectionLR(self):
       self.options.setDirectionLR()
 
@@ -293,6 +275,36 @@ class Common:
 
    def isDirectionTB(self):
       return self.options.isDirectionTB()
+
+   def setAlternateWhite(self):
+      self.options.setAlternateWhite()
+
+   def setAlternateLight(self):
+      self.options.setAlternateLight()
+
+   def setAlternateUser(self):
+      self.options.setAlternateUser()
+
+   def isAlternateWhite(self):
+      return self.options.isAlternateWhite()
+
+   def isAlternateLight(self):
+      return self.options.isAlternateLight()
+
+   def isAlternateUser(self):
+      return self.options.isAlternateUser()
+
+   def setProviderAny(self):
+      self.options.setProviderAny()
+
+   def setProviderIBM(self):
+      self.options.setProviderIBM()
+
+   def isProviderAny(self):
+      return self.options.isProviderAny()
+
+   def isProviderIBM(self):
+      return self.options.isProviderIBM()
 
    def getOutputShapes(self):
       return self.options.getOutputShapes()
@@ -428,11 +440,11 @@ class Common:
    def printInvalidNodeShape(self, shape):
       self.messages.printInvalidNodeShape(shape)
 
-   def printInvalidShapeForm(self, form):
-      self.messages.printInvalidShapeForm(form)
+   def printInvalidProvider(self, provider):
+      self.messages.printInvalidProvider(provider)
 
-   def printInvalidAlternateFill(self, alternate):
-      self.messages.printInvalidAlternateFill(alternate)
+   def printInvalidAlternate(self, alternate):
+      self.messages.printInvalidAlternate(alternate)
 
    def printInvalidEdgeStyle(self, style):
       self.messages.printInvalidEdgeStyle(style)

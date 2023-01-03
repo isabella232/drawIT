@@ -31,14 +31,18 @@ class InputType(Enum):
    JSON = 'json'
    YAML = 'yaml'
 
-class AlternateFills(Enum):
-   WL = 'white-to-light'
-   LW = 'light-to-white'
-   UD = 'user-defined'
-
 class Directions(Enum):
    LR = 'left-to-right'
    TB = 'top-to-bottom'
+
+class Alternates(Enum):
+   WHITE = 'white-to-light'
+   LIGHT = 'light-to-white'
+   USER = 'user-defined'
+
+class Providers(Enum):
+   ANY = 'any'
+   IBM = 'ibm'
 
 class OutputSplit(Enum):
    COMBINE = 'combine'
@@ -85,7 +89,8 @@ class Options:
    outputLayout = None
    outputLinks = None
    designatedVPC = None
-   alternateFills = None
+   alternate = None
+   provider = None
    allicons = False
 
    def __init__(self, toolName):
@@ -93,7 +98,8 @@ class Options:
       self.runMode = RunMode.BATCH
       self.inputType = InputType.JSON
       self.region = Regions.ALL
-      self.alternateFills = AlternateFills.WL
+      self.alternate = Alternates.WHITE
+      self.provider = Providers.IBM
 
       self.inputFile = 'input.json'
       self.inputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
@@ -266,24 +272,6 @@ class Options:
    def isPrescribedShapes(self):
       return self.outputShapes == OutputShapes.PRESCRIBED
 
-   def setAlternateWL(self):
-      self.alternateFills = AlternateFills.WL 
-
-   def setAlternateLW(self):
-      self.alternateFills = AlternateFills.LW 
-
-   def setAlternateUD(self):
-      self.alternateFills = AlternateFills.UD 
-
-   def isAlternateWL(self):
-      return self.alternateFills == AlternateFills.WL 
-
-   def isAlternateLW(self):
-      return self.alternateFills == AlternateFills.LW 
-
-   def isAlternateUD(self):
-      self.alternateFills == AlternateFills.UD 
-
    def setDirectionLR(self):
       self.direction = Directions.LR 
 
@@ -295,6 +283,36 @@ class Options:
 
    def isDirectionTB(self):
       return self.direction == Directions.TB 
+
+   def setAlternateWhite(self):
+      self.alternate = Alternates.WHITE
+
+   def setAlternateLight(self):
+      self.alternate = Alternates.LIGHT
+
+   def setAlternateUser(self):
+      self.alternate = Alternates.USER
+
+   def isAlternateWhite(self):
+      return self.alternate == Alternates.WHITE
+
+   def isAlternateLight(self):
+      return self.alternate == Alternates.LIGHT
+
+   def isAlternateUser(self):
+      return self.alternate == Alternates.USER
+
+   def setProviderAny(self):
+      self.provider = Providers.ANY 
+
+   def setProviderIBM(self):
+      self.provider = Providers.IBM 
+
+   def isProviderAny(self):
+      return self.provider == Providers.ANY 
+
+   def isProviderIBM(self):
+      return self.provider == Providers.IBM 
 
    def getOutputShapes(self):
       return self.outputShapes
