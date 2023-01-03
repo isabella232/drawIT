@@ -27,9 +27,8 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Externals are subject to change until finalized.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change.
-- Line colors (pencolor) are derived from the icon used for simplicity.
-- Specifying line color (pencolor) overrides the derived color.
-- Colors are specified by name, number, hex, or component (recommended).
+- Colors are derived from the icon used for simplicity.
+- Specifying colors overrised the derived color and can be specified by name, number, hex, or component (recommended).
 - Nested fill colors alternate between white and light starting with white which is changable to start with light or user-defined.
 - Direction is left-to-right changable to top-to-bottom. 
 - Connectors can be defined between nodes and clusters with or without arrowheads.
