@@ -75,6 +75,9 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 - name
 - filename
+- direction = set direction for all shapes - not currently enabled
+- alternate = white-to-light (WL), light-to-white (LW), user-defined (UD)
+- shapetype = logical or prescribed
 - outformat = jpg, pdf, png, svg, xml - not currently enabled
 
 4. Cluster Parameters:
