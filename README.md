@@ -135,7 +135,7 @@ Node:
 Notes:
 </p>
 
-- Line and fill colors are from the [IBM Color Palette](https://www.ibm.com/design/language/color/).
+- Line and fill colors are from [IBM Color Palette](https://www.ibm.com/design/language/color/).
 - Line colors are derived from the icon name for simplicity so pencolor doesn't have to be manually specified for each icon.
 - Line colors can also be manually set which overrides the derived color.
 - Line and fill colors can be specified by name, number, hex, or component (recommended).
@@ -199,7 +199,7 @@ Light Fill (bgcolor):
 | lightorange | orange10 | #fff2e8 | (limited use) |
 | lightcoolgray | coolgray10 | #f2f4f8 | backend, industry, location |
 | lightgray | gray10 | #f4f4f4 | (not currently used) |
-| lightwarmgray | warmgray10 | #f7f3f2 | (not currently used) |
+ lightwarmgray | warmgray10 | #f7f3f2 | (not currently used) |
 | white | white | #ffffff | (alternating fills) |
 | none | none | none | (zone fills) |
 
@@ -208,8 +208,10 @@ Light Fill (bgcolor):
 <details><summary>Icons</summary>
 
 <p>
-TBD
+Notes:
 </p>
+
+- Icons are currently only from [IBM Design Center](https://www.ibm.com/design/language/iconography/ui-icons/library/).
 
 </details>
 
