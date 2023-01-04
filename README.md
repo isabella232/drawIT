@@ -128,7 +128,7 @@ Notes:
 </p>
 
 - Line and fill colors are from the [IBM Color Palette](https://www.ibm.com/design/language/color/).
-- Line colors are derived from the icon used for simplicity so pencolor doesn't have to be manually specified for each icon.
+- Line colors are derived from the icon name for simplicity so pencolor doesn't have to be manually specified for each icon.
 - Line colors can also be manually set which overrides the derived color.
 - Line and fill colors can be specified by name, number, hex, or component (recommended).
 - Fill colors alternate between white and light starting with white for nested containers for viewability.
