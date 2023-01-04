@@ -27,7 +27,7 @@ Notes:
 - Externals are subject to change until finalized.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change.
-- Colors are derived from the icon used for simplicity.
+- Colors are derived from the icon used for simplicity so pencolor doesn't have to be specified for each icon.
 - Specifying colors overrides the derived color and can be specified by name, number, hex, or component (recommended).
 - Nested fill colors alternate between white and light starting with white which is changable to start with light or user-defined.
 - Direction is left-to-right changable to top-to-bottom. 
@@ -185,6 +185,14 @@ Light Fill (bgcolor):
 | lightwarmgray | warmgray10 | #f7f3f2 | (not currently used) |
 | white | white | #ffffff | (alternating fills) |
 | none | none | none | (zone fills) |
+
+</details>
+
+<details><summary>Icons</summary>
+
+<p>
+TBD
+</p>
 
 </details>
 
