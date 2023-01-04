@@ -22,7 +22,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 ## Code-to-Diagram Guide
 
-1. Notes:
+Notes:
 
 - Externals are subject to change until finalized.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
