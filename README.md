@@ -11,13 +11,13 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
   - Refer to examples folder.
   - Input is python code.
   - Output is diagrams.net xml file.
-2. RIAS-to-Diagram:
-  - Refer to rungui.sh or runrias.sh in scripts folder.
-  - Input is from RIAS APIs.
-  - Output is diagrams.net xml file.
-3. JSON-to-Diagram:
+2. JSON-to-Diagram:
   - Refer to rungui.sh or run.sh in scripts folder.
   - Input is from tool-generated JSON/YAML.
+  - Output is diagrams.net xml file.
+3. RIAS-to-Diagram:
+  - Refer to rungui.sh or runrias.sh in scripts folder.
+  - Input is from RIAS APIs.
   - Output is diagrams.net xml file.
 
 ## Code-to-Diagram Guide
