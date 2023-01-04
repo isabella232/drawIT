@@ -74,7 +74,7 @@ Notes:
 </p>
 
 - Use shape parameter default as shape names are subject to change.
-- Direction is left-to-right changable to top-to-bottom. 
+- Direction default is left-to-right changable to top-to-bottom. 
 - Badges are not currently enabled.
 - Connectors can be defined between clusters and nodes with or without arrowheads.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
