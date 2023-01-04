@@ -27,9 +27,6 @@ Notes:
 - Externals are subject to change until finalized.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
 - Use shape parameter default as shape names are subject to change.
-- Colors are derived from the icon used for simplicity so pencolor doesn't have to be specified for each icon.
-- Specifying colors overrides the derived color and can be specified by name, number, hex, or component (recommended).
-- Nested fill colors alternate between white and light starting with white which is changable to start with light or user-defined.
 - Direction is left-to-right changable to top-to-bottom. 
 - Connectors can be defined between clusters and nodes with or without arrowheads.
 - Planned: Direct export to jpg, pdf, png, or svg.
@@ -125,6 +122,17 @@ Node:
 </details>
 
 <details><summary>Colors</summary>
+
+<p>
+Notes:
+</p>
+
+- Line colors are derived from the icon used for simplicity so pencolor doesn't have to be manually specified for each icon.
+- Line colors can also be manually set which overrides the derived color.
+- Line and fill colors can be specified by name, number, hex, or component (recommended).
+- Fill colors alternate between white and light starting with white for nested containers for viewability.
+- Fill colors can be changed to alternate between light and white starting with light for nested containers for viewability.
+- Fill colors can also be manually set.
 
 <p>
 Medium Line (pencolor):
