@@ -72,7 +72,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 <details><summary>Parameters</summary>
 
-1. Diagram
+1. Diagram:
 
 - name
 - filename
@@ -81,7 +81,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - provider = ANY (logical), IBM (prescribed)
 - outformat = JPG, PDF, PNG, SVG, XML - not currently enabled
 
-2. Cluster
+2. Cluster:
 
 - label = primary label
 - sublabel = secondary text
@@ -99,7 +99,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
 
-3. Node
+3. Node:
 
 - label = primary label
 - sublabel = secondary text
@@ -116,7 +116,11 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 </details>
 
-6. Medium Line Colors (pencolor):
+<details><summary>Colors</summary>
+
+<p>
+Medium Line (pencolor):
+</p>
 
 | Name | Number | Hex | Component |
 | --- | --- | --- | --- |
@@ -134,7 +138,9 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 | warmgray | warmgray50 | #8f8b8b | (not currently used) |
 | black | black | #000000 | user |
 
-7. Dark Line Colors (pencolor):
+<p>
+Dark Line (pencolor):
+</p>
 
 | Name | Number | Hex | Component |
 | --- | --- | --- | --- |
@@ -151,7 +157,9 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 | darkgray | gray70 | #525252 | (not currently used) |
 | darkwarmgray | warmgray70 | #565151 | (not currently used) |
 
-7. Fill Colors (bgcolor):
+<p>
+Light Fill (bgcolor):
+</p>
 
 | Name | Number | Hex | Component |
 | --- | --- | --- | --- |
@@ -170,7 +178,13 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 | white | white | #ffffff | (alternating fills) |
 | none | none | none | (zone fills) |
 
-7. Font Names:
+</details>
+
+<details><summary>Fonts</summary>
+
+<p>
+Font Names:
+</p>
 
 - IBM Plex Sans
 - IBM Plex Sans Arabic
@@ -179,6 +193,8 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - IBM Plex Sans JP
 - IBM Plex Sans KR
 - IBM Plex Sans Thai
+
+</details>
 
 ## Prereqs
 
