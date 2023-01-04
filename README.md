@@ -37,7 +37,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - Planned: Improve support for long labels and sublabels.
 - Planned: Badges.
 
-2. Structure:
+<details><summary>Structure</summary>
 
     from drawit import Diagram, Cluster, Node, Edge
 
@@ -70,9 +70,13 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
                 # Single arrow line from cluster2 to node1.
                 node1 << cluster2
 
+</details>
+
 <details><summary>Parameters</summary>
 
+<p>
 1. Diagram:
+</p>
 
 - name
 - filename
@@ -81,7 +85,9 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - provider = ANY (logical), IBM (prescribed)
 - outformat = JPG, PDF, PNG, SVG, XML - not currently enabled
 
-2. Cluster:
+<p>
+Cluster:
+</p>
 
 - label = primary label
 - sublabel = secondary text
@@ -99,7 +105,9 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
 
-3. Node:
+<p>
+Node:
+</p>
 
 - label = primary label
 - sublabel = secondary text
