@@ -131,7 +131,7 @@ Notes:
 - Line colors can also be manually set which overrides the derived color.
 - Line and fill colors can be specified by name, number, hex, or component (recommended).
 - Fill colors alternate between white and light starting with white for nested containers for viewability.
-- Fill colors can be changed to alternate between light and white starting with light for nested containers for viewability.
+- Fill colors can be changed to alternate between light and white starting with light for nested containers.
 - Fill colors can also be manually set.
 
 <p>
