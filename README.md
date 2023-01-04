@@ -75,7 +75,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 <details><summary>Parameters</summary>
 
 <p>
-1. Diagram:
+Diagram:
 </p>
 
 - name
