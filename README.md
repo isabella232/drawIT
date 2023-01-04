@@ -70,7 +70,9 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
                 # Single arrow line from cluster2 to node1.
                 node1 << cluster2
 
-3. Diagram Parameters:
+<details><summary>Parameters</summary>
+
+1. Diagram
 
 - name
 - filename
@@ -79,7 +81,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - provider = ANY (logical), IBM (prescribed)
 - outformat = JPG, PDF, PNG, SVG, XML - not currently enabled
 
-4. Cluster Parameters:
+2. Cluster
 
 - label = primary label
 - sublabel = secondary text
@@ -97,7 +99,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
 
-5. Node Parameters:
+3. Node
 
 - label = primary label
 - sublabel = secondary text
@@ -111,6 +113,8 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 - badgeshape = not currently enabled
 - badgepencolor = not currently enabled 
 - badgebgcolor = not currently enabled
+
+</details>
 
 6. Medium Line Colors (pencolor):
 
