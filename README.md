@@ -22,16 +22,6 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 ## Code-to-Diagram Guide
 
-<p>
-Notes:
-</p>
-
-- Externals are subject to change until finalized.
-- Planned: Direct export to jpg, pdf, png, or svg.
-- Planned: Support icons not from IBM Design Center.
-- Planned: Improve support for long labels and sublabels.
-- Planned: Badges.
-
 <details><summary>Structure</summary>
 
     from drawit import Diagram, Cluster, Node, Edge
@@ -73,11 +63,15 @@ Notes:
 Notes:
 </p>
 
+- Subject to change until finalized.
 - Use shape parameter default as shape names are subject to change.
 - Direction default is left-to-right changable to top-to-bottom. 
 - Badges are not currently enabled.
 - Connectors can be defined between clusters and nodes with or without arrowheads.
 - Diagrams can be exported to jpg, pdf, png, or svg from diagrams.net.
+- Planned: Direct export to jpg, pdf, png, or svg.
+- Planned: Improve support for long labels and sublabels.
+- Planned: Badges.
 
 <p>
 Diagram:
@@ -212,8 +206,9 @@ Notes:
 </p>
 
 - Icons are currently only from [IBM Design Center](https://www.ibm.com/design/language/iconography/ui-icons/library/).
-- Icon usage name is used for simplicity and clarity which are further classified as ANY (Logical) or IBM (Prescribed) with the provider parameter..
+- Icon usage name is used for simplicity and clarity which are further classified as ANY (Logical) or IBM (Prescribed) with the provider parameter.
 - Planned: Add icon usage names here. 
+- Planned: Support icons not from IBM Design Center.
 
 </details>
 
