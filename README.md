@@ -127,6 +127,7 @@ Node:
 Notes:
 </p>
 
+- Line and fill colors are from the [IBM Color Palette](https://www.ibm.com/design/language/color/).
 - Line colors are derived from the icon used for simplicity so pencolor doesn't have to be manually specified for each icon.
 - Line colors can also be manually set which overrides the derived color.
 - Line and fill colors can be specified by name, number, hex, or component (recommended).
@@ -205,6 +206,14 @@ TBD
 </details>
 
 <details><summary>Fonts</summary>
+
+
+<p>
+Notes:
+</p>
+
+- Fonts are from [IBM Plex](https://www.ibm.com/plex/).
+- Supports all currently available Plex fonts.
 
 <p>
 Font Names:
