@@ -20,7 +20,6 @@ from .common import Common
 
 from .constants import ShapeKind, ShapeStyle
 from .elements import Elements
-from .iconsdac import Icons
 
 class Types:
    common = None
@@ -33,7 +32,6 @@ class Types:
       self.data = {'header': {'type': 'device',
                               'compressed': 'false'}}
       self.elements = Elements(self.data)
-      self.icons = Icons(common)
       random.seed(time.time())
 
    def buildLink(self, id, label, source, target, meta):
@@ -128,9 +126,9 @@ class Types:
       parentid = node["parentid"]
       parentid = '1' if parentid == None else parentid
 
-      #iconname = node["icon"]
-      tempname = node["icon"]
-      iconname, tempcolor = self.icons.getIcon(tempname)
+      icon = node["icon"]
+      #tempname = node["icon"]
+      #iconname, tempcolor = self.icons.getIcon(tempname)
 
       shapelabel = "<b style='font-weight:600'>%Primary-Label%</b><br>%Secondary-Text%"
       labelsize = 30
@@ -156,7 +154,8 @@ class Types:
              'as': 'geometry'}
 
       props = {'Badge-Text': badgetext,
-               'Icon-Name': iconname,
+               #'Icon-Name': iconname,
+               'Icon-Name': icon,
                'Primary-Label': name,
                'Secondary-Text': subname}
 

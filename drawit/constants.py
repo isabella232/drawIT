@@ -15,6 +15,59 @@
 
 from enum import Enum
 
+# Valid Parameters
+
+class ParamDirections(Enum):
+   LR = 'LR'
+   TB = 'TB'
+
+class ParamAlternates(Enum):
+   WHITE = 'WHITE'  # white-to-light
+   LIGHT = 'LIGHT'  # light-to-white
+   USER = 'USER'     # user-defined
+
+class ParamProviders(Enum):
+   ANY = 'ANY'  # logical
+   IBM = 'IBM'   # prescribed-ibm
+
+class ParamNodeShapes(Enum):
+   COMPONENT = 'COMPONENT'
+   NODE = 'NODE'
+
+class ParamClusterShapes(Enum):
+   COMPONENT = 'COMPONENT'
+   LOCATION = 'LOCATION'
+   NODE = 'NODE'
+   ZONE = 'ZONE'
+
+class ParamOutFormats(Enum):
+   JPG = 'JPG'
+   PDF = 'PDF'
+   PNG = 'PNG'
+   SVG = 'SVG'
+   XML = 'XML'
+
+class ParamFonts(Enum):
+   IBM_PLEX_SANS = 'IBM Plex Sans'
+   IBM_PLEX_SANS_ARABIC = 'IBM Plex Sans Arabic'
+   IBM_PLEX_SANS_DEVANAGARI = 'IBM Plex Sans Devanagari'
+   IBM_PLEX_SANS_HEBREW = 'IBM Plex Sans Hebrew'
+   IBM_PLEX_SANS_JP = 'IBM Plex Sans JP'
+   IBM_PLEX_SANS_KR = 'IBM Plex Sans KR'
+   IBM_PLEX_SANS_THAI = 'IBM Plex Sans Thai'
+
+class ParamEdgeStyles(Enum):
+   SOLID = 'SOLID'
+   DASHED = 'DASHED'
+
+# Allows customization of lines and arrows.
+class ParamExtendedEdgeStyles(Enum):
+   SOLID_LINE = 'dashed=0;'
+   DASHED_LINE = 'dashed=1;'
+   NO_ARROW = 'endArrow=none;'
+   SINGLE_ARROW = 'endArrow=block;endFill=1;'
+   DOUBLE_ARROW = 'endArrow=block;endFill=1;startArrow=block;startFill=1;'
+
 # Format Properties
 
 class ShapeFormat(Enum):

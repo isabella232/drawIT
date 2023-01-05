@@ -25,30 +25,37 @@ from math import isnan
 
 from .colors import Colors
 from .common import Common
-
+from .constants import ParamAlternates, ParamClusterShapes, ParamDirections, ParamEdgeStyles
+from .constants import ParamFonts, ParamNodeShapes, ParamOutFormats, ParamProviders
 from .constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
 from .shapesdac import Shapes
+from .iconsdac import Icons
 
 class BuildDAC:
    common = None
    shapes = None
+   icons = None
    cloudname = ""
+   diagrams = {}
    clusters = {}
    nodes = {}
    edges = {}
-   #links = {}
    tops = []
    bottoms = []
-   direction = ""
-   alternatebg = ""
 
-   def __init__(self, common, clusters, nodes, edges):
+   def __init__(self, common, diagrams, clusters, nodes, edges):
       self.common = common
-      self.clusters = clusters
-      self.nodes = nodes
-      self.edges = edges
 
       self.shapes = Shapes(common)
+      self.icons = Icons(common)
+
+      self.diagrams = self.checkDiagrams(diagrams)
+      self.clusters = self.checkClusters(clusters)
+      self.nodes = self.checkNodes(nodes)
+      self.edges = self.checkEdges(edges)
+
+      if self.diagrams == None or self.clusters == None or self.nodes == None or self.edges == None:
+         return
 
       self.addKeys()
       self.addChildren()
@@ -66,6 +73,9 @@ class BuildDAC:
       self.mergeNodes()
 
    def buildDiagrams(self):
+      if self.diagrams == None or self.clusters == None or self.nodes == None or self.edges == None:
+         return False
+
       outputFolder = self.common.getOutputFolder()
       if outputFolder[-1] != '/':
          self.common.setOutputFolder(outputFolder + '/')
@@ -77,7 +87,7 @@ class BuildDAC:
          self.shapes.dumpXML(self.common.getOutputFile(), self.common.getOutputFolder())
          self.shapes.resetXML()
 
-      return
+      return True
 
    def buildAll(self):
       nodes = []
@@ -162,6 +172,183 @@ class BuildDAC:
       links.append(edgenode)
 
       return nodes, links, values
+
+   def checkDiagrams(self, diagrams):
+      for diagramid, attributes in diagrams.items():
+         direction = attributes["direction"]
+         if not direction.upper() in [parm.value for parm in ParamDirections]:
+            self.common.printInvalidDirection(direction)
+            return None
+
+         alternate = attributes["alternate"]
+         if not alternate.upper() in [parm.value for parm in ParamAlternates]:
+            self.common.printInvalidAlternate(alternate)
+            return None
+
+         provider = attributes["provider"]
+         if not provider.upper() in [parm.value for parm in ParamProviders]:
+            self.common.printInvalidProvider(provider)
+            return None
+
+         outformat = attributes["outformat"]
+         if not outformat.upper() in [parm.value for parm in ParamOutFormats]:
+            self.common.printInvalidOutputFormat(outformat)
+            return None
+
+         if direction.upper() == "LR":
+            self.common.setDirectionLR()
+         elif direction.upper() == "TB":
+            self.common.setDirectionTB()
+
+         if alternate.upper() == "WHITE":
+            self.common.setAlternateWhite()
+         elif alternate.upper() == "LIGHT":
+            self.common.setAlternateLight()
+         elif alternate.upper() == "USER":
+            self.common.setAlternateUser()
+
+         if provider.upper() == "ANY":
+            self.common.setProviderAny()
+         elif provider.upper() == "IBM":
+            self.common.setProviderIBM()
+
+      return diagrams
+
+   def checkClusters(self, clusters):
+      for clusterid, attributes in clusters.items():
+         direction = attributes["direction"]
+         if not direction.upper() in [parm.value for parm in ParamDirections]:
+            self.common.printInvalidDirection(direction)
+            return None
+
+         alternate = attributes["alternate"]
+         if not alternate.upper() in [parm.value for parm in ParamAlternates]:
+            self.common.printInvalidAlternate(alternate)
+            return None
+
+         fontname = attributes["fontname"]
+         if not fontname in [parm.value for parm in ParamFonts]:
+            self.common.printInvalidFont(fontname)
+            return None
+
+         shape = attributes["shape"]
+         if not shape.upper() in [parm.value for parm in ParamClusterShapes]:
+            self.common.printInvalidClusterShape(shape)
+            return None
+
+         icon = attributes["icon"]
+         if not self.icons.validIcon(icon):
+            self.common.printInvalidIcon(icon)
+            return None
+
+         pencolor = attributes["pencolor"]
+         if pencolor == "":
+            iconname, pencolor = self.icons.getIcon(icon)
+         clusters[clusterid]["icon"] = iconname
+
+         hexpencolor = self.checkLineColor(pencolor)
+         if hexpencolor == None:
+            self.common.printInvalidLineColor(pencolor)
+            return None
+         clusters[clusterid]["pencolor"] = hexpencolor
+
+         hexbgcolor = "#ffffff"
+         bgcolor = attributes["bgcolor"]
+         if self.common.isAlternateUser() and bgcolor != "":
+            hexbgcolor = self.checkFillColor(hexpencolor, bgcolor)
+            if hexbgcolor == None:
+               self.common.printInvalidFillColor(bgcolor)
+               return None
+         clusters[clusterid]["bgcolor"] = hexbgcolor
+
+      return clusters
+
+   def checkNodes(self, nodes):
+      for nodeid, attributes in nodes.items():
+         direction = attributes["direction"]
+         if not direction.upper() in [parm.value for parm in ParamDirections]:
+            self.common.printInvalidDirection(direction)
+            return None
+
+         fontname = attributes["fontname"]
+         if not fontname in [parm.value for parm in ParamFonts]:
+            self.common.printInvalidFont(fontname)
+            return None
+
+         shape = attributes["shape"]
+         if not shape.upper() in [parm.value for parm in ParamNodeShapes]:
+            self.common.printInvalidNodeShape(shape)
+            return None
+
+         icon = attributes["icon"]
+         if not self.icons.validIcon(icon):
+            self.common.printInvalidIcon(icon)
+            return None
+
+         pencolor = attributes["pencolor"]
+         if pencolor == "":
+            iconname, pencolor = self.icons.getIcon(icon)
+         nodes[nodeid]["icon"] = iconname
+
+         hexpencolor = self.checkLineColor(pencolor)
+         if hexpencolor == None:
+            self.common.printInvalidLineColor(pencolor)
+            return None
+         nodes[nodeid]["pencolor"] = hexpencolor
+
+         hexbgcolor = pencolor
+         bgcolor = attributes["bgcolor"]
+         if bgcolor != "":
+            hexbgcolor = checkFillColor(hexpencolor, bgcolor)
+            if hexbgcolor == None:
+               self.common.printInvalidFillColor(bgcolor)
+               return None
+         nodes[nodeid]["bgcolor"] = hexbgcolor
+
+      return nodes
+
+   def checkEdges(self, edges):
+      for edgeid, attributes in edges.items():
+         style = attributes["style"]
+         if not style.upper() in [parm.value for parm in ParamEdgeStyles]:
+            self.common.printInvalidEdgeStyle(style)
+            return None
+
+         fontname = attributes["fontname"]
+         if not fontname in [parm.value for parm in ParamFonts]:
+            self.common.printInvalidFont(fontname)
+            return None
+
+      return edges
+
+   # Line color must be from IBM Color Palette and can be component name, color name, or hex value.
+   def checkLineColor(self, pencolor):
+      hexvalue = None 
+      if pencolor.lower() in Colors.lines:
+         hexvalue = Colors.lines[pencolor.lower()]
+      return hexvalue
+
+   # Family color ensures that fill color is from same family as line color or transparent or white..
+   def checkFamilyColor(self, hexpencolor, hexbgcolor):
+      bgcolor = Colors.names[hexbgcolor]
+      if bgcolor == "white" or bgcolor == "none":
+         return hexbgcolor
+
+      pencolor = Colors.names[hexpencolor]
+      lightpencolor = "light" + pencolor
+
+      if bgcolor == lightpencolor:
+         return hexbgcolor
+
+      return None
+
+   # Fill color must be from IBM Color Palette and can be transparent, white, or light color from same family as line color.
+   def checkFillColor(self, hexpencolor, bgcolor):
+      hexbgvalue = None 
+      if bgcolor.lower() in Colors.fills:
+         hexbgvalue = Colors.fills[bgcolor.lower()]
+         hexbgvalue = validFamilyColor(hexpencolor, hexbgcolor) 
+      return hexbgvalue
 
    def addKeys(self):
       # Add additional keys to cluster dictionary.

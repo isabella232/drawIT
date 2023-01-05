@@ -18,36 +18,18 @@ from sys import exit as sys_exit
 from contextvars import ContextVar
 from enum import Enum
 from uuid import uuid4
-#from typing import List, Union, Dict
 
-from .colors import Colors
 from .common import Common
-from .iconsdac import Icons
 from .builddac import BuildDAC
 
 _diagram = ContextVar("diagram")
 _cluster = ContextVar("cluster")
 
+_diagrams = {} # Dictionary of diagrams.
 _clusters = {} # Dictionary of clusters.
 _nodes = {}    # Dictionary of nodes.
 _edges = {}    # Dictionary of edges.
 
-DIRECTIONS = ("LR", "TB")  # left-to-right, top-to-bottom
-ALTERNATES = ("WHITE", "LIGHT", "USER")  # white-to-light, light-to-white, user-defined with bgcolor
-PROVIDERS = {"ANY", "IBM"}  # ANY corresponds to Logical, all others are Prescribed.
-NODESHAPES = ("COMPONENT", "NODE")
-CLUSTERSHAPES = ("COMPONENT", "LOCATION", "NODE", "ZONE")
-OUTPUTFORMAT = ("JPG", "PDF", "PNG", "SVG", "XML")
-FONTS = ("IBM PLEX SANS", "IBM PLEX SANS ARABIC", "IBM PLEX SANS DEVANAGARI", "IBM PLEX SANS HEBREW", "IBM PLEX SANS JP", "IBM PLEX SANS KR", "IBM PLEX SANS THAI")
-
-EDGESTYLES = ("solid", "dashed")
-EXTENDED_EDGESTYLES = {  
-   # Allows customization of lines and arrows.
-   "solidline": "dashed=0;",
-   "dashedline": "dashed=1;",
-   "noarrow": "endArrow=none;", 
-   "singlearrow": "endArrow=block;endFill=1;", 
-   "doublearrow": "endArrow=block;endFill=1;startArrow=block;startFill=1;"} 
 
 def getDiagram():
    try:
@@ -73,67 +55,6 @@ def setCluster(cluster):
 def randomid():
    return uuid4().hex
 
-# Valid direction must be one of the supported directions.
-def validDirection(direction):
-   return direction.upper() in DIRECTIONS
-
-# Valid alternate must be a valid alternating fill or user-defined.
-def validAlternate(alternate):
-   return alternate.upper() in ALTERNATES
-
-# Valid provider must be one of the supported providers or ANY.
-def validProvider(provider):
-   return provider.upper() in PROVIDERS
-
-# Valid output format must be one of the supported formats.
-def validOutputFormat(outformat):
-   return outformat.upper() in OUTPUTFORMAT
-
-# Valid font must be and an IBM Plex Sans font.
-def validFont(font):
-   return font.upper() in FONTS
-
-# Valid cluster shape must be a valid IBM2 expanded shape.
-def validClusterShape(shape):
-   return shape.upper() in CLUSTERSHAPES
-
-# Valid node shape must be a valid IBM2 collapsed shape.
-def validNodeShape(shape):
-   return shape.upper() in NODESHAPES
-
-# Valid edge style must be one of the basic or extended edge styles (planned). 
-def validEdgeStyle(style):
-   return style.upper() in EDGESTYLES
-
-# Valid line color must be from IBM Color Palette and can be component name, color name, or hex value.
-def validLineColor(pencolor):
-   hexvalue = None 
-   if pencolor.lower() in Colors.lines:
-      hexvalue = Colors.lines[pencolor.lower()]
-   return hexvalue
-
-# Valid family color ensures that fill color is from same family as line color or transparent or white..
-def validFamilyColor(hexpencolor, hexbgcolor):
-   bgcolor = Colors.names[hexbgcolor]
-   if bgcolor == "white" or bgcolor == "none":
-      return hexbgcolor
-
-   pencolor = Colors.names[hexpencolor]
-   lightpencolor = "light" + pencolor
-
-   if bgcolor == lightpencolor:
-      return hexbgcolor
-
-   return None
-
-# Valid fill color must be from IBM Color Palette and can be transparent, white, or light color from same family as line color.
-def validFillColor(hexpencolor, bgcolor):
-   hexbgvalue = None 
-   if bgcolor.lower() in Colors.fills:
-      hexbgvalue = Colors.fills[bgcolor.lower()]
-      hexbgvalue = validFamilyColor(hexpencolor, hexbgcolor) 
-   return hexbgvalue
-
 
 class Diagram:
    common = None
@@ -153,45 +74,11 @@ class Diagram:
                 outformat: str = "PNG"):
       self.name = name if name else "diagram"
       self.filename = filename if filename else self.name
-
       self.common = Common()
       self.common.setOutputFile(self.filename + ".xml")
-
       self.diagramid = randomid()
-
-      if not validDirection(direction):
-         self.common.printInvalidDirection(direction)
-         sys_exit()
-
-      if not validAlternate(alternate):
-         self.common.printInvalidAlternate(alternate)
-         sys_exit()
-
-      if not validProvider(provider):
-         self.common.printInvalidProvider(provider)
-         sys_exit()
-
-      if not validOutputFormat(outformat):
-         self.common.printInvalidOutputFormat(outformat)
-         sys_exit()
-
-      if direction.upper() == "LR":
-         self.common.setDirectionLR()
-      elif direction.upper() == "TB":
-         self.common.setDirectionTB()
-
-      if alternate.upper() == "WHITE":
-         self.common.setAlternateWhite()
-      elif alternate.upper() == "LIGHT":
-         self.common.setAlternateLight()
-      elif alternate.upper() == "USER":
-         self.common.setAlternateUser()
-
-      if provider.upper() == "ANY":
-         self.common.setProviderAny()
-      elif provider.upper() == "IBM":
-         self.common.setProviderIBM()
-
+      self.attributes = {"name": name, "filename": filename, "direction": direction, "alternate": alternate, "provider": provider, "outformat": outformat}
+      _diagrams[self.diagramid] = self.attributes
       return
 
    def __enter__(self):
@@ -200,11 +87,14 @@ class Diagram:
       return self
 
    def __exit__(self, exception_type, exception_value, traceback):
-      self.diagram  = BuildDAC(self.common, _clusters, _nodes, _edges)
-      self.diagram.buildDiagrams()
-      outputfolder = self.common.getOutputFolder()
-      outputfile = self.common.getOutputFile()
-      self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().value.upper())
+      self.diagram  = BuildDAC(self.common, _diagrams, _clusters, _nodes, _edges)
+      if self.diagram.buildDiagrams():
+         outputfolder = self.common.getOutputFolder()
+         outputfile = self.common.getOutputFile()
+         self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().value.upper())
+      else:
+         self.common.printExit()
+
       setDiagram(None)
       setCluster(None)
       return
@@ -245,52 +135,10 @@ class Cluster:
                 badgebgcolor: str = None):
 
       self.common = Common()
-      self.icons = Icons(self.common)
-
-      if not validDirection(direction):
-         self.common.printInvalidDirection(direction)
-         sys_exit()
-
-      if not validAlternate(alternate):
-         self.common.printInvalidAlternate(alternate)
-         sys_exit()
-
-      if not validProvider(provider):
-         self.common.printInvalidProvider(provider)
-         sys_exit()
-
-      if not validFont(fontname):
-         self.common.printInvalidFont(fontname)
-         sys_exit()
-
-      if not validClusterShape(shape):
-         self.common.printInvalidClusterShape(shape)
-         sys_exit()
-
-      if not self.icons.validIcon(icon):
-         self.common.printInvalidIcon(icon)
-         sys_exit()
-
-      if pencolor == "":
-         iconname, pencolor = self.icons.getIcon(icon)
-         # Ignore iconname, getIcon doesn't have the logical/prescribed setting from Diagram.
-
-      hexpencolor = validLineColor(pencolor)
-      if hexpencolor == None:
-         self.common.printInvalidLineColor(pencolor)
-         sys_exit()
-
-      hexbgcolor = "#ffffff"
-      if self.common.isAlternateUser() and bgcolor != "":
-         hexbgcolor = validFillColor(hexpencolor, bgcolor)
-         if hexbgcolor == None:
-            self.common.printInvalidFillColor(bgcolor)
-            sys_exit()
+      self.shapeid = randomid()
 
       self.fontname = fontname
       self.fontsize = fontsize
-
-      self.shapeid = randomid()
 
       self.parent = getCluster()
       if self.parent:
@@ -298,7 +146,7 @@ class Cluster:
       else:
          self.parent = None
 
-      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": hexpencolor, "bgcolor": hexbgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
+      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "alternate": alternate, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
       return
 
@@ -375,50 +223,14 @@ class Node:
                 badgebgcolor: str = None):
 
       self.common = Common()
-      self.icons = Icons(self.common)
-
-      if not validDirection(direction):
-         self.common.printInvalidDirection(direction)
-         sys_exit()
-
-      if not validFont(fontname):
-         self.common.printInvalidFont(fontname)
-         sys_exit()
-
-      if not validNodeShape(shape):
-         self.common.printInvalidNodeShape(shape)
-         sys_exit()
-
-      if not self.icons.validIcon(icon):
-         self.common.printInvalidIcon(icon)
-         sys_exit()
-
-      if pencolor == "":
-         iconname, pencolor = self.icons.getIcon(icon)
-         # Ignore iconname, getIcon doesn't have the logical/prescribed setting from Diagram.
-
-      hexpencolor = validLineColor(pencolor)
-      if hexpencolor == None:
-         self.common.printInvalidLineColor(pencolor)
-         sys_exit()
-
-      hexbgcolor = ""
-      if bgcolor != "":
-         hexbgcolor = validFillColor(hexpencolor, bgcolor)
-         if hexbgcolor == None:
-            self.common.printInvalidFillColor(bgcolor)
-            sys_exit()
-
+      self.shapeid = randomid()
       self.fontname = fontname
       self.fontsize = fontsize
-
-      self.shapeid = randomid()
-
       self.parent = getCluster()
       self.parentid = self.parent.shapeid
       setCluster(self.parent)
 
-      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": hexpencolor, "bgcolor": hexbgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
+      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
       _nodes[self.shapeid] = self.attributes
 
@@ -492,15 +304,8 @@ class Edge:
                 targetid = None):
 
       self.common = Common()
-
-      if not validEdgeStyle(style):
-         self.common.printInvalidEdgeStyle(style)
-         sys_exit()
-
-      if not validFont(fontname):
-         self.common.printInvalidFont(fontname)
-         sys_exit()
-
+      self.fontname = fontname
+      self.fontsize = fontsize
       self.sourceid = sourceid
       self.targetid = targetid
       self.style = style
