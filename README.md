@@ -80,7 +80,7 @@ Diagram:
 - name
 - filename
 - direction = LR (left-to-right), TB (top-to-bottom) for all shapes - not currently enabled
-- alternate = WHITE (white-to-light), LIGHT (light-to-white, USER (user-defined)
+- alternate = WHITE (white-to-light), LIGHT (light-to-white), NONE (all transparent), USER (all user-defined)
 - provider = ANY (logical), IBM (prescribed)
 - outformat = JPG, PDF, PNG, SVG, XML - not currently enabled
 
@@ -95,7 +95,7 @@ Cluster:
 - pencolor = medium and dark line colors from IBM Color Palette
 - bgcolor = light fill colors from IBM Color Palette or white or transparent
 - direction = LR, TB - for nested shapes
-- alternate = WHITE, LIGHT, USER - for nested clusters, not currently enabled
+- alternate = WHITE, LIGHT, NONE, USER - for nested clusters, not currently enabled
 - provider = ANY, IBM - for nested shapes, not currently enabled
 - fontname = IBM Plex Sans fonts
 - fontsize = numeric value, defaults to 14
