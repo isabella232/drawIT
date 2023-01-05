@@ -32,17 +32,18 @@ class InputType(Enum):
    YAML = 'yaml'
 
 class Directions(Enum):
-   LR = 'left-to-right'
-   TB = 'top-to-bottom'
+   LR = 'LR'
+   TB = 'TB'
 
 class Alternates(Enum):
-   WHITE = 'white-to-light'
-   LIGHT = 'light-to-white'
-   USER = 'user-defined'
+   WHITE = 'WHITE'
+   LIGHT = 'LIGHT'
+   NONE = 'NONE'
+   USER = 'USER'
 
 class Providers(Enum):
-   ANY = 'any'
-   IBM = 'ibm'
+   ANY = 'ANY'
+   IBM = 'IBM'
 
 class OutputSplit(Enum):
    COMBINE = 'combine'
@@ -290,6 +291,9 @@ class Options:
    def setAlternateLight(self):
       self.alternate = Alternates.LIGHT
 
+   def setAlternateNone(self):
+      self.alternate = Alternates.NONE
+
    def setAlternateUser(self):
       self.alternate = Alternates.USER
 
@@ -298,6 +302,9 @@ class Options:
 
    def isAlternateLight(self):
       return self.alternate == Alternates.LIGHT
+
+   def isAlternateNone(self):
+      return self.alternate == Alternates.NONE
 
    def isAlternateUser(self):
       return self.alternate == Alternates.USER

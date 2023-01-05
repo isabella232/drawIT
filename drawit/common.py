@@ -20,7 +20,7 @@ from .messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.7.6'
+   toolVersion = '0.7.8'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -282,6 +282,9 @@ class Common:
    def setAlternateLight(self):
       self.options.setAlternateLight()
 
+   def setAlternateNone(self):
+      self.options.setAlternateNone()
+
    def setAlternateUser(self):
       self.options.setAlternateUser()
 
@@ -290,6 +293,9 @@ class Common:
 
    def isAlternateLight(self):
       return self.options.isAlternateLight()
+
+   def isAlternateNone(self):
+      return self.options.isAlternateNone()
 
    def isAlternateUser(self):
       return self.options.isAlternateUser()

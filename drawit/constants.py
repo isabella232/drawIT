@@ -24,7 +24,8 @@ class ParamDirections(Enum):
 class ParamAlternates(Enum):
    WHITE = 'WHITE'  # white-to-light
    LIGHT = 'LIGHT'  # light-to-white
-   USER = 'USER'     # user-defined
+   NONE = 'NONE'     # all transparent 
+   USER = 'USER'     # all user-defined
 
 class ParamProviders(Enum):
    ANY = 'ANY'  # logical

@@ -204,6 +204,8 @@ class BuildDAC:
             self.common.setAlternateWhite()
          elif alternate.upper() == "LIGHT":
             self.common.setAlternateLight()
+         elif alternate.upper() == "NONE":
+            self.common.setAlternateNone()
          elif alternate.upper() == "USER":
             self.common.setAlternateUser()
 
@@ -599,6 +601,8 @@ class BuildDAC:
                attributes["bgcolor"] = hexvalue
             elif self.common.isAlternateLight():
                attributes["bgcolor"] = "#ffffff"
+            elif self.common.isAlternateNone():
+               attributes["bgcolor"] = "none"
       else:
          if self.common.isAlternateLight():
             pencolor = attributes["pencolor"]
@@ -608,6 +612,8 @@ class BuildDAC:
             attributes["bgcolor"] = hexvalue
          elif self.common.isAlternateWhite():
             attributes["bgcolor"] = "#ffffff"
+         elif self.common.isAlternateNone():
+            attributes["bgcolor"] = "none"
 
       children = attributes["children"]
       for child in children:
@@ -627,6 +633,8 @@ class BuildDAC:
             attributes["bgcolor"] = hexvalue
          elif self.common.isAlternateWhite():
             attributes["bgcolor"] = "#ffffff"
+         elif self.common.isAlternateNone():
+            attributes["bgcolor"] = "none"
 
          children = attributes["children"]
          for child in children:
