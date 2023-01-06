@@ -27,20 +27,20 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 <p>
 slz-vsi:
 </p>
-
-<img src="/examples/slz-vsi.svg">
+<img src="/images/slz-vsi.png">
+<img src="/images/slz-vsi.svg">
 
 <p>
 slz-mixed:
 </p>
-
-<img src="/examples/slz-mixed.svg">
+<img src="/images/slz-mixed.png">
+<img src="/images/slz-mixed.svg">
 
 <p>
 slz-openshift:
 </p>
-
-<img src="/examples/slz-openshiftv.svg">
+<img src="/images/slz-openshift.png">
+<img src="/images/slz-openshift.svg">
 
 </details>
 
