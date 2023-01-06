@@ -116,7 +116,7 @@ class Icons:
             {'icon': 'switch-layer-2', 'color': Colors.lines["network"]},
       'loadbalancer-ibm': 	        
             {'icon': 'load-balancer--vpc', 'color': Colors.lines["network"]},
-      'aclrules': 	        
+      'acl': 	        
             {'icon': 'subnet-acl-rules', 'color': Colors.lines["security"]},
       'vpnconnection': 	        
             {'icon': 'vpn--connection', 'color': Colors.lines["network"]},
@@ -127,13 +127,13 @@ class Icons:
       'securityservices-ibm': 	        
             {'icon': 'ibm-security--services', 'color': Colors.lines["network"]},
       'resourcegroup': 	        
-            {'icon': 'group--resource', 'color': Colors.lines["network"]},
+            {'icon': 'group--resource', 'color': Colors.lines["security"]},
       'servicedeskuser': 	        
             {'icon': 'user--service-desk', 'color': Colors.lines["user"]},
       'document--protected': 	        
             {'icon': 'document--protected', 'color': Colors.lines["network"]},
       'securitygroup': 	        
-            {'icon': 'group--security', 'color': Colors.lines["network"]},
+            {'icon': 'group--security', 'color': Colors.lines["security"]},
       'application--virtual': 	        
             {'icon': 'application--virtual', 'color': Colors.lines["network"]},
       'load-balancer--pool': 	        
@@ -191,11 +191,11 @@ class Icons:
       'blockstorage-any': 	        
             {'icon': 'block-storage--alt', 'color': Colors.lines["network"]},
       'accessgroup': 	        
-            {'icon': 'group--access', 'color': Colors.lines["network"]},
-      'vpn--policy': 	        
+            {'icon': 'group--access', 'color': Colors.lines["security"]},
+      'vpnpolicy': 	        
             {'icon': 'vpn--policy', 'color': Colors.lines["network"]},
-      'code-signing-service': 	        
-            {'icon': 'code-signing-service', 'color': Colors.lines["network"]},
+      'codesigning': 	        
+            {'icon': 'code-signing-service', 'color': Colors.lines["security"]},
       'memoryprofile': 	        
             {'icon': 'instance--mx', 'color': Colors.lines["compute"]},
       'hybrid-networking--alt': 	        
@@ -233,7 +233,7 @@ class Icons:
       'vehicle--connected': 	        
             {'icon': 'vehicle--connected', 'color': Colors.lines["network"]},
       'accountgroup': 	        
-            {'icon': 'group--account', 'color': Colors.lines["network"]},
+            {'icon': 'group--account', 'color': Colors.lines["security"]},
       'image-service': 	        
             {'icon': 'image-service', 'color': Colors.lines["network"]},
       'balancedprofile': 	        

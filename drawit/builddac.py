@@ -71,6 +71,7 @@ class BuildDAC:
       #self.printTops()
       #self.printBottoms()
       self.mergeNodes()
+      self.eliminateZoneParents()
 
    def buildDiagrams(self):
       if self.diagrams == None or self.clusters == None or self.nodes == None or self.edges == None:
@@ -586,59 +587,98 @@ class BuildDAC:
 
       return
 
-   def alternateChild(self, clusterid, flag):
+   def alternateChild(self, clusterid, lastColor):
       attributes = self.clusters[clusterid]
-      if flag:
-         if attributes["shape"].upper() == "ZONE":
-            attributes["bgcolor"] = "none"
-            flag = False
-         else:
-            if self.common.isAlternateWhite():
-               pencolor = attributes["pencolor"]
-               hexvalue = Colors.lines[pencolor]
-               fillname = "light" + Colors.names[hexvalue]
-               hexvalue = Colors.names[fillname]
-               attributes["bgcolor"] = hexvalue
-            elif self.common.isAlternateLight():
-               attributes["bgcolor"] = "#ffffff"
-            elif self.common.isAlternateNone():
-               attributes["bgcolor"] = "none"
-      else:
-         if self.common.isAlternateLight():
-            pencolor = attributes["pencolor"]
-            hexvalue = Colors.lines[pencolor]
-            fillname = "light" + Colors.names[hexvalue]
-            hexvalue = Colors.names[fillname]
-            attributes["bgcolor"] = hexvalue
-         elif self.common.isAlternateWhite():
-            attributes["bgcolor"] = "#ffffff"
-         elif self.common.isAlternateNone():
-            attributes["bgcolor"] = "none"
+      if attributes["shape"].upper() == "ZONE" or  self.common.isAlternateNone():
+         attributes["bgcolor"] = "none"
+      elif lastColor == "WHITE":
+         pencolor = attributes["pencolor"]
+         hexvalue = Colors.lines[pencolor]
+         fillname = "light" + Colors.names[hexvalue]
+         hexvalue = Colors.names[fillname]
+         self.clusters[clusterid]["bgcolor"] = hexvalue
+         lastColor = "LIGHT"
+      elif lastColor == "LIGHT":
+         self.clusters[clusterid]["bgcolor"] = "#ffffff"
+         lastColor = "WHITE"
 
       children = attributes["children"]
-      for child in children:
-         self.alternateChild(child, not flag)
+      for childid in children:
+         attributes = self.clusters[childid]
+         self.alternateChild(childid, lastColor)
 
       return
 
    def alternateFills(self):
-      for top in self.tops:
-         attributes = self.clusters[top]
-
-         if self.common.isAlternateLight():
+      for topid in self.tops:
+         attributes = self.clusters[topid]
+         # Handle top-level zone.
+         if attributes["shape"].upper() == "ZONE" or  self.common.isAlternateNone():
+            self.clusters[topid]["bgcolor"] = "none"
+         elif self.common.isAlternateLight():
             pencolor = attributes["pencolor"]
             hexvalue = Colors.lines[pencolor]
             fillname = "light" + Colors.names[hexvalue]
             hexvalue = Colors.names[fillname]
             attributes["bgcolor"] = hexvalue
+            self.clusters[topid]["bgcolor"] = hexvalue
+            lastColor = "LIGHT"
          elif self.common.isAlternateWhite():
-            attributes["bgcolor"] = "#ffffff"
-         elif self.common.isAlternateNone():
-            attributes["bgcolor"] = "none"
+            self.clusters[topid]["bgcolor"] = "#ffffff"
+            lastColor = "WHITE"
 
          children = attributes["children"]
-         for child in children:
-            self.alternateChild(child, True)
+         for childid in children:
+            attributes = self.clusters[childid]
+            self.alternateChild(childid, lastColor)
+      return
+
+   # For containers nested inside zones:
+   #   Set nested container parent to first container outside of zone.
+   #   Set nested container x, y to be relative to first container outside of zone.
+   def eliminateZoneParents(self):
+      for bottomid in self.bottoms:
+         childid = bottomid
+         childattributes = self.clusters[childid]
+         if childattributes["shape"].upper() == "ZONE":
+            continue
+        
+         parentid = childattributes["parentid"] 
+         while parentid != None:
+            parentattributes = self.clusters[parentid]
+
+            savex = 0
+            savey = 0
+            zonesFound = False
+
+            while parentattributes["shape"].upper() == "ZONE":
+               zoneid = parentid
+               zoneattributes = parentattributes
+               zonegeometry = zoneattributes["geometry"]
+               savex += zonegeometry[0]
+               savey += zonegeometry[1]
+               parentid = zoneattributes["parentid"] 
+               parentattributes = self.clusters[parentid]
+               self.clusters[zoneid]["parentid"] = parentid
+               zonesFound = True
+               
+            if zonesFound == True:
+               zonegeometry = zoneattributes["geometry"]
+               childgeometry = childattributes["geometry"]
+               direction = childattributes["direction"]
+               childx = savex + childgeometry[0]
+               childy = savey + childgeometry[1]
+               childwidth = childgeometry[2]
+               childheight = childgeometry[3]
+               self.clusters[childid]["geometry"] = [childx, childy, childwidth, childheight]
+               self.clusters[childid]["parentid"] = parentid
+               savex = 0
+               savey = 0
+
+            childid = parentid
+            childattributes = self.clusters[childid]
+            parentid = childattributes["parentid"] 
+
       return
 
    def printClusters(self):
