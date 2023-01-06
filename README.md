@@ -22,6 +22,28 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 ## Code-to-Diagram Guide
 
+<details><summary>Examples</summary>
+
+<p>
+slz-vsi:
+</p>
+
+<img src="/examples/slz-vsi.svg">
+
+<p>
+slz-mixed:
+</p>
+
+<img src="/examples/slz-mixed.svg">
+
+<p>
+slz-openshift:
+</p>
+
+<img src="/examples/slz-openshiftv.svg">
+
+</details>
+
 <details><summary>Structure</summary>
 
     from drawit import Diagram, Cluster, Node, Edge
