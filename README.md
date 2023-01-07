@@ -276,25 +276,44 @@ Font Names:
 Refer to rungui.sh or run.sh in scripts folder.
 </p>
 
-<details><summary>Features Supported</summary>
+<details><summary>Features</summary>
 
-- Cloud
-- Region
-- Availability Zone
-  - Public Gateway
-  - VPN Gateway
-- VPC
-  - Implicit Router
-  - Private & Public ALB
-  - Private & Public NLB
-- Subnet
-  - Instances
-  - Floating IP
-- Public Network
-  - Internet
-  - User
-- Enterprise Network  
-- User 
+- [x] Cloud 
+- [x] Region
+- [x] VPC
+- [x] Availability Zone
+- [x] Subnet
+- [x] VSI
+- [x] Floating IP
+- [x] Public Gateway
+- [x] VPN Gateway
+- [x] ALB
+- [x] NLB
+- [x] VPN Gateway
+- [ ] Bare Metal Servers
+- [ ] Images
+- [ ] Volumes
+- [ ] VPE Gateways
+- [ ] Storage Devices
+- [ ] Storage Layers
+- [ ] Instance Groups
+- [ ] Placement Groups
+- [ ] Address Prefixes
+- [ ] Network ACLs
+- [ ] Security Groups
+- [ ] Distributed NLB
+- [ ] Dedicated Hosts
+- [ ] Dedicated Host Groups
+- [ ] Routing Tables
+- [ ] Routing Table Routes
+- [ ] Node Reservations
+- [ ] Export Policies
+- [ ] Export Policy Rules
+- [ ] Flow Log Collectors
+- [ ] Snapshots
+- [ ] Keys
+- [ ] Shares
+- [ ] IKS Clusters
 
 </details>
 
