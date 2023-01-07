@@ -323,6 +323,7 @@ Refer to rungui.sh or run.sh in scripts folder.
 - [ ] Keys
 - [ ] Shares
 - [ ] IKS Clusters
+- [ ] IKS VPC LB
 
 </details>
 
@@ -370,6 +371,7 @@ Refer to rungui.sh or runrias.sh in scripts folder.
 - [ ] Keys
 - [ ] Shares
 - [ ] IKS Clusters
+- [ ] IKS VPC LB
 
 </details>
 
