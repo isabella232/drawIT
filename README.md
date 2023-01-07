@@ -8,14 +8,15 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 ## Use Cases
 
 1. Code-to-Diagram (subject to change): 
-  - Refer to examples folder.
+  - Refer to guide below.
   - Input is python code.
   - Output is diagrams.net xml file.
 2. JSON-to-Diagram:
-  - Refer to rungui.sh or run.sh in scripts folder.
+  - Refer to guide below.
   - Input is from tool-generated JSON/YAML.
   - Output is diagrams.net xml file.
 3. RIAS-to-Diagram:
+  - Refer to guide below.
   - Refer to rungui.sh or runrias.sh in scripts folder.
   - Input is from RIAS APIs.
   - Output is diagrams.net xml file.
@@ -265,6 +266,68 @@ Font Names:
 - IBM Plex Sans JP
 - IBM Plex Sans KR
 - IBM Plex Sans Thai
+
+</details>
+
+</details>
+
+<details><summary>JSON-to-Diagram Guide</summary>
+
+<p>
+Refer to rungui.sh or run.sh in scripts folder.
+</p>
+
+<details><summary>Features Supported</summary>
+
+- Cloud
+- Region
+- Availability Zone
+  - Public Gateway
+  - VPN Gateway
+- VPC
+  - Implicit Router
+  - Private & Public ALB
+  - Private & Public NLB
+- Subnet
+  - Instances
+  - Floating IP
+- Public Network
+  - Internet
+  - User
+- Enterprise Network  
+- User 
+
+</details>
+
+</details>
+
+<details><summary>RIAS-to-Diagram Guide</summary>
+
+<p>
+Refer to rungui.sh or runrias.sh in scripts folder.
+</p>
+
+<details><summary>Features Supported</summary>
+
+- Cloud
+- Region
+- Availability Zone
+  - Public Gateway
+  - VPN Gateway
+- VPC
+  - Implicit Router
+  - Private & Public ALB
+  - Private & Public NLB
+- Subnet
+  - Instances
+  - Floating IP
+- Public Network
+  - Internet
+  - User
+- Enterprise Network  
+- User 
+
+</details>
 
 </details>
 
