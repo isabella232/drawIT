@@ -13,11 +13,11 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
   - Output is diagrams.net xml file.
 2. JSON-to-Diagram:
   - Refer to JSON-to-Diagram Guide below.
-  - Input is from tool-generated JSON/YAML.
+  - Input is from JSON/YAML for existing infrastructure.
   - Output is diagrams.net xml file.
 3. RIAS-to-Diagram:
   - Refer to RIAS-to-Diagram Guide below.
-  - Input is from RIAS APIs.
+  - Input is from RIAS APIs for existing infrastructure.
   - Output is diagrams.net xml file.
 
 ## Code-to-Diagram Guide
