@@ -270,7 +270,7 @@ Font Names:
 
 </details>
 
-<details><summary>JSON-to-Diagram Guide</summary>
+## JSON-to-Diagram Guide
 
 <p>
 Refer to rungui.sh or run.sh in scripts folder.
@@ -298,9 +298,7 @@ Refer to rungui.sh or run.sh in scripts folder.
 
 </details>
 
-</details>
-
-<details><summary>RIAS-to-Diagram Guide</summary>
+## RIAS-to-Diagram Guide
 
 <p>
 Refer to rungui.sh or runrias.sh in scripts folder.
@@ -325,8 +323,6 @@ Refer to rungui.sh or runrias.sh in scripts folder.
   - User
 - Enterprise Network  
 - User 
-
-</details>
 
 </details>
 
