@@ -22,38 +22,6 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 ## Code-to-Diagram Guide
 
-<details><summary>Examples</summary>
-
-<details><summary>Secure Landing Zone</summary>
-
-<p>
-
-[slz-vsi.py](examples/slz-vsi.py)
-
-<img src="/examples/slz-vsi.svg">
-
-</p>
-
-<p>
-
-[slz-mixed.py](examples/slz-mixed.py)
-
-<img src="/examples/slz-mixed.svg">
-
-</p>
-
-<p>
-
-[slz-openshift.py](examples/slz-openshift.py)
-
-<img src="/examples/slz-openshift.svg">
-
-</p>
-
-</details>
-
-</details>
-
 <details><summary>Structure</summary>
 
     from drawit import Diagram, Cluster, Node, Edge
@@ -243,7 +211,7 @@ Notes:
 
 <p>
 
-Use the keys (subject to change until finalized) defined in the icon dictionary as icon names and exclude the -any and -ibm from the key:
+Use the keys (subject to change until finalized) defined in the following icon dictionary as icon names and exclude the -any and -ibm from the name:
 
 [icons.py](drawit/iconsdac.py)
 
@@ -272,6 +240,36 @@ Font Names:
 - IBM Plex Sans JP
 - IBM Plex Sans KR
 - IBM Plex Sans Thai
+
+</details>
+
+<details><summary>Examples</summary>
+
+<details><summary>Secure Landing Zone</summary>
+
+<p>
+
+[slz-vsi.py](examples/slz-vsi.py)
+
+<img src="/examples/slz-vsi.svg">
+
+</p>
+
+<p>
+
+[slz-mixed.py](examples/slz-mixed.py)
+
+<img src="/examples/slz-mixed.svg">
+
+</p>
+
+<p>
+
+[slz-openshift.py](examples/slz-openshift.py)
+
+<img src="/examples/slz-openshift.svg">
+
+</p>
 
 </details>
 
