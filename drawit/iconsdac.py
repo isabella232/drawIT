@@ -13,9 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import Enum
-
-#from .constants import Colors.lines[" ShapeKind
 from .colors import Colors
 
 class Icons:
@@ -459,66 +456,3 @@ class Icons:
       'testtool': 	        
             {'icon': 'test-tool', 'color': Colors.lines["applications"]}
    }
-
-   common = None
-
-   def __init__(self, common):   
-      self.common = common
-
-   def getIconDictionary(self):
-      return self.iconDictionary
-
-   #def getIcon(self, name, shapetype):
-   def getIcon(self, shapetype):
-      #if self.common.isAllIcons():
-      #   iconname = name
-      #   iconcolor = Colors.lines["network"]
-      #elif self.common.isLogicalShapes():
-      if self.common.isProviderAny():
-         if shapetype in self.iconDictionary:
-            icon = self.iconDictionary[shapetype]
-            iconname = icon['icon']
-            iconcolor = icon['color']
-         elif shapetype + '-any' in self.iconDictionary:
-            icon = self.iconDictionary[shapetype + '-any']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-         elif shapetype + '-ibm' in self.iconDictionary:
-            icon = self.iconDictionary[shapetype + '-ibm']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-         else:
-            icon = self.iconDictionary['undefined']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-      else: # check prescribed
-         if shapetype in self.iconDictionary:
-            icon = self.iconDictionary[shapetype]
-            iconname = icon['icon']
-            iconcolor = icon['color']
-         elif shapetype + '-ibm' in self.iconDictionary:
-            icon = self.iconDictionary[shapetype + '-ibm']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-         elif shapetype + '-any' in self.iconDictionary:
-            icon = self.iconDictionary[shapetype + '-any']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-         else:
-            icon = self.iconDictionary['undefined']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-
-      return iconname, iconcolor    
-
-   def validIcon(self, iconname):
-      #for name, values in self.iconDictionary.items():
-      #   if iconname == values['icon']:
-      #      return True
-      if iconname in self.iconDictionary:
-         return True
-      if iconname + '-any' in self.iconDictionary:
-         return True
-      if iconname + '-ibm' in self.iconDictionary:
-         return True
-      return False

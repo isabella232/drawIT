@@ -34,7 +34,7 @@ from .iconsdac import Icons
 class BuildDAC:
    common = None
    shapes = None
-   icons = None
+   #icons = None
    cloudname = ""
    diagrams = {}
    clusters = {}
@@ -47,7 +47,7 @@ class BuildDAC:
       self.common = common
 
       self.shapes = Shapes(common)
-      self.icons = Icons(common)
+      #self.icons = Icons(common)
 
       self.diagrams = self.checkDiagrams(diagrams)
       self.clusters = self.checkClusters(clusters)
@@ -240,13 +240,13 @@ class BuildDAC:
             return None
 
          icon = attributes["icon"]
-         if not self.icons.validIcon(icon):
+         if not self.common.validIcon(icon):
             self.common.printInvalidIcon(icon)
             return None
 
          pencolor = attributes["pencolor"]
          if pencolor == "":
-            iconname, pencolor = self.icons.getIcon(icon)
+            iconname, pencolor = self.common.getIcon(icon)
          clusters[clusterid]["icon"] = iconname
 
          hexpencolor = self.checkLineColor(pencolor)
@@ -284,13 +284,13 @@ class BuildDAC:
             return None
 
          icon = attributes["icon"]
-         if not self.icons.validIcon(icon):
+         if not self.common.validIcon(icon):
             self.common.printInvalidIcon(icon)
             return None
 
          pencolor = attributes["pencolor"]
          if pencolor == "":
-            iconname, pencolor = self.icons.getIcon(icon)
+            iconname, pencolor = self.common.getIcon(icon)
          nodes[nodeid]["icon"] = iconname
 
          hexpencolor = self.checkLineColor(pencolor)

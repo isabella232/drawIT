@@ -17,10 +17,11 @@ from hashlib import md5
 
 from .options import Options
 from .messages import Messages
+from .iconsdac import Icons
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.8.0'
+   toolVersion = '0.8.1'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -32,6 +33,53 @@ class Common:
       return
 
    # Utilities
+
+   def getIcon(self, shapetype):
+      if self.isProviderAny():
+         if shapetype in Icons.iconDictionary:
+            icon = Icons.iconDictionary[shapetype]
+            iconname = icon['icon']
+            iconcolor = icon['color']
+         elif shapetype + '-any' in Icons.iconDictionary:
+            icon = Icons.iconDictionary[shapetype + '-any']
+            iconname = icon['icon']
+            iconcolor = icon['color']
+         elif shapetype + '-ibm' in Icons.iconDictionary:
+            icon = Icons.iconDictionary[shapetype + '-ibm']
+            iconname = icon['icon']
+            iconcolor = icon['color']
+         else:
+            icon = Icons.iconDictionary['undefined']
+            iconname = icon['icon']
+            iconcolor = icon['color']
+      else: # check prescribed
+         if shapetype in Icons.iconDictionary:
+            icon = Icons.iconDictionary[shapetype]
+            iconname = icon['icon']
+            iconcolor = icon['color']
+         elif shapetype + '-ibm' in Icons.iconDictionary:
+            icon = Icons.iconDictionary[shapetype + '-ibm']
+            iconname = icon['icon']
+            iconcolor = icon['color']
+         elif shapetype + '-any' in Icons.iconDictionary:
+            icon = Icons.iconDictionary[shapetype + '-any']
+            iconname = icon['icon']
+            iconcolor = icon['color']
+         else:
+            icon = Icons.iconDictionary['undefined']
+            iconname = icon['icon']
+            iconcolor = icon['color']
+
+      return iconname, iconcolor
+
+   def validIcon(self, iconname):
+      if iconname in Icons.iconDictionary:
+         return True
+      if iconname + '-any' in Icons.iconDictionary:
+         return True
+      if iconname + '-ibm' in Icons.iconDictionary:
+         return True
+      return False
 
    def compress(self, string):
       hash = md5(string.encode())

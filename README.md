@@ -237,10 +237,16 @@ Light Fill (bgcolor):
 Notes:
 </p>
 
-- Icons are currently only from [IBM Design Center](https://www.ibm.com/design/language/iconography/ui-icons/library/).
+- Icons are from [IBM Design Center](https://www.ibm.com/design/language/iconography/ui-icons/library/).
 - Icon usage name is used for simplicity and clarity which are further classified as ANY (Logical) or IBM (Prescribed) with the provider parameter.
 - Planned: Add icon usage names here. 
 - Planned: Support icons not from IBM Design Center.
+
+<p>
+
+[icons.py](drawit/iconsdac.py)
+
+</p>
 
 </details>
 
