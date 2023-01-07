@@ -276,7 +276,54 @@ Font Names:
 Refer to rungui.sh or run.sh in scripts folder.
 </p>
 
-<details><summary>Features</summary>
+<details><summary>Features Supported</summary>
+
+- [x] Cloud 
+- [x] Region
+- [x] VPC
+- [x] Availability Zone
+- [x] Subnet
+- [x] VSI
+- [x] Floating IP
+- [x] Public Gateway
+- [x] VPN Gateway
+- [x] ALB
+- [x] NLB
+- [x] VPN Gateway
+- [ ] Bare Metal Servers
+- [ ] Images
+- [ ] Volumes
+- [ ] VPE Gateways
+- [ ] Storage Devices
+- [ ] Storage Layers
+- [ ] Instance Groups
+- [ ] Placement Groups
+- [ ] Address Prefixes
+- [ ] Network ACLs
+- [ ] Security Groups
+- [ ] Distributed NLB
+- [ ] Dedicated Hosts
+- [ ] Dedicated Host Groups
+- [ ] Routing Tables
+- [ ] Routing Table Routes
+- [ ] Node Reservations
+- [ ] Export Policies
+- [ ] Export Policy Rules
+- [ ] Flow Log Collectors
+- [ ] Snapshots
+- [ ] Keys
+- [ ] Shares
+- [ ] IKS Clusters
+
+</details>
+
+## RIAS-to-Diagram Guide
+
+<p>
+Refer to rungui.sh or runrias.sh in scripts folder.
+</p>
+
+<details><summary>Features Supported</summary>
 
 - [x] Cloud 
 - [x] Region
@@ -342,6 +389,27 @@ Refer to rungui.sh or runrias.sh in scripts folder.
   - User
 - Enterprise Network  
 - User 
+
+</details>
+
+## Prereqs
+
+- Python 3.10.5
+- pandas 1.4.2
+- PyYAML 6.0
+- requests 2.28.0
+- urllib3 1.26.9
+
+## References
+
+- [buildIT](https://github.com/IBM/buildit)
+- [IT Architecture Diagrams](https://github.com/IBM/it-architecture-diagrams)
+- [Code Pattern](https://github.com/IBM/codepattern-multitier-vpc)
+
+## License
+
+This application is licensed under the Apache License, Version 2.  Separate third-party code objects invoked by this application are licensed by their respective providers pursuant to their own separate licenses.  Contributions are subject to the [Developer Certificate of Origin, Version 1.1](https://developercertificate.org/) and the [Apache License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
+
 
 </details>
 
