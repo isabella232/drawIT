@@ -26,7 +26,7 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 <p>
 
-**slz-vsi**
+**Example slz-vsi:**
 </p>
 
 <img src="/images/slz-vsi.png">
@@ -34,14 +34,15 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 <p>
 
-**slz-mixed**
+**Example slz-mixed:**
 </p>
 
 <img src="/images/slz-mixed.png">
 <img src="/images/slz-mixed.svg">
 
 <p>
-**slz-openshift**
+
+**Example slz-openshift:**
 </p>
 
 <img src="/images/slz-openshift.png">
