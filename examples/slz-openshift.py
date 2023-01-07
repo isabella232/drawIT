@@ -6,9 +6,9 @@ with Diagram("slz-openshift"):
 
     with Cluster("Region", icon="region"):
 
-      with Cluster("Management Resource Group", shape="zone", icon="resourcegroup"):
+      with Cluster("Management Resource Group", icon="resourcegroup"):
         with Cluster("Management VPC", icon="vpc"):
-          with Cluster("Management ACL", shape="zone", icon="acl"):
+          with Cluster("Management ACL", icon="acl"):
             with Cluster("Zone 1", icon="zone", direction="TB"):
               with Cluster("10.10.10.0/24 : VSI", icon="subnet"):
                 vsi = Node("Management OpenShift Cluster", icon="openshift") 
@@ -27,9 +27,9 @@ with Diagram("slz-openshift"):
               with Cluster("10.30.20.0/24 : VPE", icon="subnet"):
                 vpe = Node("Virtual Private Endpoint", icon="vpe") 
 
-      with Cluster("Workload Resource Group", shape="zone", icon="resourcegroup"):
+      with Cluster("Workload Resource Group", icon="resourcegroup"):
         with Cluster("Workload VPC", icon="vpc"):
-          with Cluster("Workload ACL", shape="zone", icon="acl"):
+          with Cluster("Workload ACL", icon="acl"):
             with Cluster("Zone 1", icon="zone", direction="TB"):
               with Cluster("10.40.10.0/24 : VSI", icon="subnet"):
                 vsi = Node("Workload OpenShift Cluster", icon="openshift") 
@@ -46,7 +46,7 @@ with Diagram("slz-openshift"):
               with Cluster("10.60.20.0/24 : VPE", icon="subnet"):
                 vpe = Node("Virtual Private Endpoint", icon="vpe") 
 
-      with Cluster("Cloud Services Resource Group", shape="zone", icon="resourcegroup"):
+      with Cluster("Cloud Services Resource Group", icon="resourcegroup"):
         with Cluster("Cloud Services", icon="cloudservices", direction="TB"):
           service1 = Node("Activity Tracker Object Storage", icon="objectstorage") 
           service2 = Node("Activity Tracker", icon="activitytracker") 

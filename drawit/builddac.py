@@ -235,7 +235,7 @@ class BuildDAC:
             return None
 
          shape = attributes["shape"]
-         if not shape.upper() in [parm.value for parm in ParamClusterShapes]:
+         if shape != "" and not shape.upper() in [parm.value for parm in ParamClusterShapes]:
             self.common.printInvalidClusterShape(shape)
             return None
 
@@ -246,8 +246,13 @@ class BuildDAC:
 
          pencolor = attributes["pencolor"]
          if pencolor == "":
-            iconname, pencolor = self.common.getIcon(icon)
+            iconname, pencolor, iconshape = self.common.getIcon(icon)
          clusters[clusterid]["icon"] = iconname
+         shape = clusters[clusterid]["shape"]
+         if shape == "" and iconshape != "":
+            clusters[clusterid]["shape"] = iconshape
+         else:
+            clusters[clusterid]["shape"] = "LOCATION"
 
          hexpencolor = self.checkLineColor(pencolor)
          if hexpencolor == None:
@@ -279,7 +284,7 @@ class BuildDAC:
             return None
 
          shape = attributes["shape"]
-         if not shape.upper() in [parm.value for parm in ParamNodeShapes]:
+         if shape != "" and not shape.upper() in [parm.value for parm in ParamNodeShapes]:
             self.common.printInvalidNodeShape(shape)
             return None
 
@@ -290,8 +295,13 @@ class BuildDAC:
 
          pencolor = attributes["pencolor"]
          if pencolor == "":
-            iconname, pencolor = self.common.getIcon(icon)
+            iconname, pencolor, iconshape = self.common.getIcon(icon)
          nodes[nodeid]["icon"] = iconname
+         shape = nodes[nodeid]["shape"]
+         if shape == "" and iconshape != "":
+            nodes[nodeid]["shape"] = iconshape
+         else:
+            nodes[nodeid]["shape"] = "NODE"
 
          hexpencolor = self.checkLineColor(pencolor)
          if hexpencolor == None:

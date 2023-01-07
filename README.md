@@ -5,6 +5,10 @@ Automate creation of diagrams.
 
 Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
+Download the [IBM2 Beta](https://github.com/IBM/it-architecture-diagrams/releases) for Mac only.
+
+Note:  Both Mac and Windows versions will be available when IBM2 is published.
+
 ## Use Cases
 
 1. Code-to-Diagram (subject to change): 

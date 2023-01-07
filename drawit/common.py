@@ -40,37 +40,45 @@ class Common:
             icon = Icons.iconDictionary[shapetype]
             iconname = icon['icon']
             iconcolor = icon['color']
+            iconshape = icon['shape'] if 'shape' in icon else ""
          elif shapetype + '-any' in Icons.iconDictionary:
             icon = Icons.iconDictionary[shapetype + '-any']
             iconname = icon['icon']
             iconcolor = icon['color']
+            iconshape = icon['shape'] if 'shape' in icon else ""
          elif shapetype + '-ibm' in Icons.iconDictionary:
             icon = Icons.iconDictionary[shapetype + '-ibm']
             iconname = icon['icon']
             iconcolor = icon['color']
+            iconshape = icon['shape'] if 'shape' in icon else ""
          else:
             icon = Icons.iconDictionary['undefined']
             iconname = icon['icon']
             iconcolor = icon['color']
+            iconshape = icon['shape'] if 'shape' in icon else ""
       else: # check prescribed
          if shapetype in Icons.iconDictionary:
             icon = Icons.iconDictionary[shapetype]
             iconname = icon['icon']
             iconcolor = icon['color']
+            iconshape = icon['shape'] if 'shape' in icon else ""
          elif shapetype + '-ibm' in Icons.iconDictionary:
             icon = Icons.iconDictionary[shapetype + '-ibm']
             iconname = icon['icon']
             iconcolor = icon['color']
+            iconshape = icon['shape'] if 'shape' in icon else ""
          elif shapetype + '-any' in Icons.iconDictionary:
             icon = Icons.iconDictionary[shapetype + '-any']
             iconname = icon['icon']
             iconcolor = icon['color']
+            iconshape = icon['shape'] if 'shape' in icon else ""
          else:
             icon = Icons.iconDictionary['undefined']
             iconname = icon['icon']
             iconcolor = icon['color']
+            iconshape = icon['shape'] if 'shape' in icon else ""
 
-      return iconname, iconcolor
+      return iconname, iconcolor, iconshape
 
    def validIcon(self, iconname):
       if iconname in Icons.iconDictionary:
