@@ -43,6 +43,8 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 </details>
 
+</details>
+
 <details><summary>Structure</summary>
 
     from drawit import Diagram, Cluster, Node, Edge
