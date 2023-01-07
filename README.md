@@ -27,18 +27,27 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 <details><summary>Secure Landing Zone</summary>
 
 <p>
+
 [slz-vsi.py](examples/slz-vsi.py)
+
 <img src="/examples/slz-vsi.svg">
+
 </p>
 
 <p>
+
 [slz-mixed.py](examples/slz-mixed.py)
+
 <img src="/examples/slz-mixed.svg">
+
 </p>
 
 <p>
+
 [slz-openshift.py](examples/slz-openshift.py)
+
 <img src="/examples/slz-openshift.svg">
+
 </p>
 
 </details>
