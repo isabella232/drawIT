@@ -437,17 +437,21 @@ class BuildDAC:
          nodeids = attributes["nodes"]
          nodecount = len(nodeids)
          if nodecount > 0:
+            # Set node geometry.
             if direction == "LR":
-               # Set node geometry.
-               if nodecount == 1 and childcount == 0:
-                  # Center single node in cluster.
-                  x = (minclusterwidth / 2) - (minnodewidth / 2)
+               if childcount == 0:
+                  if nodecount == 1:
+                     # Center single node in cluster.
+                     x = (minclusterwidth / 2) - (minnodewidth / 2)
+                  else:
+                     # Left justify first of multiple nodes in cluster.
+                     x = minnodespace
                else:
-                  # Left justify first of multiple nodes in cluster.
+                  # Left justify first of multiple nodes and clusters.
                   x = minnodespace
             elif direction == "TB":
-                  # Center nodes in cluster.
-                  x = (minclusterwidth / 2) - (minnodewidth / 2)
+               # Center nodes in cluster.
+               x = (minclusterwidth / 2) - (minnodewidth / 2)
             y = mintopspace
             width = minnodewidth
             height = minnodeheight
@@ -486,7 +490,8 @@ class BuildDAC:
    def calculateClusterGeometry(self):
       mintopspace = 60
       minshapespace = 20
-      minnodespace = 30
+      #minnodespace = 30
+      minnodespace = 60
       minnodewidth = 48
       minnodeheight = 48
       minclusterwidth = 240
@@ -552,14 +557,19 @@ class BuildDAC:
                   if count == 1:
                      if nodecount > 0:
                         # Reset start position of clusters accounting for nodes.
-                        y = nodeheight
-                        totalheight += nodeheight + height
+                        #y = nodeheight
+                        y = nodeheight + (2 * minshapespace) 
+                        #totalheight += nodeheight + height
+                        totalheight += nodeheight + height + (2 * minshapespace)
                         self.clusters[childid]["geometry"] = [x, y, width, height]
                      else:
                         totalheight += height + minshapespace
                   else:
                      # Reset start position of clusters after first cluster.
-                     y = totalheight + (3 * minshapespace)
+                     if nodecount > 0:
+                        y = totalheight + minshapespace
+                     else:
+                        y = totalheight + (3 * minshapespace)
                      totalheight += height + minshapespace
                      self.clusters[childid]["geometry"] = [x, y, width, height]
                   savewidth = max(width, savewidth)
@@ -573,7 +583,11 @@ class BuildDAC:
                   height = saveheight + mintopspace + minshapespace
                elif direction =="TB":
                   width = savewidth + (2 * minshapespace)
-                  height = totalheight + mintopspace
+                  #height = totalheight + mintopspace
+                  if nodecount > 0:
+                     height = totalheight + mintopspace - (2 * minshapespace)
+                  else:
+                     height = totalheight + mintopspace
                width = max(width, minclusterwidth)
                height = max(height, minclusterheight)
                self.clusters[clusterid]["geometry"] = [x, y, width, height]
@@ -594,6 +608,17 @@ class BuildDAC:
                width = max(width, minclusterwidth)
                height = max(height, minclusterheight)
                self.clusters[clusterid]["geometry"] = [x, y, width, height]
+
+               if direction =="TB":
+                  # Recenter nodes.
+                  clusterwidth = width
+                  for nodeid in nodeids:
+                     geometry = self.nodes[nodeid]["geometry"]
+                     x = (clusterwidth / 2) - (minnodewidth / 2)
+                     y = geometry[1]
+                     width = geometry[2]
+                     height = geometry[3]
+                     self.nodes[nodeid]["geometry"] = [x, y, width, height]
 
       return
 
