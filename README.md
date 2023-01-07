@@ -3,11 +3,11 @@ Automate creation of diagrams.
 
 ## Overview
 
-Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
+Automate creation of diagrams that can be viewed in IBM2 on diagrams.net desktop.
 
-Download the [IBM2 Beta](https://github.com/IBM/it-architecture-diagrams/releases) for Mac only.
+The [IBM2 Beta](https://github.com/IBM/it-architecture-diagrams/releases) is currently available for Mac only.
 
-Note:  Both Mac and Windows versions will be available when IBM2 is published.
+Note:  Both Mac and Windows versions for diagrams.net desktop will be available when IBM2 is published.
 
 ## Use Cases
 
