@@ -238,11 +238,12 @@ Notes:
 </p>
 
 - Icons are from [IBM Design Center](https://www.ibm.com/design/language/iconography/ui-icons/library/).
-- Icon usage name is used for simplicity and clarity which are further classified as ANY (Logical) or IBM (Prescribed) with the provider parameter.
-- Planned: Add icon usage names here. 
+- Icon usage name is used for simplicity and clarity which are classified as -any (Logical) or -ibm (Prescribed) depending on the provider parameter.
 - Planned: Support icons not from IBM Design Center.
 
 <p>
+
+Use the keys (subject to change until finalized) defined in the icon dictionary as icon names and exclude the -any and -ibm from the key:
 
 [icons.py](drawit/iconsdac.py)
 
