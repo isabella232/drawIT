@@ -117,7 +117,7 @@ class Icons:
       'loadbalancer-ibm': 	        
             {'icon': 'load-balancer--vpc', 'color': Colors.lines["network"]},
       'acl': 	        
-            {'icon': 'subnet-acl-rules', 'color': Colors.lines["security"]},
+            {'icon': 'subnet-acl-rules', 'color': Colors.lines["security"], 'shape': 'zone'},
       'vpnconnection': 	        
             {'icon': 'vpn--connection', 'color': Colors.lines["network"]},
       'enterprisenetwork': 	        
@@ -127,13 +127,13 @@ class Icons:
       'securityservices-ibm': 	        
             {'icon': 'ibm-security--services', 'color': Colors.lines["network"]},
       'resourcegroup': 	        
-            {'icon': 'group--resource', 'color': Colors.lines["security"]},
+            {'icon': 'group--resource', 'color': Colors.lines["security"], 'shape': 'zone'},
       'servicedeskuser': 	        
             {'icon': 'user--service-desk', 'color': Colors.lines["user"]},
       'document--protected': 	        
             {'icon': 'document--protected', 'color': Colors.lines["network"]},
       'securitygroup': 	        
-            {'icon': 'group--security', 'color': Colors.lines["security"]},
+            {'icon': 'group--security', 'color': Colors.lines["security"], 'shape': 'zone'},
       'application--virtual': 	        
             {'icon': 'application--virtual', 'color': Colors.lines["network"]},
       'load-balancer--pool': 	        
@@ -191,7 +191,7 @@ class Icons:
       'blockstorage-any': 	        
             {'icon': 'block-storage--alt', 'color': Colors.lines["network"]},
       'accessgroup': 	        
-            {'icon': 'group--access', 'color': Colors.lines["security"]},
+            {'icon': 'group--access', 'color': Colors.lines["security"], 'shape': 'zone'},
       'vpnpolicy': 	        
             {'icon': 'vpn--policy', 'color': Colors.lines["network"]},
       'codesigning': 	        
@@ -233,7 +233,7 @@ class Icons:
       'vehicle--connected': 	        
             {'icon': 'vehicle--connected', 'color': Colors.lines["network"]},
       'accountgroup': 	        
-            {'icon': 'group--account', 'color': Colors.lines["security"]},
+          {'icon': 'group--account', 'color': Colors.lines["security"], 'shape': 'zone'},
       'image-service': 	        
             {'icon': 'image-service', 'color': Colors.lines["network"]},
       'balancedprofile': 	        
@@ -449,7 +449,7 @@ class Icons:
       'keyprotect-ibm':  	        
             {'icon': 'ibm-cloud--key-protect', 'color': Colors.lines["security"]}, 
       'secretsmanager': 	        
-            {'icon': 'ibm-cloud--secrets-manager', 'color': Colors.lines["security"]},
+            {'icon': 'ibm-cloud--secrets-manager', 'color': Colors.lines["security"], 'shape': 'zone'},
       'artifactrepository': 	        
             {'icon': 'repo--artifact', 'color': Colors.lines["storage"]},
       'sourcecoderepository': 	        
