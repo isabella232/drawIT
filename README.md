@@ -24,29 +24,26 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net.
 
 <details><summary>Examples</summary>
 
-<p>
-
-**Example slz-vsi:**
-</p>
+<details><summary>[slz-vsi.py](examples/slz-vsi.py)</summary>
 
 <img src="/images/slz-vsi.png">
 <img src="/images/slz-vsi.svg">
 
-<p>
+</details>
 
-**Example slz-mixed:**
-</p>
+<details><summary>[slz-mixed.py](examples/slz-mixed.py)</summary>
 
 <img src="/images/slz-mixed.png">
 <img src="/images/slz-mixed.svg">
 
-<p>
+</details>
 
-**Example slz-openshift:**
-</p>
+<details><summary>[slz-openshift.py](examples/slz-openshift.py)</summary>
 
 <img src="/images/slz-openshift.png">
 <img src="/images/slz-openshift.svg">
+
+</details>
 
 </details>
 
