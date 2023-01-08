@@ -21,6 +21,7 @@
 #   types.py - build drawio types, invokes xml.py with tables.py
 #   elements.py - build drawio objects  
 
+from os import path
 from math import isnan
 
 from .colors import Colors
@@ -30,6 +31,35 @@ from .constants import ParamFonts, ParamNodeShapes, ParamOutFormats, ParamProvid
 from .constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
 from .shapesdac import Shapes
 from .iconsdac import Icons
+
+DIAGRAM_NAME_DEFAULT = "diagram"
+DIAGRAM_DIRECTION_DEFAULT = "LR"
+DIAGRAM_ALTERNATE_DEFAULT = "WHITE"
+DIAGRAM_PROVIDER_DEFAULT = "IBM"
+DIAGRAM_FONTNAME_DEFAULT = "IBM Plex Sans"
+DIAGRAM_FONTSIZE_DEFAULT = 14
+DIAGRAM_OUTFORMAT_DEFAULT = "SVG"
+
+CLUSTER_LABEL_DEFAULT = "Cluster"
+CLUSTER_DIRECTION_DEFAULT = "LR"
+CLUSTER_ALTERNATE_DEFAULT = "WHITE"
+CLUSTER_PROVIDER_DEFAULT = "IBM"
+CLUSTER_SHAPE_DEFAULT = "LOCATION"
+CLUSTER_ICON_DEFAULT = "undefined"
+CLUSTER_FONTNAME_DEFAULT = "IBM Plex Sans"
+CLUSTER_FONTSIZE_DEFAULT = 14
+
+NODE_LABEL_DEFAULT = "Node"
+NODE_DIRECTION_DEFAULT = "LR"
+NODE_PROVIDER_DEFAULT = "IBM"
+NODE_SHAPE_DEFAULT = "NODE"
+NODE_ICON_DEFAULT = "undefined"
+NODE_FONTNAME_DEFAULT = "IBM Plex Sans"
+NODE_FONTSIZE_DEFAULT = 14
+
+EDGE_STYLE_DEFAULT = "solid"
+EDGE_FONTNAME_DEFAULT = "IBM Plex Sans"
+EDGE_FONTSIZE_DEFAULT = 12
 
 class BuildDAC:
    common = None
@@ -45,18 +75,54 @@ class BuildDAC:
 
    def __init__(self, common, diagrams, clusters, nodes, edges):
       self.common = common
+      self.shapes = Shapes(self.common)
+      self.diagrams = diagrams
+      self.clusters = clusters
+      self.nodes = nodes
+      self.edges = edges
+      return
 
-      self.shapes = Shapes(common)
-      #self.icons = Icons(common)
-
-      self.diagrams = self.checkDiagrams(diagrams)
-      self.clusters = self.checkClusters(clusters)
-      self.nodes = self.checkNodes(nodes)
-      self.edges = self.checkEdges(edges)
+   def buildDiagrams(self):
+      self.checkAll()
 
       if self.diagrams == None or self.clusters == None or self.nodes == None or self.edges == None:
+         self.common.printExit()
          return
 
+      for diagramid, attributes in self.diagrams.items():
+         # Only single entry.
+         self.common.printStartFile(attributes["filename"] + ".py", attributes["provider"].upper())
+
+      self.setupAll()
+
+      if self.diagrams == None or self.clusters == None or self.nodes == None or self.edges == None:
+         self.common.printExit()
+         return
+
+      outputFolder = self.common.getOutputFolder()
+      if outputFolder[-1] != '/':
+         self.common.setOutputFolder(outputFolder + '/')
+
+      clouddata = self.buildAll()
+
+      for regionname, regionvalues in clouddata.items():
+         self.shapes.buildXML(regionvalues, regionname)
+         self.shapes.dumpXML(self.common.getOutputFile(), self.common.getOutputFolder())
+         self.shapes.resetXML()
+
+      outputfolder = self.common.getOutputFolder()
+      outputfile = self.common.getOutputFile()
+      self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().value.upper())
+
+      return
+
+   def checkAll(self):
+      self.diagrams = self.checkDiagrams(self.diagrams)
+      self.clusters = self.checkClusters(self.clusters)
+      self.nodes = self.checkNodes(self.nodes)
+      self.edges = self.checkEdges(self.edges)
+
+   def setupAll(self):
       self.addKeys()
       self.addChildren()
 
@@ -72,23 +138,6 @@ class BuildDAC:
       #self.printBottoms()
       self.mergeNodes()
       self.eliminateZoneParents()
-
-   def buildDiagrams(self):
-      if self.diagrams == None or self.clusters == None or self.nodes == None or self.edges == None:
-         return False
-
-      outputFolder = self.common.getOutputFolder()
-      if outputFolder[-1] != '/':
-         self.common.setOutputFolder(outputFolder + '/')
-
-      clouddata = self.buildAll()
-
-      for regionname, regionvalues in clouddata.items():
-         self.shapes.buildXML(regionvalues, regionname)
-         self.shapes.dumpXML(self.common.getOutputFile(), self.common.getOutputFolder())
-         self.shapes.resetXML()
-
-      return True
 
    def buildAll(self):
       nodes = []
@@ -109,7 +158,7 @@ class BuildDAC:
          links += edgelinks
          values += edgevalues
 
-      regiondata["IBM Cloud"] = {'nodes': nodes, 'links': links, 'values': values}
+      regiondata["Cloud"] = {'nodes': nodes, 'links': links, 'values': values}
 
       return regiondata
 
@@ -176,25 +225,61 @@ class BuildDAC:
 
    def checkDiagrams(self, diagrams):
       for diagramid, attributes in diagrams.items():
+         name = attributes["name"]
+         if name == "":
+            name = DIAGRAM_NAME_DEFAULT
+         diagrams[diagramid]["name"] = name
+
+         filename = attributes["filename"]
+         if filename == "":
+            filename = name
+         diagrams[diagramid]["filename"] = filename
+         self.common.setOutputFile(filename + ".xml")
+
          direction = attributes["direction"]
-         if not direction.upper() in [parm.value for parm in ParamDirections]:
+         if direction == "":
+            direction = DIAGRAM_DIRECTION_DEFAULT
+         elif not direction.upper() in [parm.value for parm in ParamDirections]:
             self.common.printInvalidDirection(direction)
             return None
+         diagrams[diagramid]["direction"] = direction
 
          alternate = attributes["alternate"]
-         if not alternate.upper() in [parm.value for parm in ParamAlternates]:
+         if alternate == "":
+            alernate = DIAGRAM_ALTERNATE_DEFAULT
+         elif not alternate.upper() in [parm.value for parm in ParamAlternates]:
             self.common.printInvalidAlternate(alternate)
             return None
+         diagrams[diagramid]["alternate"] = alternate
 
          provider = attributes["provider"]
-         if not provider.upper() in [parm.value for parm in ParamProviders]:
+         if provider == "":
+            provider = DIAGRAM_PROVIDER_DEFAULT
+         elif not provider.upper() in [parm.value for parm in ParamProviders]:
             self.common.printInvalidProvider(provider)
             return None
+         diagrams[diagramid]["provider"] = provider
+
+         fontname = attributes["fontname"]
+         if fontname == "":
+            fontname = DIAGRAM_FONTNAME_DEFAULT
+         elif not fontname in [parm.value for parm in ParamFonts]:
+            self.common.printInvalidFontName(fontname)
+            return None
+         diagrams[diagramid]["fontname"] = fontname
+
+         fontsize = attributes["fontsize"]
+         if fontsize == 0:
+            fontsize = DIAGRAM_FONTSIZE_DEFAULT
+         diagrams[diagramid]["fontsize"] = fontsize
 
          outformat = attributes["outformat"]
-         if not outformat.upper() in [parm.value for parm in ParamOutFormats]:
+         if outformat == "":
+            outformat = DIAGRAM_OUTFORMAT_DEFAULT
+         elif not outformat.upper() in [parm.value for parm in ParamOutFormats]:
             self.common.printInvalidOutputFormat(outformat)
             return None
+         diagrams[diagramid]["outformat"] = outformat
 
          if direction.upper() == "LR":
             self.common.setDirectionLR()
@@ -219,40 +304,70 @@ class BuildDAC:
 
    def checkClusters(self, clusters):
       for clusterid, attributes in clusters.items():
+         label = attributes["label"]
+         if label == "":
+            label = CLUSTER_LABEL_DEFAULT
+         clusters[clusterid]["label"] = label
+
          direction = attributes["direction"]
-         if not direction.upper() in [parm.value for parm in ParamDirections]:
+         if direction == "":
+            direction = CLUSTER_DIRECTION_DEFAULT
+         elif not direction.upper() in [parm.value for parm in ParamDirections]:
             self.common.printInvalidDirection(direction)
             return None
+         clusters[clusterid]["direction"] = direction
 
          alternate = attributes["alternate"]
-         if not alternate.upper() in [parm.value for parm in ParamAlternates]:
+         if alternate == "":
+            alternate = CLUSTER_ALTERNATE_DEFAULT
+         elif not alternate.upper() in [parm.value for parm in ParamAlternates]:
             self.common.printInvalidAlternate(alternate)
             return None
+         clusters[clusterid]["alternate"] = alternate
+
+         provider = attributes["provider"]
+         if provider == "":
+            provider = CLUSTER_PROVIDER_DEFAULT
+         elif not provider.upper() in [parm.value for parm in ParamProviders]:
+            self.common.printInvalidProvider(provider)
+            return None
+         clusters[clusterid]["provider"] = provider
 
          fontname = attributes["fontname"]
-         if not fontname in [parm.value for parm in ParamFonts]:
+         if fontname == "":
+            fontname = CLUSTER_FONTNAME_DEFAULT
+         elif not fontname in [parm.value for parm in ParamFonts]:
             self.common.printInvalidFont(fontname)
             return None
+         clusters[clusterid]["fontname"] = fontname
 
-         shape = attributes["shape"]
-         if shape != "" and not shape.upper() in [parm.value for parm in ParamClusterShapes]:
-            self.common.printInvalidClusterShape(shape)
-            return None
+         fontsize = attributes["fontsize"]
+         if fontsize == 0:
+            fontsize = CLUSTER_FONTSIZE_DEFAULT
+         clusters[clusterid]["fontsize"] = fontsize
 
          icon = attributes["icon"]
-         if not self.common.validIcon(icon):
+         if icon == "":
+            icon = CLUSTER_ICON_DEFAULT
+         elif not self.common.validIcon(icon):
             self.common.printInvalidIcon(icon)
             return None
 
          pencolor = attributes["pencolor"]
          if pencolor == "":
             iconname, pencolor, iconshape = self.common.getIcon(icon)
+
          clusters[clusterid]["icon"] = iconname
-         shape = clusters[clusterid]["shape"]
-         if shape == "" and iconshape != "":
-            clusters[clusterid]["shape"] = iconshape
-         else:
-            clusters[clusterid]["shape"] = "LOCATION"
+
+         shape = attributes["shape"]
+         if shape == "":
+            if iconshape == "":
+               self.clusters[clusterid]["shape"] = CLUSTER_SHAPE_DEFAULT
+            else:
+               self.clusters[clusterid]["shape"] = iconshape
+         elif not shape.upper() in [parm.value for parm in ParamClusterShapes]:
+            self.common.printInvalidClusterShape(shape)
+            return None
 
          hexpencolor = self.checkLineColor(pencolor)
          if hexpencolor == None:
@@ -273,35 +388,55 @@ class BuildDAC:
 
    def checkNodes(self, nodes):
       for nodeid, attributes in nodes.items():
+         label = attributes["label"]
+         if label == "":
+            label = NODE_LABEL_DEFAULT
+         nodes[nodeid]["label"] = label
+
          direction = attributes["direction"]
-         if not direction.upper() in [parm.value for parm in ParamDirections]:
+         if direction == "":
+            direction = NODE_DIRECTION_DEFAULT
+         elif not direction.upper() in [parm.value for parm in ParamDirections]:
             self.common.printInvalidDirection(direction)
             return None
+         nodes[nodeid]["direction"] = direction
 
          fontname = attributes["fontname"]
-         if not fontname in [parm.value for parm in ParamFonts]:
+         if fontname == "":
+            fontname = NODE_FONTNAME_DEFAULT
+         elif not fontname in [parm.value for parm in ParamFonts]:
             self.common.printInvalidFont(fontname)
             return None
+         nodes[nodeid]["fontname"] = fontname
 
-         shape = attributes["shape"]
-         if shape != "" and not shape.upper() in [parm.value for parm in ParamNodeShapes]:
-            self.common.printInvalidNodeShape(shape)
-            return None
+         fontsize = attributes["fontsize"]
+         if fontsize == 0:
+            fontsize = NODE_FONTSIZE_DEFAULT
+         nodes[nodeid]["fontsize"] = fontsize
 
          icon = attributes["icon"]
-         if not self.common.validIcon(icon):
+         if icon == "":
+            icon = NODE_ICON_DEFAULT
+         elif not self.common.validIcon(icon):
             self.common.printInvalidIcon(icon)
             return None
 
          pencolor = attributes["pencolor"]
          if pencolor == "":
             iconname, pencolor, iconshape = self.common.getIcon(icon)
+
          nodes[nodeid]["icon"] = iconname
-         shape = nodes[nodeid]["shape"]
-         if shape == "" and iconshape != "":
-            nodes[nodeid]["shape"] = iconshape
+
+         shape = attributes["shape"]
+         if shape == "":
+            if iconshape == "":
+               nodes[nodeid]["shape"] = NODE_SHAPE_DEFAULT
+            else:
+               nodes[nodeid]["shape"] = iconshape
          else:
-            nodes[nodeid]["shape"] = "NODE"
+            if not shape.upper() in [parm.value for parm in ParamNodeShapes]:
+               self.common.printInvalidNodeShape(shape)
+               return None
 
          hexpencolor = self.checkLineColor(pencolor)
          if hexpencolor == None:
@@ -323,14 +458,25 @@ class BuildDAC:
    def checkEdges(self, edges):
       for edgeid, attributes in edges.items():
          style = attributes["style"]
-         if not style.upper() in [parm.value for parm in ParamEdgeStyles]:
+         if style == "":
+            style = EDGE_STYLE_DEFAULT
+         elif not style.upper() in [parm.value for parm in ParamEdgeStyles]:
             self.common.printInvalidEdgeStyle(style)
             return None
+         edges[edgeid]["style"] = style
 
          fontname = attributes["fontname"]
-         if not fontname in [parm.value for parm in ParamFonts]:
+         if fontname == "":
+            fontname = EDGE_FONTNAME_DEFAULT
+         elif not fontname in [parm.value for parm in ParamFonts]:
             self.common.printInvalidFont(fontname)
             return None
+         edges[edgeid]["fontname"] = fontname
+
+         fontsize = attributes["fontsize"]
+         if fontsize == 0:
+            fontsize = EDGE_FONTSIZE_DEFAULT
+         edges[edgeid]["fontsize"] = fontsize
 
       return edges
 

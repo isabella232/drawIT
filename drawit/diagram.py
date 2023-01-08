@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os import path
 from sys import exit as sys_exit
 from contextvars import ContextVar
 from enum import Enum
@@ -59,42 +58,32 @@ def randomid():
 class Diagram:
    common = None
    attributes = {}
-   data = {}
    diagramid = None
    diagram = None
-   outformat = None
-   name = ""
 
    def __init__(self, 
-                name: str = "",
-                filename: str = "",
-                direction: str = "LR",
-                alternate: str = "WHITE",
-                provider: str = "IBM",
-                outformat: str = "PNG"):
-      self.name = name if name else "diagram"
-      self.filename = filename if filename else self.name
+                name = "",
+                filename = "",
+                direction = "",
+                alternate = "",
+                provider = "",
+                fontname = "",
+                fontsize = 0,
+                outformat = ""):
       self.common = Common()
-      self.common.setOutputFile(self.filename + ".xml")
       self.diagramid = randomid()
-      self.attributes = {"name": name, "filename": filename, "direction": direction, "alternate": alternate, "provider": provider, "outformat": outformat}
+
+      self.attributes = {"name": name, "filename": filename, "direction": direction, "alternate": alternate, "provider": provider, "fontname": fontname, "fontsize": fontsize,  "outformat": outformat}
       _diagrams[self.diagramid] = self.attributes
       return
 
    def __enter__(self):
-      self.common.printStartFile(self.filename + ".py", self.common.getCloudType().value.upper())
       setDiagram(self)
       return self
 
    def __exit__(self, exception_type, exception_value, traceback):
       self.diagram  = BuildDAC(self.common, _diagrams, _clusters, _nodes, _edges)
-      if self.diagram.buildDiagrams():
-         outputfolder = self.common.getOutputFolder()
-         outputfile = self.common.getOutputFile()
-         self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().value.upper())
-      else:
-         self.common.printExit()
-
+      self.diagram.buildDiagrams()
       setDiagram(None)
       setCluster(None)
       return
@@ -108,37 +97,28 @@ class Cluster:
    sourceid = None
    targetid = None
    parent = None
-   arrow = ""
-   operator = ""
-   style = ""
    node = None
    edge = None
-   fontname = None
-   fontsize = 14
    attributes = {}
 
    def __init__(self, 
-                label: str = "Cluster", 
-                sublabel: str = "", 
-                shape: str = "",
-                pencolor: str = "",
-                bgcolor: str = "",
-                icon: str = "undefined",
-                direction: str = "LR", 
-                alternate: str = "WHITE",
-                provider: str = "IBM",
-                fontname: str = "IBM Plex Sans",
-                fontsize: int = 14,
-                badgetext: str = "", 
-                badgeshape: str = None,
-                badgepencolor: str = None,
-                badgebgcolor: str = None):
-
+                label = "",
+                sublabel = "",
+                shape = "",
+                pencolor = "",
+                bgcolor = "",
+                icon = "",
+                direction = "",
+                alternate = "",
+                provider = "",
+                fontname = "",
+                fontsize = 0,
+                badgetext = "", 
+                badgeshape = "",
+                badgepencolor = "",
+                badgebgcolor = ""):
       self.common = Common()
       self.shapeid = randomid()
-
-      self.fontname = fontname
-      self.fontsize = fontsize
 
       self.parent = getCluster()
       if self.parent:
@@ -146,7 +126,7 @@ class Cluster:
       else:
          self.parent = None
 
-      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "alternate": alternate, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
+      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "alternate": alternate, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
       return
 
@@ -203,34 +183,30 @@ class Node:
    style = ""
    node = None
    edge = None
-   fontname = None
-   fontsize = 14
    attributes = {}
 
    def __init__(self, 
-                label: str = "Node", 
-                sublabel: str = "", 
-                shape: str = "",
-                pencolor: str = "",
-                bgcolor: str = "",
-                icon: str = "undefined",
-                direction: str = "LR",
-                fontname: str = "IBM Plex Sans",
-                fontsize: int = 14,
-                badgetext: str = "", 
-                badgeshape: str = None,
-                badgepencolor: str = None,
-                badgebgcolor: str = None):
-
+                label = "", 
+                sublabel = "", 
+                shape = "",
+                pencolor = "",
+                bgcolor = "",
+                icon = "",
+                direction = "",
+                provider = "",
+                fontname = "",
+                fontsize = 0,
+                badgetext = "", 
+                badgeshape = "",
+                badgepencolor = "",
+                badgebgcolor = ""):
       self.common = Common()
       self.shapeid = randomid()
-      self.fontname = fontname
-      self.fontsize = fontsize
       self.parent = getCluster()
       self.parentid = self.parent.shapeid
       setCluster(self.parent)
 
-      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
+      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
       _nodes[self.shapeid] = self.attributes
 
@@ -277,44 +253,31 @@ class Node:
 
 class Edge:
    common = None
-   icons = None
    shapeid = None
    parentid = None
-   sourceid = None
-   targetid = None
+   #sourceid = None
+   #targetid = None
    parent = None
-   arrow = ""
-   operator = ""
-   style = ""
+   #arrow = ""
+   #operator = ""
+   #style = ""
    node = None
    edge = None
-   fontname = None
-   fontsize = 14
    attributes = {}
 
    def __init__(self, 
-                label: str = "", 
-                #node: "Node" = None,
-                style: str = "solid",
-                fontname: str = "IBM Plex Sans",
-                fontsize: int = 12,
+                label = "", 
+                style = "",
+                fontname = "",
+                fontsize = 0,
                 arrow = "",
-                operator = "",
-                sourceid = None,
-                targetid = None):
-
+                operator = "",     # Internal use only.
+                sourceid = None,   # Internal use only.
+                targetid = None):  # Internal use only.
       self.common = Common()
-      self.fontname = fontname
-      self.fontsize = fontsize
-      self.sourceid = sourceid
-      self.targetid = targetid
-      self.style = style
-      self.arrow = arrow
-      self.operator = operator
-
       self.shapeid = randomid()
 
-      self.attributes = {"label": label, "sourceid": self.sourceid, "targetid": self.targetid, "style": self.style, "arrow": self.arrow, "fontname": fontname, "fontsize": fontsize}
+      self.attributes = {"label": label, "sourceid": sourceid, "targetid": targetid, "style": style, "arrow": arrow, "fontname": fontname, "fontsize": fontsize}
 
       _edges[self.shapeid] = self.attributes
 

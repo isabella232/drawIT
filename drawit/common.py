@@ -21,7 +21,7 @@ from .iconsdac import Icons
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.8.5'
+   toolVersion = '0.8.8'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
