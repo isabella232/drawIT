@@ -19,7 +19,7 @@ class Icons:
    iconDictionary = { 
       'undefined': 	        
             {'icon': 'undefined', 'color': Colors.lines["network"]},
-      'usercollaboration': 	        
+      'collaborate': 	        
             {'icon': 'collaborate', 'color': Colors.lines["user"]},
       'credentials': 	        
             {'icon': 'credentials', 'color': Colors.lines["network"]},
@@ -27,8 +27,8 @@ class Icons:
             {'icon': 'devices', 'color': Colors.lines["user"]},
       'meeting': 	        
             {'icon': 'events', 'color': Colors.lines["user"]},
-      'authorizationBoundary': 	        
-            {'icon': 'flag', 'color': Colors.lines["network"]},
+      'authorizationboundary': 	        
+            {'icon': 'flag', 'color': Colors.lines["network"], 'shape': 'zone'},
       'cloud-ibm': 	        
             {'icon': 'ibm-cloud', 'color': Colors.lines["network"]},
       'user':  	        
@@ -45,7 +45,7 @@ class Icons:
             {'icon': 'security', 'color': Colors.lines["security"]},
       'fingerprintrecognition': 	        
             {'icon': 'fingerprint-recognition', 'color': Colors.lines["network"]},
-      'network2':  	        
+      'network':  	        
             {'icon': 'network--2', 'color': Colors.lines["network"]}, 
       'edgenode':  	        
             {'icon': 'edge-node', 'color': Colors.lines["network"]}, 
@@ -77,7 +77,7 @@ class Icons:
             {'icon': 'locked', 'color': Colors.lines["network"]}, 
       'application':  	        
             {'icon': 'application', 'color': Colors.lines["network"]}, 
-      'arrows--horizontal': 	        
+      'horizontalarrows': 	        
             {'icon': 'arrows--horizontal', 'color': Colors.lines["network"]},
       'cloud-any': 
             {'icon': 'cloud', 'color': Colors.lines["network"]},
@@ -93,7 +93,7 @@ class Icons:
             {'icon': 'user--admin', 'color': Colors.lines["user"]},
       'cloudfoundry': 	        
             {'icon': 'cloud-foundry--1', 'color': Colors.lines["network"]},
-      'cloud-satellite':  	        
+      'cloudsatellite':  	        
             {'icon': 'cloud-satellite', 'color': Colors.lines["network"]}, 
       'timer':  	        
             {'icon': 'timer', 'color': Colors.lines["network"]}, 
@@ -101,15 +101,15 @@ class Icons:
             {'icon': 'deploy', 'color': Colors.lines["network"]}, 
       'shuffle': 	        
             {'icon': 'shuffle', 'color': Colors.lines["network"]},
-      'wifi--controller': 	        
+      'wificontroller': 	        
             {'icon': 'wifi--controller', 'color': Colors.lines["network"]},
-      'switch-layer-3': 	        
+      'switchlayer3': 	        
             {'icon': 'switch-layer-3', 'color': Colors.lines["network"]},
       'vpngateway': 	        
             {'icon': 'gateway--vpn', 'color': Colors.lines["network"]},
       'baremetalserver': 	        
             {'icon': 'bare-metal-server', 'color': Colors.lines["compute"]},
-      'switch-layer-2': 	        
+      'switchlayer2': 	        
             {'icon': 'switch-layer-2', 'color': Colors.lines["network"]},
       'loadbalancer-ibm': 	        
             {'icon': 'load-balancer--vpc', 'color': Colors.lines["network"]},
@@ -119,7 +119,7 @@ class Icons:
             {'icon': 'vpn--connection', 'color': Colors.lines["network"]},
       'enterprisenetwork': 	        
             {'icon': 'network--enterprise', 'color': Colors.lines["network"]},
-      'direct-link': 	        
+      'directlink': 	        
             {'icon': 'direct-link', 'color': Colors.lines["network"]},
       'securityservices-ibm': 	        
             {'icon': 'ibm-security--services', 'color': Colors.lines["network"]},
@@ -127,21 +127,21 @@ class Icons:
             {'icon': 'group--resource', 'color': Colors.lines["security"], 'shape': 'zone'},
       'servicedeskuser': 	        
             {'icon': 'user--service-desk', 'color': Colors.lines["user"]},
-      'document--protected': 	        
+      'protecteddocument': 	        
             {'icon': 'document--protected', 'color': Colors.lines["network"]},
       'securitygroup': 	        
             {'icon': 'group--security', 'color': Colors.lines["security"], 'shape': 'zone'},
-      'application--virtual': 	        
+      'virtualapplication': 	        
             {'icon': 'application--virtual', 'color': Colors.lines["network"]},
-      'load-balancer--pool': 	        
+      'lbpool': 	        
             {'icon': 'load-balancer--pool', 'color': Colors.lines["network"]},
-      'vehicle--services': 	        
+      'vehicleservices': 	        
             {'icon': 'vehicle--services', 'color': Colors.lines["network"]},
-      'security-services': 	        
+      'securityservices': 	        
             {'icon': 'security-services', 'color': Colors.lines["network"]},
-      'user--military': 	        
+      'militaryuser': 	        
             {'icon': 'user--military', 'color': Colors.lines["network"]},
-      'message-queue': 	        
+      'messagequeue': 	        
             {'icon': 'message-queue', 'color': Colors.lines["network"]},
       'databackup': 	        
             {'icon': 'data-backup', 'color': Colors.lines["network"]},
@@ -151,7 +151,7 @@ class Icons:
             {'icon': 'cloud--monitoring', 'color': Colors.lines["management"]},
       'firewall': 	        
             {'icon': 'firewall', 'color': Colors.lines["security"]},
-      'wifi--not-secure': 	        
+      'wifinotsecure': 	        
             {'icon': 'wifi--not-secure', 'color': Colors.lines["network"]},
       'cdn': 	        
             {'icon': 'content-delivery-network', 'color': Colors.lines["network"]},
@@ -165,9 +165,9 @@ class Icons:
             {'icon': 'load-balancer--network', 'color': Colors.lines["network"]},
       'publicnetwork': 	        
             {'icon': 'network--public', 'color': Colors.lines["network"]},
-      'server--dns': 	        
+      'dnsserver': 	        
             {'icon': 'server--dns', 'color': Colors.lines["network"]},
-      'vehicle--api': 	        
+      'vehicleapi': 	        
             {'icon': 'vehicle--api', 'color': Colors.lines["network"]},
       'classicinfrastructure': 	        
             {'icon': 'infrastructure--classic', 'color': Colors.lines["network"]},
@@ -175,15 +175,15 @@ class Icons:
             {'icon': 'instance--classic', 'color': Colors.lines["network"]},
       'alb': 	        
             {'icon': 'load-balancer--application', 'color': Colors.lines["network"]},
-      'ibm-cloud--dedicated-host': 	        
+      'dedicatedhost-ibm': 	        
             {'icon': 'ibm-cloud--dedicated-host', 'color': Colors.lines["network"]},
       'internetservices-ibm': 	        
             {'icon': 'ibm-cloud--internet-services', 'color': Colors.lines["network"]},
-      'radio--push-to-talk': 	        
+      'pushtotalkradio': 	        
             {'icon': 'radio--push-to-talk', 'color': Colors.lines["network"]},
       'glb': 	        
             {'icon': 'load-balancer--global', 'color': Colors.lines["network"]},
-      'firewall--classic': 	        
+      'classicfirewall': 	        
             {'icon': 'firewall--classic', 'color': Colors.lines["network"]},
       'blockstorage-any': 	        
             {'icon': 'block-storage--alt', 'color': Colors.lines["network"]},
@@ -191,31 +191,31 @@ class Icons:
             {'icon': 'group--access', 'color': Colors.lines["security"], 'shape': 'zone'},
       'vpnpolicy': 	        
             {'icon': 'vpn--policy', 'color': Colors.lines["network"]},
-      'codesigning': 	        
+      'codesigningservice': 	        
             {'icon': 'code-signing-service', 'color': Colors.lines["security"]},
       'memoryprofile': 	        
             {'icon': 'instance--mx', 'color': Colors.lines["compute"]},
-      'hybrid-networking--alt': 	        
+      'hybridnetworking': 	        
             {'icon': 'hybrid-networking--alt', 'color': Colors.lines["network"]},
-      'document--unprotected': 	        
+      'unprotecteddocument': 	        
             {'icon': 'document--unprotected', 'color': Colors.lines["network"]},
-      'bastion-host': 	        
+      'bastionhost': 	        
             {'icon': 'bastion-host', 'color': Colors.lines["network"]},
       'blob': 	        
             {'icon': 'data-blob', 'color': Colors.lines["network"]},
       'objectstorage-any': 	        
             {'icon': 'object-storage--alt', 'color': Colors.lines["storage"]},
-      'server--proxy': 	        
+      'proxyserver': 	        
             {'icon': 'server--proxy', 'color': Colors.lines["network"]},
-      'application--mobile': 	        
+      'mobileapplication': 	        
             {'icon': 'application--mobile', 'color': Colors.lines["network"]},
-      'mobility--services': 	        
+      'mobilityservices': 	        
             {'icon': 'mobility--services', 'color': Colors.lines["network"]},
       'filestorage': 	        
             {'icon': 'file-storage', 'color': Colors.lines["storage"]},
-      'router--wifi': 	        
+      'wifirouter': 	        
             {'icon': 'router--wifi', 'color': Colors.lines["network"]},
-      'intrusion-prevention': 	        
+      'intrusionprevention': 	        
             {'icon': 'intrusion-prevention', 'color': Colors.lines["network"]},
       'edge-node--alt': 	        
             {'icon': 'edge-node--alt', 'color': Colors.lines["network"]},
@@ -227,7 +227,7 @@ class Icons:
             {'icon': 'block-storage', 'color': Colors.lines["storage"]},
       'floatingip': 	        
             {'icon': 'floating-ip', 'color': Colors.lines["network"]},
-      'vehicle--connected': 	        
+      'connectedvehicle': 	        
             {'icon': 'vehicle--connected', 'color': Colors.lines["network"]},
       'accountgroup': 	        
           {'icon': 'group--account', 'color': Colors.lines["security"], 'shape': 'zone'},
@@ -237,19 +237,19 @@ class Icons:
             {'icon': 'instance--bx', 'color': Colors.lines["network"]},
       'objectstorageaccessor': 	        
             {'icon': 'data-accessor', 'color': Colors.lines["network"]},
-      'gateway--user-access': 	        
+      'useraccessgateway': 	        
             {'icon': 'gateway--user-access', 'color': Colors.lines["network"]},
-      'document--signed': 	        
+      'signeddocument': 	        
             {'icon': 'document--signed', 'color': Colors.lines["network"]},
-      'application--web': 	        
+      'webapplication': 	        
             {'icon': 'application--web', 'color': Colors.lines["network"]},
       'instancegroup': 	        
             {'icon': 'autoscaling', 'color': Colors.lines["network"]},
       'lblistener': 	        
             {'icon': 'load-balancer--listener', 'color': Colors.lines["network"]},
-      'radio--combat': 	        
+      'combatradio': 	        
             {'icon': 'radio--combat', 'color': Colors.lines["network"]},
-      'user--settings': 	        
+      'usersettings': 	        
             {'icon': 'user--settings', 'color': Colors.lines["network"]},
       'wifi-bridge--alt': 	        
             {'icon': 'wifi-bridge--alt', 'color': Colors.lines["network"]},
@@ -257,75 +257,75 @@ class Icons:
             {'icon': 'point-of-presence', 'color': Colors.lines["network"]},
       'datacenter': 	        
             {'icon': 'data--center', 'color': Colors.lines["network"]},
-      'sim-card': 	        
+      'simcard': 	        
             {'icon': 'sim-card', 'color': Colors.lines["network"]},
-      'chat--operational': 	        
+      'operationalchat': 	        
             {'icon': 'chat--operational', 'color': Colors.lines["network"]},
       'vpe-ibm': 	        
             {'icon': 'ibm-cloud--vpc-endpoints', 'color': Colors.lines["network"]},
-      'id-management': 	        
+      'idmanagement': 	        
             {'icon': 'id-management', 'color': Colors.lines["network"]},
       'vsi-ibm': 	        
             {'icon': 'instance--virtual', 'color': Colors.lines["compute"]},
-      'gui--management': 	        
+      'managementgui': 	        
             {'icon': 'gui--management', 'color': Colors.lines["network"]},
-      'virtual-desktop': 	        
+      'virtualdesktop': 	        
             {'icon': 'virtual-desktop', 'color': Colors.lines["network"]},
       'computeprofile': 	        
             {'icon': 'instance--cx', 'color': Colors.lines["compute"]},
-      'phone--settings': 	        
+      'phonesettings': 	        
             {'icon': 'phone--settings', 'color': Colors.lines["network"]},
       'overlaynetwork': 	        
             {'icon': 'network--overlay', 'color': Colors.lines["network"]},
       'gateway': 	        
             {'icon': 'gateway', 'color': Colors.lines["network"]},
-      'document--security': 	        
+      'documentsecurity': 	        
             {'icon': 'document--security', 'color': Colors.lines["network"]},
       'router': 	        
             {'icon': 'router', 'color': Colors.lines["network"]},
-      'router--voice':  	        
+      'voicerouter':  	        
             {'icon': 'router--voice', 'color': Colors.lines["network"]}, 
-      'dns-services': 	        
+      'dnsservices': 	        
             {'icon': 'dns-services', 'color': Colors.lines["network"]},
       'vlan-any': 	        
             {'icon': 'vlan', 'color': Colors.lines["network"]},
-      'server--time': 	        
+      'timeserver': 	        
             {'icon': 'server--time', 'color': Colors.lines["network"]},
-      'gateway--api': 	        
+      'apigateway': 	        
             {'icon': 'gateway--api', 'color': Colors.lines["network"]},
-      'wifi--secure': 	        
+      'securewifi': 	        
             {'icon': 'wifi--secure', 'color': Colors.lines["network"]},
-      'gateway--mail': 	        
+      'mailgateway': 	        
             {'icon': 'gateway--mail', 'color': Colors.lines["network"]},
       'publicgateway': 	        
             {'icon': 'gateway--public', 'color': Colors.lines["network"]},
-      'phone--application': 	        
+      'phoneapplication': 	        
             {'icon': 'phone--application', 'color': Colors.lines["network"]},
-      'transmission-lte': 	        
+      'ltetransmission': 	        
             {'icon': 'transmission-lte', 'color': Colors.lines["network"]},
-      'vehicle--insights': 	        
+      'vehicleinsights': 	        
             {'icon': 'vehicle--insights', 'color': Colors.lines["network"]},
       'activitytracker': 	        
             {'icon': 'cloud--auditing', 'color': Colors.lines["management"]},
-      'hardware-security-module': 	        
+      'hardwaresecuritymodule': 	        
             {'icon': 'hardware-security-module', 'color': Colors.lines["network"]},
-      'two-factor-authentication': 	        
+      'twofactorauthentication': 	        
             {'icon': 'two-factor-authentication', 'color': Colors.lines["network"]},
-      'wifi-bridge': 	        
+      'wifibridge': 	        
             {'icon': 'wifi-bridge', 'color': Colors.lines["network"]},
       'classiclb': 	        
             {'icon': 'load-balancer--classic', 'color': Colors.lines["network"]},
       'locallb': 	        
             {'icon': 'load-balancer--local', 'color': Colors.lines["network"]},
-      'cloud--logging': 	        
+      'cloudlogging': 	        
             {'icon': 'cloud--logging', 'color': Colors.lines["network"]},
       'subnet-ibm': 	        
             {'icon': 'ibm-cloud--subnets', 'color': Colors.lines["network"]},
-      'data-diode': 	        
+      'datadiode': 	        
             {'icon': 'data-diode', 'color': Colors.lines["network"]},
       'folderdetails': 	        
             {'icon': 'folder--details', 'color': Colors.lines["storage"]},
-      'gateway--security': 	        
+      'securitygateway': 	        
             {'icon': 'gateway--security', 'color': Colors.lines["network"]},
       'baremetalserver1': 	        
             {'icon': 'bare-metal-server--01', 'color': Colors.lines["network"]},
@@ -333,21 +333,21 @@ class Icons:
             {'icon': 'bare-metal-server--02', 'color': Colors.lines["network"]}, 
       'boot':  	        
             {'icon': 'boot', 'color': Colors.lines["network"]}, 
-      'box--extra-large': 	        
+      'extralargebox': 	        
             {'icon': 'box--extra-large', 'color': Colors.lines["network"]},
-      'box--large': 	        
+      'largebox': 	        
             {'icon': 'box--large', 'color': Colors.lines["network"]},
-      'box--medium': 	        
+      'mediumbox': 	        
             {'icon': 'box--medium', 'color': Colors.lines["network"]},
-      'box--small': 	        
+      'smallbox': 	        
             {'icon': 'box--small', 'color': Colors.lines["network"]},
-      'cloud-satellite--config':  	        
+      'satelliteconfig':  	        
             {'icon': 'cloud-satellite--config', 'color': Colors.lines["network"]}, 
-      'cloud-satellite--link':  	        
+      'satellitelink':  	        
             {'icon': 'cloud-satellite--link', 'color': Colors.lines["network"]}, 
-      'cloud-satellite--services':  	        
+      'satelliteservices':  	        
             {'icon': 'cloud-satellite--services', 'color': Colors.lines["network"]}, 
-      'communication--unified': 	        
+      'unifiedcommunication': 	        
             {'icon': 'communication--unified', 'color': Colors.lines["network"]},
       'datastax': 	        
             {'icon': 'database--datastax', 'color': Colors.lines["network"]},
@@ -365,39 +365,39 @@ class Icons:
             {'icon': 'database--rabbit', 'color': Colors.lines["network"]},
       'redis': 	        
             {'icon': 'database--redis', 'color': Colors.lines["network"]},
-      'directory-domain':  	        
+      'domaindirectory':  	        
             {'icon': 'directory-domain', 'color': Colors.lines["network"]}, 
       'encryption': 	        
             {'icon': 'encryption', 'color': Colors.lines["network"]},
-      'ibm-cloud-pak--applications':  	        
+      'pakapplications-ibm':  	        
             {'icon': 'ibm-cloud-pak--applications', 'color': Colors.lines["network"]}, 
-      'ibm-cloud-pak--data':  	        
+      'datapak-ibm':  	        
             {'icon': 'ibm-cloud-pak--data', 'color': Colors.lines["network"]}, 
-      'ibm-cloud-pak--integration':  	        
+      'integrationpak-ibm':  	        
             {'icon': 'ibm-cloud-pak--integration', 'color': Colors.lines["network"]}, 
-      'ibm-cloud-pak--multicloud-mgmt':  	        
+      'multicloudmgmtpak-ibm':  	        
             {'icon': 'ibm-cloud-pak--multicloud-mgmt', 'color': Colors.lines["network"]}, 
-      'ibm-cloud-pak--network-automation':  	        
+      'networkautomationpak-ibm':  	        
             {'icon': 'ibm-cloud-pak--network-automation', 'color': Colors.lines["network"]}, 
-      'ibm-cloud-pak--security':  	        
+      'securitypak-ibm':  	        
             {'icon': 'ibm-cloud-pak--security', 'color': Colors.lines["network"]}, 
-      'ibm-cloud-pak--system':  	        
+      'systempak-ibm':  	        
             {'icon': 'ibm-cloud-pak--system', 'color': Colors.lines["network"]}, 
-      'ibm-cloud-pak--watson-aiops':  	        
+      'watsonaiopspak-ibm':  	        
             {'icon': 'ibm-cloud-pak--watson-aiops', 'color': Colors.lines["network"]}, 
-      'military-camp': 	        
+      'militarycamp': 	        
             {'icon': 'military-camp', 'color': Colors.lines["network"]},
-      'network--admin-control': 	        
+      'admincontrolnetwork': 	        
             {'icon': 'network--admin-control', 'color': Colors.lines["network"]},
-      'pcn--e-node': 	        
+      'enodepcn': 	        
             {'icon': 'pcn--e-node', 'color': Colors.lines["network"]},
-      'pcn--military': 	        
+      'militarypcn': 	        
             {'icon': 'pcn--military', 'color': Colors.lines["network"]},
-      'pcn--p-node': 	        
+      'pnodepcn': 	        
             {'icon': 'pcn--p-node', 'color': Colors.lines["network"]},
-      'pcn--z-node': 	        
+      'znodepcn': 	        
             {'icon': 'pcn--z-node', 'color': Colors.lines["network"]},
-      'session-border-control': 	        
+      'sessionbordercontrol': 	        
             {'icon': 'session-border-control', 'color': Colors.lines["network"]},
       'tank': 	        
             {'icon': 'tank', 'color': Colors.lines["network"]},
@@ -419,21 +419,21 @@ class Icons:
             {'icon': 'slicestor', 'color': Colors.lines["network"]},
       'concept': 	        
             {'icon': 'concept', 'color': Colors.lines["network"]},
-      'deployment-unit--data': 	        
+      'datadeploymentunitdata': 	        
             {'icon': 'deployment-unit--data', 'color': Colors.lines["network"]},
-      'deployment-unit--execution': 	        
+      'executiondeploymentunit': 	        
             {'icon': 'deployment-unit--execution', 'color': Colors.lines["network"]},
-      'deployment-unit--installation': 	        
+      'installationdeploymentunit': 	        
             {'icon': 'deployment-unit--installation', 'color': Colors.lines["network"]},
-      'deployment-unit--presentation': 	        
+      'presentationdeploymentunit': 	        
             {'icon': 'deployment-unit--presentation', 'color': Colors.lines["network"]},
-      'deployment-unit--technical--data': 	        
+      'technicaldatadeploymentunit': 	        
             {'icon': 'deployment-unit--technical--data', 'color': Colors.lines["network"]},
-      'deployment-unit--technical--execution': 	        
+      'technicalexecutiondeploymentunit': 	        
             {'icon': 'deployment-unit--technical--execution', 'color': Colors.lines["network"]},
-      'deployment-unit--technical--installation': 	        
+      'technicalinstallationdeploymentunit': 	        
             {'icon': 'deployment-unit--technical--installation', 'color': Colors.lines["network"]},
-      'deployment-unit--technical--presentation': 	        
+      'technicalpresentationdeploymentunit': 	        
             {'icon': 'deployment-unit--technical--presentation', 'color': Colors.lines["network"]},
       'api': 	        
             {'icon': 'api', 'color': Colors.lines["applications"]},
