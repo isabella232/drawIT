@@ -432,24 +432,3 @@ Refer to rungui.sh or runrias.sh in scripts folder.
 
 This application is licensed under the Apache License, Version 2.  Separate third-party code objects invoked by this application are licensed by their respective providers pursuant to their own separate licenses.  Contributions are subject to the [Developer Certificate of Origin, Version 1.1](https://developercertificate.org/) and the [Apache License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
 
-
-</details>
-
-## Prereqs
-
-- Python 3.10.5
-- pandas 1.4.2
-- PyYAML 6.0
-- requests 2.28.0
-- urllib3 1.26.9
-
-## References
-
-- [buildIT](https://github.com/IBM/buildit)
-- [IT Architecture Diagrams](https://github.com/IBM/it-architecture-diagrams)
-- [Code Pattern](https://github.com/IBM/codepattern-multitier-vpc)
-
-## License
-
-This application is licensed under the Apache License, Version 2.  Separate third-party code objects invoked by this application are licensed by their respective providers pursuant to their own separate licenses.  Contributions are subject to the [Developer Certificate of Origin, Version 1.1](https://developercertificate.org/) and the [Apache License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
-
