@@ -394,6 +394,8 @@ Refer to rungui.sh or runrias.sh in scripts folder.
 
 </details>
 
+---
+
 ## Prereqs
 
 - Python 3.10.5
