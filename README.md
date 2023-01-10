@@ -9,6 +9,8 @@ The [IBM2 Beta](https://github.com/IBM/it-architecture-diagrams/releases) is cur
 
 Note:  Both Mac and Windows versions for diagrams.net desktop will be available when IBM2 is published.
 
+--- 
+
 ## Use Cases
 
 1. Code-to-Diagram (subject to change): 
@@ -23,6 +25,8 @@ Note:  Both Mac and Windows versions for diagrams.net desktop will be available 
   - Refer to RIAS-to-Diagram Guide below.
   - Input is from RIAS APIs for existing infrastructure.
   - Output is diagrams.net xml file.
+
+--- 
 
 ## Code-to-Diagram Guide
 
@@ -290,6 +294,8 @@ Font Names:
 
 </details>
 
+--- 
+
 ## JSON-to-Diagram Guide
 
 <p>
@@ -337,6 +343,8 @@ Refer to rungui.sh or run.sh in scripts folder.
 - [ ] IKS VPC LB
 
 </details>
+
+---
 
 ## RIAS-to-Diagram Guide
 
