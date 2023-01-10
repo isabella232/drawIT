@@ -277,9 +277,9 @@ class Edge:
    def __init__(self, 
                 label = "", 
                 style = "",
+                arrow = "",
                 fontname = "",
                 fontsize = 0,
-                arrow = "",
                 operator = "",     # Internal use only.
                 sourceid = None,   # Internal use only.
                 targetid = None):  # Internal use only.

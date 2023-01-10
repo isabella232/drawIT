@@ -54,8 +54,8 @@ class BaseStyle(Enum):
    FONT = 'fontFamily=IBM Plex Sans;fontSize=14;fontColor=#000000;'
    CONTAINER = 'container=1;collapsible=0;expand=0;recursiveResize=0;'
    NON_CONTAINER = 'container=0;collapsible=0;expand=0;recursiveResize=0;'
-   #ZONE = 'strokeWidth=2;ibmNoIcon=1;'
    ZONE = 'strokeWidth=2;'
+   HIDEICON = 'ibmNoIcon=1;'
 
    COLLAPSED_LABEL = 'align=center;verticalAlign=top;labelPosition=center;verticalLabelPosition=bottom;spacing=0;spacingLeft=16;spacingRight=16;spacingTop=0;spacingBottom=4;'
    COLLAPSED_LABEL3 = 'align=center;verticalAlign=top;labelPosition=center;verticalLabelPosition=bottom;spacing=0;spacingLeft=16;spacingRight=16;spacingTop=0;spacingBottom=4;'
@@ -77,6 +77,7 @@ class CombinedStyle(Enum):
    LOCATION = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.EXPANDED_LABEL.value + BaseStyle.CONTAINER.value
    LOCATION3 = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.EXPANDED_LABEL3.value + BaseStyle.CONTAINER.value
    ZONE = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.EXPANDED_LABEL3.value + BaseStyle.NON_CONTAINER.value + BaseStyle.ZONE.value
+   ZONE_HIDEICON = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.EXPANDED_LABEL3.value + BaseStyle.NON_CONTAINER.value + BaseStyle.ZONE.value + BaseStyle.HIDEICON.value
    ITEM = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.ITEM_LABEL.value
    TEXT = 'text;html=1;resizable=0;autosize=1;align=left;verticalAlign=middle;points=[];strokeColor=none;rounded=0;'
 
@@ -95,6 +96,7 @@ class ShapeStyle(Enum):
    PRESCRIBED_LOCATION = ShapeFormat.PRESCRIBED_LOCATION.value + ShapeLayout.LOCATION.value + CombinedStyle.LOCATION.value  
 
    ZONE = ShapeFormat.ZONE.value + ShapeLayout.ZONE.value + CombinedStyle.ZONE.value
+   ZONE_HIDEICON = ShapeFormat.ZONE.value + ShapeLayout.ZONE.value + CombinedStyle.ZONE_HIDEICON.value
 
 # Color Properties
 

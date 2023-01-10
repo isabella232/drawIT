@@ -102,7 +102,10 @@ class Types:
          else:
              style = ShapeStyle.PRESCRIBED_LOCATION.value
       elif shape == "zone":
-         style = ShapeStyle.ZONE.value
+         if node["icon"] == "":
+            style = ShapeStyle.ZONE_HIDEICON.value
+         else:
+            style = ShapeStyle.ZONE.value
       else:
          style = ShapeStyle.PRESCRIBED_NODE.value
 

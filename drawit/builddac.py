@@ -356,17 +356,23 @@ class BuildDAC:
          if pencolor == "":
             iconname, pencolor, iconshape = self.common.getIcon(icon)
 
-         clusters[clusterid]["icon"] = iconname
+         #clusters[clusterid]["icon"] = iconname
 
          shape = attributes["shape"]
          if shape == "":
             if iconshape == "":
                self.clusters[clusterid]["shape"] = CLUSTER_SHAPE_DEFAULT
             else:
+               shapesplit = iconshape.split("-")
+               iconshape = shapesplit[0]
+               if len(shapesplit) == 2 and shapesplit[1] == "hideicon":
+                  iconname = ""
                self.clusters[clusterid]["shape"] = iconshape
          elif not shape.upper() in [parm.value for parm in ClusterShapes]:
             self.common.printInvalidClusterShape(shape)
             return None
+
+         clusters[clusterid]["icon"] = iconname
 
          hexpencolor = self.checkLineColor(pencolor)
          if hexpencolor == None:
