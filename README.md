@@ -386,34 +386,6 @@ Refer to rungui.sh or runrias.sh in scripts folder.
 
 </details>
 
-## RIAS-to-Diagram Guide
-
-<p>
-Refer to rungui.sh or runrias.sh in scripts folder.
-</p>
-
-<details><summary>Features Supported</summary>
-
-- Cloud
-- Region
-- Availability Zone
-  - Public Gateway
-  - VPN Gateway
-- VPC
-  - Implicit Router
-  - Private & Public ALB
-  - Private & Public NLB
-- Subnet
-  - Instances
-  - Floating IP
-- Public Network
-  - Internet
-  - User
-- Enterprise Network  
-- User 
-
-</details>
-
 ## Prereqs
 
 - Python 3.10.5
