@@ -221,12 +221,12 @@ Notes:
 </p>
 
 - Icons are from [IBM Design Center](https://www.ibm.com/design/language/iconography/ui-icons/library/).
-- Icon usage name is used for simplicity and clarity which are classified as -any (Logical) or -ibm (Prescribed) depending on the provider parameter.
+- Icon usage name is used for simplicity and clarity.
 - Planned: Support icons not from IBM Design Center.
 
 <p>
 
-List of icon usage names (subject to change until finalized):
+List of icon usage names (subject to change until finalized, duplicates in list are expected):
 
 [icons.txt](drawit/icons.txt)
 
