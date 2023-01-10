@@ -26,8 +26,7 @@ from math import isnan
 
 from .colors import Colors
 from .common import Common
-from .constants import ParamAlternates, ParamClusterShapes, ParamDirections, ParamEdgeStyles
-from .constants import ParamFonts, ParamNodeShapes, ParamOutFormats, ParamProviders
+from .attributes import Attributes, Alternates, ClusterShapes, Directions, EdgeStyles, Fonts, NodeShapes, OutFormats, Providers
 from .constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
 from .shapesdac import Shapes
 from .iconsdac import Icons
@@ -73,13 +72,13 @@ class BuildDAC:
    tops = []
    bottoms = []
 
-   def __init__(self, common, diagrams, clusters, nodes, edges):
+   def __init__(self, common, data):
       self.common = common
       self.shapes = Shapes(self.common)
-      self.diagrams = diagrams
-      self.clusters = clusters
-      self.nodes = nodes
-      self.edges = edges
+      self.diagrams = data.getDiagrams()
+      self.clusters = data.getClusters()
+      self.nodes = data.getNodes()
+      self.edges = data.getEdges()
       return
 
    def buildDiagrams(self):
@@ -239,7 +238,7 @@ class BuildDAC:
          direction = attributes["direction"]
          if direction == "":
             direction = DIAGRAM_DIRECTION_DEFAULT
-         elif not direction.upper() in [parm.value for parm in ParamDirections]:
+         elif not direction.upper() in [parm.value for parm in Directions]:
             self.common.printInvalidDirection(direction)
             return None
          diagrams[diagramid]["direction"] = direction
@@ -247,7 +246,7 @@ class BuildDAC:
          alternate = attributes["alternate"]
          if alternate == "":
             alernate = DIAGRAM_ALTERNATE_DEFAULT
-         elif not alternate.upper() in [parm.value for parm in ParamAlternates]:
+         elif not alternate.upper() in [parm.value for parm in Alternates]:
             self.common.printInvalidAlternate(alternate)
             return None
          diagrams[diagramid]["alternate"] = alternate
@@ -255,7 +254,7 @@ class BuildDAC:
          provider = attributes["provider"]
          if provider == "":
             provider = DIAGRAM_PROVIDER_DEFAULT
-         elif not provider.upper() in [parm.value for parm in ParamProviders]:
+         elif not provider.upper() in [parm.value for parm in Providers]:
             self.common.printInvalidProvider(provider)
             return None
          diagrams[diagramid]["provider"] = provider
@@ -263,7 +262,7 @@ class BuildDAC:
          fontname = attributes["fontname"]
          if fontname == "":
             fontname = DIAGRAM_FONTNAME_DEFAULT
-         elif not fontname in [parm.value for parm in ParamFonts]:
+         elif not fontname in [parm.value for parm in Fonts]:
             self.common.printInvalidFontName(fontname)
             return None
          diagrams[diagramid]["fontname"] = fontname
@@ -276,7 +275,7 @@ class BuildDAC:
          outformat = attributes["outformat"]
          if outformat == "":
             outformat = DIAGRAM_OUTFORMAT_DEFAULT
-         elif not outformat.upper() in [parm.value for parm in ParamOutFormats]:
+         elif not outformat.upper() in [parm.value for parm in OutFormats]:
             self.common.printInvalidOutputFormat(outformat)
             return None
          diagrams[diagramid]["outformat"] = outformat
@@ -312,7 +311,7 @@ class BuildDAC:
          direction = attributes["direction"]
          if direction == "":
             direction = CLUSTER_DIRECTION_DEFAULT
-         elif not direction.upper() in [parm.value for parm in ParamDirections]:
+         elif not direction.upper() in [parm.value for parm in Directions]:
             self.common.printInvalidDirection(direction)
             return None
          clusters[clusterid]["direction"] = direction
@@ -320,7 +319,7 @@ class BuildDAC:
          alternate = attributes["alternate"]
          if alternate == "":
             alternate = CLUSTER_ALTERNATE_DEFAULT
-         elif not alternate.upper() in [parm.value for parm in ParamAlternates]:
+         elif not alternate.upper() in [parm.value for parm in Alternates]:
             self.common.printInvalidAlternate(alternate)
             return None
          clusters[clusterid]["alternate"] = alternate
@@ -328,7 +327,7 @@ class BuildDAC:
          provider = attributes["provider"]
          if provider == "":
             provider = CLUSTER_PROVIDER_DEFAULT
-         elif not provider.upper() in [parm.value for parm in ParamProviders]:
+         elif not provider.upper() in [parm.value for parm in Providers]:
             self.common.printInvalidProvider(provider)
             return None
          clusters[clusterid]["provider"] = provider
@@ -336,7 +335,7 @@ class BuildDAC:
          fontname = attributes["fontname"]
          if fontname == "":
             fontname = CLUSTER_FONTNAME_DEFAULT
-         elif not fontname in [parm.value for parm in ParamFonts]:
+         elif not fontname in [parm.value for parm in Fonts]:
             self.common.printInvalidFont(fontname)
             return None
          clusters[clusterid]["fontname"] = fontname
@@ -365,7 +364,7 @@ class BuildDAC:
                self.clusters[clusterid]["shape"] = CLUSTER_SHAPE_DEFAULT
             else:
                self.clusters[clusterid]["shape"] = iconshape
-         elif not shape.upper() in [parm.value for parm in ParamClusterShapes]:
+         elif not shape.upper() in [parm.value for parm in ClusterShapes]:
             self.common.printInvalidClusterShape(shape)
             return None
 
@@ -396,7 +395,7 @@ class BuildDAC:
          direction = attributes["direction"]
          if direction == "":
             direction = NODE_DIRECTION_DEFAULT
-         elif not direction.upper() in [parm.value for parm in ParamDirections]:
+         elif not direction.upper() in [parm.value for parm in Directions]:
             self.common.printInvalidDirection(direction)
             return None
          nodes[nodeid]["direction"] = direction
@@ -404,7 +403,7 @@ class BuildDAC:
          fontname = attributes["fontname"]
          if fontname == "":
             fontname = NODE_FONTNAME_DEFAULT
-         elif not fontname in [parm.value for parm in ParamFonts]:
+         elif not fontname in [parm.value for parm in Fonts]:
             self.common.printInvalidFont(fontname)
             return None
          nodes[nodeid]["fontname"] = fontname
@@ -434,7 +433,7 @@ class BuildDAC:
             else:
                nodes[nodeid]["shape"] = iconshape
          else:
-            if not shape.upper() in [parm.value for parm in ParamNodeShapes]:
+            if not shape.upper() in [parm.value for parm in NodeShapes]:
                self.common.printInvalidNodeShape(shape)
                return None
 
@@ -460,7 +459,7 @@ class BuildDAC:
          style = attributes["style"]
          if style == "":
             style = EDGE_STYLE_DEFAULT
-         elif not style.upper() in [parm.value for parm in ParamEdgeStyles]:
+         elif not style.upper() in [parm.value for parm in EdgeStyles]:
             self.common.printInvalidEdgeStyle(style)
             return None
          edges[edgeid]["style"] = style
@@ -468,7 +467,7 @@ class BuildDAC:
          fontname = attributes["fontname"]
          if fontname == "":
             fontname = EDGE_FONTNAME_DEFAULT
-         elif not fontname in [parm.value for parm in ParamFonts]:
+         elif not fontname in [parm.value for parm in Fonts]:
             self.common.printInvalidFont(fontname)
             return None
          edges[edgeid]["fontname"] = fontname

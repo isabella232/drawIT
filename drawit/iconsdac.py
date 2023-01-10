@@ -413,7 +413,7 @@ class Icons:
             {'icon': 'enterprise', 'color': Colors.lines["network"]},
       'linux-ibm':  	        
             {'icon': 'linux', 'color': Colors.lines["network"]}, 
-      'linux--any':  	        
+      'linux-any':  	        
             {'icon': 'linux--alt', 'color': Colors.lines["network"]}, 
       'objectstorageslicestor': 	        
             {'icon': 'slicestor', 'color': Colors.lines["network"]},

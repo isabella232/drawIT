@@ -19,15 +19,18 @@ from enum import Enum
 from uuid import uuid4
 
 from .common import Common
+from .attributes import Attributes
 from .builddac import BuildDAC
 
 _diagram = ContextVar("diagram")
 _cluster = ContextVar("cluster")
 
-_diagrams = {} # Dictionary of diagrams.
-_clusters = {} # Dictionary of clusters.
-_nodes = {}    # Dictionary of nodes.
-_edges = {}    # Dictionary of edges.
+#_diagrams = {} # Dictionary of diagrams.
+#_clusters = {} # Dictionary of clusters.
+#_nodes = {}    # Dictionary of nodes.
+#_edges = {}    # Dictionary of edges.
+
+_data = Attributes()
 
 
 def getDiagram():
@@ -74,7 +77,8 @@ class Diagram:
       self.diagramid = randomid()
 
       self.attributes = {"name": name, "filename": filename, "direction": direction, "alternate": alternate, "provider": provider, "fontname": fontname, "fontsize": fontsize,  "outformat": outformat}
-      _diagrams[self.diagramid] = self.attributes
+      #_diagrams[self.diagramid] = self.attributes
+      _data.addDiagram(self.diagramid, self.attributes)
       return
 
    def __enter__(self):
@@ -82,7 +86,7 @@ class Diagram:
       return self
 
    def __exit__(self, exception_type, exception_value, traceback):
-      self.diagram  = BuildDAC(self.common, _diagrams, _clusters, _nodes, _edges)
+      self.diagram  = BuildDAC(self.common, _data)
       self.diagram.buildDiagrams()
       setDiagram(None)
       setCluster(None)
@@ -99,6 +103,8 @@ class Cluster:
    parent = None
    node = None
    edge = None
+   fontname = ""
+   fontsize = 0
    attributes = {}
 
    def __init__(self, 
@@ -109,16 +115,18 @@ class Cluster:
                 bgcolor = "",
                 icon = "",
                 direction = "",
-                alternate = "",
-                provider = "",
+                alternate = "",      # Not currently used.
+                provider = "",       # Not currently used.
                 fontname = "",
                 fontsize = 0,
-                badgetext = "", 
-                badgeshape = "",
-                badgepencolor = "",
-                badgebgcolor = ""):
+                badgetext = "",      # Not currently used.
+                badgeshape = "",     # Not currently used.
+                badgepencolor = "",  # Not currently used.
+                badgebgcolor = ""):  # Not currently used.
       self.common = Common()
       self.shapeid = randomid()
+      self.fontname = fontname
+      self.fontsize = fontsize
 
       self.parent = getCluster()
       if self.parent:
@@ -135,7 +143,7 @@ class Cluster:
       return self
 
    def __exit__(self, exception_type, exception_value, traceback):
-      _clusters[self.shapeid] = self.attributes
+      _data.addCluster(self.shapeid, self.attributes)
       if self.parent:
          setCluster(self.parent)
       return
@@ -157,7 +165,7 @@ class Cluster:
       else:  # isinstance(shape, Edge)
          shape.sourceid = self.shapeid
          shape.arrow = "unknown"
-         shapee.operator = "lshift"
+         shape.operator = "lshift"
       return shape
 
    def __rshift__(self, shape = None):
@@ -192,14 +200,14 @@ class Node:
                 pencolor = "",
                 bgcolor = "",
                 icon = "",
-                direction = "",
-                provider = "",
+                direction = "",      # Not currently used.
+                provider = "",       # Not currently used.
                 fontname = "",
                 fontsize = 0,
-                badgetext = "", 
-                badgeshape = "",
-                badgepencolor = "",
-                badgebgcolor = ""):
+                badgetext = "",      # Not currently used.
+                badgeshape = "",     # Not currently used.
+                badgepencolor = "",  # Not currently used.
+                badgebgcolor = ""):  # Not currently used.
       self.common = Common()
       self.shapeid = randomid()
       self.parent = getCluster()
@@ -208,7 +216,8 @@ class Node:
 
       self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
-      _nodes[self.shapeid] = self.attributes
+      #_nodes[self.shapeid] = self.attributes
+      _data.addNode(self.shapeid, self.attributes)
 
       return
 
@@ -279,7 +288,7 @@ class Edge:
 
       self.attributes = {"label": label, "sourceid": sourceid, "targetid": targetid, "style": style, "arrow": arrow, "fontname": fontname, "fontsize": fontsize}
 
-      _edges[self.shapeid] = self.attributes
+      _data.addEdge(self.shapeid, self.attributes)
 
       return
 
@@ -287,17 +296,17 @@ class Edge:
       # edge - shape
       if isinstance(shape, Cluster) or isinstance(shape, Node):
          if self.sourceid != None:
-            _edges[self.shapeid]["sourceid"] = self.sourceid
-            _edges[self.shapeid]["targetid"] = shape.shapeid
-            _edges[self.shapeid]["arrow"] = self.arrow
-            _edges[self.shapeid]["operator"] = self.operator
+            _data.setEdgeSourceID(self.shapeid, self.sourceid)
+            _data.setEdgeTargetID(self.shapeid, shape.shapeid)
+            _data.setEdgeArrow(self.shapeid, self.arrow)
+            _data.setEdgeOperator(self.shapeid, self.operator)
          else:
             # Minus has precedence over << and sourceid hasn't been set.
             # Set dummy value for source to prevent serialization error in dumpXML.
-            _edges[self.shapeid]["sourceid"] = shape.shapeid
-            _edges[self.shapeid]["targetid"] = shape.shapeid
-            _edges[self.shapeid]["arrow"] = self.arrow
-            _edges[self.shapeid]["operator"] = self.operator
+            _data.setEdgeSourceID(self.shapeid, self.shapeid)
+            _data.setEdgeTargetID(self.shapeid, shape.shapeid)
+            _data.setEdgeArrow(self.shapeid, self.arrow)
+            _data.setEdgeOperator(self.shapeid, self.operator)
             print("Edge.__sub__: shape << edge - shape not supported")
             sys_exit()
       else:
@@ -309,11 +318,11 @@ class Edge:
    def __lshift__(self, shape = None):
       # edge << shape
       if isinstance(shape, Cluster) or isinstance(shape, Node):
-         _edges[self.shapeid]["sourceid"] = shape.shapeid
-         _edges[self.shapeid]["targetid"] = self.sourceid
-         _edges[self.shapeid]["operator"] = self.operator
+         _data.setEdgeSourceID(self.shapeid, shape.shapeid)
+         _data.setEdgeTargetID(self.shapeid, self.sourceid)
+         _data.setEdgeOperator(self.shapeid, self.operator)
          arrow = "doublearrow" if self.operator == "rshift" else "singlearrow" 
-         _edges[self.shapeid]["arrow"] = arrow
+         _data.setEdgeArrow(self.shapeid, arrow)
       else:
          print("Edge.__lshift__: edge << shape not supported")
          sys_exit()
@@ -322,11 +331,11 @@ class Edge:
    def __rshift__(self, shape = None):
       # edge >> shape
       if isinstance(shape, Cluster) or isinstance(shape, Node):
-         _edges[self.shapeid]["sourceid"] = self.sourceid
-         _edges[self.shapeid]["targetid"] = shape.shapeid 
-         _edges[self.shapeid]["operator"] = self.operator 
+         _data.setEdgeSourceID(self.shapeid, self.sourceid)
+         _data.setEdgeTargetID(self.shapeid, shape.shapeid)
+         _data.setEdgeOperator(self.shapeid, self.operator)
          arrow = "doublearrow" if self.operator == "lshift" else "singlearrow" 
-         _edges[self.shapeid]["arrow"] = arrow
+         _data.setEdgeArrow(self.shapeid, arrow)
       else:
          print("Edge.__rshift__: edge >> shape not supported")
          sys_exit()

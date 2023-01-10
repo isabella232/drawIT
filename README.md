@@ -215,9 +215,9 @@ Notes:
 
 <p>
 
-Use the keys (subject to change until finalized) defined in the following icon dictionary as icon names and exclude the -any and -ibm from the name:
+List of icon usage names (subject to change until finalized):
 
-[icons.py](drawit/iconsdac.py)
+[icons.txt](drawit/icons.txt)
 
 </p>
 
