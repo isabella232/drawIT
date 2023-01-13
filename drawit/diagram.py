@@ -191,6 +191,8 @@ class Node:
    style = ""
    node = None
    edge = None
+   fontname = None
+   fontname = 14
    attributes = {}
 
    def __init__(self, 
@@ -210,6 +212,9 @@ class Node:
                 badgebgcolor = ""):  # Not currently used.
       self.common = Common()
       self.shapeid = randomid()
+      self.fontname = fontname
+      self.fontsize = fontsize
+
       self.parent = getCluster()
       self.parentid = self.parent.shapeid
       setCluster(self.parent)
