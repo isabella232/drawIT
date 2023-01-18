@@ -52,7 +52,7 @@ class Compose:
       self.data = data
       self.shapes = Shapes(common)
       self.attributes = Attributes()
-      self.cloudname = ShapeName.CLOUD.value if self.common.isLogicalShapes() else ShapeName.IBM_CLOUD.value
+      self.cloudname = ShapeName.CLOUD.value if self.common.isProviderAny() else ShapeName.IBM_CLOUD.value
 
    def composeDiagrams(self):
       validdata = False
@@ -460,20 +460,18 @@ class Compose:
                               #lbid = self.common.compress(lbid)
                               nodes[self.common.compress(lbid)] = attributes
 
-                              if self.common.isLinks():
-                                 routername = vpcname + '-router'
-                                 attributes = {"label": '', "sourceid": self.common.compress(lbid), "targetid": self.common.compress(routername), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
-
-                                 edgeid = randomid()
-                                 edges[self.common.compress(edgeid)] = attributes
-
-                           if self.common.isLinks():
-                              # label, source, target
-                              #instancelink = self.shapes.buildDoubleArrow('', nicid, lbid, None)
-                              attributes = {"label": '', "sourceid": self.common.compress(instanceid), "targetid": self.common.compress(lbid), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
+                              routername = vpcname + '-router'
+                              attributes = {"label": '', "sourceid": self.common.compress(lbid), "targetid": self.common.compress(routername), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
 
                               edgeid = randomid()
                               edges[self.common.compress(edgeid)] = attributes
+
+                           # label, source, target
+                           #instancelink = self.shapes.buildDoubleArrow('', nicid, lbid, None)
+                           attributes = {"label": '', "sourceid": self.common.compress(instanceid), "targetid": self.common.compress(lbid), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
+
+                           edgeid = randomid()
+                           edges[self.common.compress(edgeid)] = attributes
 
       return clusters, nodes, edges
 

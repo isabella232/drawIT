@@ -117,53 +117,11 @@ class Config:
     def setOutputFolder(self,outputFolder):
         self.set("outputFolder",outputFolder)
 
-    def getTablesFolder(self):
-        return self.get("tablesFolder")
-    
-    def setTablesFolder(self,tablesFolder):
-        self.set("tablesFolder",tablesFolder)
-
-    def getOutputSplit(self):
-        return self.get("outputSplit")
-    
-    def setOutputSplit(self,outputSplit):
-        self.set("outputSplit",outputSplit)
-
-    def getOutputShapes(self):
-        return self.get("outputShapes")
-    
-    def setOutputShapes(self,outputShapes):
-        self.set("outputShapes",outputShapes)
-
-    def getOutputLayout(self):
-        return self.get("outputLayout")
-    
-    def setOutputLayout(self,outputLayout):
-        self.set("outputLayout",outputLayout)
-
-    def getOutputLinks(self):
-        return self.get("outputLinks")
-    
-    def setOutputLinks(self,outputLinks):
-        self.set("outputLinks",outputLinks)
-
     def getRegion(self):
         return self.get("region")
     
     def setRegion(self,region):
         self.set("region",region)
-
-    def getShapes(self):
-        return self.get("shapes")
-    
-    def setShapes(self,shapes):
-        self.set("shapes",shapes)
-
-    def getSplit(self):
-        return self.get("split")
-    
-    def setSplit(self,region):
-        self.set("split",split)
 
     def getRunMode(self):
         return self.get("runmode")
@@ -171,11 +129,11 @@ class Config:
     def setRunMode(self,runmode):
         self.set("runmode",runmode)
 
-    def getCloudType(self):
-        return self.get("cloudtype")
+    def getProvider(self):
+        return self.get("provider")
     
-    def setCloudType(self,cloudtype):
-        self.set("cloudtype",cloudtype)
+    def setProvider(self,provider):
+        self.set("provider",provider)
 
 class drawit:
    title = None
@@ -210,12 +168,8 @@ class drawit:
         inputfolder = config.getInputFolder()
         outputfile = config.getOutputFile()
         outputfolder = config.getOutputFolder()
-        tablesfolder = config.getTablesFolder()
-        outputsplit = config.getOutputSplit()
-        outputshapes = config.getOutputShapes()
-        outputlayout = config.getOutputLayout()
         runmode = config.getRunMode()
-        cloudtype = config.getCloudType()
+        provider = config.getProvider()
         region = config.getRegion()
 
         inputfile = path.join(inputfolder, self.common.getInputFile())
@@ -232,16 +186,10 @@ class drawit:
         parser.add_argument('-account', dest='accountid', default=self.common.getAccountID(), help='Account ID')
         parser.add_argument('-input', dest='inputfile', default=self.common.getInputFile(), help='JSON/YAML')
         parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
-        #parser.add_argument('-output', dest='outputfolder', default=path.join(outputdirectory, self.common.getOutputFolder()), help='output directory')
         parser.add_argument('-output', dest='outputfolder', default=self.common.getOutputFolder(), help='output folder')
-        parser.add_argument('-split', dest='outputsplit', default=self.common.getOutputSplit().value, help='combine or separate')
-        parser.add_argument('-shapes', dest='outputshapes', default=self.common.getOutputShapes().value, help='logical or prescribed')
-        parser.add_argument('-layout', dest='outputlayout', default=self.common.getOutputLayout().value, help='horizontal or vertical')
-        parser.add_argument('-links', dest='outputlinks', default=self.common.getOutputLinks().value, help='no or yes')
-        parser.add_argument('-tables', dest='tablesfolder', default=self.common.getTablesFolder(), help='tables directory')
 
         parser.add_argument('-mode', dest='runmode', default=self.common.getRunMode().value, help="batch, gui, or web")
-        parser.add_argument('-cloud', dest='cloudtype', default=self.common.getCloudType().value, help="ibm")
+        parser.add_argument('-provider', dest='provider', default=self.common.getProvider().value, help="ibm")
         parser.add_argument('--version', action='version', version='drawIT ' + self.common.getToolTitle().split(' ')[1])
         
         args = parser.parse_args()
@@ -253,8 +201,6 @@ class drawit:
         #outputfolder = args.outputfolder.replace(' ', '')
         #outputtype = "xml"
         #outputdetail = args.outputdetail.replace(' ', '').lower()
-        #outputsplit = args.outputsplit.replace(' ', '').lower()
-        #outputshapes = args.outputshapes.replace(' ', '').lower()
         #runmode = args.runmode.replace(' ', '').lower()
 
         apikey = args.apikey
@@ -262,50 +208,24 @@ class drawit:
         region = args.region.lower()
         inputfile = args.inputfile
         outputfolder = args.outputfolder
-        tablesfolder = args.tablesfolder
         outputtype = "xml"
-        outputsplit = args.outputsplit.lower()
-        outputshapes = args.outputshapes.lower()
-        outputlayout = args.outputlayout.lower()
-        outputlinks = args.outputlinks.lower()
         runmode = args.runmode.lower()
-        cloudtype = args.cloudtype.lower()
+        provider = args.provider.lower()
 
         self.common.setAPIKey(apikey)
         self.common.setAccountID(accountid)
         self.common.setRegion(region)
         self.common.setInputFile(inputfile)
         self.common.setOutputFolder(outputfolder)
-        self.common.setCloudType(cloudtype)
+        self.common.setProvider(provider)
 
-        if cloudtype != 'ibm':
-           self.common.printInvalidCloud(cloudtype)
+        if provider == "any":
+           self.common.setProviderAny()
+        elif provider == "ibm":
+           self.common.setProviderIBM()
+        else:
+           self.common.printInvalidProvider(provider)
            return
-
-        if outputshapes == "logical":
-            self.common.setLogicalShapes()
-        else: # outputshapes == "prescribed"
-            self.common.setPrescribedShapes()
-
-        if outputlayout == "horizontal":
-            self.common.setHorizontalLayout()
-        else:
-            self.common.setVerticalLayout()
-
-        if outputlinks == "no":
-            self.common.setNoLinks()
-        else:
-            self.common.setLinks()
-
-        if outputsplit == "combine":
-            self.common.setCombineSplit()
-        else:
-            self.common.setSeparateSplit()
-        #else: # outputsplit == "vpc" or "vpc:vpcname"
-        #    outputvpc = outputsplit.split(':')
-        ##    if outputvpc[0] == 'vpc' and len(outputvpc) > 1:
-        #        self.common.setDesignatedVPC(outputvpc[1])
-        #    self.common.setVPCSplit()
 
         if region == "eu-de":
             self.common.setGermanyRegion()
@@ -372,7 +292,7 @@ class drawit:
                         return
                     outputfile = inputbase + '.' + outputtype
                     self.common.setOutputFile(outputfile)
-                    self.common.printStartFile(inputfile, self.common.getCloudType().upper())
+                    self.common.printStartFile(inputfile, self.common.getProvider().value.upper())
                 else:
                     self.common.printInvalidInput()
                     return
@@ -381,7 +301,7 @@ class drawit:
                 if self.data.loadData():
                     self.compose = Compose(self.common, self.data)
                     self.compose.composeDiagrams()
-                    self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().upper())
+                    self.common.printDone(path.join(outputfolder, outputfile), self.common.getProvider().value.upper())
                 else:
                     self.common.printExit()
 
@@ -499,33 +419,6 @@ class drawit:
             Label(frame, text="").grid(row=row, columnspan=2)
             row = row + 1
 
-            #layoutoptions = [
-            #    "Circular Layout", 
-            #    "Distributed Recursive Layout", 
-            #    "Fruchtermain-Reingold Layout",
-            #    "Fruchtermain-Reingold 3D Layout",
-            #    "Fruchtermain-Reingold Grid Layout",
-            #    "Kamada-Kawai Layout",
-            #    "Kamada-Kawai 3D Layout",
-            #    "Large Graph Layout",
-            #    "Random Layout",
-            #    "Random 3D Layout",
-            #    "Reingold-Tilford Tree Layout",
-            #    "Reingold-Tilford Tree Polar Layout",
-            #    "Spherical Layout"]
-            #eOutputLayout = tkinter.StringVar(self.top)
-            #eOutputLayout.set("Reingold-Tilford Tree Layout")
-            #layoutmenu = tkinter.OptionMenu(self.top, eOutputLayout, *layoutoptions)
-            #layoutmenu.pack()
-
-            #typeoptions = [
-            #    "Generate Drawio", 
-            #    "Generate PlantUML"]
-            #eOutputType = tkinter.StringVar(self.top)
-            #eOutputType.set("Generate Drawio")
-            #typemenu = tkinter.OptionMenu(self.top, eOutputType, *typeoptions)
-            #typemenu.pack()
-
             regionoptions = [
                 "All",
                 "Germany",
@@ -551,74 +444,10 @@ class drawit:
             #tkinter.Label(frame, text="").grid(row=row, columnspan=2)
             #row = row + 1
 
-            shapeoptions = [
-                "Logical", 
-                "Prescribed"]
-            eOutputShape = StringVar(self.top)
-            eOutputShape.set("Prescribed")
-            Label(frame, text="Type").grid(row=row)
-            #shapemenu = tkinter.OptionMenu(self.top, eOutputShape, *shapeoptions)
-            shapemenu = OptionMenu(frame, eOutputShape, *shapeoptions).grid(row=row, column=1, sticky=W + E)
-            #shapemenu.pack()
-            row = row + 1
-
-            shapelayout = [
-                "Horizontal", 
-                "Vertical"]
-            eOutputLayout = StringVar(self.top)
-            eOutputLayout.set("Vertical")
-            Label(frame, text="Layout").grid(row=row)
-            shapemenu = OptionMenu(frame, eOutputLayout, *shapelayout).grid(row=row, column=1, sticky=W + E)
-            row = row + 1
-
-            shapelinks = [
-                "No", 
-                "Yes"]
-            eOutputLinks = StringVar(self.top)
-            eOutputLinks.set("Yes")
-            Label(frame, text="Links").grid(row=row)
-            shapemenu = OptionMenu(frame, eOutputLinks, *shapelinks).grid(row=row, column=1, sticky=W + E)
-            row = row + 1
-
-            splitoptions = [
-                "Combine VPCs",
-                "Separate VPCs"]
-            eOutputSplit = StringVar(self.top)
-            eOutputSplit.set("Separate VPCs")
-            Label(frame, text="Organization").grid(row=row)
-            #splitmenu = tkinter.OptionMenu(self.top, eOutputSplit, *splitoptions)
-            splitmenu = OptionMenu(frame, eOutputSplit, *splitoptions).grid(row=row, column=1, sticky=W + E)
-            #splitmenu.pack()
-            row = row + 1
-
             def onClickGenerate():
                 try:
                     self.statusText.set("Starting")
                     frame.after_idle(onClickGenerate)                   
-
-                    outputshapes = str(eOutputShape.get()).lower()
-                    if outputshapes == "logical":
-                       self.common.setLogicalShapes()
-                    else: # outputshapes == "prescribed"
-                       self.common.setPrescribedShapes()
-
-                    outputlayout = str(eOutputLayout.get()).lower()
-                    if outputlayout == "horizontal":
-                       self.common.setHorizontalLayout()
-                    else:
-                       self.common.setVerticalLayout()
-
-                    outputlinks = str(eOutputLinks.get()).lower()
-                    if outputlinks == "yes":
-                       self.common.setLinks()
-                    else:
-                       self.common.setNoLinks()
-
-                    outputsplit = str(eOutputSplit.get()).lower()
-                    if outputsplit == "combine vpcs":
-                       self.common.setCombineSplit()
-                    else:
-                       self.common.setSeparateSplit()
 
                     region = str(eRegion.get()).lower()
                     if region == "eu-de":

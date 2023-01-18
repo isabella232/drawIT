@@ -16,9 +16,9 @@
 from enum import Enum
 from os import path
 
-class CloudType(Enum):
+class Providers(Enum):
+   ANY = 'any'
    IBM = 'ibm'
-   AWS = 'aws'
 
 class RunMode(Enum):
    BATCH = 'batch'
@@ -41,26 +41,6 @@ class Alternates(Enum):
    NONE = 'NONE'
    USER = 'USER'
 
-class Providers(Enum):
-   ANY = 'ANY'
-   IBM = 'IBM'
-
-class OutputSplit(Enum):
-   COMBINE = 'combine'
-   SEPARATE = 'separate'
-
-class OutputLayout(Enum):
-   HORIZONTAL = 'horizontal'
-   VERTICAL = 'vertical'
-
-class OutputLinks(Enum):
-   YES = 'yes'
-   NO = 'no'
-
-class OutputShapes(Enum):
-   LOGICAL = 'logical'
-   PRESCRIBED = 'prescribed'
-
 class Regions(Enum):
    ALL = 'all'
    GERMANY = 'eu-de'
@@ -74,7 +54,6 @@ class Regions(Enum):
    USSOUTH = 'us-south'
 
 class Options:
-   cloudType = None
    runMode = None
    inputType = None
    accountID = ''
@@ -84,18 +63,11 @@ class Options:
    inputFolder = ''
    outputFile = ''
    outputFolder = ''
-   tablesFolder = ''
-   outputSplit = None
-   outputShapes = None
-   outputLayout = None
-   outputLinks = None
-   designatedVPC = None
    alternate = None
    provider = None
    allicons = False
 
    def __init__(self, toolName):
-      self.cloudType = CloudType.IBM
       self.runMode = RunMode.BATCH
       self.inputType = InputType.JSON
       self.region = Regions.ALL
@@ -106,12 +78,6 @@ class Options:
       self.inputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
       self.outputFile = 'diagram.xml'
       self.outputFolder = path.join(path.expanduser('~'), 'Documents', toolName)
-      self.tablesFolder ='tables'
-      self.outputSplit = OutputSplit.SEPARATE
-      self.outputShapes = OutputShapes.PRESCRIBED
-      self.outputLayout = OutputLayout.VERTICAL
-      self.outputLinks = OutputLinks.YES
-      self.designatedVPC = '*'
       return
 
    def getAccountID(self):
@@ -150,29 +116,23 @@ class Options:
    def setOutputFolder(self, value):
       self.outputFolder = value
 
-   def getTablesFolder(self):
-      return self.tablesFolder
+   def getProvider(self):
+      return self.options.getProvider()
 
-   def setTablesFolder(self, value):
-      self.tablesFolder = value
+   def setProvider(self, value):
+      self.provider = value
 
-   def isIBMCloud(self):
-      return self.cloudType == CloudType.IBM
+   def setProviderAny(self):
+      self.provider = Provider.ANY
 
-   def isAWSCloud(self):
-      return self.cloudType == CloudType.AWS
+   def setProviderIBM(self):
+      self.provider = Provider.IBM
 
-   def isIBMCloud(self, value):
-      return value == CloudType.IBM.value
+   def isProviderAny(self):
+      return self.provider == Provider.Any
 
-   def isAWSCloud(self, value):
-      return value == CloudType.AWS.value
-
-   def getCloudType(self):
-      return self.cloudType
-
-   def setCloudType(self, value):
-      self.cloudType = value
+   def isProviderIBM(self):
+      return self.provider == Provider.IBM
 
    def isBatchMode(self):
       return self.runMode == RunMode.BATCH
@@ -234,45 +194,6 @@ class Options:
    def isAllIcons(self):
       return self.allicons == True
 
-   def getDesignatedVPC(self):
-      return self.designatedVPC
-
-   def setDesignatedVPC(self, name):
-      self.designatedVPC = name
-
-   def isDesignatedVPC(self, name):
-      return self.designatedVPC == '*' or self.designatedVPC == name
-
-   def setCombineSplit(self):
-      self.outputSplit = OutputSplit.COMBINE
-
-   def setSeparateSplit(self):
-      self.outputSplit = OutputSplit.SEPARATE
-
-   def isCombineSplit(self):
-      return self.outputSplit == OutputSplit.COMBINE
-
-   def isSeparateSplit(self):
-      return self.outputSplit == OutputSplit.SEPARATE
-
-   def getOutputSplit(self):
-      return self.outputSplit
-
-   def setOutputSplit(self, value):
-      self.outputSplit = value
-
-   def setLogicalShapes(self):
-      self.outputShapes = OutputShapes.LOGICAL
-
-   def setPrescribedShapes(self):
-      self.outputShapes = OutputShapes.PRESCRIBED
-
-   def isLogicalShapes(self):
-      return self.outputShapes == OutputShapes.LOGICAL
-
-   def isPrescribedShapes(self):
-      return self.outputShapes == OutputShapes.PRESCRIBED
-
    def setDirectionLR(self):
       self.direction = Directions.LR 
 
@@ -323,48 +244,6 @@ class Options:
 
    def isProviderIBM(self):
       return self.provider == Providers.IBM 
-
-   def getOutputShapes(self):
-      return self.outputShapes
-
-   def setOutputShapes(self, value):
-      self.outputShapes = value
-
-   def setHorizontalLayout(self):
-      self.outputLayout = OutputLayout.HORIZONTAL
-
-   def setVerticalLayout(self):
-      self.outputLayout = OutputLayout.VERTICAL
-
-   def isHorizontalLayout(self):
-      return self.outputLayout == OutputLayout.HORIZONTAL
-
-   def isVerticalLayout(self):
-      return self.outputLayout == OutputLayout.VERTICAL
-
-   def getOutputLayout(self):
-      return self.outputLayout
-
-   def setOutputLayout(self, value):
-      self.outputLayout = value
-
-   def setLinks(self):
-      self.outputLinks = OutputLinks.YES
-
-   def setNoLinks(self):
-      self.outputLinks = OutputLinks.NO
-
-   def isLinks(self):
-      return self.outputLinks == OutputLinks.YES
-
-   def isNoLinks(self):
-      return self.outputLinks == OutputLinks.NO
-
-   def getOutputLinks(self):
-      return self.outputLinks
-
-   def setOutputLinks(self, value):
-      self.outputLinks = value
 
    def setAllRegion(self):
       self.region = Regions.ALL

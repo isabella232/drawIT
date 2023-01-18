@@ -147,23 +147,23 @@ class Common:
    def setTablesFolder(self, value):
       self.options.setTablesFolder(value)
 
-   def isIBMCloud(self):
-      return self.options.isIBMCloud()
+   def getProvider(self):
+      return self.options.getProvider()
 
-   def isAWSCloud(self):
-      return self.options.isAWSCloud()
+   def setProvider(self, provider):
+      self.options.setProvider(provider)
 
-   def isIBMCloud(self, value):
-      return self.options.isIBMCloud(value)
+   def setProviderIBM(self):
+      self.options.setProviderIBM()
 
-   def isAWSCloud(self, value):
-      return self.options.isAWSCloud(value)
+   def setProviderAny(self):
+      self.options.setAnyProviderAny()
 
-   def getCloudType(self):
-      return self.options.getCloudType()
+   def isProviderIBM(self):
+      return self.options.isProviderIBM()
 
-   def setCloudType(self, value):
-      self.options.setCloudType(value)
+   def isProviderAny(self):
+      return self.options.isProviderAny()
 
    def isBatchMode(self):
       return self.options.isBatchMode()
@@ -225,44 +225,8 @@ class Common:
    def isAllIcons(self):
       return self.options.isAllIcons()
 
-   def getDesignatedVPC(self):
-      return self.options.getDesignatedVPC()
-
-   def setDesignatedVPC(self, name):
-      self.options.setDesignatedVPC(name)
-
    def isDesignatedVPC(self, name):
       return self.options.isDesignatedVPC(name)
-
-   def setCombineSplit(self):
-      self.options.setCombineSplit()
-
-   def setSeparateSplit(self):
-      self.options.setSeparateSplit()
-
-   def isCombineSplit(self):
-      return self.options.isCombineSplit()
-
-   def isSeparateSplit(self):
-      return self.options.isSeparateSplit()
-
-   def getOutputSplit(self):
-      return self.options.getOutputSplit()
-
-   def setOutputSplit(self, value):
-      self.options.setOutputSplit(value)
-
-   def setLogicalShapes(self):
-      self.options.setLogicalShapes()
-
-   def setPrescribedShapes(self):
-      self.options.setPrescribedShapes()
-
-   def isLogicalShapes(self):
-      return self.options.isLogicalShapes()
-
-   def isPrescribedShapes(self):
-      return self.options.isPrescribedShapes()
 
    def setDirectionLR(self):
       self.options.setDirectionLR()
@@ -315,48 +279,6 @@ class Common:
    def isProviderIBM(self):
       return self.options.isProviderIBM()
 
-   def getOutputShapes(self):
-      return self.options.getOutputShapes()
-
-   def setOutputShapes(self, value):
-      self.options.setOutputShapes(value)
-
-   def setHorizontalLayout(self):
-      self.options.setHorizontalLayout()
-
-   def setVerticalLayout(self):
-      self.options.setVerticalLayout()
-
-   def isHorizontalLayout(self):
-      return self.options.isHorizontalLayout()
-
-   def isVerticalLayout(self):
-      return self.options.isVerticalLayout()
-
-   def getOutputLayout(self):
-      return self.options.getOutputLayout()
-
-   def setOutputLayout(self, value):
-      self.options.setOutputLayout(value)
-
-   def setLinks(self):
-      self.options.setLinks()
-
-   def setNoLinks(self):
-      self.options.setNoLinks()
-
-   def isLinks(self):
-      return self.options.isLinks()
-
-   def isNoLinks(self):
-      return self.options.isNoLinks()
-
-   def getOutputLinks(self):
-      return self.options.getOutputLinks()
-
-   def setOutputLinks(self, value):
-      self.options.setOutputLinks(value)
-
    # Messages
 
    def printStartDiagram(self, diagramname, cloud):
@@ -389,8 +311,8 @@ class Common:
    def printInvalidMode(self, mode):
       self.messages.printInvalidMode(mode)
 
-   def printInvalidCloud(self, cloud):
-      self.messages.printInvalidCloud(cloud)
+   def printInvalidProvider(self, provider):
+      self.messages.printInvalidProvider(provider)
 
    def printInvalidInput(self):
       self.messages.printInvalidInput()
