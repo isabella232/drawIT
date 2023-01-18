@@ -18,6 +18,7 @@ from sys import stderr
 from .options import Options
 
 class Messages:
+   startDiagramMessage = 'Starting with input from %s for %s Cloud'
    startFileMessage = 'Starting with input from %s for %s Cloud'
    startRIASKeyMessage = 'Starting with input from RIAS for API Key %s in %s'
    startRIASAccountMessage = 'Starting with input from RIAS for API Key %s and Account ID %s in %s'
@@ -116,6 +117,9 @@ class Messages:
    def printXML(self, *args):
       sys.stdout.write(*args)
 
+
+   def printStartDiagram(self, diagramname, cloud):
+      self.printError(self.startDiagramMessage % (diagramname, cloud))
 
    def printStartFile(self, filename, cloud):
       self.printError(self.startFileMessage % (filename, cloud))

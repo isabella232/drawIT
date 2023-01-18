@@ -309,6 +309,9 @@ class Options:
    def isAlternateUser(self):
       return self.alternate == Alternates.USER
 
+   def getProvider(self):
+      return self.provider 
+
    def setProviderAny(self):
       self.provider = Providers.ANY 
 

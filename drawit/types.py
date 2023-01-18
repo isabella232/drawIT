@@ -20,7 +20,6 @@ from .common import Common
 
 from .constants import ShapeKind, ShapeStyle
 from .elements import Elements
-from .icons import Icons
 
 class Types:
    common = None
@@ -33,76 +32,106 @@ class Types:
       self.data = {'header': {'type': 'device',
                               'compressed': 'false'}}
       self.elements = Elements(self.data)
-      self.icons = Icons(common)
       random.seed(time.time())
 
-   def buildLink(self, label, source, target, meta):
-      data = {'header': {'id': self.common.compress(str(random.random())),
+   def buildLink(self, id, label, source, target, meta):
+      data = {'header': {'id': id,
                          'label': ''},
               'cell':   {'style': 'endArrow=none;dashed=1;',
                          'edge': '1',
                          'parent': '1',
-                         'source': self.common.compress(source),
-                         'target': self.common.compress(target)},
+                         'source': source,
+                         'target': target},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data
 
-   def buildSolidLink(self, label, source, target, meta):
-      data = {'header': {'id': self.common.compress(str(random.random())),
+   def buildSolidLink(self, id, label, source, target, meta):
+      data = {'header': {'id': id,
                          'label': label},
               'cell':   {'style': 'endArrow=none;dashed=0;',
                          'edge': '1',
                          'parent': '1',
-                         'source': self.common.compress(source),
-                         'target': iself.common.compress(target)},
+                         'source': source,
+                         'target': target},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data
 
-   def buildSolidLinkSingleArrow(self, label, source, target, meta):
-         data = {'header': {'id': self.common.compress(str(random.random())),
+   def buildSolidLinkSingleArrow(self, id, label, source, target, meta):
+         data = {'header': {'id': id,
                             'label': label},
                  'cell':   {'style': 'endArrow=block;endFill=1;dashed=0;',
                             'edge': '1',
                             'parent': '1',
-                            'source': self.common.compress(source),
-                            'target': self.common.compress(target)},
+                            'source': source,
+                            'target': target},
                   'geo':   {'relative': '1',
                             'as': 'geometry'}}
          return data
 
-   def buildSolidLinkDoubleArrow(self, label, source, target, meta):
-      data = {'header': {'id': self.common.compress(str(random.random())),
+   def buildSolidLinkDoubleArrow(self, id, label, source, target, meta):
+      data = {'header': {'id': id,
                          'label': label},
               'cell':   {'style': 'endArrow=block;endFill=1;startArrow=block;startFill=1;dashed=0;',
                          'edge': '1',
                          'parent': '1',
-                         'source': self.common.compress(source),
-                         'target': self.common.compress(target)},
+                         'source': source,
+                         'target': target},
               'geo':    {'relative': '1',
                          'as': 'geometry'}}
       return data
 
-   def buildNode(self, shapetype, shapekind, shapefill, id, parentid, name, subname, badgetext, x, y, width, height, meta):
-      iconname, iconcolor = self.icons.getIcon(name, shapetype)
-
-      if self.common.isLogicalShapes():
-         if shapekind == ShapeKind.ACTOR:
-            style = ShapeStyle.ACTOR.value
-         elif shapekind == ShapeKind.NODE:
+   def buildNode(self, id, node, x, y, width, height, meta):
+      shape = node["shape"].lower()
+      if shape == "actor":
+         style = ShapeStyle.ACTOR.value
+      elif shape == "component":
+         if self.common.isProviderAny():
+            style = ShapeStyle.LOGICAL_COMPONENT.value
+         else:
+            style = ShapeStyle.PRESCRIBED_COMPONENT.value
+      elif shape == "node":
+         if self.common.isProviderAny():
             style = ShapeStyle.LOGICAL_NODE.value
          else:
-            style = ShapeStyle.LOGICAL_LOCATION.value
-      else: # check prescribed
-         if shapekind == ShapeKind.ACTOR:
-            style = ShapeStyle.ACTOR.value
-         elif shapekind == ShapeKind.NODE:
             style = ShapeStyle.PRESCRIBED_NODE.value
+      elif shape == "location":
+         if self.common.isProviderAny():
+            style = ShapeStyle.LOGICAL_LOCATION.value
          else:
-            style = ShapeStyle.PRESCRIBED_LOCATION.value
+             style = ShapeStyle.PRESCRIBED_LOCATION.value
+      elif shape == "zone":
+         if node["icon"] == "":
+            style = ShapeStyle.ZONE_HIDEICON.value
+         else:
+            style = ShapeStyle.ZONE.value
+      else:
+         style = ShapeStyle.PRESCRIBED_NODE.value
 
-      style += iconcolor.value + shapefill.value
+      pencolor = node["pencolor"]
+      style += "strokeColor=" + pencolor + ';' 
+
+      bgcolor = node["bgcolor"]
+      if bgcolor:
+         style += "fillColor=" + bgcolor + ';' 
+      else:
+         style += "fillColor=none;" 
+
+      name = node["label"]
+      subname = node["sublabel"]
+
+      badgetext = node["badgetext"]
+      badgeshape = node["badgeshape"]
+      badgepencolor = node["badgepencolor"]
+      badgebgcolor = node["badgebgcolor"]
+
+      parentid = node["parentid"]
+      parentid = '1' if parentid == None else parentid
+
+      icon = node["icon"]
+      #tempname = node["icon"]
+      #iconname, tempcolor = self.icons.getIcon(tempname)
 
       shapelabel = "<b style='font-weight:600'>%Primary-Label%</b><br>%Secondary-Text%"
       labelsize = 30
@@ -128,7 +157,8 @@ class Types:
              'as': 'geometry'}
 
       props = {'Badge-Text': badgetext,
-               'Icon-Name': iconname,
+               #'Icon-Name': iconname,
+               'Icon-Name': icon,
                'Primary-Label': name,
                'Secondary-Text': subname}
 

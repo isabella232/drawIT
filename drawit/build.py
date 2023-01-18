@@ -21,938 +21,907 @@
 #   types.py - build drawio types, invokes xml.py with tables.py
 #   elements.py - build drawio objects  
 
+from os import path
 from math import isnan
 
+from .colors import Colors
 from .common import Common
-
+from .attributes import Attributes, Alternates, ClusterShapes, Directions, EdgeStyles, Fonts, NodeShapes, OutFormats, Providers
 from .constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
 from .shapes import Shapes
+from .icons import Icons
+
+DIAGRAM_NAME_DEFAULT = "diagram"
+DIAGRAM_DIRECTION_DEFAULT = "LR"
+DIAGRAM_ALTERNATE_DEFAULT = "WHITE"
+DIAGRAM_PROVIDER_DEFAULT = "IBM"
+DIAGRAM_FONTNAME_DEFAULT = "IBM Plex Sans"
+DIAGRAM_FONTSIZE_DEFAULT = 14
+DIAGRAM_OUTFORMAT_DEFAULT = "SVG"
+
+CLUSTER_LABEL_DEFAULT = "Cluster"
+CLUSTER_DIRECTION_DEFAULT = "LR"
+CLUSTER_ALTERNATE_DEFAULT = "WHITE"
+CLUSTER_PROVIDER_DEFAULT = "IBM"
+CLUSTER_SHAPE_DEFAULT = "LOCATION"
+CLUSTER_ICON_DEFAULT = "undefined"
+CLUSTER_FONTNAME_DEFAULT = "IBM Plex Sans"
+CLUSTER_FONTSIZE_DEFAULT = 14
+
+NODE_LABEL_DEFAULT = "Node"
+NODE_DIRECTION_DEFAULT = "LR"
+NODE_PROVIDER_DEFAULT = "IBM"
+NODE_SHAPE_DEFAULT = "NODE"
+NODE_ICON_DEFAULT = "undefined"
+NODE_FONTNAME_DEFAULT = "IBM Plex Sans"
+NODE_FONTSIZE_DEFAULT = 14
+
+EDGE_STYLE_DEFAULT = "solid"
+EDGE_FONTNAME_DEFAULT = "IBM Plex Sans"
+EDGE_FONTSIZE_DEFAULT = 12
 
 class Build:
-   data = None
    common = None
    shapes = None
+   icons = None
    cloudname = ""
+   diagrams = {}
+   clusters = {}
+   nodes = {}
+   edges = {}
+   tops = []
+   bottoms = []
+   filename = ""
 
    def __init__(self, common, data):
       self.common = common
-      self.data = data
-      self.shapes = Shapes(common)
-      self.cloudname = ShapeName.CLOUD.value if self.common.isLogicalShapes() else ShapeName.IBM_CLOUD.value
+      self.shapes = Shapes(self.common)
+      self.icons = Icons(self.common)
+      self.diagrams = data.getDiagrams()
+      self.clusters = data.getClusters()
+      self.nodes = data.getNodes()
+      self.edges = data.getEdges()
+      self.tops = []
+      self.bottoms = []
+      return
 
    def buildDiagrams(self):
-      outputFolder = self.common.getOutputFolder()
-      if outputFolder[-1] != '/':
-         self.common.setOutputFolder(outputFolder + '/')
+      self.checkAll()
 
-      clouddata = self.buildAll()
+      if self.diagrams == None or self.clusters == None or self.nodes == None or self.edges == None:
+         return None
 
-      for regionname, regionvalues in clouddata.items():
-         if self.common.getRegion().value != "all" and self.common.getRegion().value != regionname:
-            # Covers the case for Yaml data which includes all regions whereas RIAS data can include single or all regions.
-            continue
-         if self.common.isCombineSplit():
-            self.shapes.buildXML(regionvalues, regionname)
-         else:
-            for vpcid, vpcvalues in regionvalues.items():
-              vpcnames = vpcid.split(':')
-              self.shapes.buildXML(vpcvalues, vpcnames[1])
+      provider = self.common.getProvider().value.upper()
 
-         self.shapes.dumpXML(self.common.getOutputFile(), self.common.getOutputFolder())
+      attributes = (list(self.diagrams.items())[0])[1]
+
+      self.filename = attributes["filename"]
+
+      if attributes["filename"] != "*":
+         outputfile = attributes["filename"] + ".xml"
+         diagramname = attributes["name"]
+         self.common.printStartDiagram(diagramname, provider)
+
+      self.setupAll()
+
+      if self.diagrams == None or self.clusters == None or self.nodes == None or self.edges == None:
+         return None
+
+      if attributes["filename"] != "*":
+         outputfolder = self.common.getOutputFolder()
+         if outputfolder[-1] != '/':
+            self.common.setOutputFolder(outputfolder + '/')
+
+      nodes, links, values = self.buildAll()
+      xmldata = {"nodes": nodes, "links": links, "values": values}
+
+      if attributes["filename"] != "*":
+         self.shapes.buildXML(xmldata, attributes["name"])
+         self.shapes.dumpXML(outputfile, outputfolder)
          self.shapes.resetXML()
+         self.common.printDone(path.join(outputfolder, outputfile), provider)
+
+      return xmldata
+
+   def checkAll(self):
+      self.diagrams = self.checkDiagrams(self.diagrams)
+      self.clusters = self.checkClusters(self.clusters)
+      self.nodes = self.checkNodes(self.nodes)
+      self.edges = self.checkEdges(self.edges)
+
+   def setupAll(self):
+      self.addKeys()
+      self.addChildren()
+
+      if not self.common.isAlternateUser():
+         self.alternateFills()
+
+      self.addNodes()
+      self.calculateNodeGeometry()
+      self.calculateClusterGeometry()
+
+      if self.filename == "*":
+         resetwidth = 0
+         tops = self.tops
+         tops.reverse()
+         for clusterid in tops:
+            cluster = self.clusters[clusterid]
+            geometry = cluster["geometry"]
+            x = geometry[0] + resetwidth
+            y = geometry[1]
+            width = geometry[2]
+            height = geometry[3]
+            self.clusters[clusterid]["geometry"] = [x, y, width, height]
+            resetwidth = width + 20
+
+      #self.printClusters()
+      #self.printNodes()
+      #self.printTops()
+      #self.printBottoms()
+
+      self.mergeNodes()
+      self.eliminateZoneParents()
+
+   def buildAll(self):
+      nodes = []
+      links = []
+      values = []
+
+      for clusterid in self.tops:
+         clusternodes, clusterlinks, clustervalues = self.buildClusters([clusterid])
+         nodes += clusternodes
+         links += clusterlinks
+         values += clustervalues
+
+      for edgeid, attributes in self.edges.items():
+         edgenodes, edgelinks, edgevalues = self.buildEdgeShape(edgeid, attributes)
+         nodes += edgenodes
+         links += edgelinks
+         values += edgevalues
+
+      return nodes, links, values
+
+   def buildClusters(self, clusterids):
+      nodes = []
+      links = []
+      values = []
+
+      for clusterid in clusterids:
+         attributes = self.clusters[clusterid]
+         childids = attributes["children"]
+
+         if len(childids) > 0:
+            clusternodes, clusterlinks, clustervalues = self.buildClusters(childids)
+            nodes += clusternodes
+            links += clusterlinks
+            values += clustervalues
+         #else:
+         clusternodes, clusterlinks, clustervalues = self.buildClusterShape(clusterid, attributes)
+         nodes += clusternodes
+         links += clusterlinks
+         values += clustervalues
+
+      return nodes, links, values
+
+   def buildClusterShape(self, clusterid, attributes):
+      nodes = []
+      links = []
+      values = []
+
+      geometry = attributes["geometry"]
+      x = geometry[0]
+      y = geometry[1]
+      width = geometry[2]
+      height = geometry[3]
+
+      meta = None
+
+      shapenode = self.shapes.buildShape(clusterid, attributes, x, y, width, height, meta)
+      nodes.append(shapenode)
+
+      return nodes, links, values
+
+   def buildEdgeShape(self, edgeid, attributes):
+      nodes = []
+      links = []
+      values = []
+
+      sourceid = attributes["sourceid"]
+      targetid = attributes["targetid"]
+      arrow = attributes["arrow"]
+      label = attributes["label"]
+
+      if arrow == "noarrow":
+         edgenode = self.shapes.buildSolidLink(edgeid, label, sourceid, targetid, None)
+      elif arrow == "singlearrow":
+         edgenode = self.shapes.buildSingleArrow(edgeid, label, sourceid, targetid, None)
+      else:  # "doublearrow"
+         edgenode = self.shapes.buildDoubleArrow(edgeid, label, sourceid, targetid, None)
+
+      links.append(edgenode)
+
+      return nodes, links, values
+
+   def checkDiagrams(self, diagrams):
+      for diagramid, attributes in diagrams.items():
+         name = attributes["name"]
+         if name == "":
+            name = DIAGRAM_NAME_DEFAULT
+         diagrams[diagramid]["name"] = name
+
+         filename = attributes["filename"]
+         if filename == "":
+            diagrams[diagramid]["filename"] = name
+            self.common.setOutputFile(name + ".xml")
+         elif filename != "*":
+            self.common.setOutputFile(filename + ".xml")
+
+         direction = attributes["direction"]
+         if direction == "":
+            direction = DIAGRAM_DIRECTION_DEFAULT
+         elif not direction.upper() in [parm.value for parm in Directions]:
+            self.common.printInvalidDirection(direction)
+            return None
+         diagrams[diagramid]["direction"] = direction
+
+         alternate = attributes["alternate"]
+         if alternate == "":
+            alernate = DIAGRAM_ALTERNATE_DEFAULT
+         elif not alternate.upper() in [parm.value for parm in Alternates]:
+            self.common.printInvalidAlternate(alternate)
+            return None
+         diagrams[diagramid]["alternate"] = alternate
+
+         provider = attributes["provider"]
+         if provider == "":
+            provider = DIAGRAM_PROVIDER_DEFAULT
+         elif not provider.upper() in [parm.value for parm in Providers]:
+            self.common.printInvalidProvider(provider)
+            return None
+         diagrams[diagramid]["provider"] = provider
+
+         fontname = attributes["fontname"]
+         if fontname == "":
+            fontname = DIAGRAM_FONTNAME_DEFAULT
+         elif not fontname in [parm.value for parm in Fonts]:
+            self.common.printInvalidFontName(fontname)
+            return None
+         diagrams[diagramid]["fontname"] = fontname
+
+         fontsize = attributes["fontsize"]
+         if fontsize == 0:
+            fontsize = DIAGRAM_FONTSIZE_DEFAULT
+         diagrams[diagramid]["fontsize"] = fontsize
+
+         outformat = attributes["outformat"]
+         if outformat == "":
+            outformat = DIAGRAM_OUTFORMAT_DEFAULT
+         elif not outformat.upper() in [parm.value for parm in OutFormats]:
+            self.common.printInvalidOutputFormat(outformat)
+            return None
+         diagrams[diagramid]["outformat"] = outformat
+
+         if direction.upper() == "LR":
+            self.common.setDirectionLR()
+         elif direction.upper() == "TB":
+            self.common.setDirectionTB()
+
+         if alternate.upper() == "WHITE":
+            self.common.setAlternateWhite()
+         elif alternate.upper() == "LIGHT":
+            self.common.setAlternateLight()
+         elif alternate.upper() == "NONE":
+            self.common.setAlternateNone()
+         elif alternate.upper() == "USER":
+            self.common.setAlternateUser()
+
+         if provider.upper() == "ANY":
+            self.common.setProviderAny()
+         elif provider.upper() == "IBM":
+            self.common.setProviderIBM()
+
+      return diagrams
+
+   def checkClusters(self, clusters):
+      for clusterid, attributes in clusters.items():
+         label = attributes["label"]
+         if label == "":
+            label = CLUSTER_LABEL_DEFAULT
+         clusters[clusterid]["label"] = label
+
+         direction = attributes["direction"]
+         if direction == "":
+            direction = CLUSTER_DIRECTION_DEFAULT
+         elif not direction.upper() in [parm.value for parm in Directions]:
+            self.common.printInvalidDirection(direction)
+            return None
+         clusters[clusterid]["direction"] = direction
+
+         alternate = attributes["alternate"]
+         if alternate == "":
+            alternate = CLUSTER_ALTERNATE_DEFAULT
+         elif not alternate.upper() in [parm.value for parm in Alternates]:
+            self.common.printInvalidAlternate(alternate)
+            return None
+         clusters[clusterid]["alternate"] = alternate
+
+         provider = attributes["provider"]
+         if provider == "":
+            provider = CLUSTER_PROVIDER_DEFAULT
+         elif not provider.upper() in [parm.value for parm in Providers]:
+            self.common.printInvalidProvider(provider)
+            return None
+         clusters[clusterid]["provider"] = provider
+
+         fontname = attributes["fontname"]
+         if fontname == "":
+            fontname = CLUSTER_FONTNAME_DEFAULT
+         elif not fontname in [parm.value for parm in Fonts]:
+            self.common.printInvalidFont(fontname)
+            return None
+         clusters[clusterid]["fontname"] = fontname
+
+         fontsize = attributes["fontsize"]
+         if fontsize == 0:
+            fontsize = CLUSTER_FONTSIZE_DEFAULT
+         clusters[clusterid]["fontsize"] = fontsize
+
+         icon = attributes["icon"]
+         if icon == "":
+            icon = CLUSTER_ICON_DEFAULT
+         elif not self.icons.validIcon(icon):
+            self.common.printInvalidIcon(icon)
+            return None
+
+         pencolor = attributes["pencolor"]
+         if pencolor == "":
+            iconname, pencolor, iconshape = self.icons.getIcon(icon)
+
+         #clusters[clusterid]["icon"] = iconname
+
+         shape = attributes["shape"]
+         if shape == "":
+            if iconshape == "":
+               self.clusters[clusterid]["shape"] = CLUSTER_SHAPE_DEFAULT
+            else:
+               shapesplit = iconshape.split("-")
+               iconshape = shapesplit[0]
+               if len(shapesplit) == 2 and shapesplit[1] == "hideicon":
+                  iconname = ""
+               self.clusters[clusterid]["shape"] = iconshape
+         elif not shape.upper() in [parm.value for parm in ClusterShapes]:
+            self.common.printInvalidClusterShape(shape)
+            return None
+
+         clusters[clusterid]["icon"] = iconname
+
+         hexpencolor = self.checkLineColor(pencolor)
+         if hexpencolor == None:
+            self.common.printInvalidLineColor(pencolor)
+            return None
+         clusters[clusterid]["pencolor"] = hexpencolor
+
+         hexbgcolor = "#ffffff"
+         bgcolor = attributes["bgcolor"]
+         if self.common.isAlternateUser() and bgcolor != "":
+            hexbgcolor = self.checkFillColor(hexpencolor, bgcolor)
+            if hexbgcolor == None:
+               self.common.printInvalidFillColor(bgcolor)
+               return None
+         clusters[clusterid]["bgcolor"] = hexbgcolor
+
+      return clusters
+
+   def checkNodes(self, nodes):
+      for nodeid, attributes in nodes.items():
+         label = attributes["label"]
+         if label == "":
+            label = NODE_LABEL_DEFAULT
+         nodes[nodeid]["label"] = label
+
+         direction = attributes["direction"]
+         if direction == "":
+            direction = NODE_DIRECTION_DEFAULT
+         elif not direction.upper() in [parm.value for parm in Directions]:
+            self.common.printInvalidDirection(direction)
+            return None
+         nodes[nodeid]["direction"] = direction
+
+         fontname = attributes["fontname"]
+         if fontname == "":
+            fontname = NODE_FONTNAME_DEFAULT
+         elif not fontname in [parm.value for parm in Fonts]:
+            self.common.printInvalidFont(fontname)
+            return None
+         nodes[nodeid]["fontname"] = fontname
+
+         fontsize = attributes["fontsize"]
+         if fontsize == 0:
+            fontsize = NODE_FONTSIZE_DEFAULT
+         nodes[nodeid]["fontsize"] = fontsize
+
+         icon = attributes["icon"]
+         if icon == "":
+            icon = NODE_ICON_DEFAULT
+         elif not self.icons.validIcon(icon):
+            self.common.printInvalidIcon(icon)
+            return None
+
+         pencolor = attributes["pencolor"]
+         if pencolor == "":
+            iconname, pencolor, iconshape = self.icons.getIcon(icon)
+
+         nodes[nodeid]["icon"] = iconname
+
+         shape = attributes["shape"]
+         if shape == "":
+            if iconshape == "":
+               nodes[nodeid]["shape"] = NODE_SHAPE_DEFAULT
+            else:
+               nodes[nodeid]["shape"] = iconshape
+         else:
+            if not shape.upper() in [parm.value for parm in NodeShapes]:
+               self.common.printInvalidNodeShape(shape)
+               return None
+
+         hexpencolor = self.checkLineColor(pencolor)
+         if hexpencolor == None:
+            self.common.printInvalidLineColor(pencolor)
+            return None
+         nodes[nodeid]["pencolor"] = hexpencolor
+
+         hexbgcolor = pencolor
+         bgcolor = attributes["bgcolor"]
+         if bgcolor != "":
+            hexbgcolor = checkFillColor(hexpencolor, bgcolor)
+            if hexbgcolor == None:
+               self.common.printInvalidFillColor(bgcolor)
+               return None
+         nodes[nodeid]["bgcolor"] = hexbgcolor
+
+      return nodes
+
+   def checkEdges(self, edges):
+      for edgeid, attributes in edges.items():
+         style = attributes["style"]
+         if style == "":
+            style = EDGE_STYLE_DEFAULT
+         elif not style.upper() in [parm.value for parm in EdgeStyles]:
+            self.common.printInvalidEdgeStyle(style)
+            return None
+         edges[edgeid]["style"] = style
+
+         fontname = attributes["fontname"]
+         if fontname == "":
+            fontname = EDGE_FONTNAME_DEFAULT
+         elif not fontname in [parm.value for parm in Fonts]:
+            self.common.printInvalidFont(fontname)
+            return None
+         edges[edgeid]["fontname"] = fontname
+
+         fontsize = attributes["fontsize"]
+         if fontsize == 0:
+            fontsize = EDGE_FONTSIZE_DEFAULT
+         edges[edgeid]["fontsize"] = fontsize
+
+      return edges
+
+   # Line color must be from IBM Color Palette and can be component name, color name, or hex value.
+   def checkLineColor(self, pencolor):
+      hexvalue = None 
+      if pencolor.lower() in Colors.lines:
+         hexvalue = Colors.lines[pencolor.lower()]
+      return hexvalue
+
+   # Family color ensures that fill color is from same family as line color or transparent or white..
+   def checkFamilyColor(self, hexpencolor, hexbgcolor):
+      bgcolor = Colors.names[hexbgcolor]
+      if bgcolor == "white" or bgcolor == "none":
+         return hexbgcolor
+
+      pencolor = Colors.names[hexpencolor]
+      lightpencolor = "light" + pencolor
+
+      if bgcolor == lightpencolor:
+         return hexbgcolor
+
+      return None
+
+   # Fill color must be from IBM Color Palette and can be transparent, white, or light color from same family as line color.
+   def checkFillColor(self, hexpencolor, bgcolor):
+      hexbgvalue = None 
+      if bgcolor.lower() in Colors.fills:
+         hexbgvalue = Colors.fills[bgcolor.lower()]
+         hexbgvalue = validFamilyColor(hexpencolor, hexbgcolor) 
+      return hexbgvalue
+
+   def addKeys(self):
+      # Add additional keys to cluster dictionary.
+      for clusterid, attributes in self.clusters.items():
+          self.clusters[clusterid]["geometry"] = [0, 0, 0, 0]
+          self.clusters[clusterid]["children"] = []
+          self.clusters[clusterid]["nodes"] = []
+
+      # Add additional keys to node dictionaries.
+      for nodeid, attributes in self.nodes.items():
+          self.nodes[nodeid]["geometry"] = [0, 0, 0, 0]
+          self.nodes[nodeid]["children"] = []
+          self.nodes[nodeid]["nodes"] = []
 
       return
 
-   def buildAll(self):
-      newvpcdata = {}
-      regiondata = {}
-
-      regionx = 30
-      regiony = 70
-
-      cloudx = 30
-      cloudy = 70
-
-      cloudwidth = 0
-      cloudheight = 0
-
-      nodes = []
-      links = []
-      values = []
-
-      count = 0
-
-      for regionname, regionvalues in self.data.getRegionTable().items():
-         count += 1
-         regionwidth = 0
-         regionheight = 0
-
-         vpcdata = self.buildVPCs(regionname, regionvalues)
-
-         if self.common.isCombineSplit():
-            # Loop thru all vpcs in region adding a region that contains all VPCs in that region.
-
-            for vpcid, vpcvalues in vpcdata.items():
-               nodes += vpcvalues['nodes']
-               links += vpcvalues['links']
-               values += vpcvalues['values']
-               size = vpcvalues['sizes']
-
-               regionwidth += size[0] + ShapePos.GROUP_SPACE.value
-               if size[1] > regionheight:
-                  regionheight = size[1]
-
-            regionwidth += ShapePos.GROUP_SPACE.value
-            regionheight += ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
-
-            if regionwidth > cloudwidth:
-               cloudwidth = regionwidth
-            cloudheight += regionheight
-
-            if count > 1:
-              regiony += regionheight + ShapePos.GROUP_SPACE.value
-
-            nodes, links, values = self.buildRegion(regionname, None, nodes, links, values, regionx, regiony, regionwidth, regionheight)
+   def addChildren(self):
+      for clusterid, attributes in self.clusters.items():
+         #print("")
+         #print(attributes)
+         #print(attributes['label'])
+         parentid = attributes["parentid"] 
+         if parentid != None:
+            # Add children list to cluster dictionary.
+            self.clusters[parentid]["children"].append(clusterid)
          else:
-            # Loop thru all vpcs in region adding a region to each VPC in that region.
-
-            for vpcid, vpcvalues in vpcdata.items():
-               nodes = vpcvalues['nodes']
-               links = vpcvalues['links']
-               values = vpcvalues['values']
-               size = vpcvalues['sizes']
-
-               regionwidth = size[0] + ShapePos.GROUP_SPACE.value * 2
-               regionheight = size[1] +  ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
-
-               vpcnames = vpcid.split(':')
-
-               nodes, links, values = self.buildRegion(regionname, vpcnames[0], nodes, links, values, regionx, regiony, regionwidth, regionheight)
-
-               cloudwidth = regionwidth + ShapePos.GROUP_SPACE.value * 2
-               cloudheight = regionheight + ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value
-
-               nodes, links, values = self.buildCloud(self.cloudname, vpcnames[0], nodes, links, values, cloudx, cloudy, cloudwidth, cloudheight)
-               newvpcdata[vpcid] = {'nodes': nodes, 'links': links, 'values': values}
-
-            regiondata[regionname] = newvpcdata
-
-      if self.common.isCombineSplit():
-         cloudx = 30
-         cloudy = 70
-
-         cloudwidth += ShapePos.GROUP_SPACE.value * 2
-         cloudheight += ShapePos.TOP_SPACE.value + (ShapePos.GROUP_SPACE.value * count)
-
-         nodes, links, values = self.buildCloud(self.cloudname, None, nodes, links, values, cloudx, cloudy, cloudwidth, cloudheight)
-
-         regiondata[self.cloudname] = {'nodes': nodes, 'links': links, 'values': values}
-
-      return regiondata
-
-   def buildCloud(self, cloudname, vpcid, nodes, links, values, x, y, width, height):
-      if vpcid == None:
-         cloudid = cloudname.replace(" ", "")
-      else:
-         cloudid = cloudname.replace(" ", "") + ':' + vpcid
-
-      x = ShapePos.PUBLIC_NETWORK_WIDTH.value + ShapePos.GROUP_SPACE.value  # Allow space for public network.
-      y = 0
-
-      cloudnode = self.shapes.buildShape('Cloud', ShapeKind.LOCATION, FillPalette.WHITE, cloudid, ShapeName.NO_PARENT.value, cloudname, '', '', x, y, width, height, None)
-      nodes.append(cloudnode)
-
-      if self.common.isLinks():
-         nodes, links, values  = self.buildPublic(nodes, links, values)
-         nodes, links, values  = self.buildEnterprise(nodes, links, values)
-
-      return nodes, links, values
-
-   def buildRegion(self, regionname, vpcid, nodes, links, values, x, y, width, height):
-      if vpcid == None:
-         regionid = regionname.replace(" ", "")
-         cloudid = self.cloudname.replace(" ", "")
-      else:
-         regionid = regionname.replace(" ", "") + ':' + vpcid
-         cloudid = self.cloudname.replace(" ", "") + ':' + vpcid
-
-      regionnode = self.shapes.buildShape('Region', ShapeKind.LOCATION, ComponentFill.BACKEND, regionid, cloudid, regionname, '', '', x, y, width, height, None)
-      nodes.append(regionnode)
-
-      return nodes, links, values
-
-   def buildPublic(self, nodes, links, values):
-      publicx = 0
-      publicy = 0
-
-      publicnode = self.shapes.buildShape('PublicNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.PUBLIC_NETWORK.value, ShapeName.NO_PARENT.value, ShapeName.PUBLIC_NETWORK.value, '', '', publicx, publicy, ShapePos.PUBLIC_NETWORK_WIDTH.value, ShapePos.PUBLIC_NETWORK_HEIGHT.value, None)
-      publicusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.PUBLIC_USER.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.PUBLIC_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
-      publicinternetnode = self.shapes.buildShape('Internet', ShapeKind.NODE, FillPalette.NONE, ShapeName.INTERNET.value, ShapeName.PUBLIC_NETWORK.value, ShapeName.INTERNET.value, '', '', ShapePos.SECOND_ICON_X.value, ShapePos.SECOND_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
-      
-      nodes.append(publicnode)
-      nodes.append(publicusernode)
-      nodes.append(publicinternetnode)
-      publicuserlink = self.shapes.buildDoubleArrow('', ShapeName.INTERNET.value, ShapeName.PUBLIC_USER.value, None)
-      links.append(publicuserlink)
-
-      return nodes, links, values
-
-   def buildEnterprise(self, nodes, links, values):
-      enterprisex = 0
-      enterprisey = ShapePos.PUBLIC_NETWORK_HEIGHT.value + ShapePos.GROUP_SPACE.value
-
-      enterprisenode = self.shapes.buildShape('EnterpriseNetwork', ShapeKind.LOCATION, FillPalette.WHITE, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.NO_PARENT.value, ShapeName.ENTERPRISE_NETWORK.value, '', '', enterprisex, enterprisey, ShapePos.ENTERPRISE_NETWORK_WIDTH.value, ShapePos.ENTERPRISE_NETWORK_HEIGHT.value, None)
-      enterpriseusernode = self.shapes.buildShape('User', ShapeKind.ACTOR, FillPalette.NONE, ShapeName.ENTERPRISE_USER.value, ShapeName.ENTERPRISE_NETWORK.value, ShapeName.ENTERPRISE_USER.value, '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
-
-      nodes.append(enterprisenode)
-      nodes.append(enterpriseusernode)
-
-      enterpriseuserlink = self.shapes.buildDoubleArrow('', ShapeName.INTERNET.value, ShapeName.ENTERPRISE_USER.value, None)
-      links.append(enterpriseuserlink)
-
-      return nodes, links, values
-
-   def buildVPCs(self, regionname, regionvalues):
-      vpcdata = {}
-
-      nodes = []
-      links = []
-      values = []
-      sizes = []
-
-      saveheight = 0
-      savewidth = 0
-
-      previousheight = 0
-      previouswidth = 0
-
-      count = 0
-
-      for vpcid in regionvalues:
-         nodes = []
-         links = []
-         values = []
-         sizes = []
-
-         vpcframe = self.data.getVPC(vpcid)
-         if len(vpcframe) == 0:
-            self.common.printInvalidVPC(vpcid)
-         else:
-            count = count + 1
-
-            vpcname = vpcframe['name']
-            vpcid = vpcframe['id']
-
-            if not self.common.isDesignatedVPC(vpcid):
-               continue
-         
-            if 'availabilityZones' in vpcframe:
-               usercidrs = vpcframe['availabilityZones']
-            else:
-               usercidrs = None
-
-            zonenodes, zonelinks, zonevalues, zonesizes = self.buildAZs(vpcname, vpcid, usercidrs)
-            nodes += zonenodes
-            links += zonelinks
-            values += zonevalues
-
-            width = ShapePos.ICON_WIDTH.value
-            height = ShapePos.ICON_HEIGHT.value
-
-            if self.common.isLinks():
-               routername = vpcname + '-router'
-               routernode = self.shapes.buildShape('Router', ShapeKind.NODE, FillPalette.NONE, routername, vpcid, '', '', '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, width, height, None)
-               nodes.append(routernode)
-
-               routerlink = self.shapes.buildDoubleArrow('', routername, ShapeName.INTERNET.value, None)
-               links.append(routerlink)
-
-            width = 0
-            height = 0
-
-            if self.common.isVerticalLayout():
-               for size in zonesizes:
-                  if size[0] > width:
-                     width = size[0]
-                  height += size[1] + ShapePos.GROUP_SPACE.value
-
-               width += ShapePos.LEFT_SPACE.value + ShapePos.GROUP_SPACE.value  # space after inner groups
-               height += ShapePos.TOP_SPACE.value # space at top of outer group to top inner group
-               height -= ShapePos.GROUP_SPACE.value  # TODO Remove extra groupspace.
-            else:
-               for size in zonesizes:
-                  if size[1] > height:
-                     height = size[1]
-                  width += size[0] + ShapePos.GROUP_SPACE.value
-
-               height += ShapePos.TOP_SPACE.value # space at top of outer group to top inner group
-               height += ShapePos.GROUP_SPACE.value  # TODO Remove extra groupspace.
-
-            if self.common.isVerticalLayout():
-               if width > savewidth:
-                  savewidth = width
-               saveheight += height + ShapePos.GROUP_SPACE.value
-            else:
-               if height > saveheight:
-                  saveheight = height
-               savewidth += width + ShapePos.GROUP_SPACE.value
-
-            if count == 1 or not self.common.isCombineSplit():
-               x = ShapePos.GROUP_SPACE.value
-               y = ShapePos.TOP_SPACE.value
-            elif self.common.isVerticalLayout():
-               y += previousheight + ShapePos.GROUP_SPACE.value
-            else:
-               x += previouswidth + ShapePos.GROUP_SPACE.value
-
-            previousheight = height + ShapePos.GROUP_SPACE.value
-            previouswidth = width
-
-            if self.common.isCombineSplit():
-               regionid = regionname.replace(" ", "")
-            else:
-               regionid = regionname.replace(" ", "") + ':' + vpcid
-
-            vpcnode = self.shapes.buildShape('VPC', ShapeKind.LOCATION, FillPalette.WHITE, vpcid, regionid, vpcname, '', '', x, y, width, height, None) 
-            nodes.append(vpcnode)
-
-            nodes, links, values  = self.buildLoadBalancers(vpcname, vpcid, nodes, links, values)
-
-            vpcdata[vpcid + ':' + vpcname] = {'nodes': nodes, 'links': links, 'values': values, 'sizes': [width, height]}
-
-      return vpcdata
-
-   def buildAZs(self, vpcname, vpcid, usercidrs):
-      nodes = []
-      links = []
-      values = []
-      sizes = []
-
-      saveheight = 0
-      savewidth = 0
-
-      vpcTable = self.data.getVPCTable() 
-      count = 0
-      for regionzonename in vpcTable[vpcid]:
-         count += 1
-
-         if self.common.isLinks():
-            zonelink = self.shapes.buildLink(regionzonename + ':' + vpcname, regionzonename, vpcname, None)
-            #SAVE links.append(zonelink)
-
-         subnetnodes, subnetlinks, subnetvalues, subnetsizes = self.buildSubnets(regionzonename, vpcname)
-         nodes += subnetnodes
-         links += subnetlinks
-         values += subnetvalues
-
-         width = 0
-         height = 0
-
-         for size in subnetsizes:
-            if size[0] > width:
-               width = size[0]
-
-            height = height + size[1] + ShapePos.GROUP_SPACE.value
-
-         width = ShapePos.LEFT_SPACE.value + width + ShapePos.GROUP_SPACE.value
-         height = height + ShapePos.TOP_SPACE.value  # space at top of outer group to top inner group
-         height = height - ShapePos.GROUP_SPACE.value
-
-         if self.common.isVerticalLayout():
-            x = (ShapePos.ICON_SPACE.value * 2) + ShapePos.ICON_WIDTH.value
-            y = ShapePos.TOP_SPACE.value + saveheight + (ShapePos.GROUP_SPACE.value * (count - 1))
-            saveheight += height
-         else:
-            x = (ShapePos.ICON_SPACE.value * 2) + ShapePos.ICON_WIDTH.value + savewidth + (ShapePos.GROUP_SPACE.value * (count - 1))
-            y = ShapePos.TOP_SPACE.value
-            savewidth += width
-
-         zonename = regionzonename.split(':')[1]
-
-         if usercidrs != None:
-            for usercidr in usercidrs:
-                if zonename == usercidr['name']:
-                   zonecidr = usercidr['addressPrefix']
-                   break
-                else:
-                   zonecidr = ''
-         else:
-            zonecidr = self.getZoneCIDR(zonename)
-
-         zonenode = self.shapes.buildShape('AvailabilityZone', ShapeKind.LOCATION, ComponentFill.BACKEND, regionzonename, vpcid, zonename, zonecidr, '', x, y, width, height, None)
-         nodes.append(zonenode)
-
-         sizes.append([width, height])
-
-         if count == 1:
-            sizes.append([ShapePos.LEFT_SPACE.value - ShapePos.GROUP_SPACE.value, 0])
-
-      return nodes, links, values, sizes
-
-   def buildSubnets(self, zonename, vpcname): 
-      nodes = []
-      links = []
-      values = []
-      sizes = []
-
-      saveheight = 0
-
-      zoneTable = self.data.getZoneTable()
-      count = 0
-      save_subnetpubgateid = None
-
-      for subnetid in zoneTable[zonename]:
-         count = count + 1
-         pubgateid = None
-
-         width = 0
-         height = 0
-
-         #subnetframe = findrow(user, self.inputdata['subnets'], 'id', subnetid)
-         subnetframe = self.data.getSubnet(subnetid)
-         subnetname = subnetframe['name']
-         subnetid = subnetframe['id']
-
-         subnetzonename = subnetframe['zone.name']
-         subnetregion = 'us-south-1'
-         subnetvpcid = subnetframe['vpc.id']
-         subnetvpcname = subnetframe['vpc.name']
-         subnetcidr = subnetframe['ipv4_cidr_block']
-
-         #vpcframe = findrow(user, self.inputdata['vpcs'], 'id', subnetvpcid)
-         vpcframe = self.data.getVPC(subnetvpcid)
-         subnetvpcname = subnetframe['name']
-
-         regionname = zonename.split(':')[0]
-         regionzonename = regionname + ':' + subnetzonename;
-
-         if self.common.isLinks():
-            zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname, None)
-            #SAVE links.append(zonelink)
-
-         if 'public_gateway.id' in subnetframe:
-            subnetpubgateid = subnetframe['public_gateway.id']
-         else:
-            subnetpubgateid = None
-
-         pubgatefipip = None
-         pubgatename = None
-         if subnetpubgateid != None:
-            #pubgateframe = findrow(user, self.inputdata['publicGateways'], 'id', subnetpubgateid)
-            pubgateframe = self.data.getPublicGateway(subnetpubgateid)
-            if len(pubgateframe) > 0:
-               if self.common.isInputRIAS(): 
-                  pubgatefipip = pubgateframe['floating_ip.address']
-               else: # yaml
-                  pubgatefipip = pubgateframe['floatingIP']
-               pubgatename = pubgateframe['name']
-
-         #vpngateip = None
-         #vpngatename = None
-         #vpngateways = self.data.getVPNGateways()
-         #if not vpngateways.empty:
-         #   vpngateframe = self.data.getVPNGateway(subnetid)
-         #   #if self.common.isInputRIAS():
-         #   #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'subnet.id', subnetid)
-         #   #else:
-         #   #   vpngateframe = findrow(user, self.inputdata['vpnGateways'], 'networkId', subnetid)
-         #   if len(vpngateframe) > 0:
-         #      vpngateid = vpngateframe['id']
-         #      # TODO Retrieve VPNGatewayMember[], 
-         #      #      For each memberi get public_ip and private_ip.
-         #      vpngateip = ''
-         #      vpngatename = vpngateframe['name']
-         #      vpnsubnetid = subnetid
-
-         instancenodes, instancelinks, instancevalues, instancesizes = self.buildSubnetIcons(subnetid, subnetname, subnetvpcname, vpcname)
-
-         nodes += instancenodes
-         links += instancelinks
-         values += instancevalues
-
-         bastion = False
-         if subnetname.lower().find("bastion") != -1:
-            bastion = True
-
-         if (len(instancesizes) == 0):
-            width = ShapePos.MIN_GROUP_WIDTH.value
-            height = ShapePos.MIN_GROUP_HEIGHT.value
-         else:
-            width = ShapePos.GROUP_SPACE.value
-            height = 0
-
-         for size in instancesizes:
-            width = width + size[0] + ShapePos.GROUP_SPACE.value
-
-            if size[1] > height:
-               height = size[1]
-
-         # Leave height as groupheight if no instances.
-         if (len(instancesizes) != 0):
-            height = height + ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value  # space at top and bottom of group
-
-         #SAVE x = (iconspace * 2) + iconwidth
-         #SAVE y = topspace + (height * (count - 1)) + (groupspace * (count - 1))
-
-         x = (ShapePos.ICON_SPACE.value * 2) + ShapePos.ICON_WIDTH.value
-         y = ShapePos.TOP_SPACE.value + saveheight + (ShapePos.GROUP_SPACE.value * (count - 1))
-
-         saveheight += height
-
-         subnetnode = self.shapes.buildShape('Subnet', ShapeKind.LOCATION, FillPalette.WHITE, subnetid, regionzonename, subnetname, subnetcidr, '', x, y, width, height, None) 
-         nodes.append(subnetnode)
-         sizes.append([width, height])
-
-         if count == 1:
-            sizes.append([ShapePos.LEFT_SPACE.value - ShapePos.GROUP_SPACE.value, 0])
-
-         internetname = 'Internet'
-
-         if pubgatefipip != None:
-
-            if save_subnetpubgateid == None:
-               save_subnetpubgateid = subnetpubgateid
-
-               publicnode = self.shapes.buildShape('PublicGateway', ShapeKind.NODE, FillPalette.NONE, subnetpubgateid, regionzonename, pubgatename, pubgatefipip, '', ShapePos.FIRST_ICON_X.value, ShapePos.FIRST_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
-               nodes.append(publicnode)
-
-               if self.common.isLinks():
-                  routername = vpcname + '-router'
-                  publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
-                  links.append(publiclink1)
-                  publiclink2 = self.shapes.buildSingleArrow('', subnetpubgateid, routername, None)
-                  links.append(publiclink2)
-
-            elif subnetpubgateid != save_subnetpubgateid:
-               self.common.printInvalidPublicGateway(subnetpubgateid)
-
-            else:
-               if self.common.isLinks():
-                  publiclink1 = self.shapes.buildSingleArrow('', subnetid, subnetpubgateid, None)
-                  links.append(publiclink1)
-
-         #if vpngateip != None:
-         #    # TODO Handle >1 VPN gateways.
-         #   #vpngatenode = self.shapes.buildVPNGateway(vpngatename, regionzonename, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'])
-         #   vpngatenode = self.shapes.buildVPNGateway(vpngatename, subnetvpcid, vpngatename, vpngateip, points['thirdIconX'], points['thirdIconY'], points['iconWidth'], points['iconHeight'], None)
-         #   nodes.append(vpngatenode)
-                
-         #   routername = vpcname + '-router'
-         #   # This link can be assumed since everything inside zone is accesible by the VPN.
-         #   #vpnlink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
-         #   #links.append(vpnlink1)
-         #   vpnlink1 = self.shapes.buildDoubleArrow('', regionzonename, vpngatename, None)
-         #   links.append(vpnlink1)
-         #   vpnlink2 = self.shapes.buildDoubleArrow('', vpngatename, routername, None)
-         #   links.append(vpnlink2)
-
-         #   # label, source, target 
-         #   #vpngatelink1 = gensolidlink_doublearrow(user, '', subnetname, vpngatename)
-         #   #links.append(vpngatelink1)
-
-         #   # label, source, target 
-         #   #vpngatelink2 = gensolidlink_doublearrow(user, '', vpngatename, username)
-         #   #links.append(vpngatelink2)
-
-      return nodes, links, values, sizes
-
-   def buildSubnetIcons(self, subnetid, subnetname, subnetvpcname, vpcname):
-      nodes = []
-      links = []
-      values = []
-      sizes = []
-
-      #nicstable = self.setupdata['nics']
-      icons = self.data.getSubnetIconTable(subnetid)
-
-      count = 0
-
-      #for nicframe in nicstable[subnetid]:
-      for iconframe in icons:
-         count = count + 1
-
-         iconname = iconframe['name']
-         iconid = iconframe['id']
-         icontype = iconframe['type']
-
-         if icontype.lower() == 'instance':
-            instancename = iconname
-            instanceid = iconid
-            instanceframe = iconframe
-
-            if instancename.lower().find("bastion") != -1:
-               icontype += "Bastion"
-
-            nics = self.data.getNICTable(subnetid, instanceid)
-
-            nicips = ''
-            nicid = ''
-            nicfipid = None
-            nicfipip = None
-            nicfipname = None
-            nicfips = ''
-
-            #for nicframe in nics:
-            for nicframe in nics:
-               #if nicframe.empty:
-               #   continue
-
-               nicname = nicframe['name']
-               #nicinstanceid = nicframe['instance.id']
-               nicinstanceid = instanceframe['id'] if self.common.isInputRIAS() else nicframe['instanceId']
-
-               #nicip = nicframe['primary_ip.address']
-               nicip = nicframe['primary_ip']['address'] if self.common.isInputRIAS() else nicframe['ip']
-               if nicips == '':
-                  nicips = nicip
-               else:
-                  nicips = nicips + '<br>' + nicip
-               nicid = nicframe['id']
-
-               #fipframe = findrow(user, self.inputdata['floatingIPs'], 'target.id', nicid)
-               fipframe = self.data.getFloatingIP(nicid)
-               if len(fipframe) > 0:
-                  nicfipid = fipframe['id']
-                  nicfipip = fipframe['address']
-                  nicfipname = fipframe['name']
-                  if nicfips == '':
-                     nicfips = nicfipip
+            # Add cluster to outermost list since no parent. 
+            self.tops.append(clusterid)
+
+      for clusterid, attributes in self.clusters.items():
+         children = attributes["children"] 
+         if len(children) == 0:
+            # Add cluster to innermost list since no children.
+            self.bottoms.append(clusterid)
+
+      return
+
+   def addNodes(self):
+      # Add node list to cluster dictionary.`
+      for nodeid, attributes in self.nodes.items():
+         parentid = attributes["parentid"] 
+         if parentid != None:
+            self.clusters[parentid]["nodes"].append(nodeid)
+      return
+
+   def mergeNodes(self):
+      # Combine node list with children list.
+      for clusterid, attributes in self.clusters.items():
+         nodes = attributes["nodes"] 
+         for nodeid in nodes:
+            self.clusters[clusterid]["children"].insert(0, nodeid)
+
+      # Combine node dictionary with cluster dictionary. 
+      for nodeid, attributes in self.nodes.items():
+         self.clusters[nodeid] = attributes
+
+      # Delete node list from clusters. 
+      for clusterid, attributes in self.clusters.items():
+         del self.clusters[clusterid]["nodes"]
+
+      return
+
+   def calculateNodeGeometry(self):
+      mintopspace = 60
+      minshapespace = 20
+      minnodespace = 60
+      minnodewidth = 48
+      minnodeheight = 48
+      minclusterwidth = 240
+      minclusterheight = 152
+
+      for clusterid, attributes in self.clusters.items():
+         direction = attributes["direction"]
+         childids = attributes["children"]
+         childcount = len(childids)
+         nodeids = attributes["nodes"]
+         nodecount = len(nodeids)
+         if nodecount > 0:
+            # Set node geometry.
+            if direction == "LR":
+               if childcount == 0:
+                  if nodecount == 1:
+                     # Center single node in cluster.
+                     x = (minclusterwidth / 2) - (minnodewidth / 2)
                   else:
-                     nicfips = nicfips + '<br>' + nicfipip
-
-            secondarytext = nicips
-
-            meta = {}
-
-            if 'image.name' in instanceframe:
-               instanceOS = instanceframe['image.name']
-               if instanceOS == None:
-                  instanceOS = 'Unknown OS'
-               meta = meta | {'Operating-System': instanceOS}
-
-            if 'profile.name' in instanceframe:
-               instanceprofile = instanceframe['profile.name'] 
-               meta = meta | {'Profile': instanceprofile}
-
-            if 'memory' in instanceframe:
-               instancememory = instanceframe['memory']
-               meta = meta | {'Memory': str(instancememory)}
-
-            if 'bandwidth' in instanceframe:
-               bandwidth = instanceframe['bandwidth']
-               if bandwidth == '' or (isinstance(bandwidth, float) and isnan(bandwidth)):
-                  instancecpuspeed = 0
+                     # Left justify first of multiple nodes in cluster.
+                     x = minnodespace
                else:
-                  instancecpuspeed = int(instanceframe['bandwidth'] / 1000)
-               meta = meta | {'CPU-Speed': str(instancecpuspeed)}
+                  # Left justify first of multiple nodes and clusters.
+                  x = minnodespace
+            elif direction == "TB":
+               # Center nodes in cluster.
+               x = (minclusterwidth / 2) - (minnodewidth / 2)
+            y = mintopspace
+            width = minnodewidth
+            height = minnodeheight
 
-            if 'vcpu.count' in instanceframe:
-               instancecpucount = instanceframe['vcpu.count']
-               meta = meta | {'CPU-Count': str(instancecpucount)}
+            for nodeid in nodeids:
+               self.nodes[nodeid]["geometry"] = [x, y, width, height]
+               # Future: Put long list of nodes on multiple rows.
+               if direction == "LR":
+                  x += width + minnodespace
+               elif direction == "TB":
+                  y += height + minnodespace + minshapespace
 
-            if meta:
-               meta = meta | {'Boot-Volume': '100GB/3000IOPS'}
-            else:
-               meta = None
+            # Set cluster geometry of node's parent.
+            geometry = attributes["geometry"]
+            x = minshapespace
+            y = mintopspace
+            if direction == "LR":
+               width = (nodecount * minnodewidth) + (nodecount * minnodespace) + minnodespace
+               height = minclusterheight 
+            elif direction == "TB":
+               width = minclusterwidth  
+               height = (nodecount * minnodeheight) + (nodecount * (minnodespace + minshapespace)) + minnodespace
 
-            if nicfipip != None:
-               # Save for option to show FIP icon.
-               #SAVE fipnode = genfloatingip(user, nicfipname, nicfipip)
-               #SAVE nodes.append(fipnode)
-               #SAVE fiplink1 = gensolidlink_doublearrow(user, '', instancename, nicfipname)
-               #SAVE links.append(fiplink1)
-               #SAVE internetname = 'Internet'
-               #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
-               #SAVE links.append(fiplink2)
-
-               if self.common.isLinks():
-                  routername = vpcname + '-router'
-                  iplabel =  "fip:" + nicfipip
-                  fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername, None)
-                  #fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
-                  links.append(fiplink)
+            width = max(width, minclusterwidth)
+            height = max(height, minclusterheight)
+            self.clusters[clusterid]["geometry"] = [x, y, width, height]
          else:
-            secondarytext = ''
-            meta = None
+            # Set empty cluster geometry. 
+            x = minshapespace
+            y = mintopspace
+            width = minclusterwidth
+            height = minclusterheight
+            self.clusters[clusterid]["geometry"] = [x, y, width, height]
+      return
 
-         #if self.common.isLowDetail(): 
-         width = ShapePos.ICON_WIDTH.value
-         height = ShapePos.ICON_HEIGHT.value
-         extrawidth = width * 3
-         extraheight = height * 2
-         x = width + (extrawidth * (count - 1)) + (ShapePos.GROUP_SPACE.value * count)
-         y = ShapePos.TOP_SPACE.value
-         #else:
-         #   width = 240
-         #   height = 152
-         #   x = (width * (count - 1)) + (ShapePos.GROUP_SPACE.value * count) 
-         #   y = ShapePos.TOP_SPACE.value
+   def calculateClusterGeometry(self):
+      mintopspace = 60
+      minshapespace = 20
+      #minnodespace = 30
+      minnodespace = 60
+      minnodewidth = 48
+      minnodeheight = 48
+      minclusterwidth = 240
+      minclusterheight = 152
 
-         #SAVE x = (width * (count - 1)) + (groupspace * count) 
-         #SAVE y = topspace
+      for clusterid in self.bottoms:
+         while True:
+            # Get current cluster details.
+            cluster = self.clusters[clusterid]
 
-         #SAVE instancenode = geninstance(user, instancename, subnetname, nicip, instancedetails, width, height, x, y)
+            parentid = cluster["parentid"]
+            direction = cluster["direction"]
 
-         #SAVE osnode = geninstanceexpandedstack(user, instancename, subnetname, nicip, width, height, x, y)
+            nodeids = cluster["nodes"]
+            nodecount = len(nodeids)
+            nodewidth = 0
 
-         #bastion = False
+            if direction == "LR":
+               saveheight = 0
+               totalwidth = 0
+               if nodecount > 0:
+                  nodewidth = (nodecount * minnodewidth) + (nodecount * minnodespace) + minnodespace
 
-         #if self.common.isLowDetail(): 
-         #   iconnode = self.shapes.buildIcon(nicid, subnetid, instancename, nicips, icontype, x, y, width, height, meta)
-         #   sizes.append([extrawidth, extraheight])
-         #else:
-         #   iconnode = self.shapes.buildIconExpandedStack(nicid, subnetid, instancename, nicips, icontype, x, y, width, height, meta)
-         #   sizes.append([width, height])
+            elif direction == "TB":
+               savewidth = 0
+               totalheight = 0
+               if nodecount > 0:
+                  nodeheight = (nodecount * minnodeheight) + (nodecount * minnodespace) + minnodespace
+            
+            childids = cluster["children"]
+            childcount = len(childids)
 
-         iconnode = self.shapes.buildShape(icontype, ShapeKind.NODE, FillPalette.NONE, iconid, subnetid, iconname, secondarytext, '', x, y, width, height, meta)
-         sizes.append([extrawidth, extraheight])
+            count = 0
 
-         nodes.append(iconnode)
+            # Reset starting position of cluster's children.
+            for childid in childids:
+               count += 1
 
-         #if not self.common.isLowDetail(): 
-         #   textwidth = width - (points['textGroupSpace'] * 2)
-         #   textheight = height - (points['textTopSpace'] + points['textGroupSpace'])
+               child = self.clusters[childid] 
+               label = child["label"]
+               geometry = child["geometry"]
+               x = geometry[0]
+               y = geometry[1]
+               width = geometry[2]
+               height = geometry[3]
 
-         #   textx = points['textGroupSpace']
-         #   texty = points['textTopSpace']
-
-         #   #textid = nicid + ':details'
-         #   textid = instanceid + ':details'
-         #   textname = instancename + ':details'
-
-         #   stackwidth = 252
-         #   stackheight = 16
-         #   stackx = 16
-         #   stacky = 64
-         #   osnode = self.shapes.buildItemOS(nicid + ':' + osdetails, nicid, osdetails, '', stackx, stacky, stackwidth, stackheight, None)
-         #   profilenode = ''
-         #   if profiledetails[0] == 'b':
-         #      profilenode = self.shapes.buildItemProfileBalanced(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
-         #   elif profiledetails[0] == 'c' or profiledetails[0] == 'g':
-         #      profilenode = self.shapes.buildItemProfileCompute(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
-         #   elif profiledetails[0] == 'm' or profiledetails[0] == 'u' or profiledetails[1] == 'v':
-         #      profilenode = self.shapes.buildItemProfileMemory(nicid + ':' + profiledetails, nicid, profiledetails, '', stackx, stacky + 24, stackwidth, stackheight, None)
-         #   storagenode = self.shapes.buildItemBlockStorage(nicid + ':' + storagedetails, nicid, storagedetails, '', stackx, stacky + 48, stackwidth, stackheight, None)
-
-         #   nodes.append(osnode)
-         #   nodes.append(profilenode)
-         #   nodes.append(storagenode)
-
-         #if nicfipip != None:
-         #   # Save for option to show FIP icon.
-         #   #SAVE fipnode = genfloatingip(user, nicfipname, nicfipip)
-         #   #SAVE nodes.append(fipnode)
-         #   #SAVE fiplink1 = gensolidlink_doublearrow(user, '', instancename, nicfipname)
-         #   #SAVE links.append(fiplink1)
-         #   #SAVE internetname = 'Internet'
-         #   #SAVE fiplink2 = gensolidlink_doublearrow(user, '', nicfipname, internetname)
-         #   #SAVE links.append(fiplink2)
-
-         #   routername = vpcname + '-router'
-         #   iplabel =  "fip:" + nicfipip
-         #   #fiplink = self.shapes.buildDoubleArrow(iplabel, instanceid, routername)
-         #   fiplink = self.shapes.buildDoubleArrow(iplabel, nicid, routername, None)
-         #   links.append(fiplink)
-
-      return nodes, links, values, sizes
-
-   def buildServices(self, regionname): 
-      nodes = []
-      links = []
-      values = []
-      sizes = []
-
-      saveheight = 0
-
-      serviceTable = self.data.getServiceTable()
-      count = 0
-
-      for serviceid in zoneTable[zonename]:
-         count = count + 1
-         pubgateid = None
-
-         width = 0
-         height = 0
-
-         #subnetframe = findrow(user, self.inputdata['subnets'], 'id', subnetid)
-         subnetframe = self.data.getSubnet(subnetid)
-         subnetname = subnetframe['name']
-         subnetid = subnetframe['id']
-
-         subnetzonename = subnetframe['zone.name']
-         subnetregion = 'us-south-1'
-         subnetvpcid = subnetframe['vpc.id']
-         subnetvpcname = subnetframe['vpc.name']
-         subnetcidr = subnetframe['ipv4_cidr_block']
-
-         #vpcframe = findrow(user, self.inputdata['vpcs'], 'id', subnetvpcid)
-         vpcframe = self.data.getVPC(subnetvpcid)
-         subnetvpcname = subnetframe['name']
-
-         regionname = zonename.split(':')[0]
-         regionzonename = regionname + ':' + subnetzonename;
-
-         if self.common.isLinks():
-            zonelink = self.shapes.buildLink(regionzonename + ':' + subnetname, regionzonename, subnetname, None)
-            #SAVE links.append(zonelink)
-
-         if 'public_gateway.id' in subnetframe:
-            subnetpubgateid = subnetframe['public_gateway.id']
-         else:
-            subnetpubgateid = None
-
-         pubgatefipip = None
-         pubgatename = None
-         if subnetpubgateid != None:
-            #pubgateframe = findrow(user, self.inputdata['publicGateways'], 'id', subnetpubgateid)
-            pubgateframe = self.data.getPublicGateway(subnetpubgateid)
-            if len(pubgateframe) > 0:
-               if self.common.isInputRIAS(): 
-                  pubgatefipip = pubgateframe['floating_ip.address']
-               else: # yaml
-                  pubgatefipip = pubgateframe['floatingIP']
-               pubgatename = pubgateframe['name']
-
-         instancenodes, instancelinks, instancevalues, instancesizes = self.buildSubnetIcons(subnetid, subnetname, subnetvpcname, vpcname)
-
-         nodes += instancenodes
-         links += instancelinks
-         values += instancevalues
-         #nodes.append(instancenodes)
-         #links.append(instancelinks)
-         #values.append(instancevalues)
-
-         bastion = False
-         if subnetname.lower().find("bastion") != -1:
-            bastion = True
-
-         if (len(instancesizes) == 0):
-            width = MIN_GROUP_WIDTH
-            height = MIN_GROUP_HEIGHT
-         else:
-            width = ShapePos.GROUP_SPACE.value
-            height = 0
-
-         for size in instancesizes:
-            width = width + size[0] + ShapePos.GROUP_SPACE.value
-
-            if size[1] > height:
-               height = size[1]
-
-         # Leave height as groupheight if no instances.
-         if (len(instancesizes) != 0):
-            height = height + ShapePos.TOP_SPACE.value + ShapePos.GROUP_SPACE.value  # space at top and bottom of group
-
-         x = (ShapePos.ICON_SPACE.value * 2) + ShapePos.ICON_WIDTH.value
-         y = ShapePos.TOP_SPACE.value + saveheight + (ShapePos.GROUP_SPACE.value * (count - 1))
-
-         saveheight += height
-
-         subnetnode = self.shapes.buildShape('Subnet', ShapeKind.LOCATION, FillPalette.WHITE, subnetid, regionzonename, subnetname, subnetcidr, '', x, y, width, height, None) 
-         nodes.append(subnetnode)
-         sizes.append([width, height])
-
-         if count == 1:
-            sizes.append([LEFT_SPACE - ShapePos.GROUP_SPACE.value, 0])
-
-      return nodes, links, values, sizes
-
-   def buildLoadBalancers(self, vpcname, vpcid, nodes, links, values):
-      lbs = self.data.getLoadBalancers(vpcid)
-      if lbs != None:
-         for lbpool in lbs:
-            #for lbmembers in lbs:
-            for lbkey in lbpool:
-               #for lbid, members in lbmembers.items():
-               for lbid, members in lbpool[lbkey].items():
-                  lb = self.data.getLoadBalancer(lbid)
-                  lbid = lb['id']
-                  lbname = lb['name']
-
-                  if lbname[0:4] == 'kube':
-                     # Kube LB not implemented for now.
-                     # self.common.printInvalidLoadBalancer(lbname)
-                     continue
-
-                  if self.common.isInputRIAS():
-                     lbispublic = lb['is_public']
-                     lbprivateips = lb['private_ips']
-                     lbpublicips = lb['public_ips']
-                  else:  # yaml
-                     lbispublic = lb['isPublic']
-                     lbprivateips = lb['privateIPs']
-                     lbpublicips = lb['publicIPs']
- 
-                  lbiplist = ""
-                  if lbispublic == False:
-                     for lbprivateip in lbprivateips:
-                        if self.common.isInputRIAS():
-                           ip = lbprivateip['address']
-                        else:
-                           ip = lbprivateip
-                        if lbiplist == "":
-                           lbiplist = ip
-                        else:
-                           lbiplist = lbiplist + "<br>" + ip
-                  else:
-                     for lbpublicip in lbpublicips:
-                        if self.common.isInputRIAS():
-                           ip = lbpublicip['address']
-                        else:
-                           ip = lbpublicip
-                        if lbiplist == "":
-                           lbiplist = ip
-                        else:
-                           lbiplist = lbiplist + "<br>" + ip
-
-                  lbgenerated = False
-               
-                  for member in members:
-                     if self.common.isInputRIAS():
-                        # TODO Get instance id.
-                        target = member['target']
-                        address = target['address']
+               if direction == "LR":
+                  if count == 1:
+                     if nodecount > 0:
+                        # Reset start position of clusters accounting for nodes.
+                        x = nodewidth
+                        totalwidth += nodewidth + width
+                        self.clusters[childid]["geometry"] = [x, y, width, height]
                      else:
-                        instanceid = member['instanceId']
-                        instance = self.data.getInstance(instanceid)
-                        if len(instance) > 0:
-                           nics = instance['networkInterfaces']
-                           if nics:
-                              for nic in nics:
-                                 address = nic['ip']
-                                 break
-                           else:
-                              return nodes, links, values
-                        else:
-                           return nodes, links, values
+                        totalwidth += width + minshapespace
+                  else:
+                     # Reset start position of clusters after first cluster.
+                     x = totalwidth + minshapespace
+                     totalwidth += width + minshapespace
+                     self.clusters[childid]["geometry"] = [x, y, width, height]
+                  saveheight = max(height, saveheight)
+               elif direction == "TB":
+                  if count == 1:
+                     if nodecount > 0:
+                        # Reset start position of clusters accounting for nodes.
+                        #y = nodeheight
+                        y = nodeheight + (2 * minshapespace) 
+                        #totalheight += nodeheight + height
+                        totalheight += nodeheight + height + (2 * minshapespace)
+                        self.clusters[childid]["geometry"] = [x, y, width, height]
+                     else:
+                        totalheight += height + minshapespace
+                  else:
+                     # Reset start position of clusters after first cluster.
+                     if nodecount > 0:
+                        y = totalheight + minshapespace
+                     else:
+                        y = totalheight + (3 * minshapespace)
+                     totalheight += height + minshapespace
+                     self.clusters[childid]["geometry"] = [x, y, width, height]
+                  savewidth = max(width, savewidth)
 
-                     nicdata = self.data.getNetworkInterface(address, instanceid)
-                     if len(nicdata) != 0:
-                        nicid = nicdata['id']
-                        nicinstanceid = nicdata['instance.id']
-                        instanceframe = self.data.getInstance(nicinstanceid)
-                        instancename = instanceframe['name']
-                        instancevpcid = instanceframe['vpc.id']
+            if childcount > 0:
+               geometry = self.clusters[clusterid]["geometry"]
+               x = minshapespace
+               y = mintopspace
+               if direction == "LR":
+                  width = totalwidth + minshapespace 
+                  height = saveheight + mintopspace + minshapespace
+               elif direction =="TB":
+                  width = savewidth + (2 * minshapespace)
+                  #height = totalheight + mintopspace
+                  if nodecount > 0:
+                     height = totalheight + mintopspace - (2 * minshapespace)
+                  else:
+                     height = totalheight + mintopspace
+               width = max(width, minclusterwidth)
+               height = max(height, minclusterheight)
+               self.clusters[clusterid]["geometry"] = [x, y, width, height]
 
-                        if instancevpcid == vpcid: 
-                           if not lbgenerated:
-                              lbgenerated = True
-                              # TODO Handle spacing for > 1 LBs.
-                              lbnode = self.shapes.buildShape('LoadBalancer', ShapeKind.NODE, FillPalette.NONE, lbid, vpcid, lbname, lbiplist, '', ShapePos.SECOND_ICON_X.value, ShapePos.SECOND_ICON_Y.value, ShapePos.ICON_WIDTH.value, ShapePos.ICON_HEIGHT.value, None)
-                              nodes.append(lbnode)
+            if parentid == None:
+               break
+            else:
+               # Add current cluster geometry to parent cluster.
+               clusterid = parentid
+               x = minshapespace
+               y = mintopspace
+               if direction == "LR":
+                  width = totalwidth 
+                  height = saveheight + mintopspace + minshapespace
+               elif direction =="TB":
+                  width = savewidth + minshapespace + minshapespace 
+                  height = totalheight + mintopspace + minshapespace
+               width = max(width, minclusterwidth)
+               height = max(height, minclusterheight)
+               self.clusters[clusterid]["geometry"] = [x, y, width, height]
 
-                              if self.common.isLinks():
-                                 routername = vpcname + '-router'
-                                 lblink = self.shapes.buildDoubleArrow('', lbid, routername, None)
-                                 links.append(lblink)
-                 
-                           if self.common.isLinks():
-                              # label, source, target
-                              #instancelink = self.shapes.buildDoubleArrow('', nicid, lbid, None)
-                              instancelink = self.shapes.buildDoubleArrow('', instanceid, lbid, None)
-                              links.append(instancelink)
+               if direction =="TB":
+                  # Recenter nodes.
+                  clusterwidth = width
+                  for nodeid in nodeids:
+                     geometry = self.nodes[nodeid]["geometry"]
+                     x = (clusterwidth / 2) - (minnodewidth / 2)
+                     y = geometry[1]
+                     width = geometry[2]
+                     height = geometry[3]
+                     self.nodes[nodeid]["geometry"] = [x, y, width, height]
 
-      return nodes, links, values
+      return
+
+   def alternateChild(self, clusterid, lastColor):
+      attributes = self.clusters[clusterid]
+      if attributes["shape"].upper() == "ZONE" or  self.common.isAlternateNone():
+         attributes["bgcolor"] = "none"
+      elif lastColor == "WHITE":
+         pencolor = attributes["pencolor"]
+         hexvalue = Colors.lines[pencolor]
+         fillname = "light" + Colors.names[hexvalue]
+         hexvalue = Colors.names[fillname]
+         self.clusters[clusterid]["bgcolor"] = hexvalue
+         lastColor = "LIGHT"
+      elif lastColor == "LIGHT":
+         self.clusters[clusterid]["bgcolor"] = "#ffffff"
+         lastColor = "WHITE"
+
+      children = attributes["children"]
+      for childid in children:
+         attributes = self.clusters[childid]
+         self.alternateChild(childid, lastColor)
+
+      return
+
+   def alternateFills(self):
+      for topid in self.tops:
+         attributes = self.clusters[topid]
+         # Handle top-level zone.
+         if attributes["shape"].upper() == "ZONE" or  self.common.isAlternateNone():
+            self.clusters[topid]["bgcolor"] = "none"
+         elif self.common.isAlternateLight():
+            pencolor = attributes["pencolor"]
+            hexvalue = Colors.lines[pencolor]
+            fillname = "light" + Colors.names[hexvalue]
+            hexvalue = Colors.names[fillname]
+            attributes["bgcolor"] = hexvalue
+            self.clusters[topid]["bgcolor"] = hexvalue
+            lastColor = "LIGHT"
+         elif self.common.isAlternateWhite():
+            self.clusters[topid]["bgcolor"] = "#ffffff"
+            lastColor = "WHITE"
+
+         children = attributes["children"]
+         for childid in children:
+            attributes = self.clusters[childid]
+            self.alternateChild(childid, lastColor)
+      return
+
+   # For containers nested inside zones:
+   #   Set nested container parent to first container outside of zone.
+   #   Set nested container x, y to be relative to first container outside of zone.
+   def eliminateZoneParents(self):
+      for bottomid in self.bottoms:
+         childid = bottomid
+         childattributes = self.clusters[childid]
+         if childattributes["shape"].upper() == "ZONE":
+            continue
+        
+         parentid = childattributes["parentid"] 
+         while parentid != None:
+            parentattributes = self.clusters[parentid]
+
+            savex = 0
+            savey = 0
+            zonesFound = False
+
+            while parentattributes["shape"].upper() == "ZONE":
+               zoneid = parentid
+               zoneattributes = parentattributes
+               zonegeometry = zoneattributes["geometry"]
+               savex += zonegeometry[0]
+               savey += zonegeometry[1]
+               parentid = zoneattributes["parentid"] 
+               parentattributes = self.clusters[parentid]
+               self.clusters[zoneid]["parentid"] = parentid
+               zonesFound = True
+               
+            if zonesFound == True:
+               zonegeometry = zoneattributes["geometry"]
+               childgeometry = childattributes["geometry"]
+               direction = childattributes["direction"]
+               childx = savex + childgeometry[0]
+               childy = savey + childgeometry[1]
+               childwidth = childgeometry[2]
+               childheight = childgeometry[3]
+               self.clusters[childid]["geometry"] = [childx, childy, childwidth, childheight]
+               self.clusters[childid]["parentid"] = parentid
+               savex = 0
+               savey = 0
+
+            childid = parentid
+            childattributes = self.clusters[childid]
+            parentid = childattributes["parentid"] 
+
+      return
+
+   def printClusters(self):
+      print("")
+      print("Clusters:")
+      for key, value in self.clusters.items():
+         print("")
+         print(f'"{key}": {value}')
+      return
+
+   def printNodes(self):
+      print("")
+      print("Nodes:")
+      for key, value in self.nodes.items():
+         print("")
+         print(f'"{key}": {value}')
+      return
+
+   def printBottoms(self):
+      print("")
+      print("Bottoms:")
+      for clusterid in self.bottoms:
+         print("")
+         print(f'"{clusterid}"')
+      return
+
+   def printTops(self):
+      print("")
+      print("Tops:")
+      for clusterid in self.tops:
+         print("")
+         print(f'"{clusterid}"')
+      return
 
    # Get zone CIDR.
    def getZoneCIDR(self, zone):

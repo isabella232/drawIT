@@ -22,6 +22,12 @@ class Attributes:
       self.nodes = {}
       self.edges = {}
 
+   def reset(self):
+      self.diagrams = {}
+      self.clusters = {}
+      self.nodes = {}
+      self.edges = {}
+
    def getDiagrams(self):
       return self.diagrams
 
@@ -33,6 +39,20 @@ class Attributes:
 
    def getEdges(self):
       return self.edges
+
+   def setDiagrams(self, diagrams):
+      self.diagrams = diagrams
+
+   def setClusters(self, clusters):
+      self.clusters = clusters
+      #print("")
+      #print(self.clusters)
+
+   def setNodes(self, nodes):
+      self.nodes = nodes
+
+   def setEdges(self, edges):
+      self.edges = edges
 
    def addDiagram(self, diagramid, attributes):
       self.diagrams[diagramid] = attributes
@@ -76,6 +96,7 @@ class Providers(Enum):
    IBM = 'IBM'   # prescribed-ibm
 
 class NodeShapes(Enum):
+   ACTOR = 'ACTOR'
    COMPONENT = 'COMPONENT'
    NODE = 'NODE'
 

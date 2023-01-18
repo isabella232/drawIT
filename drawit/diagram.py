@@ -1,4 +1,4 @@
-# @file diagram.py
+# @file iagram.py
 #
 # Copyright contributors to the drawIT project
 #
@@ -20,7 +20,7 @@ from uuid import uuid4
 
 from .common import Common
 from .attributes import Attributes
-from .builddac import BuildDAC
+from .build import Build
 
 _diagram = ContextVar("diagram")
 _cluster = ContextVar("cluster")
@@ -62,7 +62,6 @@ class Diagram:
    common = None
    attributes = {}
    diagramid = None
-   diagram = None
 
    def __init__(self, 
                 name = "",
@@ -86,8 +85,11 @@ class Diagram:
       return self
 
    def __exit__(self, exception_type, exception_value, traceback):
-      self.diagram  = BuildDAC(self.common, _data)
-      self.diagram.buildDiagrams()
+      build = Build(self.common, _data)
+      xmldata = build.buildDiagrams()
+      if xmldata == None:
+         self.common.printExit()
+      del build
       setDiagram(None)
       setCluster(None)
       return
@@ -132,6 +134,10 @@ class Cluster:
       if self.parent:
          self.parentid = self.parent.shapeid
       else:
+         #self.diagram = getDiagram()
+         #if self.diagram:
+         #   self.parentid = self.diagram.shapeid
+         #else:
          self.parent = None
 
       self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "alternate": alternate, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}

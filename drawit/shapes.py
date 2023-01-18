@@ -23,18 +23,21 @@ class Shapes:
       self.common = common
       self.types = Types(common)
 
-   def buildShape(self, shapetype, shapekind, shapefill, id, parentid, name, subname, badgetext, x, y, width, height, meta):
-      node = self.types.buildNode(shapetype, shapekind, shapefill, self.common.compress(id), ('1' if parentid == '1' else self.common.compress(parentid)), name, subname, badgetext, x, y, width, height, meta)
+   def buildShape(self, id, attributes, x, y, width, height, meta):
+      node = self.types.buildNode(id, attributes, x, y, width, height, meta)
       return node
 
-   def buildLink(self, label, source, target, meta):
-       return self.types.buildLink(label, source, target, meta)
+   def buildLink(self, id, label, source, target, meta):
+       return self.types.buildLink(id, label, source, target, meta)
 
-   def buildDoubleArrow(self, label, source, target, meta):
-       return self.types.buildSolidLinkDoubleArrow(label, source, target, meta)
+   def buildSolidLink(self, id, label, source, target, meta):
+       return self.types.buildSolidLink(id, label, source, target, meta)
 
-   def buildSingleArrow(self, label, source, target, meta):
-       return self.types.buildSolidLinkSingleArrow(label, source, target, meta)
+   def buildDoubleArrow(self, id, label, source, target, meta):
+       return self.types.buildSolidLinkDoubleArrow(id, label, source, target, meta)
+
+   def buildSingleArrow(self, id, label, source, target, meta):
+       return self.types.buildSolidLinkSingleArrow(id, label, source, target, meta)
 
    def buildXML(self, vpcdata, pagename):
       self.types.buildXML(vpcdata, self.types.buildPage(pagename))

@@ -17,11 +17,10 @@ from hashlib import md5
 
 from .options import Options
 from .messages import Messages
-from .iconsdac import Icons
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.9.0'
+   toolVersion = '0.9.2'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -33,61 +32,6 @@ class Common:
       return
 
    # Utilities
-
-   def getIcon(self, shapetype):
-      if self.isProviderAny():
-         if shapetype in Icons.iconDictionary:
-            icon = Icons.iconDictionary[shapetype]
-            iconname = icon['icon']
-            iconcolor = icon['color']
-            iconshape = icon['shape'] if 'shape' in icon else ""
-         elif shapetype + '-any' in Icons.iconDictionary:
-            icon = Icons.iconDictionary[shapetype + '-any']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-            iconshape = icon['shape'] if 'shape' in icon else ""
-         elif shapetype + '-ibm' in Icons.iconDictionary:
-            icon = Icons.iconDictionary[shapetype + '-ibm']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-            iconshape = icon['shape'] if 'shape' in icon else ""
-         else:
-            icon = Icons.iconDictionary['undefined']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-            iconshape = icon['shape'] if 'shape' in icon else ""
-      else: # check prescribed
-         if shapetype in Icons.iconDictionary:
-            icon = Icons.iconDictionary[shapetype]
-            iconname = icon['icon']
-            iconcolor = icon['color']
-            iconshape = icon['shape'] if 'shape' in icon else ""
-         elif shapetype + '-ibm' in Icons.iconDictionary:
-            icon = Icons.iconDictionary[shapetype + '-ibm']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-            iconshape = icon['shape'] if 'shape' in icon else ""
-         elif shapetype + '-any' in Icons.iconDictionary:
-            icon = Icons.iconDictionary[shapetype + '-any']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-            iconshape = icon['shape'] if 'shape' in icon else ""
-         else:
-            icon = Icons.iconDictionary['undefined']
-            iconname = icon['icon']
-            iconcolor = icon['color']
-            iconshape = icon['shape'] if 'shape' in icon else ""
-
-      return iconname, iconcolor, iconshape
-
-   def validIcon(self, iconname):
-      if iconname in Icons.iconDictionary:
-         return True
-      if iconname + '-any' in Icons.iconDictionary:
-         return True
-      if iconname + '-ibm' in Icons.iconDictionary:
-         return True
-      return False
 
    def compress(self, string):
       hash = md5(string.encode())
@@ -356,6 +300,9 @@ class Common:
    def isAlternateUser(self):
       return self.options.isAlternateUser()
 
+   def getProvider(self):
+      return self.options.getProvider()
+
    def setProviderAny(self):
       self.options.setProviderAny()
 
@@ -411,6 +358,9 @@ class Common:
       self.options.setOutputLinks(value)
 
    # Messages
+
+   def printStartDiagram(self, diagramname, cloud):
+      self.messages.printStartDiagram(diagramname, cloud)
 
    def printStartFile(self, filename, cloud):
       self.messages.printStartFile(filename, cloud)

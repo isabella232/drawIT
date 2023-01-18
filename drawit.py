@@ -19,7 +19,7 @@ from os import path
 from platform import system as platform_system
 from sys import exit as sys_exit
 
-from drawit import Build, Common, Load
+from drawit import Compose, Common, Load
 
 class Config:
     def __init__(self, appName):
@@ -182,7 +182,7 @@ class drawit:
    top = None
    statusText = None
    data = None
-   diagram = None 
+   compose = None 
    common = None
    generate = None
    inputFile = ''
@@ -379,8 +379,8 @@ class drawit:
 
                 self.data = Load(self.common)
                 if self.data.loadData():
-                    self.diagram = Build(self.common, self.data)
-                    self.diagram.buildDiagrams()
+                    self.compose = Compose(self.common, self.data)
+                    self.compose.composeDiagrams()
                     self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().upper())
                 else:
                     self.common.printExit()
@@ -691,8 +691,8 @@ class drawit:
 
                     self.data = Load(self.common)
                     if self.data.loadData():
-                        self.diagram = Build(self.common, self.data)
-                        self.diagram.buildDiagrams()
+                        self.compose = Compose(self.common, self.data)
+                        self.compose.composeDiagrams()
                         self.common.printDone(path.join(outputfolder, outputfile), self.common.getCloudType().upper())
                     else:
                         self.common.printExit()
@@ -735,8 +735,8 @@ class drawit:
 
             self.data = Load(self.common)
             if self.data.loadData():
-                self.diagram = Build(self.common, self.data)
-                self.diagram.buildDiagrams()
+                self.compose = Compose(self.common, self.data)
+                self.compose.composeDiagrams()
 
         #elif self.common.isTerraformMode(args.runmode):
         #    from terraform.common.common import Common
