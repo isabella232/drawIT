@@ -7,24 +7,24 @@ Automate creation of diagrams that can be viewed in IBM2 on diagrams.net desktop
 
 The [IBM2 Beta](https://github.com/IBM/it-architecture-diagrams/releases) is currently available for Mac only.
 
-Note:  Both Mac and Windows versions for diagrams.net desktop will be available when IBM2 is published.
+Note:  Both Mac and Windows versions of the diagrams.net desktop will be available when IBM2 is published.
 
 --- 
 
 ## Use Cases
 
 1. Code-to-Diagram (subject to change): 
-  - Refer to Code-to-Diagram Guide below.
   - Input is python code.
   - Output is diagrams.net xml file.
+  - Refer to Code-to-Diagram Guide below.
 2. JSON-to-Diagram:
-  - Refer to JSON-to-Diagram Guide below.
   - Input is from JSON/YAML for existing infrastructure.
   - Output is diagrams.net xml file.
+  - Refer to JSON-to-Diagram Guide below.
 3. RIAS-to-Diagram:
-  - Refer to RIAS-to-Diagram Guide below.
   - Input is from RIAS APIs for existing infrastructure.
   - Output is diagrams.net xml file.
+  - Refer to RIAS-to-Diagram Guide below.
 
 --- 
 
