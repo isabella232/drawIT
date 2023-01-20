@@ -24,12 +24,12 @@ class RunMode(Enum):
    BATCH = 'batch'
    GUI = 'gui'
    WEB = 'web'
-   #TERRAFORM = 'terraform'
 
 class InputType(Enum):
    RIAS = 'rias'
    JSON = 'json'
    YAML = 'yaml'
+   Terraform = 'terraform'
 
 class Directions(Enum):
    LR = 'LR'
@@ -143,9 +143,6 @@ class Options:
    def isWebMode(self):
       return self.runMode == RunMode.WEB
 
-   #def isTerraformMode(self):
-   #   return self.runMode == RunMode.TERRAFORM
-
    def isBatchMode(self, value):
       return value == RunMode.BATCH.value
 
@@ -154,9 +151,6 @@ class Options:
 
    def isWebMode(self, value):
       return value == RunMode.WEB.value
-
-   #def isTerraformMode(self, value):
-   #   return value == RunMode.TERRAFORM.value
 
    def getRunMode(self):
       return self.runMode
@@ -173,6 +167,9 @@ class Options:
    def isInputYAML(self):
       return self.inputType == InputType.YAML
 
+   def isInputTerraform(self):
+      return self.inputType == InputType.Terraform
+
    def setInputRIAS(self):
       self.inputType = InputType.RIAS
 
@@ -181,6 +178,9 @@ class Options:
 
    def setInputYAML(self):
       self.inputType = InputType.YAML
+
+   def setInputTerraform(self):
+      self.inputType = InputType.Terraform
 
    #def getInputType(self):
    #   return self.inputType

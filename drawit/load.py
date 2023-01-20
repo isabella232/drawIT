@@ -18,6 +18,7 @@ from math import isnan
 from .common import Common
 from .file import File
 from .rias import RIAS
+from .terraform import Terraform
 
 class Load:
    #instanceTable = {}   # Table of instances ordered by subnet that shows instances within each subnet.
@@ -36,8 +37,12 @@ class Load:
       self.common = common
       if common.isInputRIAS():
          self.data = RIAS(common)
-      else:
+      elif common.isInputJSON():
          self.data = File(common)
+      elif common.isInputYAML():
+         self.data = File(common)
+      elif common.isInputTerraform():
+         self.data = Terraform(common)
       return
 
    def loadData(self):
@@ -46,8 +51,10 @@ class Load:
          self.data.loadRIAS()
       elif self.common.isInputJSON():
          self.data.loadJSON()
-      else:
+      elif self.common.isInputYAML():
          self.data.loadYAML()
+      elif self.common.isInputTerraform():
+         self.data.loadTerraform()
 
       if self.analyzeData():
          self.analyzeContainers()

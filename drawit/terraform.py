@@ -1,4 +1,4 @@
-# @file file.py
+# @file terraform.py
 #
 # Copyright contributors to the drawIT project
 #
@@ -16,14 +16,12 @@
 from sys import exit
 
 from json import loads as json_load
-from yaml import load as yaml_load
-from yaml import FullLoader as yaml_FullLoader
 from pandas import concat, DataFrame, json_normalize
 
 from .common import Common
 from .icons import Icons
 
-class File:
+class Terraform:
    floatingIPs = {}
    instances = {}
    clusters = {}
@@ -54,9 +52,15 @@ class File:
       self.icons = Icons(common)
       return
 
-   def loadJSON(self):
+   def loadTerraform(self):
       stream = open(self.common.getInputFile(), 'r', encoding='utf-8-sig')
       self.data = json_load(stream.read())
+      resources = self.data['resources']
+      for resource in resources:
+         print(" ")
+         print(resource["name"])
+         print(resource["type"])
+      '''
       if not 'vpcs' in self.data:
          #self.common.printMissingVPCs(self.common.getInputFile())
          self.common.printMissingVPCs()
@@ -68,23 +72,7 @@ class File:
 
       if self.data != None:
          self.normalizeData()
-
-      return
-
-   def loadYAML(self):
-      stream = open(self.common.getInputFile(), 'r')
-      self.data = yaml_load(stream, Loader=yaml_FullLoader)
-      if not 'vpcs' in self.data:
-         #self.common.printMissingVPCs(self.common.getInputFile())
-         self.common.printMissingVPCs()
-         exit()
-      elif not 'subnets' in self.data:
-         #self.common.printMissingSubnets(self.common.getInputFile())
-         self.common.printMissingSubnets()
-         exit()
-
-      if self.data != None:
-         self.normalizeData()
+      '''
 
       return
 

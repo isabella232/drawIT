@@ -184,7 +184,7 @@ class drawit:
 
         parser.add_argument('-key', dest='apikey', default=self.common.getAPIKey(), help='API Key')
         parser.add_argument('-account', dest='accountid', default=self.common.getAccountID(), help='Account ID')
-        parser.add_argument('-input', dest='inputfile', default=self.common.getInputFile(), help='JSON/YAML')
+        parser.add_argument('-input', dest='inputfile', default=self.common.getInputFile(), help='JSON/YAML/TFSTATE')
         parser.add_argument('-region', dest='region', default=self.common.getRegion().value, help='all, au-syd, br-sao, ca-tor, eu-de, eu-gb, jp-osa, jp-tok, us-east, us-south')
         parser.add_argument('-output', dest='outputfolder', default=self.common.getOutputFolder(), help='output folder')
 
@@ -287,6 +287,8 @@ class drawit:
                         self.common.setInputYAML()
                     elif inputtype == 'json':
                         self.common.setInputJSON()
+                    elif inputtype == 'tfstate':
+                        self.common.setInputTerraform()
                     else:
                         self.common.printInvalidFile(args.inputfile)
                         return
@@ -508,6 +510,8 @@ class drawit:
                             self.common.setInputYAML()
                         elif inputtype == 'json':
                             self.common.setInputJSON()
+                        elif inputtype == 'tfstate':
+                            self.common.setInputTerraform()
                         else:
                            self.common.printInvalidFile(inputfile)
                            sys_exit()
@@ -555,6 +559,8 @@ class drawit:
                 self.common.setInputYAML()
             elif inputtype == 'json':
                 self.common.setInputJSON()
+            elif inputtype == 'tfstate':
+                self.common.setInputTerraform()
             else:
                 self.common.printInvalidFile(args.inputfile)
                 return
