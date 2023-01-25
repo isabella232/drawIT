@@ -91,7 +91,7 @@ class Diagram:
          self.common.printExit()
       del build
       setDiagram(None)
-      setCluster(None)
+      #setCluster(None)
       return
 
 
@@ -116,6 +116,7 @@ class Cluster:
                 pencolor = "",
                 bgcolor = "",
                 icon = "",
+                hideicon = "",
                 direction = "",
                 alternate = "",      # Not currently used.
                 provider = "",       # Not currently used.
@@ -140,7 +141,7 @@ class Cluster:
          #else:
          self.parent = None
 
-      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "alternate": alternate, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
+      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "hideicon": hideicon, "direction": direction, "alternate": alternate, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
       return
 
@@ -150,8 +151,8 @@ class Cluster:
 
    def __exit__(self, exception_type, exception_value, traceback):
       _data.addCluster(self.shapeid, self.attributes)
-      if self.parent:
-         setCluster(self.parent)
+      #if self.parent:
+      setCluster(self.parent)
       return
 
    def __sub__(self, shape = None):
@@ -208,6 +209,7 @@ class Node:
                 pencolor = "",
                 bgcolor = "",
                 icon = "",
+                hideicon = "",
                 direction = "",      # Not currently used.
                 provider = "",       # Not currently used.
                 fontname = "",
@@ -225,7 +227,7 @@ class Node:
       self.parentid = self.parent.shapeid
       setCluster(self.parent)
 
-      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "direction": direction, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
+      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "hideicon": hideicon, "direction": direction, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
       #_nodes[self.shapeid] = self.attributes
       _data.addNode(self.shapeid, self.attributes)

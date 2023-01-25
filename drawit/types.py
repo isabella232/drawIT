@@ -100,14 +100,14 @@ class Types:
          if self.common.isProviderAny():
             style = ShapeStyle.LOGICAL_LOCATION.value
          else:
-             style = ShapeStyle.PRESCRIBED_LOCATION.value
+            style = ShapeStyle.PRESCRIBED_LOCATION.value
       elif shape == "zone":
-         if node["icon"] == "":
-            style = ShapeStyle.ZONE_HIDEICON.value
-         else:
-            style = ShapeStyle.ZONE.value
+         style = ShapeStyle.ZONE.value
       else:
          style = ShapeStyle.PRESCRIBED_NODE.value
+
+      if node["hideicon"] == True:
+         style += ShapeStyle.HIDE_ICON.value
 
       pencolor = node["pencolor"]
       style += "strokeColor=" + pencolor + ';' 

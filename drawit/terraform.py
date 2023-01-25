@@ -16,7 +16,7 @@
 from sys import exit
 
 from json import loads as json_load
-from pandas import concat, DataFrame, json_normalize
+from pandas import concat, DataFrame, json_normalize, read_json
 
 from .common import Common
 from .icons import Icons
@@ -56,28 +56,35 @@ class Terraform:
       stream = open(self.common.getInputFile(), 'r', encoding='utf-8-sig')
       self.data = json_load(stream.read())
       resources = self.data['resources']
-      for resource in resources:
-         print(" ")
-         print(resource["name"])
-         print(resource["type"])
-      '''
-      if not 'vpcs' in self.data:
-         #self.common.printMissingVPCs(self.common.getInputFile())
+      df = json_normalize(resources)
+
+      self.vpcs = df[df["type"] == "ibm_is_vpc"]
+      self.subnets = df[df["type"] == "ibm_is_subnet"]
+      self.instances = df[df["type"] == "ibm_is_instance"]
+      self.publicGateways = df[df["type"] == "ibm_is_public_gateway"]
+      self.floatingIPs = df[df["type"] == "ibm_is_floating_ip"]
+      self.loadBalancers = df[df["type"] == "ibm_is_lb"]
+      self.loadBalancerListeners = df[df["type"] == "ibm_is_lb_listener"]
+      self.loadBalancerPools = df[df["type"] == "ibm_is_lb_pool"]
+      self.loadBalancerMembers = df[df["type"] == "ibm_is_lb_pool_member"]
+
+      #if not 'vpcs' in self.data:
+      if self.vpcs.empty:
          self.common.printMissingVPCs()
          exit()
-      elif not 'subnets' in self.data:
-         #self.common.printMissingSubnets(self.common.getInputFile())
+      #elif not 'subnets' in self.data:
+      elif self.subnets.empty:
          self.common.printMissingSubnets()
          exit()
 
-      if self.data != None:
-         self.normalizeData()
-      '''
+      #if self.data != None:
+      #   self.normalizeData()
 
       return
 
    def normalizeData(self):
       self.vpcs = json_normalize(self.data['vpcs'] if ('vpcs' in self.data) else json_normalize({}))
+      print(self.vpcs)
       self.subnets = json_normalize(self.data['subnets'] if ('subnets' in self.data) else json_normalize({}))
       self.instances = json_normalize(self.data['instances'] if ('instances' in self.data) else json_normalize({}))
       self.clusters = json_normalize(self.data['clusters'] if ('clusters' in self.data) else json_normalize({}))

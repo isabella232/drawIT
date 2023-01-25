@@ -14,7 +14,7 @@ balancedprofile
 baremetalserver 	        
 baremetalserver1 	        
 baremetalserver2  	        
-bastionhost 	        
+bastion 	        
 blob 	        
 blockstorage, filestorage, objectstorage
 buildtool  	        
@@ -151,8 +151,6 @@ vlan
 voicerouter  	        
 vpc  	        
 vpe 	        
-vpnconnection 	        
-vpngateway 	        
-vpnpolicy 	        
+vpn, vpngateway, vpnpolicy 	        
 vsi 	        
 watsonaiopspak  	        

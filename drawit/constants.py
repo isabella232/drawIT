@@ -77,7 +77,7 @@ class CombinedStyle(Enum):
    LOCATION = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.EXPANDED_LABEL.value + BaseStyle.CONTAINER.value
    LOCATION3 = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.EXPANDED_LABEL3.value + BaseStyle.CONTAINER.value
    ZONE = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.EXPANDED_LABEL3.value + BaseStyle.NON_CONTAINER.value + BaseStyle.ZONE.value
-   ZONE_HIDEICON = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.EXPANDED_LABEL3.value + BaseStyle.NON_CONTAINER.value + BaseStyle.ZONE.value + BaseStyle.HIDEICON.value
+   HIDE_ICON = BaseStyle.HIDEICON.value
    ITEM = BaseStyle.BASIC.value + BaseStyle.FONT.value + BaseStyle.ITEM_LABEL.value
    TEXT = 'text;html=1;resizable=0;autosize=1;align=left;verticalAlign=middle;points=[];strokeColor=none;rounded=0;'
 
@@ -96,7 +96,8 @@ class ShapeStyle(Enum):
    PRESCRIBED_LOCATION = ShapeFormat.PRESCRIBED_LOCATION.value + ShapeLayout.LOCATION.value + CombinedStyle.LOCATION.value  
 
    ZONE = ShapeFormat.ZONE.value + ShapeLayout.ZONE.value + CombinedStyle.ZONE.value
-   ZONE_HIDEICON = ShapeFormat.ZONE.value + ShapeLayout.ZONE.value + CombinedStyle.ZONE_HIDEICON.value
+
+   HIDE_ICON = CombinedStyle.HIDE_ICON.value
 
 # Color Properties
 
