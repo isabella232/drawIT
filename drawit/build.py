@@ -143,7 +143,8 @@ class Build:
       #if self.filename == "*":
       resetwidth = 0
       tops = self.tops
-      #tops.reverse()
+      if self.filename == "*":
+         tops.reverse()
       for clusterid in tops:
          cluster = self.clusters[clusterid]
          geometry = cluster["geometry"]
@@ -384,7 +385,7 @@ class Build:
 
          pencolor = attributes["pencolor"]
          if pencolor == "":
-            iconname, pencolor, iconshape = self.icons.getIcon(icon)
+            iconname, pencolor, iconshape, hideicon = self.icons.getIcon(icon)
 
          shape = attributes["shape"]
          if shape == "":
@@ -470,7 +471,7 @@ class Build:
 
          pencolor = attributes["pencolor"]
          if pencolor == "":
-            iconname, pencolor, iconshape = self.icons.getIcon(icon)
+            iconname, pencolor, iconshape, hideicon  = self.icons.getIcon(icon)
 
          shape = attributes["shape"]
          if shape == "":
@@ -638,6 +639,16 @@ class Build:
 
          nodeids = attributes["nodes"]
          nodecount = len(nodeids)
+
+         if childcount == 0 and nodecount == 0:
+            # Set empty cluster geometry
+            x = minshapespace
+            y = mintopspace
+            width = minclusterwidth
+            height = minnodeheight
+            self.clusters[clusterid]["final"] = True
+            self.clusters[clusterid]["geometry"] = [0, 0, width, height]
+            return
 
          counter = 0
 

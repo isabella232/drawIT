@@ -472,53 +472,52 @@ class Icons:
             iconname = icon['icon']
             iconcolor = icon['color']
             iconshape = icon['shape'] if 'shape' in icon else ""
-            #hideicon = icon['hideicon'] if 'hideicon' in icon else ""
+            hideicon = icon['hideicon'] if 'hideicon' in icon else ""
          elif shapetype + '-any' in selfs.iconDictionary:
             icon = selfs.iconDictionary[shapetype + '-any']
             iconname = icon['icon']
             iconcolor = icon['color']
             iconshape = icon['shape'] if 'shape' in icon else ""
-            #hideicon = icon['hideicon'] if 'hideicon' in icon else ""
+            hideicon = icon['hideicon'] if 'hideicon' in icon else ""
          elif shapetype + '-ibm' in self.iconDictionary:
             icon = self.iconDictionary[shapetype + '-ibm']
             iconname = icon['icon']
             iconcolor = icon['color']
             iconshape = icon['shape'] if 'shape' in icon else ""
-            #hideicon = icon['hideicon'] if 'hideicon' in icon else ""
+            hideicon = icon['hideicon'] if 'hideicon' in icon else ""
          else:
             icon = self.iconDictionary['undefined']
             iconname = icon['icon']
             iconcolor = icon['color']
             iconshape = icon['shape'] if 'shape' in icon else ""
-            #hideicon = icon['hideicon'] if 'hideicon' in icon else ""
+            hideicon = icon['hideicon'] if 'hideicon' in icon else ""
       else: # check prescribed
          if shapetype in self.iconDictionary:
             icon = self.iconDictionary[shapetype]
             iconname = icon['icon']
             iconcolor = icon['color']
             iconshape = icon['shape'] if 'shape' in icon else ""
-            #hideicon = icon['hideicon'] if 'hideicon' in icon else ""
+            hideicon = icon['hideicon'] if 'hideicon' in icon else ""
          elif shapetype + '-ibm' in self.iconDictionary:
             icon = self.iconDictionary[shapetype + '-ibm']
             iconname = icon['icon']
             iconcolor = icon['color']
             iconshape = icon['shape'] if 'shape' in icon else ""
-            #hideicon = icon['hideicon'] if 'hideicon' in icon else ""
+            hideicon = icon['hideicon'] if 'hideicon' in icon else ""
          elif shapetype + '-any' in self.iconDictionary:
             icon = self.iconDictionary[shapetype + '-any']
             iconname = icon['icon']
             iconcolor = icon['color']
             iconshape = icon['shape'] if 'shape' in icon else ""
-            #hideicon = icon['hideicon'] if 'hideicon' in icon else ""
+            hideicon = icon['hideicon'] if 'hideicon' in icon else ""
          else:
             icon = self.iconDictionary['undefined']
             iconname = icon['icon']
             iconcolor = icon['color']
             iconshape = icon['shape'] if 'shape' in icon else ""
-            #hideicon = icon['hideicon'] if 'hideicon' in icon else ""
+            hideicon = icon['hideicon'] if 'hideicon' in icon else ""
 
-      #return iconname, iconcolor, iconshape, hideicon
-      return iconname, iconcolor, iconshape
+      return iconname, iconcolor, iconshape, hideicon
 
    def validIcon(self, iconname):
       if iconname in self.iconDictionary:
