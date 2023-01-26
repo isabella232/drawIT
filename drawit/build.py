@@ -648,7 +648,7 @@ class Build:
             height = minnodeheight
             self.clusters[clusterid]["final"] = True
             self.clusters[clusterid]["geometry"] = [0, 0, width, height]
-            return
+            continue
 
          counter = 0
 

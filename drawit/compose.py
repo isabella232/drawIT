@@ -99,16 +99,16 @@ class Compose:
 
          # VPC attributes with parent region:vpcid
          regionid = "Region" + ":" + vpcid
-         attributes = {"label": vpcname, "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'vpc', "hideicon": '', "direction": 'TB', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionid)}
+         attributes = {"label": vpcname, "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'vpc', "hideicon": '', "direction": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionid)}
          clusters[self.common.compress(vpcid)] = attributes
 
          # Region attributes with parent cloud:vpcid
          cloudid = "Cloud" + ":" + vpcid
          #regionname
-         attributes = {"label": 'Region', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'region', "hideicon": '', "direction": 'TB', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(cloudid)}
+         attributes = {"label": 'Region', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'region', "hideicon": '', "direction": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(cloudid)}
          clusters[self.common.compress(regionid)] = attributes
 
-         attributes = {"label": 'Cloud', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'cloud', "hideicon": '', "direction": 'TB', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": None}
+         attributes = {"label": 'Cloud', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'cloud', "hideicon": '', "direction": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": None}
          clusters[self.common.compress(cloudid)] = attributes
 
          routername = vpcname + '-router'
