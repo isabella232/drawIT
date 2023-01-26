@@ -99,7 +99,7 @@ class Compose:
 
          # VPC attributes with parent region:vpcid
          regionid = "Region" + ":" + vpcid
-         attributes = {"label": vpcname, "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'vpc', "hideicon": '', "direction": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionid)}
+         attributes = {"label": vpcname, "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'vpc', "hideicon": '', "direction": 'TB', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionid)}
          clusters[self.common.compress(vpcid)] = attributes
 
          # Region attributes with parent cloud:vpcid
