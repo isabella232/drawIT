@@ -1,6 +1,6 @@
 from drawit import Diagram, Cluster, Node, Edge
 
-with Diagram("single-region-consumer-internet"):
+with Diagram("vpc-single-region-consumer-internet"):
 
   with Cluster("Public Network", icon="publicnetwork", direction="TB"):
     with Cluster("Consumer 1", direction="TB"):

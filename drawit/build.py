@@ -26,13 +26,14 @@ from math import isnan
 
 from .colors import Colors
 from .common import Common
-from .attributes import Attributes, Alternates, ClusterShapes, Directions, EdgeStyles, Fonts, NodeShapes, OutFormats, Providers
+from .attributes import Attributes, Alternates, ClusterShapes, Directions, EdgeStyles, Fonts, NodeShapes, OutFormats, Places, Providers
 from .constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
 from .shapes import Shapes
 from .icons import Icons
 
 DIAGRAM_NAME_DEFAULT = "diagram"
 DIAGRAM_DIRECTION_DEFAULT = "LR"
+DIAGRAM_PLACE_DEFAULT = "L"
 DIAGRAM_ALTERNATE_DEFAULT = "WHITE"
 DIAGRAM_PROVIDER_DEFAULT = "IBM"
 DIAGRAM_FONTNAME_DEFAULT = "IBM Plex Sans"
@@ -439,6 +440,14 @@ class Build:
             self.common.printInvalidDirection(direction)
             return None
          nodes[nodeid]["direction"] = direction
+
+         place = attributes["place"]
+         if place == "":
+            place = DIAGRAM_PLACE_DEFAULT
+         elif not place.upper() in [parm.value for parm in Places]:
+            self.common.printInvalidPlace(place)
+            return None
+         nodes[nodeid]["place"] = place
 
          fontname = attributes["fontname"]
          if fontname == "":

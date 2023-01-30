@@ -85,6 +85,10 @@ class Directions(Enum):
    LR = 'LR'
    TB = 'TB'
 
+class Places(Enum):
+   L = 'L'
+   R = 'R'
+
 class Alternates(Enum):
    WHITE = 'WHITE'  # white-to-light
    LIGHT = 'LIGHT'  # light-to-white

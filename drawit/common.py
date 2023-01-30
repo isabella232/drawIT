@@ -20,7 +20,7 @@ from .messages import Messages
 
 class Common:
    toolName = 'drawIT'
-   toolVersion = '0.9.5'
+   toolVersion = '0.9.6'
    toolTitle = toolName + ' ' + toolVersion
 
    options = None
@@ -358,6 +358,9 @@ class Common:
 
    def printInvalidDirection(self, direction):
       self.messages.printInvalidDirection(direction)
+
+   def printInvalidPlace(self, place):
+      self.messages.printInvalidPlace(place)
 
    def printInvalidOutputFormat(self, outputformat):
       self.messages.printInvalidOutputFormat(outputformat)

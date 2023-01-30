@@ -1,6 +1,6 @@
 from drawit import Diagram, Cluster, Node, Edge
 
-with Diagram("slz-openshift"):
+with Diagram("vpc-secure-landing-zone"):
 
   with Cluster("Cloud", icon="cloud"):
 
@@ -11,19 +11,19 @@ with Diagram("slz-openshift"):
           with Cluster("Management ACL", icon="acl"):
             with Cluster("Zone 1", icon="zone", direction="TB"):
               with Cluster("10.10.10.0/24 : VSI", icon="subnet"):
-                vsi = Node("Management OpenShift Cluster", icon="openshift") 
+                vsi = Node("Virtual Server", icon="vsi") 
               with Cluster("10.10.20.0/24 : VPE", icon="subnet"):
                 vpe = Node("Virtual Private Endpoint", icon="vpe") 
               with Cluster("10.10.30.0/24 : VPN", icon="subnet"):
                 vpn = Node("VPN Gateway", icon="vpngateway") 
             with Cluster("Zone 2", icon="zone", direction="TB"):
               with Cluster("10.20.10.0/24 : VSI", icon="subnet"):
-                vsi = Node("Management OpenShift Cluster", icon="openshift") 
+                vsi = Node("Virtual Server", icon="vsi") 
               with Cluster("10.20.20.0/24 : VPE", icon="subnet"):
                 vpe = Node("Virtual Private Endpoint", icon="vpe") 
             with Cluster("Zone 3", icon="zone", direction="TB"):
               with Cluster("10.30.10.0/24 : VSI", icon="subnet"):
-                vsi = Node("Management OpenShift Cluster", icon="openshift") 
+                vsi = Node("Virtual Server", icon="vsi") 
               with Cluster("10.30.20.0/24 : VPE", icon="subnet"):
                 vpe = Node("Virtual Private Endpoint", icon="vpe") 
 
@@ -32,17 +32,17 @@ with Diagram("slz-openshift"):
           with Cluster("Workload ACL", icon="acl"):
             with Cluster("Zone 1", icon="zone", direction="TB"):
               with Cluster("10.40.10.0/24 : VSI", icon="subnet"):
-                vsi = Node("Workload OpenShift Cluster", icon="openshift") 
+                vsi = Node("Virtual Server", icon="vsi") 
               with Cluster("10.40.20.0/24 : VPE", icon="subnet"):
                 vpe = Node("Virtual Private Endpoint", icon="vpe") 
             with Cluster("Zone 2", icon="zone", direction="TB"):
               with Cluster("10.50.10.0/24 : VSI", icon="subnet"):
-                vsi = Node("Workload OpenShift Cluster", icon="openshift") 
+                vsi = Node("Virtual Server", icon="vsi") 
               with Cluster("10.50.20.0/24 : VPE", icon="subnet"):
                 vpe = Node("Virtual Private Endpoint", icon="vpe") 
             with Cluster("Zone 3", icon="zone", direction="TB"):
               with Cluster("10.60.10.0/24 : VSI", icon="subnet"):
-                vsi = Node("Workload OpenShift Cluster", icon="openshift") 
+                vsi = Node("Virtual Server", icon="vsi") 
               with Cluster("10.60.20.0/24 : VPE", icon="subnet"):
                 vpe = Node("Virtual Private Endpoint", icon="vpe") 
 

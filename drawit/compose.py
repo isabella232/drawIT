@@ -113,7 +113,7 @@ class Compose:
 
          routername = vpcname + '-router'
 
-         attributes = {"label": routername, "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'router', "hideicon": '', "direction": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(vpcid)}
+         attributes = {"label": routername, "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'router', "hideicon": '', "direction": '', "place": '', "many": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(vpcid)}
          nodes[self.common.compress(routername)] = attributes
 
          clusters, nodes, edges = self.composeLoadBalancers(vpcname, vpcid, clusters, nodes, edges)
@@ -154,7 +154,7 @@ class Compose:
       publicid = randomid()
       clusters[self.common.compress(publicid)] = attributes
 
-      attributes = {"label": 'User', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'user', "hideicon": '', "direction": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(publicid)}
+      attributes = {"label": 'User', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'user', "hideicon": '', "direction": '', "place": '', "many": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(publicid)}
 
       userid = randomid()
       nodes[self.common.compress(userid)] = attributes
@@ -167,7 +167,7 @@ class Compose:
       enterpriseid = randomid()
       clusters[enterpriseid] = attributes
 
-      attributes = {"label": 'User', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'user', "hideicon": '', "direction": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(enterpriseid)}
+      attributes = {"label": 'User', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'user', "hideicon": '', "direction": '', "place": '', "many": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(enterpriseid)}
 
       userid = randomid()
       nodes[userid] = attributes
@@ -236,7 +236,7 @@ class Compose:
             if save_subnetpubgateid == None:
                save_subnetpubgateid = subnetpubgateid
 
-               attributes = {"label": pubgatename, "sublabel": pubgatefipip, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'publicgateway', "hideicon": '', "direction": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionzonename)}
+               attributes = {"label": pubgatename, "sublabel": pubgatefipip, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'publicgateway', "hideicon": '', "direction": '', "place": '', "many": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionzonename)}
                #pubgateid = randomid()
                nodes[self.common.compress(subnetpubgateid)] = attributes
 
@@ -367,7 +367,7 @@ class Compose:
             secondarytext = ''
             meta = None
 
-         attributes = {"label": iconname, "sublabel": secondarytext, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": icontype, "hideicon": '', "direction": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(subnetid)}
+         attributes = {"label": iconname, "sublabel": secondarytext, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": icontype, "hideicon": '', "direction": '', "place": '', "many": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(subnetid)}
 
          iconid = self.common.compress(iconid)
          nodes[iconid] = attributes
@@ -455,7 +455,7 @@ class Compose:
                            if not lbgenerated:
                               lbgenerated = True
                               # TODO Handle spacing for > 1 LBs.
-                              attributes = {"label": lbname, "sublabel": lbiplist, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'router', "hideicon": '', "direction": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(vpcid)}
+                              attributes = {"label": lbname, "sublabel": lbiplist, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'lb', "hideicon": '', "direction": '', "place": '', "many": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(vpcid)}
                               lbid = randomid()
                               #lbid = self.common.compress(lbid)
                               nodes[self.common.compress(lbid)] = attributes

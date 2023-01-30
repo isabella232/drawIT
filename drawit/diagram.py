@@ -211,6 +211,8 @@ class Node:
                 icon = "",
                 hideicon = "",
                 direction = "",      # Not currently used.
+                place = "",
+                many = "",
                 provider = "",       # Not currently used.
                 fontname = "",
                 fontsize = 0,
@@ -227,7 +229,7 @@ class Node:
       self.parentid = self.parent.shapeid
       setCluster(self.parent)
 
-      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "hideicon": hideicon, "direction": direction, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
+      self.attributes = {"label": label, "sublabel": sublabel, "shape": shape, "pencolor": pencolor, "bgcolor": bgcolor, "badgetext": badgetext, "badgeshape": badgeshape, "badgepencolor": badgepencolor, "badgebgcolor": badgebgcolor, "icon": icon, "hideicon": hideicon, "direction": direction, "place": place, "many": many, "provider": provider, "fontname": fontname, "fontsize": fontsize, "parentid": self.parentid}
 
       #_nodes[self.shapeid] = self.attributes
       _data.addNode(self.shapeid, self.attributes)
