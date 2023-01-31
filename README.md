@@ -314,6 +314,10 @@ Refer to rungui.sh or run.sh in scripts folder.
 - [x] ALB
 - [x] NLB
 - [x] VPN Gateway
+- [ ] Network ACLs
+- [ ] Security Groups
+- [ ] Routing Tables
+- [ ] Routing Table Routes
 - [ ] Bare Metal Servers
 - [ ] Images
 - [ ] Volumes
@@ -323,13 +327,9 @@ Refer to rungui.sh or run.sh in scripts folder.
 - [ ] Instance Groups
 - [ ] Placement Groups
 - [ ] Address Prefixes
-- [ ] Network ACLs
-- [ ] Security Groups
 - [ ] Distributed NLB
 - [ ] Dedicated Hosts
 - [ ] Dedicated Host Groups
-- [ ] Routing Tables
-- [ ] Routing Table Routes
 - [ ] Node Reservations
 - [ ] Export Policies
 - [ ] Export Policy Rules
@@ -364,6 +364,10 @@ Refer to rungui.sh or runrias.sh in scripts folder.
 - [x] ALB
 - [x] NLB
 - [x] VPN Gateway
+- [ ] Network ACLs
+- [ ] Security Groups
+- [ ] Routing Tables
+- [ ] Routing Table Routes
 - [ ] Bare Metal Servers
 - [ ] Images
 - [ ] Volumes
@@ -373,13 +377,9 @@ Refer to rungui.sh or runrias.sh in scripts folder.
 - [ ] Instance Groups
 - [ ] Placement Groups
 - [ ] Address Prefixes
-- [ ] Network ACLs
-- [ ] Security Groups
 - [ ] Distributed NLB
 - [ ] Dedicated Hosts
 - [ ] Dedicated Host Groups
-- [ ] Routing Tables
-- [ ] Routing Table Routes
 - [ ] Node Reservations
 - [ ] Export Policies
 - [ ] Export Policy Rules
