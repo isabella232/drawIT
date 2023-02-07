@@ -28,7 +28,7 @@ class Icons:
       'meeting': 	        
             {'icon': 'events', 'color': Colors.lines["user"]},
       'authorizationboundary': 	        
-            {'icon': 'flag', 'color': Colors.lines["network"], 'shape': 'zone', 'hideicon': True},
+            {'icon': 'flag', 'color': Colors.lines["network"], 'shape': 'zone'},
       'cloud-ibm': 	        
             {'icon': 'ibm-cloud', 'color': Colors.lines["network"]},
       'user':  	        
@@ -114,7 +114,7 @@ class Icons:
       'lb-ibm': 	        
             {'icon': 'load-balancer--vpc', 'color': Colors.lines["network"]},
       'acl': 	        
-            {'icon': 'subnet-acl-rules', 'color': Colors.lines["security"], 'shape': 'zone', 'hideicon': True},
+            {'icon': 'subnet-acl-rules', 'color': Colors.lines["security"], 'shape': 'zone'},
       'vpn': 	        
             {'icon': 'vpn--connection', 'color': Colors.lines["network"]},
       'enterprisenetwork': 	        
@@ -124,13 +124,13 @@ class Icons:
       'securityservices-ibm': 	        
             {'icon': 'ibm-security--services', 'color': Colors.lines["network"]},
       'resourcegroup': 	        
-            {'icon': 'group--resource', 'color': Colors.lines["security"], 'shape': 'zone', 'hideicon': True},
+            {'icon': 'group--resource', 'color': Colors.lines["security"], 'shape': 'zone'},
       'servicedeskuser': 	        
             {'icon': 'user--service-desk', 'color': Colors.lines["user"]},
       'protecteddocument': 	        
             {'icon': 'document--protected', 'color': Colors.lines["network"]},
       'securitygroup': 	        
-            {'icon': 'group--security', 'color': Colors.lines["security"], 'shape': 'zone', 'hideicon': True},
+            {'icon': 'group--security', 'color': Colors.lines["security"], 'shape': 'zone'},
       'virtualapp': 	        
             {'icon': 'application--virtual', 'color': Colors.lines["network"]},
       'lbpool': 	        
@@ -188,7 +188,7 @@ class Icons:
       'blockstorage-any': 	        
             {'icon': 'block-storage--alt', 'color': Colors.lines["network"]},
       'accessgroup': 	        
-            {'icon': 'group--access', 'color': Colors.lines["security"], 'shape': 'zone', 'hideicon': True},
+            {'icon': 'group--access', 'color': Colors.lines["security"], 'shape': 'zone'},
       'vpnpolicy': 	        
             {'icon': 'vpn--policy', 'color': Colors.lines["network"]},
       'codesigningservice': 	        
@@ -230,7 +230,7 @@ class Icons:
       #'connectedvehicle': 	        
       #       {'icon': 'vehicle--connected', 'color': Colors.lines["network"]},
       'accountgroup': 	        
-          {'icon': 'group--account', 'color': Colors.lines["security"], 'shape': 'zone', 'hideicon': True},
+          {'icon': 'group--account', 'color': Colors.lines["security"], 'shape': 'zone'},
       'image-service': 	        
             {'icon': 'image-service', 'color': Colors.lines["network"]},
       'balancedprofile': 	        
@@ -446,7 +446,7 @@ class Icons:
       'keyprotect-ibm':  	        
             {'icon': 'ibm-cloud--key-protect', 'color': Colors.lines["security"]}, 
       'secretsmanager': 	        
-            {'icon': 'ibm-cloud--secrets-manager', 'color': Colors.lines["security"], 'shape': 'zone', 'hideicon': True},
+            {'icon': 'ibm-cloud--secrets-manager', 'color': Colors.lines["security"], 'shape': 'zone'},
       'artifactrepository': 	        
             {'icon': 'repo--artifact', 'color': Colors.lines["storage"]},
       'sourcecoderepository': 	        

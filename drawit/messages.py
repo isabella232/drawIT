@@ -67,7 +67,6 @@ class Messages:
    missingSubnetsMessage = '(Error) No Subnets were found'
 
    invalidDirectionMessage = '(Error) Invalid direction: %s'
-   invalidPlaceMessage = '(Error) Invalid place: %s'
    invalidOutputFormatMessage = '(Error) Invalid output format: %s'
    invalidFontMessage = '(Error) Invalid font: %s'
    invalidIconMessage = '(Error) Invalid icon: %s'
@@ -196,9 +195,6 @@ class Messages:
 
    def printInvalidDirection(self, direction):
       self.printError(self.invalidDirectionMessage % direction)
-
-   def printInvalidPlace(self, place):
-      self.printError(self.invalidPlaceMessage % place)
 
    def printInvalidOutputFormat(self, outputformat):
       self.printError(self.invalidOutputFormateMessage % outputformat)

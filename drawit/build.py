@@ -22,18 +22,17 @@
 #   elements.py - build drawio objects  
 
 from os import path
-from math import isnan
+from math import isnan, floor
 
 from .colors import Colors
 from .common import Common
-from .attributes import Attributes, Alternates, ClusterShapes, Directions, EdgeStyles, Fonts, NodeShapes, OutFormats, Places, Providers
+from .attributes import Attributes, Alternates, ClusterShapes, Directions, EdgeStyles, Fonts, NodeShapes, OutFormats, Providers
 from .constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
 from .shapes import Shapes
 from .icons import Icons
 
 DIAGRAM_NAME_DEFAULT = "diagram"
 DIAGRAM_DIRECTION_DEFAULT = "LR"
-DIAGRAM_PLACE_DEFAULT = "L"
 DIAGRAM_ALTERNATE_DEFAULT = "WHITE"
 DIAGRAM_PROVIDER_DEFAULT = "IBM"
 DIAGRAM_FONTNAME_DEFAULT = "IBM Plex Sans"
@@ -70,6 +69,7 @@ class Build:
    clusters = {}
    nodes = {}
    edges = {}
+   sequence = []
    tops = []
    bottoms = []
    filename = ""
@@ -82,6 +82,7 @@ class Build:
       self.clusters = data.getClusters()
       self.nodes = data.getNodes()
       self.edges = data.getEdges()
+      self.sequence = data.getSequence()
       self.tops = []
       self.bottoms = []
       return
@@ -137,32 +138,33 @@ class Build:
       if not self.common.isAlternateUser():
          self.alternateFills()
 
-      self.addNodes()
-      self.calculateNodeGeometry()
-      self.calculateClusterGeometry()
+      self.calculateGeometry()
+      self.eliminateZoneParents()
 
-      #if self.filename == "*":
-      resetwidth = 0
-      tops = self.tops
+      '''
       if self.filename == "*":
+         resetwidth = 0
+         tops = self.tops
          tops.reverse()
-      for clusterid in tops:
-         cluster = self.clusters[clusterid]
-         geometry = cluster["geometry"]
-         x = geometry[0] + resetwidth
-         y = geometry[1]
-         width = geometry[2]
-         height = geometry[3]
-         self.clusters[clusterid]["geometry"] = [x, y, width, height]
-         resetwidth += width + 20
+         for clusterid in tops:
+            cluster = self.clusters[clusterid]
+            geometry = cluster["geometry"]
+            x = resetwidth
+            y = geometry[1]
+            width = geometry[2]
+            height = geometry[3]
+            self.clusters[clusterid]["geometry"] = [x, y, width, height]
+            resetwidth += width + 20
+      '''
 
+      #self.printSequence()
+      #self.printDiagrams()
       #self.printClusters()
       #self.printNodes()
       #self.printTops()
       #self.printBottoms()
 
-      self.mergeNodes()
-      self.eliminateZoneParents()
+      return
 
    def buildAll(self):
       nodes = []
@@ -441,14 +443,6 @@ class Build:
             return None
          nodes[nodeid]["direction"] = direction
 
-         place = attributes["place"]
-         if place == "":
-            place = DIAGRAM_PLACE_DEFAULT
-         elif not place.upper() in [parm.value for parm in Places]:
-            self.common.printInvalidPlace(place)
-            return None
-         nodes[nodeid]["place"] = place
-
          fontname = attributes["fontname"]
          if fontname == "":
             fontname = NODE_FONTNAME_DEFAULT
@@ -582,6 +576,7 @@ class Build:
           self.nodes[nodeid]["geometry"] = [0, 0, 0, 0]
           self.nodes[nodeid]["children"] = []
           self.nodes[nodeid]["nodes"] = []
+          self.nodes[nodeid]["final"] = False
 
       return
 
@@ -631,7 +626,84 @@ class Build:
 
       return
 
-   def calculateNodeGeometry(self):
+   def sequenceChildren(self):
+      # Sort children by sequence index.
+      for clusterid, attributes in self.clusters.items():
+         childids = attributes["children"]
+         childcount = len(childids)
+
+         if childcount == 0 or childcount == 1:
+            continue
+
+         templist = []
+         newlist = []
+
+         for childid in childids:
+            templist.append({"id": childid, "index": self.sequence.index(childid)}) 
+
+         templist.sort(key=lambda index: index['index'])
+
+         for item in templist:
+            itemid = item["id"]
+            newlist.append(itemid)
+
+         nodelist = []
+         finallist = []
+
+         for itemid in newlist:
+            if self.clusters[itemid]["type"] == "node":
+               nodelist.append(itemid)
+            else:
+               if nodelist:
+                  finallist.append(nodelist)
+                  nodelist = []
+               finallist.append(itemid)
+
+         if nodelist:
+           finallist.append(nodelist)
+
+         self.clusters[clusterid]["children"] = finallist
+
+      return
+
+   def sequenceTops(self):
+      # Sort tops by sequence index.
+      templist = []
+      newlist = []
+      for topid in self.tops:
+         templist.append({"id": topid, "index": self.sequence.index(topid)}) 
+
+      templist.sort(key=lambda index: index['index'])
+
+      for item in templist:
+         itemid = item["id"]
+         newlist.append(itemid)
+
+      self.sequence = newlist
+
+      return
+
+   def eliminateNesting(self):
+      # Combine node list with children list.
+      for clusterid, attributes in self.clusters.items():
+         children = attributes["children"] 
+         childcount = len(children)
+         newlist = []
+         if childcount > 0:
+            for childids in children:
+               if isinstance(childids, list):
+                  for childid in childids:
+                     newlist.append(childid)
+               else:
+                   childid = childids
+                   newlist.append(childid)
+
+            if newlist:
+               self.clusters[clusterid]["children"] = newlist
+
+      return
+
+   def calculateIsolatedNodes(self):
       mintopspace = 60
       minshapespace = 20
       minnodespace = 60
@@ -649,7 +721,11 @@ class Build:
          nodeids = attributes["nodes"]
          nodecount = len(nodeids)
 
-         if childcount == 0 and nodecount == 0:
+         if childcount > 0:
+            # Defer mix of nodes and clusters.
+            continue
+
+         if nodecount == 0:
             # Set empty cluster geometry
             x = minshapespace
             y = mintopspace
@@ -659,7 +735,7 @@ class Build:
             self.clusters[clusterid]["geometry"] = [0, 0, width, height]
             continue
 
-         counter = 0
+         nodeindex = 0
 
          nodewidth = minnodewidth
          nodeheight = minnodeheight
@@ -669,61 +745,48 @@ class Build:
 
          # Set node geometry.
          # If no children then follow direction and center single node.
-         # If children then make all nodes vertical and ignore direction.
+         ## Defer to later: If children then make all nodes vertical and ignore direction.
          # Add cluster width and height with nodes to cluster.
+         #if childcount == 0:
          for nodeid in nodeids:
-            counter += 1
-            if childcount == 0:
-               if direction == "LR":
-                  if nodecount == 1:
-                     # Center single node in cluster.
-                     x = (minclusterwidth / 2) - (minnodewidth / 2)
-                     y = mintopspace
-                     clusterwidth = minclusterwidth
-                     clusterheight = mintopspace + minnodeheight + minnodespace 
-                  elif nodecount > 1:
-                     # Left justify nodes horizontally in cluster.
-                     # Future: Wrap long list of nodes to multiple rows.
-                     x = ((counter - 1) * minnodewidth) + (counter * minnodespace)
-                     y = mintopspace
-                     clusterwidth += minnodewidth + minnodespace
-                     clusterheight = mintopspace + minnodeheight + minnodespace 
-
-               elif direction == "TB":
-                  # Left justify nodes vertically in cluster.
-                  #x = minnodespace
-                  # Center multiple node in cluster.
+            nodeindex += 1
+            if direction == "LR":
+               if nodecount == 1:
+                  # Center single node in cluster.
                   x = (minclusterwidth / 2) - (minnodewidth / 2)
-                  if counter == 1:
-                     y = mintopspace
-                  else:
-                     y = mintopspace + ((counter - 1) * minnodeheight) + ((counter - 1) * minnodespace)
+                  y = mintopspace
                   clusterwidth = minclusterwidth
-                  clusterheight += minnodeheight + minnodespace
+                  clusterheight = mintopspace + minnodeheight + minnodespace 
+               elif nodecount > 1:
+                  # Left justify nodes horizontally in cluster.
+                  # Future: Wrap long list of nodes to multiple rows.
+                  x = ((nodeindex - 1) * minnodewidth) + (nodeindex * minnodespace)
+                  y = mintopspace
+                  clusterwidth += minnodewidth + minnodespace
+                  clusterheight = mintopspace + minnodeheight + minnodespace 
 
-            elif childcount > 0:
+            elif direction == "TB":
                # Left justify nodes vertically in cluster.
-               x = minnodespace
-               if counter == 1:
+               # Center multiple nodes in cluster.
+               x = (minclusterwidth / 2) - (minnodewidth / 2)
+               if nodeindex == 1:
                   y = mintopspace
                else:
-                  y = mintopspace + ((counter - 1) * minnodeheight) + ((counter - 1) * minnodespace)
-               clusterwidth = minnodewidth + (2 * minnodespace)
-               clusterheight += minnodeheight + minnodespace 
+                  y = mintopspace + ((nodeindex - 1) * minnodeheight) + ((nodeindex - 1) * minnodespace)
+               clusterwidth = minclusterwidth
+               clusterheight += minnodeheight + minnodespace
 
             self.nodes[nodeid]["geometry"] = [x, y, nodewidth, nodeheight]
 
-         if childcount == 0:
             self.clusters[clusterid]["final"] = True
 
          self.clusters[clusterid]["geometry"] = [0, 0, clusterwidth, clusterheight]
 
       return
 
-   def calculateChildGeometry(self, parentid):
+   def calculateLeftRightClusters(self, parentid):
       mintopspace = 60
       minshapespace = 20
-      #minnodespace = 30
       minnodespace = 60
       minnodewidth = 48
       minnodeheight = 48
@@ -737,15 +800,8 @@ class Build:
       parentwidth = parentgeometry[2]
       parentheight = parentgeometry[3]
       parentchildren = parent["children"]
-      parentnodeids = parent["nodes"]
-      parentnodecount = len(parentnodeids)
       parentdirection = parent["direction"]
       parentfinal = parent["final"]
-
-      label = self.clusters[parentid]["label"]
-
-      if len(parentchildren) == 0 or parentfinal:
-         return parentgeometry
 
       savex = 0
       savey = 0
@@ -755,16 +811,21 @@ class Build:
       newparentwidth = 0
       newparentheight = 0
 
-      counter = 0
+      position = 0
 
-      for childid in parentchildren:
-         counter += 1
+      for childids in parentchildren:
+         position += 1
 
-         child = self.clusters[childid] 
+         if isinstance(childids, list):
+            continue
+
+         childid = childids
+         child = self.clusters[childid]
+        
          children = child["children"]
 
          if len(children) > 0:
-            childgeometry = self.calculateChildGeometry(childid)
+            childgeometry = self.calculateChildren(childid)
             self.clusters[childid]["final"] = True
          else: 
             childgeometry = child["geometry"]
@@ -773,73 +834,126 @@ class Build:
          childy = childgeometry[1]
          childwidth = childgeometry[2]
          childheight = childgeometry[3]
-
-         nodeids = child["nodes"]
-         nodecount = len(nodeids)
-
          childfinal = child["final"]
 
-         if parentdirection == "LR":
-            if counter == 1:
-               savex = minshapespace if parentnodecount == 0 else minnodewidth + (2 * minnodespace) 
-               savey = mintopspace
-               savewidth += childwidth
-               saveheight = max(saveheight, childgeometry[3] + (2 * minshapespace))
-               if childfinal:
-                  self.clusters[childid]["geometry"] = [savex, savey, childwidth, childheight]
-                  newparentwidth += childwidth + savex
-                  newparentheight += childheight + savey
-               else:
-                  self.clusters[childid]["final"] = True
-                  self.clusters[childid]["geometry"] = [savex, savey, savewidth, saveheight]
-                  newparentwidth += savewidth + savex
-                  newparentheight += saveheight + savey
+         if position == 1:
+            savex = minshapespace
+            savey = mintopspace
+            savewidth += childwidth
+            saveheight = max(saveheight, childgeometry[3] + (2 * minshapespace))
+            if childfinal:
+               self.clusters[childid]["geometry"] = [savex, savey, childwidth, childheight]
+               newparentwidth += childwidth + savex
+               newparentheight += childheight + savey
             else:
-               savex = minshapespace if parentnodecount == 0 else minnodewidth + (2 * minnodespace) 
-               savex += savewidth + ((counter - 1) * minshapespace)
-               savey = mintopspace
-               savewidth += childwidth
-               saveheight += childheight
-               if childfinal:
-                  self.clusters[childid]["geometry"] = [savex, savey, childwidth, childheight]
-                  newparentwidth += childwidth + minshapespace
-                  newparentheight = max(newparentheight, childheight + savey)
-               else:
-                  self.clusters[childid]["final"] = True
-                  self.clusters[childid]["geometry"] = [savex, savey, savewidth, saveheight]
-                  newparentwidth += savewidth + savex
-                  newparentheight += saveheight + savey
+               self.clusters[childid]["final"] = True
+               self.clusters[childid]["geometry"] = [savex, savey, savewidth, saveheight]
+               newparentwidth += savewidth + savex
+               newparentheight += saveheight + savey
+         else:
+            savex = savewidth + (position * minshapespace)
+            savey = mintopspace
+            savewidth += childwidth
+            saveheight += childheight
+            if childfinal:
+               self.clusters[childid]["geometry"] = [savex, savey, childwidth, childheight]
+               newparentwidth += childwidth + minshapespace
+               newparentheight = max(newparentheight, childheight + savey)
+            else:
+               self.clusters[childid]["final"] = True
+               self.clusters[childid]["geometry"] = [savex, savey, savewidth, saveheight]
+               newparentwidth += savewidth + savex
+               newparentheight += saveheight + savey
 
-         elif parentdirection == "TB":
-            if counter == 1:
-               savex = minshapespace if parentnodecount == 0 else minnodewidth + (2 * minnodespace) 
-               savey = mintopspace
-               savewidth = max(savewidth, childgeometry[2] + (2 * minshapespace))
-               saveheight += childheight
-               if childfinal:
-                  self.clusters[childid]["geometry"] = [savex, savey, childwidth, childheight]
-                  newparentwidth = childwidth + savex
-                  newparentheight = childheight + savey
-               else:
-                  self.clusters[childid]["final"] = True
-                  self.clusters[childid]["geometry"] = [savex, savey, savewidth, saveheight]
-                  newparentwidth += savewidth + savex
-                  newparentheight += saveheight + savey
+      newparentwidth -= (3 * minshapespace)
+      newparentheight += minshapespace
+
+      newparentwidth = max(parentwidth, newparentwidth)
+      newparentheight = max(parentheight, newparentheight)
+
+      return [0, 0, newparentwidth, newparentheight]
+
+   def calculateTopBottomClusters(self, parentid):
+      mintopspace = 60
+      minshapespace = 20
+      minnodespace = 60
+      minnodewidth = 48
+      minnodeheight = 48
+      minclusterwidth = 240
+      minclusterheight = 152
+
+      parent = self.clusters[parentid]
+      parentgeometry = parent["geometry"]
+      parentx = parentgeometry[0]
+      parenty = parentgeometry[1]
+      parentwidth = parentgeometry[2]
+      parentheight = parentgeometry[3]
+      parentchildren = parent["children"]
+      parentdirection = parent["direction"]
+      parentfinal = parent["final"]
+
+      savex = 0
+      savey = 0
+      savewidth = 0
+      saveheight = 0
+
+      newparentwidth = 0
+      newparentheight = 0
+
+      position = 0
+
+      for childids in parentchildren:
+         position += 1
+
+         if isinstance(childids, list):
+            continue
+
+         childid = childids
+         child = self.clusters[childid]
+
+         children = child["children"]
+
+         if len(children) > 0:
+            childgeometry = self.calculateChildren(childid)
+            self.clusters[childid]["final"] = True
+         else: 
+            childgeometry = child["geometry"]
+
+         childx = childgeometry[0]
+         childy = childgeometry[1]
+         childwidth = childgeometry[2]
+         childheight = childgeometry[3]
+         childfinal = child["final"]
+
+         if position == 1:
+            savex = minshapespace
+            savey = mintopspace
+            savewidth = max(savewidth, childgeometry[2] + (2 * minshapespace))
+            saveheight += childheight
+            if childfinal:
+               self.clusters[childid]["geometry"] = [savex, savey, childwidth, childheight]
+               newparentwidth = childwidth + savex
+               newparentheight = childheight + savey
             else:
-               savex = minshapespace if parentnodecount == 0 else minnodewidth + (2 * minnodespace) 
-               savey = saveheight + mintopspace + ((counter - 1) * minshapespace)
-               savewidth += childwidth
-               saveheight += childheight
-               if childfinal:
-                  self.clusters[childid]["geometry"] = [savex, savey, childwidth, childheight]
-                  newparentwidth = max(newparentwidth, childwidth + savex)
-                  newparentheight += childheight + minshapespace
-               else:
-                  self.clusters[childid]["final"] = True
-                  self.clusters[childid]["geometry"] = [savex, savey, savewidth, saveheight]
-                  newparentwidth += savewidth + savex
-                  newparentheight += saveheight + savey
-      
+               self.clusters[childid]["final"] = True
+               self.clusters[childid]["geometry"] = [savex, savey, savewidth, saveheight]
+               newparentwidth += savewidth + savex
+               newparentheight += saveheight + savey
+         else:
+            savex = minshapespace
+            savey = saveheight + mintopspace + ((position - 1) * minshapespace)
+            savewidth += childwidth
+            saveheight += childheight
+            if childfinal:
+               self.clusters[childid]["geometry"] = [savex, savey, childwidth, childheight]
+               newparentwidth = max(newparentwidth, childwidth + savex)
+               newparentheight += childheight + minshapespace
+            else:
+               self.clusters[childid]["final"] = True
+               self.clusters[childid]["geometry"] = [savex, savey, savewidth, saveheight]
+               newparentwidth += savewidth + savex
+               newparentheight += saveheight + savey
+
       newparentwidth += minshapespace
       newparentheight += minshapespace
 
@@ -848,15 +962,226 @@ class Build:
 
       return [0, 0, newparentwidth, newparentheight]
 
-   def calculateClusterGeometry(self):
-      #parents = []
+   def calculateLeftRightNodes(self, parentid, parentgeometry):
+      mintopspace = 60
+      minshapespace = 20
+      minnodespace = 60
+      minnodewidth = 48
+      minnodeheight = 48
+      minclusterwidth = 240
+      minclusterheight = 152
+
+      parent = self.clusters[parentid]
+      parentchildren = parent["children"]
+      parentx = parentgeometry[0]
+      parenty = parentgeometry[1]
+      parentwidth = parentgeometry[2]
+      parentheight = parentgeometry[3]
+
+      nodeheight = minnodeheight + minnodespace + minshapespace
+      nodesets = 0
+      adjustwidth = 0
+      adjustheight = 0
+      adjusty = 0
+
+      childx = 0
+      childy = 0
+
+      newparentwidth = parentwidth
+      newparentheight = parentheight
+
+      position = 0
+
+      for childids in parentchildren:
+         position += 1
+
+         if isinstance(childids, list):
+            nodesets += 1
+            nodeindex = 0
+            nodecount = len(childids)
+            minimalwidth = (2 * minshapespace) + (nodecount * minnodeheight) + (nodecount * minnodespace)
+            if parentwidth > minimalwidth:
+               widthspacing = floor(parentwidth / nodecount)
+            else:
+               widthspacing = floor(minimalwidth / nodecount)
+
+            childy = adjusty + minnodespace
+
+            for childid in childids:
+               nodeindex += 1
+
+               if nodeindex == 1:
+                  childx = floor((widthspacing / 2) - minshapespace)
+               else:
+                  childx += widthspacing
+
+               self.clusters[childid]["geometry"] = [childx, childy, minnodewidth, minnodeheight]
+
+            if position == 1:
+               adjustheight += nodeheight - (2 * minshapespace)
+            elif position == len(parentchildren):
+               adjustheight += nodeheight + (2 * minshapespace)
+            else:
+               adjustheight += nodeheight
+
+            adjustwidth = max(adjustwidth, minnodespace + (nodeindex * minnodewidth) + (nodeindex * minnodespace))
+
+         else:
+            childid = childids
+            childgeometry = self.clusters[childid]["geometry"]
+            childx = childgeometry[0]
+            childy = childgeometry[1] + adjustheight
+            childwidth = childgeometry[2]
+            childheight = childgeometry[3]
+            adjusty = childy + childheight
+
+            if position == len(parentchildren):
+               adjustheight += 2 * minshapespace
+
+            self.clusters[childid]["geometry"] = [childx, childy, childwidth, childheight]
+
+      if adjustheight > 0:
+         newparentheight += adjustheight + (nodesets * minshapespace)
+
+      newparentwidth = max(newparentwidth, adjustwidth)
+
+      return [0, 0, newparentwidth, newparentheight]
+
+   def calculateTopBottomNodes(self, parentid, parentgeometry):
+      mintopspace = 60
+      minshapespace = 20
+      minnodespace = 60
+      minnodewidth = 48
+      minnodeheight = 48
+      minclusterwidth = 240
+      minclusterheight = 152
+
+      parent = self.clusters[parentid]
+      parentchildren = parent["children"]
+      parentx = parentgeometry[0]
+      parenty = parentgeometry[1]
+      parentwidth = parentgeometry[2]
+      parentheight = parentgeometry[3]
+
+      nodewidth = minnodewidth + minnodespace + minshapespace
+      nodesets = 0
+      adjustwidth = 0
+      adjustheight = 0
+      adjustx = 0
+
+      childx = 0
+      childy = 0
+
+      newparentwidth = parentwidth
+      newparentheight = parentheight
+
+      position = 0
+
+      for childids in parentchildren:
+         position += 1
+
+         if isinstance(childids, list):
+            nodesets += 1
+            nodeindex = 0
+            nodecount = len(childids)
+            minimalheight = mintopspace + minshapespace + (nodecount * minnodeheight) + (nodecount * minnodespace)
+            if parentheight > minimalheight:
+               heightspacing = floor(parentheight / nodecount)
+            else:
+               heightspacing = floor(minimalheight / nodecount)
+
+            childx = adjustx + minnodespace
+
+            for childid in childids:
+               nodeindex += 1
+
+               if nodeindex == 1:
+                  childy = floor(heightspacing / 2) - minshapespace
+               else:
+                  childy += heightspacing
+
+               self.clusters[childid]["geometry"] = [childx, childy, minnodewidth, minnodeheight]
+
+            if position == len(parentchildren):
+               adjustwidth += nodewidth - minshapespace + minnodespace
+            else:
+               adjustwidth += nodewidth
+
+            adjustheight = max(adjustheight, mintopspace + (nodeindex * minnodeheight) + (nodeindex * minnodespace))
+
+         else:
+            childid = childids
+            childgeometry = self.clusters[childid]["geometry"]
+            childx = childgeometry[0] + adjustwidth
+            childy = childgeometry[1]
+            childwidth = childgeometry[2]
+            childheight = childgeometry[3]
+            adjustx = childx + childwidth
+
+            if position == len(parentchildren):
+               adjustwidth += 2 * minshapespace
+
+            self.clusters[childid]["geometry"] = [childx, childy, childwidth, childheight]
+
+      if adjustwidth > 0:
+         newparentwidth += adjustwidth + ((nodesets + 2) * minshapespace)
+
+      newparentheight = max(newparentheight, adjustheight)
+
+      return [0, 0, newparentwidth, newparentheight]
+
+   def calculateChildren(self, parentid):
+      parent = self.clusters[parentid]
+      parentgeometry = parent["geometry"]
+      parentchildren = parent["children"]
+      parentdirection = parent["direction"]
+      parentfinal = parent["final"]
+      geometry = [0, 0, 0, 0]
+      
+      if len(parentchildren) == 0 or parentfinal:
+         # Already final or no children so return parent geometry as is.
+         geometry = parentgeometry
+
+      elif parentdirection == "LR":
+         # Parent direction is LR and node direction is TB which are left-justified vertically.
+         geometry = self.calculateLeftRightClusters(parentid)
+         geometry = self.calculateTopBottomNodes(parentid, geometry)
+         self.clusters[parentid]["final"] = True
+
+      elif parentdirection == "TB":
+         # Parent direction is TB and node direction is LR which are left-justified horizontally.
+         geometry = self.calculateTopBottomClusters(parentid)
+         geometry = self.calculateLeftRightNodes(parentid, geometry)
+         self.clusters[parentid]["final"] = True
+
+      return geometry
+
+   def calculateGeometry(self):
+      self.addNodes()
+      self.calculateIsolatedNodes()
+      self.mergeNodes()
+      self.sequenceChildren()
+
       for clusterid in self.bottoms:
          # Loop through parents until no parent.
          parentid = self.clusters[clusterid]["parentid"]
          while parentid != None:
-            geometry = self.calculateChildGeometry(parentid)
+            geometry = self.calculateChildren(parentid)
             self.clusters[parentid]["geometry"] = geometry
             parentid = self.clusters[parentid]["parentid"] 
+
+      self.eliminateNesting()
+
+      resetwidth = 0
+      for clusterid in self.tops:
+         cluster = self.clusters[clusterid]
+         geometry = cluster["geometry"]
+         x = geometry[0] + resetwidth
+         y = geometry[1]
+         width = geometry[2]
+         height = geometry[3]
+         self.clusters[clusterid]["geometry"] = [x, y, width, height]
+         resetwidth += width + 20
 
       return
 
@@ -952,6 +1277,28 @@ class Build:
             childattributes = self.clusters[childid]
             parentid = childattributes["parentid"] 
 
+      return
+
+   def printSequence(self):
+      for sequenceid in self.sequence:
+         if sequenceid in self.diagrams:
+            label = "Diagram " + self.diagrams[sequenceid]["name"]
+         elif sequenceid in self.clusters:
+            label = "Cluster " + self.clusters[sequenceid]["label"]
+         elif sequenceid in self.nodes:
+            label = "Node " + self.nodes[sequenceid]["label"]
+         else:
+            label = "None"
+         print("")
+         print(f'"{sequenceid}": {label}')
+      return
+
+   def printDiagrams(self):
+      print("")
+      print("Diagrams:")
+      for key, value in self.diagrams.items():
+         print("")
+         print(f'"{key}": {value}')
       return
 
    def printClusters(self):

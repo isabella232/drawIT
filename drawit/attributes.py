@@ -17,16 +17,21 @@ from enum import Enum
 
 class Attributes:
    def __init__(self):
+      self.sequence = []
       self.diagrams = {}
       self.clusters = {}
       self.nodes = {}
       self.edges = {}
 
    def reset(self):
+      self.sequence = []
       self.diagrams = {}
       self.clusters = {}
       self.nodes = {}
       self.edges = {}
+
+   def getSequence(self):
+      return self.sequence
 
    def getDiagrams(self):
       return self.diagrams
@@ -78,16 +83,15 @@ class Attributes:
    def setEdgeOperator(self, shapeid, operator):
       self.edges[shapeid]["operator"] = operator
 
+   def updateSequence(self, sequenceid):
+      self.sequence.append(sequenceid)
+
 
 # Valid attribute values.
 
 class Directions(Enum):
    LR = 'LR'
    TB = 'TB'
-
-class Places(Enum):
-   L = 'L'
-   R = 'R'
 
 class Alternates(Enum):
    WHITE = 'WHITE'  # white-to-light

@@ -16,13 +16,8 @@ with Diagram("vpc-single-region-consumer-internet"):
     glb = Node("Global Load Balancer", icon="glb") 
 
     with Cluster("Region A", icon="region", direction="TB"):
-      dl1 = Node("Direct Link", icon="directlink") 
-      vpn1 = Node("VPN Connection", icon="vpn") 
-      tg = Node("Transit Gateway", icon="transitgateway") 
-      dl2 = Node("*Direct Link* (same)", icon="directlink") 
-      vpn2 = Node("VPN Connection", icon="vpn") 
-
       with Cluster("VPC 1 (Management)", icon="vpc"):
+        lb = Node("Private Load Balancer", icon="lb") 
         with Cluster("Zone 1", sublabel="10.10.0.0/18", icon="zone", direction="TB"):
           with Cluster("Subnet 1", sublabel="10.10.10.0/24 - ACL1", icon="subnet"):
             open1 = Node("Worker", icon="openshift") 
@@ -57,15 +52,28 @@ with Diagram("vpc-single-region-consumer-internet"):
             bastion = Node("Bastion", icon="bastion") 
             vsi = Node("Virtual Server", icon="vsi") 
             block = Node("Block Storage", icon="blockstorage") 
+        vpegw = Node("VPE Gateway", icon="vpe", many=True) 
+
+      dl1 = Node("Direct Link", icon="directlink") 
+      vpn1 = Node("VPN Connection", icon="vpn") 
+      tg = Node("Transit Gateway", icon="transitgateway") 
+      dl2 = Node("*Direct Link* (same)", icon="directlink") 
+      vpn2 = Node("VPN Connection", icon="vpn") 
 
       with Cluster("VPC 2 (Workload)", icon="vpc"):
+        lb1 = Node("Private Load Balancer", icon="lb") 
+        lb2 = Node("Public Load Balancer", icon="lb") 
+        lb3 = Node("Private Load Balancer", icon="lb") 
+
         with Cluster("Zone 1", sublabel="10.40.0.0/18", icon="zone", direction="TB"):
-          with Cluster("Subnet 1", sublabel="10.40.10.0/24 - ACL1", icon="subnet"):
-            open1 = Node("Worker", icon="openshift") 
-            open2 = Node("Worker", icon="openshift") 
-            open3 = Node("Worker", icon="openshift") 
-            open4 = Node("Worker", icon="openshift") 
-            block = Node("Block Storage", icon="blockstorage") 
+          with Cluster("Multi-Zone OpenShift Managed Cluster Service", icon="openshift"):
+            with Cluster("SG VPC Default & Cluster", icon="securitygroup"):
+              with Cluster("Subnet 1", sublabel="10.40.10.0/24 - ACL1", icon="subnet"):
+                open1 = Node("Worker", icon="openshift") 
+                open2 = Node("Worker", icon="openshift") 
+                open3 = Node("Worker", icon="openshift") 
+                open4 = Node("Worker", icon="openshift") 
+                block = Node("Block Storage", icon="blockstorage") 
           with Cluster("Subnet 2", sublabel="10.40.20.0/24 - ACL2", icon="subnet"):
             vpe1 = Node("VPE", icon="vpe") 
             vpe2 = Node("VPE", icon="vpe") 
@@ -73,12 +81,14 @@ with Diagram("vpc-single-region-consumer-internet"):
             vpn = Node("VPN Gateway", icon="vpngateway") 
 
         with Cluster("Zone 2", sublabel="10.50.0.0/18", icon="zone", direction="TB"):
-          with Cluster("Subnet 1", sublabel="10.50.10.0/24 - ACL1", icon="subnet"):
-            open1 = Node("Worker", icon="openshift") 
-            open2 = Node("Worker", icon="openshift") 
-            open3 = Node("Worker", icon="openshift") 
-            open4 = Node("Worker", icon="openshift") 
-            block = Node("Block Storage", icon="blockstorage") 
+          with Cluster("Multi-Zone OpenShift Managed Cluster Service", icon="openshift"):
+            with Cluster("SG VPC Default & Cluster", icon="securitygroup"):
+              with Cluster("Subnet 1", sublabel="10.50.10.0/24 - ACL1", icon="subnet"):
+                open1 = Node("Worker", icon="openshift") 
+                open2 = Node("Worker", icon="openshift") 
+                open3 = Node("Worker", icon="openshift") 
+                open4 = Node("Worker", icon="openshift") 
+                block = Node("Block Storage", icon="blockstorage") 
           with Cluster("Subnet 2", sublabel="10.50.20.0/24 - ACL2", icon="subnet"):
             vpe1 = Node("VPE", icon="vpe") 
             vpe2 = Node("VPE", icon="vpe") 
@@ -86,13 +96,16 @@ with Diagram("vpc-single-region-consumer-internet"):
             vsi1 = Node("VSI", icon="vsi") 
             vsi2 = Node("VSI", icon="vsi") 
             block = Node("Block Storage", icon="blockstorage") 
+
         with Cluster("Zone 3", sublabel="10.60.0.0/18", icon="zone", direction="TB"):
-          with Cluster("Subnet 1", sublabel="10.60.10.0/24 - ACL1", icon="subnet"):
-            open1 = Node("Worker", icon="openshift") 
-            open2 = Node("Worker", icon="openshift") 
-            open3 = Node("Worker", icon="openshift") 
-            open4 = Node("Worker", icon="openshift") 
-            block = Node("Block Storage", icon="blockstorage") 
+          with Cluster("Multi-Zone OpenShift Managed Cluster Service", icon="openshift"):
+            with Cluster("SG VPC Default & Cluster", icon="securitygroup"):
+              with Cluster("Subnet 1", sublabel="10.60.10.0/24 - ACL1", icon="subnet"):
+                open1 = Node("Worker", icon="openshift") 
+                open2 = Node("Worker", icon="openshift") 
+                open3 = Node("Worker", icon="openshift") 
+                open4 = Node("Worker", icon="openshift") 
+                block = Node("Block Storage", icon="blockstorage") 
           with Cluster("Subnet 2", sublabel="10.60.20.0/24 - ACL2", icon="subnet"):
             vpe1 = Node("VPE", icon="vpe") 
             vpe2 = Node("VPE", icon="vpe") 
@@ -100,6 +113,7 @@ with Diagram("vpc-single-region-consumer-internet"):
             vsi1 = Node("VSI", icon="vsi") 
             vsi2 = Node("VSI", icon="vsi") 
             block = Node("Block Storage", icon="blockstorage") 
+        vpegw = Node("VPE Gateway", icon="vpe", many=True) 
 
       with Cluster("Cloud Services", icon="cloudservices"):
         with Cluster("Logging", direction="TB"):
