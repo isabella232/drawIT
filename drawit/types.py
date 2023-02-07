@@ -118,6 +118,11 @@ class Types:
       else:
          style += "fillColor=none;" 
 
+
+      multiplicity = node["many"]
+      if multiplicity:
+         style += "ibmMultiplicity=1;"
+
       name = node["label"]
       subname = node["sublabel"]
 

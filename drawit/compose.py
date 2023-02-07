@@ -283,7 +283,7 @@ class Compose:
                self.attributes.updateSequence(self.common.compress(subnetpubgateid))
 
                # TODO Make single arrow.
-               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetid), "targetid": self.common.compress(subnetpubgateid), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
+               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetid), "targetid": self.common.compress(subnetpubgateid), "style": '', "arrow": 'single', "fontname": '', "fontsize": 0}
 
                edgeid = randomid()
                edges[self.common.compress(edgeid)] = attributes
@@ -291,7 +291,7 @@ class Compose:
 
                # TODO Make single arrow.
                #routername = vpcname + '-router'
-               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetpubgateid), "targetid": self.common.compress(internetid), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
+               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetpubgateid), "targetid": self.common.compress(internetid), "style": '', "arrow": 'single', "fontname": '', "fontsize": 0}
 
                edgeid = randomid()
                edges[self.common.compress(edgeid)] = attributes
@@ -302,7 +302,7 @@ class Compose:
 
             else:
                # TODO Make single arrow.
-               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetid), "targetid": self.common.compress(subnetpubgateid), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
+               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetid), "targetid": self.common.compress(subnetpubgateid), "style": '', "arrow": 'single', "fontname": '', "fontsize": 0}
 
                edgeid = randomid()
                edges[self.common.compress(edgeid)] = attributes

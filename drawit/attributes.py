@@ -50,8 +50,6 @@ class Attributes:
 
    def setClusters(self, clusters):
       self.clusters = clusters
-      #print("")
-      #print(self.clusters)
 
    def setNodes(self, nodes):
       self.nodes = nodes

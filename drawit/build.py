@@ -235,11 +235,11 @@ class Build:
       arrow = attributes["arrow"]
       label = attributes["label"]
 
-      if arrow == "noarrow":
+      if arrow == "none":
          edgenode = self.shapes.buildSolidLink(edgeid, label, sourceid, targetid, None)
-      elif arrow == "singlearrow":
+      elif arrow == "single":
          edgenode = self.shapes.buildSingleArrow(edgeid, label, sourceid, targetid, None)
-      else:  # "doublearrow"
+      else:  # "double"
          edgenode = self.shapes.buildDoubleArrow(edgeid, label, sourceid, targetid, None)
 
       links.append(edgenode)
@@ -955,7 +955,7 @@ class Build:
                newparentheight += saveheight + savey
 
       newparentwidth += minshapespace
-      newparentheight += minshapespace
+      newparentheight -= minshapespace
 
       newparentwidth = max(parentwidth, newparentwidth)
       newparentheight = max(parentheight, newparentheight)
