@@ -34,10 +34,10 @@ class Types:
       self.elements = Elements(self.data)
       random.seed(time.time())
 
-   def buildLink(self, id, label, source, target, meta):
+   def buildLink(self, id, label, source, target, startarrow, endarrow, meta):
       data = {'header': {'id': id,
                          'label': ''},
-              'cell':   {'style': 'endArrow=none;dashed=1;',
+              'cell':   {'style': 'endArrow=' + endarrow + ';endFill=1;startArrow=' + startarrow + ';startFill=1;dashed=1;',
                          'edge': '1',
                          'parent': '1',
                          'source': source,
@@ -46,10 +46,10 @@ class Types:
                          'as': 'geometry'}}
       return data
 
-   def buildSolidLink(self, id, label, source, target, meta):
+   def buildSolidLink(self, id, label, source, target, startarrow, endarrow, meta):
       data = {'header': {'id': id,
                          'label': label},
-              'cell':   {'style': 'endArrow=none;dashed=0;',
+              'cell':   {'style': 'endArrow=' + endarrow + ';endFill=1;startArrow=' + startarrow + ';startFill=1;dashed=0;',
                          'edge': '1',
                          'parent': '1',
                          'source': source,
@@ -58,10 +58,10 @@ class Types:
                          'as': 'geometry'}}
       return data
 
-   def buildSolidLinkSingleArrow(self, id, label, source, target, meta):
+   def buildSolidLinkSingleArrow(self, id, label, source, target, startarrow, endarrow, meta):
          data = {'header': {'id': id,
                             'label': label},
-                 'cell':   {'style': 'endArrow=block;endFill=1;dashed=0;',
+                 'cell':   {'style': 'endArrow=' + endarrow + ';endFill=1;startArrow=' + startarrow + ';startFill=1;dashed=0;',
                             'edge': '1',
                             'parent': '1',
                             'source': source,
@@ -70,10 +70,10 @@ class Types:
                             'as': 'geometry'}}
          return data
 
-   def buildSolidLinkDoubleArrow(self, id, label, source, target, meta):
+   def buildSolidLinkDoubleArrow(self, id, label, source, target, startarrow, endarrow, meta):
       data = {'header': {'id': id,
                          'label': label},
-              'cell':   {'style': 'endArrow=block;endFill=1;startArrow=block;startFill=1;dashed=0;',
+              'cell':   {'style': 'endArrow=' + endarrow + ';endFill=1;startArrow=' + startarrow + ';startFill=1;dashed=0;',
                          'edge': '1',
                          'parent': '1',
                          'source': source,

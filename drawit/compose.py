@@ -121,22 +121,22 @@ class Compose:
                zonecidr = self.getZoneCIDR(zonename)
 
             # Zone attributes with parent vpcid
-            attributes = {"type": "cluster", "label": zonename, "sublabel": zonecidr, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'zone', "hideicon": '', "direction": 'TB', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(vpcid)}
+            attributes = {"type": "cluster", "label": zonename, "sublabel": zonecidr, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'zone', "hideicon": '', "direction": 'TB', "many": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(vpcid)}
 
             #zoneid = self.common.compress(regionzonename)
             clusters[zoneid] = attributes
 
          # VPC attributes with parent region:vpcid
          #regionid = "Region" + ":" + vpcid
-         attributes = {"type": "cluster", "label": vpcname, "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'vpc', "hideicon": '', "direction": 'TB', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionid)}
+         attributes = {"type": "cluster", "label": vpcname, "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'vpc', "hideicon": '', "direction": 'TB', "many": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionid)}
          clusters[self.common.compress(vpcid)] = attributes
 
          # Region attributes with parent cloud:vpcid
          #cloudid = "Cloud" + ":" + vpcid
-         attributes = {"type": "cluster", "label": 'Region', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'region', "hideicon": '', "direction": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(cloudid)}
+         attributes = {"type": "cluster", "label": 'Region', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'region', "hideicon": '', "direction": '', "many": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(cloudid)}
          clusters[self.common.compress(regionid)] = attributes
 
-         attributes = {"type": "cluster", "label": 'Cloud', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'cloud', "hideicon": '', "direction": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": None}
+         attributes = {"type": "cluster", "label": 'Cloud', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'cloud', "hideicon": '', "direction": '', "many": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": None}
          clusters[self.common.compress(cloudid)] = attributes
 
          #routername = vpcname + '-router'
@@ -177,7 +177,7 @@ class Compose:
       return
 
    def composePublic(self, clusters, nodes, edges, publicid, internetid):
-      attributes = {"type": "cluster", "label": 'Public Network', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'publicnetwork', "hideicon": '', "direction": 'TB', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": None}
+      attributes = {"type": "cluster", "label": 'Public Network', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'publicnetwork', "hideicon": '', "direction": 'TB', "many": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": None}
 
       #publicid = randomid()
       clusters[self.common.compress(publicid)] = attributes
@@ -193,7 +193,7 @@ class Compose:
       nodes[self.common.compress(internetid)] = attributes
       self.attributes.updateSequence(self.common.compress(internetid))
 
-      attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(userid), "targetid": self.common.compress(internetid), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
+      attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(userid), "targetid": self.common.compress(internetid), "color": '', "style": '', "startarrow": 'classic', "endarrow": 'classic', "fontname": '', "fontsize": 0}
 
       internetedgeid = randomid()
       edges[self.common.compress(internetedgeid)] = attributes
@@ -202,7 +202,7 @@ class Compose:
       return clusters, nodes, edges
 
    def composeEnterprise(self, clusters, nodes, edges, enterpriseid):
-      attributes = {"label": 'Enterprise Network', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'enterprisenetwork', "hideicon": '', "direction": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": None}
+      attributes = {"label": 'Enterprise Network', "sublabel": '', "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'enterprisenetwork', "hideicon": '', "direction": '', "many": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": None}
 
       #enterpriseid = randomid()
       clusters[enterpriseid] = attributes
@@ -266,7 +266,7 @@ class Compose:
          if subnetname.lower().find("bastion") != -1:
             bastion = True
 
-         attributes = {"type": "cluster", "label": subnetname, "sublabel": subnetcidr, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'subnet', "hideicon": '', "direction": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionzonename)}
+         attributes = {"type": "cluster", "label": subnetname, "sublabel": subnetcidr, "shape": '', "pencolor": '', "bgcolor": '', "badgetext": '', "badgeshape": '', "badgepencolor": '', "badgebgcolor": '', "icon": 'subnet', "hideicon": '', "direction": '', "many": '', "alternate": '', "provider": '', "fontname": '', "fontsize": 0, "parentid": self.common.compress(regionzonename)}
 
          #subnetid = self.common.compress(subnetid)
          #self.attributes.updateSequence(self.common.compress(subnetid))
@@ -283,7 +283,7 @@ class Compose:
                self.attributes.updateSequence(self.common.compress(subnetpubgateid))
 
                # TODO Make single arrow.
-               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetid), "targetid": self.common.compress(subnetpubgateid), "style": '', "arrow": 'single', "fontname": '', "fontsize": 0}
+               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetid), "targetid": self.common.compress(subnetpubgateid), "color": '', "style": '', "startarrow": '', "endarrow": 'classic', "fontname": '', "fontsize": 0}
 
                edgeid = randomid()
                edges[self.common.compress(edgeid)] = attributes
@@ -291,7 +291,7 @@ class Compose:
 
                # TODO Make single arrow.
                #routername = vpcname + '-router'
-               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetpubgateid), "targetid": self.common.compress(internetid), "style": '', "arrow": 'single', "fontname": '', "fontsize": 0}
+               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetpubgateid), "targetid": self.common.compress(internetid), "color": '', "style": '', "startarrow": '', "endarrow": 'classic', "fontname": '', "fontsize": 0}
 
                edgeid = randomid()
                edges[self.common.compress(edgeid)] = attributes
@@ -302,7 +302,7 @@ class Compose:
 
             else:
                # TODO Make single arrow.
-               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetid), "targetid": self.common.compress(subnetpubgateid), "style": '', "arrow": 'single', "fontname": '', "fontsize": 0}
+               attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(subnetid), "targetid": self.common.compress(subnetpubgateid), "color": '', "style": '', "startarrow": '', "endarrow": 'classic', "fontname": '', "fontsize": 0}
 
                edgeid = randomid()
                edges[self.common.compress(edgeid)] = attributes
@@ -510,7 +510,7 @@ class Compose:
                               self.attributes.updateSequence(self.common.compress(lbid))
 
                               #routername = vpcname + '-router'
-                              attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(lbid), "targetid": self.common.compress(internetid), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
+                              attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(lbid), "targetid": self.common.compress(internetid), "color": '', "style": '', "startarrow": 'classic', "endarrow": 'classic', "fontname": '', "fontsize": 0}
 
                               edgeid = randomid()
                               edges[self.common.compress(edgeid)] = attributes
@@ -518,7 +518,7 @@ class Compose:
 
                            # label, source, target
                            #instancelink = self.shapes.buildDoubleArrow('', nicid, lbid, None)
-                           attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(instanceid), "targetid": self.common.compress(lbid), "style": '', "arrow": '', "fontname": '', "fontsize": 0}
+                           attributes = {"type": "edge", "label": '', "sourceid": self.common.compress(instanceid), "targetid": self.common.compress(lbid), "color": '', "style": '', "startarrow": 'classic', "endarrow": 'classic', "fontname": '', "fontsize": 0}
 
                            edgeid = randomid()
                            edges[self.common.compress(edgeid)] = attributes

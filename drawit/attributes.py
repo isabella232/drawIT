@@ -75,8 +75,11 @@ class Attributes:
    def setEdgeTargetID(self, shapeid, targetid):
       self.edges[shapeid]["targetid"] = targetid
 
-   def setEdgeArrow(self, shapeid, arrow):
-      self.edges[shapeid]["arrow"] = arrow 
+   def setEdgeStartArrow(self, shapeid, startarrow):
+      self.edges[shapeid]["startarrow"] = startarrow 
+
+   def setEdgeEndArrow(self, shapeid, endarrow):
+      self.edges[shapeid]["endarrow"] = endarrow 
 
    def setEdgeOperator(self, shapeid, operator):
       self.edges[shapeid]["operator"] = operator
@@ -127,6 +130,11 @@ class Fonts(Enum):
    IBM_PLEX_SANS_JP = 'IBM Plex Sans JP'
    IBM_PLEX_SANS_KR = 'IBM Plex Sans KR'
    IBM_PLEX_SANS_THAI = 'IBM Plex Sans Thai'
+
+class EdgeArrows(Enum):
+   NONE = 'NONE'
+   CLASSIC = 'CLASSIC'
+   OVAL = 'OVAL'
 
 class EdgeStyles(Enum):
    SOLID = 'SOLID'

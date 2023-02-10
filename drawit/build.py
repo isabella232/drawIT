@@ -26,7 +26,7 @@ from math import isnan, floor
 
 from .colors import Colors
 from .common import Common
-from .attributes import Attributes, Alternates, ClusterShapes, Directions, EdgeStyles, Fonts, NodeShapes, OutFormats, Providers
+from .attributes import Attributes, Alternates, ClusterShapes, Directions, EdgeArrows, EdgeStyles, Fonts, NodeShapes, OutFormats, Providers
 from .constants import ComponentFill, FillPalette, ShapeKind, ShapeName, ShapePos, ZoneCIDR
 from .shapes import Shapes
 from .icons import Icons
@@ -56,6 +56,8 @@ NODE_ICON_DEFAULT = "undefined"
 NODE_FONTNAME_DEFAULT = "IBM Plex Sans"
 NODE_FONTSIZE_DEFAULT = 14
 
+EDGE_COLOR_DEFAULT = "black"
+EDGE_ARROW_DEFAULT = "classic"
 EDGE_STYLE_DEFAULT = "solid"
 EDGE_FONTNAME_DEFAULT = "IBM Plex Sans"
 EDGE_FONTSIZE_DEFAULT = 12
@@ -161,6 +163,7 @@ class Build:
       #self.printDiagrams()
       #self.printClusters()
       #self.printNodes()
+      #self.printEdges()
       #self.printTops()
       #self.printBottoms()
 
@@ -232,15 +235,25 @@ class Build:
 
       sourceid = attributes["sourceid"]
       targetid = attributes["targetid"]
-      arrow = attributes["arrow"]
+      startarrow = attributes["startarrow"]
+      endarrow = attributes["endarrow"]
       label = attributes["label"]
 
+      '''
       if arrow == "none":
          edgenode = self.shapes.buildSolidLink(edgeid, label, sourceid, targetid, None)
       elif arrow == "single":
          edgenode = self.shapes.buildSingleArrow(edgeid, label, sourceid, targetid, None)
       else:  # "double"
          edgenode = self.shapes.buildDoubleArrow(edgeid, label, sourceid, targetid, None)
+      '''
+
+      if startarrow == "" and endarrow == "":
+         edgenode = self.shapes.buildSolidLink(edgeid, label, sourceid, targetid, startarrow, endarrow, None)
+      elif startarrow == "classic" and endarrow == "classic":
+         edgenode = self.shapes.buildDoubleArrow(edgeid, label, sourceid, targetid, startarrow, endarrow, None)
+      elif endarrow == "classic":
+         edgenode = self.shapes.buildSingleArrow(edgeid, label, sourceid, targetid, startarrow, endarrow, None)
 
       links.append(edgenode)
 
@@ -511,6 +524,14 @@ class Build:
 
    def checkEdges(self, edges):
       for edgeid, attributes in edges.items():
+         color = attributes["color"]
+         if color != "":
+            hexcolor = self.checkLineColor(color)
+            self.common.printInvalidLineColor(color)
+            return None
+         else:
+            color = self.checkLineColor("black")
+
          style = attributes["style"]
          if style == "":
             style = EDGE_STYLE_DEFAULT
@@ -518,6 +539,38 @@ class Build:
             self.common.printInvalidEdgeStyle(style)
             return None
          edges[edgeid]["style"] = style
+
+         '''
+         startarrow = attributes["startarrow"]
+         if startarrow == "":
+            startarrow = EDGE_ARROW_DEFAULT
+         elif not startarrow.upper() in [parm.value for parm in EdgeArrows]:
+            self.common.printInvalidEdgeArrow(startarrow)
+            return None
+         edges[edgeid]["startarrow"] = startarrow.lower()
+         '''
+         startarrow = attributes["startarrow"]
+         if startarrow != "": 
+            if not startarrow.upper() in [parm.value for parm in EdgeArrows]:
+               self.common.printInvalidEdgeArrow(startarrow)
+               return None
+            edges[edgeid]["startarrow"] = startarrow.lower()
+
+         '''
+         endarrow = attributes["endarrow"]
+         if endarrow == "":
+            endarrow = EDGE_ARROW_DEFAULT
+         elif not endarrow.upper() in [parm.value for parm in EdgeArrows]:
+            self.common.printInvalidEdgeArrow(endarrow)
+            return None
+         edges[edgeid]["endarrow"] = endarrow.lower()
+         '''
+         endarrow = attributes["endarrow"]
+         if endarrow != "":
+            if not endarrow.upper() in [parm.value for parm in EdgeArrows]:
+               self.common.printInvalidEdgeArrow(endarrow)
+               return None
+            edges[edgeid]["endarrow"] = endarrow.lower()
 
          fontname = attributes["fontname"]
          if fontname == "":
@@ -1313,6 +1366,14 @@ class Build:
       print("")
       print("Nodes:")
       for key, value in self.nodes.items():
+         print("")
+         print(f'"{key}": {value}')
+      return
+
+   def printEdges(self):
+      print("")
+      print("Edges:")
+      for key, value in self.edges.items():
          print("")
          print(f'"{key}": {value}')
       return
