@@ -56,14 +56,14 @@ class Load:
       elif self.common.isInputTerraform():
          self.data.loadTerraform()
 
-      if not self.common.isInputTerraform():
-         if self.analyzeData():
-            self.analyzeContainers()
-            #self.analyzeInstances()
-            self.analyzeSubnetIcons()
-            #self.analyzeServiceIcons()
-            self.analyzeLoadBalancers()
-            return True
+      #if not self.common.isInputTerraform():
+      if self.analyzeData():
+         self.analyzeContainers()
+         #self.analyzeInstances()
+         self.analyzeSubnetIcons()
+         #self.analyzeServiceIcons()
+         self.analyzeLoadBalancers()
+         return True
 
       return False
 

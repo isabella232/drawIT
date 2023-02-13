@@ -15,8 +15,9 @@
 
 from sys import exit
 
-from json import loads as json_load
+from json import loads as json_load, dumps as json_dumps
 from pandas import concat, DataFrame, json_normalize, read_json
+from tabulate import tabulate
 
 from .common import Common
 from .icons import Icons
@@ -41,7 +42,7 @@ class Terraform:
    vpnConnections = {}
    vpeGateways = {}
    services = {}
-   types = []
+   types = {}
    data = {}
    common = None
    icons = None
@@ -58,24 +59,99 @@ class Terraform:
       resources = self.data['resources']
       df = json_normalize(resources)
 
-      self.vpcs = df[df["type"] == "ibm_is_vpc"]
-      self.subnets = df[df["type"] == "ibm_is_subnet"]
-      self.instances = df[df["type"] == "ibm_is_instance"]
-      self.publicGateways = df[df["type"] == "ibm_is_public_gateway"]
-      self.floatingIPs = df[df["type"] == "ibm_is_floating_ip"]
-      self.loadBalancers = df[df["type"] == "ibm_is_lb"]
-      self.loadBalancerListeners = df[df["type"] == "ibm_is_lb_listener"]
-      self.loadBalancerPools = df[df["type"] == "ibm_is_lb_pool"]
-      self.loadBalancerMembers = df[df["type"] == "ibm_is_lb_pool_member"]
+      vpcs = df[df["type"] == "ibm_is_vpc"]
+      subnets = df[df["type"] == "ibm_is_subnet"]
 
-      #if not 'vpcs' in self.data:
-      if self.vpcs.empty:
+      if vpcs.empty:
          self.common.printMissingVPCs()
          exit()
-      #elif not 'subnets' in self.data:
-      elif self.subnets.empty:
+      elif subnets.empty:
          self.common.printMissingSubnets()
          exit()
+
+      tempvpcs = {}
+      tempsubnets = {}
+      tempinstances = {}
+      temppublicGateways = {}
+      tempfloatingIPs = {}
+      temploadBalancers = {}
+      temploadBalancerListeners = {}
+      temploadBalancerPools = {}
+      temploadBalancerMembers = {}
+
+      vpcInstances = df[df["type"] == "ibm_is_vpc"]["instances"]
+      subnetInstances = df[df["type"] == "ibm_is_subnet"]["instances"]
+      instanceInstances = df[df["type"] == "ibm_is_instance"]["instances"]
+      publicGatewayInstances = df[df["type"] == "ibm_is_public_gateway"]["instances"]
+      floatingIPInstances = df[df["type"] == "ibm_is_floating_ip"]["instances"]
+      loadBalancerInstances = df[df["type"] == "ibm_is_lb"]["instances"]
+      loadBalancerListenerInstances = df[df["type"] == "ibm_is_lb_listener"]["instances"]
+      loadBalancerPoolInstances = df[df["type"] == "ibm_is_lb_pool"]["instances"]
+      loadBalancerMemberInstances = df[df["type"] == "ibm_is_lb_pool_member"]["instances"]
+
+      for instances in vpcInstances: 
+         for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            tempvpcs[instanceid] = instanceattributes
+            #print(json_dumps(instance["attributes"], indent=4))
+      self.vpcs = DataFrame.from_dict(tempvpcs)
+
+      for instances in subnetInstances:
+          for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            tempsubnets[instanceid] = instanceattributes
+      self.subnets = DataFrame.from_dict(tempsubnets)
+
+      for instances in instanceInstances:
+          for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            tempinstances[instanceid] = instanceattributes
+      self.instances = DataFrame.from_dict(tempinstances)
+
+      for instances in publicGatewayInstances:
+          for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            temppublicGateways[instanceid] = instanceattributes
+      self.publicGateways = DataFrame.from_dict(temppublicGateways)
+
+      for instances in floatingIPInstances:
+          for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            tempfloatingIPs[instanceid] = instanceattributes
+      self.floatingIPs = DataFrame.from_dict(tempfloatingIPs)
+
+      for instances in loadBalancerInstances:
+          for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            temploadBalancers[instanceid] = instanceattributes
+      self.loadBalancers = DataFrame.from_dict(temploadBalancers)
+
+      for instances in loadBalancerListenerInstances:
+          for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            temploadBalancerListeners[instanceid] = instanceattributes
+      self.loadBalancerListeners = DataFrame.from_dict(temploadBalancerListeners)
+
+      for instances in loadBalancerPoolInstances:
+          for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            temploadBalancerPools[instanceid] = instanceattributes
+      self.loadBalancerPools = DataFrame.from_dict(temploadBalancerPools)
+
+      for instances in loadBalancerMemberInstances:
+          for instance in instances:
+            instanceattributes = instance["attributes"]
+            instanceid = instanceattributes["id"]
+            temploadBalancerMembers[instanceid] = instanceattributes
+      self.loadBalancerMembers = DataFrame.from_dict(temploadBalancerMembers)
 
       #if self.data != None:
       #   self.normalizeData()
@@ -84,7 +160,6 @@ class Terraform:
 
    def normalizeData(self):
       self.vpcs = json_normalize(self.data['vpcs'] if ('vpcs' in self.data) else json_normalize({}))
-      print(self.vpcs)
       self.subnets = json_normalize(self.data['subnets'] if ('subnets' in self.data) else json_normalize({}))
       self.instances = json_normalize(self.data['instances'] if ('instances' in self.data) else json_normalize({}))
       self.clusters = json_normalize(self.data['clusters'] if ('clusters' in self.data) else json_normalize({}))

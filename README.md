@@ -314,8 +314,8 @@ Refer to rungui.sh or run.sh in scripts folder.
 - [x] ALB
 - [x] NLB
 - [x] VPN Gateway
-- [ ] Network ACLs
-- [ ] Security Groups
+- [ ] Network ACLs (Target 3/15 for icon and connectors, 5/1 for rules)
+- [ ] Security Groups (Target 4/1 for icon and connectors, 6/1 for rules)
 - [ ] Routing Tables
 - [ ] Routing Table Routes
 - [ ] Bare Metal Servers
