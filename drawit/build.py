@@ -1094,7 +1094,7 @@ class Build:
             self.clusters[childid]["geometry"] = [childx, childy, childwidth, childheight]
 
       if adjustheight > 0:
-         newparentheight += adjustheight + (nodesets * minshapespace)
+         newparentheight += adjustheight + (nodesets * minshapespace) + (2 * minshapespace)
 
       newparentwidth = max(newparentwidth, adjustwidth)
 
